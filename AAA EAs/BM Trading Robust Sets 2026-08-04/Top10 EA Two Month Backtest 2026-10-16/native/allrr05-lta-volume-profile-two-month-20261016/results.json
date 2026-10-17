@@ -1,0 +1,1266 @@
+{
+  "tag": "allrr05-lta-volume-profile-two-month-20261016",
+  "slug": "lta-volume-profile",
+  "variant": "two-month-20261016",
+  "window": [
+    "2026.08.16",
+    "2026.10.16"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "true",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpUseDynamicTrailingSL": "false",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpMacroBias": "0",
+    "InpArchetype": "1",
+    "InpMacroTF": "16408",
+    "InpZoneTF": "16388",
+    "InpStructureTF": "16385",
+    "InpExecutionTF": "15",
+    "InpProfileTF": "15",
+    "InpUsePreviousDayProfile": "true",
+    "InpUsePreviousWeekProfile": "true",
+    "InpUseSwingProfile": "false",
+    "InpUseSupplyDemandZones": "true",
+    "InpProfileBins": "64",
+    "InpValueAreaPercent": "70.0",
+    "InpSwingProfileBars": "96",
+    "InpInternalSwingBars": "32",
+    "InpMitigationLookbackBars": "5",
+    "InpKeyTouchBufferATR": "0.24",
+    "InpUsePOCFirstRetestConfirmation": "false",
+    "InpPOCHeavyZoneVolumeFraction": "0.50",
+    "InpPOCMinimumDepartureATR": "0.50",
+    "InpPOCRetestSignalBars": "3",
+    "InpZoneLookbackBars": "220",
+    "InpBaseBars": "3",
+    "InpZoneBreakLookbackBars": "18",
+    "InpBaseMaxRangeATR": "1.2",
+    "InpExpansionMinBodyATR": "0.75",
+    "InpExpansionMinRangeATR": "1.15",
+    "InpExpansionVolumeMult": "1.05",
+    "InpZoneExpiryBars": "160",
+    "InpRequireZoneBreakStruct": "true",
+    "InpUseEM1DoubleWick": "true",
+    "InpUseEM2InternalSwing": "false",
+    "InpUseEM3CME": "false",
+    "InpUseEM4Continuation": "true",
+    "InpMinConfirmWickRatio": "0.25",
+    "InpMinConfirmVolumeMult": "1.0",
+    "InpCMEBaseMaxATR": "1.35",
+    "InpSLBufferATR": "0.12",
+    "InpMomentumRiskPercent": "1",
+    "InpContrarianRiskPercent": "1",
+    "InpAbsoluteRiskCapPercent": "1",
+    "InpAdaptivePortfolioControls": "false",
+    "InpRewardRisk": "3.0",
+    "InpMaxConsecutiveLosses": "2",
+    "InpMoveContrarianBEAt1R": "true",
+    "InpMoveAllBEAt1R": "false",
+    "InpOnePositionPerSymbol": "true",
+    "InpMaxSpreadPoints": "100000",
+    "InpSlippagePoints": "20",
+    "InpMagicNumber": "7262250",
+    "InpUseSessionFilter": "false",
+    "InpLondonStartHour": "7",
+    "InpLondonEndHour": "11",
+    "InpNYStartHour": "13",
+    "InpNYEndHour": "17",
+    "InpCutFlatBeforeNYOpen": "false",
+    "InpNYOpenHour": "13",
+    "InpDeadTradeMinutes": "120",
+    "InpDeadTradeMaxR": "0.2",
+    "InpCloseLateNYDeadTrades": "false",
+    "InpLateNYHour": "20",
+    "InpAllowLongs": "true",
+    "InpAllowShorts": "true",
+    "InpRR05AuditTag": "allrr05-lta-volume-profile-two-month-20261016"
+  },
+  "unsupported_set_inputs": [
+    "InpRiskPercent"
+  ],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 8771.16,
+    "net_profit": -1228.84,
+    "return_pct": -12.29,
+    "profit_factor": 0.55,
+    "win_rate_pct": 16.13,
+    "max_drawdown_pct": 20.58,
+    "trades": 31,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.56,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 20.58,
+    "balance_dd_pct": 18.73
+  },
+  "metrics": {
+    "trades": 31,
+    "return_pct": -12.2884,
+    "net_profit": -1228.84,
+    "pf": 0.5526578278691509,
+    "wins": 5,
+    "losses": 26,
+    "flat": 0,
+    "win_rate": 16.129032258064516,
+    "equity_dd_pct": 20.58,
+    "balance_dd_pct": 18.73,
+    "sharpe_daily_equity": -5.370505359438767,
+    "win_streak": 1,
+    "loss_streak": 19,
+    "avg_win": 303.628,
+    "avg_loss": -105.65307692307692,
+    "partial_positions": 0,
+    "exit_legs": 31,
+    "commission": -14.8,
+    "swap": -7.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1786972500,
+      "close_epoch": 1786975041,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.1,
+      "open_price": 4386.621,
+      "close_price": 4416.537,
+      "net": 298.61,
+      "magic": 7262250,
+      "sl": 4376.426,
+      "tp": 4416.486,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAH ",
+      "exit_comments": [
+        "tp 4416.486"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 299.16,
+      "commission": -0.55,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1786975200,
+      "close_epoch": 1787059817,
+      "last_deal": 5,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4408.921,
+      "close_price": 4380.731,
+      "net": -114.98,
+      "magic": 7262250,
+      "sl": 4381.118,
+      "tp": 4492.794,
+      "entry_comment": "Safe LTA EM4-Continuation PW-PO",
+      "exit_comments": [
+        "sl 4381.118"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -112.76,
+      "commission": -0.22,
+      "swap": -2.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1787060700,
+      "close_epoch": 1787064804,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4401.538,
+      "close_price": 4374.588,
+      "net": -108.02,
+      "magic": 7262250,
+      "sl": 4374.869,
+      "tp": 4481.173,
+      "entry_comment": "Safe LTA EM1-DoubleWick PW-POC ",
+      "exit_comments": [
+        "sl 4374.869"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -107.8,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1787192100,
+      "close_epoch": 1787203695,
+      "last_deal": 9,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 4497.792,
+      "close_price": 4483.462,
+      "net": -115.08,
+      "magic": 7262250,
+      "sl": 4483.509,
+      "tp": 4540.845,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAH ",
+      "exit_comments": [
+        "sl 4483.509"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -114.64,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1787233500,
+      "close_epoch": 1787276155,
+      "last_deal": 11,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 4486.81,
+      "close_price": 4543.303,
+      "net": 335.63,
+      "magic": 7262250,
+      "sl": 4467.95,
+      "tp": 4543.166,
+      "entry_comment": "Safe LTA EM4-Continuation PD-VA",
+      "exit_comments": [
+        "tp 4543.166"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 338.96,
+      "commission": -0.33,
+      "swap": -3.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1787529600,
+      "close_epoch": 1787531118,
+      "last_deal": 13,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 4624.647,
+      "close_price": 4605.731,
+      "net": -113.82,
+      "magic": 7262250,
+      "sl": 4605.789,
+      "tp": 4679.085,
+      "entry_comment": "Safe LTA EM4-Continuation PD-VA",
+      "exit_comments": [
+        "sl 4605.789"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -113.49,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1787532300,
+      "close_epoch": 1787537460,
+      "last_deal": 15,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 4607.059,
+      "close_price": 4650.121,
+      "net": 344.06,
+      "magic": 7262250,
+      "sl": 4592.801,
+      "tp": 4650.057,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-POC ",
+      "exit_comments": [
+        "tp 4650.057"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 344.5,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1787540400,
+      "close_epoch": 1787594945,
+      "last_deal": 17,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 4643.779,
+      "close_price": 4625.317999999999,
+      "net": -111.09,
+      "magic": 7262250,
+      "sl": 4625.318,
+      "tp": 4699.15,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAH ",
+      "exit_comments": [
+        "sl 4625.318"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.76,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1787622300,
+      "close_epoch": 1787622931,
+      "last_deal": 19,
+      "side": "Long",
+      "volume": 0.14,
+      "open_price": 4671.029,
+      "close_price": 4662.862,
+      "net": -115.11,
+      "magic": 7262250,
+      "sl": 4662.874,
+      "tp": 4694.618,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAH ",
+      "exit_comments": [
+        "sl 4662.874"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -114.34,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1787627700,
+      "close_epoch": 1787664181,
+      "last_deal": 21,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 4633.966,
+      "close_price": 4615.936,
+      "net": -108.51,
+      "magic": 7262250,
+      "sl": 4615.939,
+      "tp": 4688.307,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAL ",
+      "exit_comments": [
+        "sl 4615.939"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -108.18,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1788480900,
+      "close_epoch": 1788481535,
+      "last_deal": 23,
+      "side": "Long",
+      "volume": 0.16,
+      "open_price": 4480.87,
+      "close_price": 4474.165,
+      "net": -108.16,
+      "magic": 7262250,
+      "sl": 4474.283,
+      "tp": 4501.371,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAH ",
+      "exit_comments": [
+        "sl 4474.283"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -107.28,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1788483600,
+      "close_epoch": 1788485174,
+      "last_deal": 25,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 4486.603,
+      "close_price": 4471.868,
+      "net": -118.32,
+      "magic": 7262250,
+      "sl": 4472.088,
+      "tp": 4529.368,
+      "entry_comment": "Safe LTA EM4-Continuation PD-VA",
+      "exit_comments": [
+        "sl 4472.088"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -117.88,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1789002900,
+      "close_epoch": 1789029730,
+      "last_deal": 27,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 4412.786,
+      "close_price": 4396.843,
+      "net": -111.99,
+      "magic": 7262250,
+      "sl": 4397.115,
+      "tp": 4459.535,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-POC ",
+      "exit_comments": [
+        "sl 4397.115"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -111.6,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 28,
+      "open_epoch": 1789039800,
+      "close_epoch": 1789041411,
+      "last_deal": 29,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 4385.825,
+      "close_price": 4374.084,
+      "net": -106.17,
+      "magic": 7262250,
+      "sl": 4374.097,
+      "tp": 4421.665,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAL ",
+      "exit_comments": [
+        "sl 4374.097"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.67,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 30,
+      "open_epoch": 1789607700,
+      "close_epoch": 1789613643,
+      "last_deal": 31,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 4298.978,
+      "close_price": 4275.806,
+      "net": -116.14,
+      "magic": 7262250,
+      "sl": 4275.833,
+      "tp": 4368.413,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAL ",
+      "exit_comments": [
+        "sl 4275.833"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -115.86,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 32,
+      "open_epoch": 1789692300,
+      "close_epoch": 1789695590,
+      "last_deal": 33,
+      "side": "Long",
+      "volume": 0.12,
+      "open_price": 4358.98,
+      "close_price": 4350.176,
+      "net": -106.31,
+      "magic": 7262250,
+      "sl": 4350.311,
+      "tp": 4384.987,
+      "entry_comment": "Safe LTA EM1-DoubleWick PW-VAL ",
+      "exit_comments": [
+        "sl 4350.311"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.65,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 34,
+      "open_epoch": 1789703100,
+      "close_epoch": 1789999419,
+      "last_deal": 35,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4357.512,
+      "close_price": 4332.954,
+      "net": -100.45,
+      "magic": 7262250,
+      "sl": 4333.002,
+      "tp": 4431.042,
+      "entry_comment": "Safe LTA EM1-DoubleWick PW-VAL ",
+      "exit_comments": [
+        "sl 4333.002"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -98.23,
+      "commission": -0.22,
+      "swap": -2.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 36,
+      "open_epoch": 1790684100,
+      "close_epoch": 1790689058,
+      "last_deal": 37,
+      "side": "Short",
+      "volume": 0.11,
+      "open_price": 4152.944,
+      "close_price": 4161.724,
+      "net": -97.19,
+      "magic": 7262250,
+      "sl": 4161.658,
+      "tp": 4126.802,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-POC ",
+      "exit_comments": [
+        "sl 4161.658"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.58,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 38,
+      "open_epoch": 1790694900,
+      "close_epoch": 1790707212,
+      "last_deal": 39,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 4162.301,
+      "close_price": 4175.932,
+      "net": -95.8,
+      "magic": 7262250,
+      "sl": 4175.923,
+      "tp": 4121.843,
+      "entry_comment": "Safe LTA EM4-Continuation PD-VA",
+      "exit_comments": [
+        "sl 4175.923"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -95.41,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 40,
+      "open_epoch": 1790847000,
+      "close_epoch": 1790849933,
+      "last_deal": 41,
+      "side": "Short",
+      "volume": 0.23,
+      "open_price": 4159.95,
+      "close_price": 4164.025,
+      "net": -95.0,
+      "magic": 7262250,
+      "sl": 4163.996,
+      "tp": 4147.828,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAL ",
+      "exit_comments": [
+        "sl 4163.996"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -93.73,
+      "commission": -1.27,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 42,
+      "open_epoch": 1790853300,
+      "close_epoch": 1790854959,
+      "last_deal": 43,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 4169.792,
+      "close_price": 4179.946,
+      "net": -91.88,
+      "magic": 7262250,
+      "sl": 4179.911,
+      "tp": 4138.967,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-POC ",
+      "exit_comments": [
+        "sl 4179.911"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -91.38,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 44,
+      "open_epoch": 1791247500,
+      "close_epoch": 1791247775,
+      "last_deal": 45,
+      "side": "Short",
+      "volume": 0.13,
+      "open_price": 4138.75,
+      "close_price": 4145.796,
+      "net": -92.32,
+      "magic": 7262250,
+      "sl": 4145.66,
+      "tp": 4116.168,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-POC ",
+      "exit_comments": [
+        "sl 4145.660"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -91.6,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 46,
+      "open_epoch": 1791251100,
+      "close_epoch": 1791275830,
+      "last_deal": 47,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 4133.296,
+      "close_price": 4150.471,
+      "net": -103.38,
+      "magic": 7262250,
+      "sl": 4150.383,
+      "tp": 4082.035,
+      "entry_comment": "Safe LTA EM1-DoubleWick PW-VAL ",
+      "exit_comments": [
+        "sl 4150.383"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.05,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 48,
+      "open_epoch": 1791419400,
+      "close_epoch": 1791420553,
+      "last_deal": 49,
+      "side": "Short",
+      "volume": 0.16,
+      "open_price": 4107.274,
+      "close_price": 4113.161,
+      "net": -95.08,
+      "magic": 7262250,
+      "sl": 4113.135,
+      "tp": 4090.219,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-POC ",
+      "exit_comments": [
+        "sl 4113.135"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -94.2,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 50,
+      "open_epoch": 1791428400,
+      "close_epoch": 1791479882,
+      "last_deal": 51,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 4133.599,
+      "close_price": 4144.732,
+      "net": -100.7,
+      "magic": 7262250,
+      "sl": 4144.534,
+      "tp": 4101.022,
+      "entry_comment": "Safe LTA EM4-Continuation PW-VA",
+      "exit_comments": [
+        "sl 4144.534"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.2,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 52,
+      "open_epoch": 1791850500,
+      "close_epoch": 1791859151,
+      "last_deal": 53,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 4161.721,
+      "close_price": 4175.53,
+      "net": -97.05,
+      "magic": 7262250,
+      "sl": 4175.457,
+      "tp": 4120.781,
+      "entry_comment": "Safe LTA EM1-DoubleWick PW-VAH ",
+      "exit_comments": [
+        "sl 4175.457"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.66,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 54,
+      "open_epoch": 1791870300,
+      "close_epoch": 1791905333,
+      "last_deal": 55,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 4191.211,
+      "close_price": 4161.564,
+      "net": 266.32,
+      "magic": 7262250,
+      "sl": 4201.228,
+      "tp": 4161.748,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAH ",
+      "exit_comments": [
+        "tp 4161.748"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 266.82,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 56,
+      "open_epoch": 1791942300,
+      "close_epoch": 1791946523,
+      "last_deal": 57,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 4146.212,
+      "close_price": 4167.044,
+      "net": -104.44,
+      "magic": 7262250,
+      "sl": 4166.998,
+      "tp": 4083.074,
+      "entry_comment": "Safe LTA EM4-Continuation PD-VA",
+      "exit_comments": [
+        "sl 4166.998"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.16,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 58,
+      "open_epoch": 1791957600,
+      "close_epoch": 1791981658,
+      "last_deal": 59,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 4148.66,
+      "close_price": 4103.018,
+      "net": 273.52,
+      "magic": 7262250,
+      "sl": 4164.022,
+      "tp": 4103.054,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAL ",
+      "exit_comments": [
+        "tp 4103.054"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 273.85,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 60,
+      "open_epoch": 1791981900,
+      "close_epoch": 1792032908,
+      "last_deal": 61,
+      "side": "Short",
+      "volume": 0.02,
+      "open_price": 4092.58,
+      "close_price": 4157.137,
+      "net": -129.22,
+      "magic": 7262250,
+      "sl": 4157.123,
+      "tp": 3902.575,
+      "entry_comment": "Safe LTA EM1-DoubleWick PW-VAL ",
+      "exit_comments": [
+        "sl 4157.123"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -129.11,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 62,
+      "open_epoch": 1792043100,
+      "close_epoch": 1792051476,
+      "last_deal": 63,
+      "side": "Short",
+      "volume": 0.12,
+      "open_price": 4140.9,
+      "close_price": 4148.409,
+      "net": -90.77,
+      "magic": 7262250,
+      "sl": 4148.38,
+      "tp": 4118.836,
+      "entry_comment": "Safe LTA EM1-DoubleWick PD-VAH ",
+      "exit_comments": [
+        "sl 4148.380"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -90.11,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1786972500,
+      "deal": 2,
+      "balance": 9999.45,
+      "net": -0.55
+    },
+    {
+      "epoch": 1786975041,
+      "deal": 3,
+      "balance": 10298.61,
+      "net": 299.16
+    },
+    {
+      "epoch": 1786975200,
+      "deal": 4,
+      "balance": 10298.39,
+      "net": -0.22
+    },
+    {
+      "epoch": 1787059817,
+      "deal": 5,
+      "balance": 10183.63,
+      "net": -114.76
+    },
+    {
+      "epoch": 1787060700,
+      "deal": 6,
+      "balance": 10183.41,
+      "net": -0.22
+    },
+    {
+      "epoch": 1787064804,
+      "deal": 7,
+      "balance": 10075.61,
+      "net": -107.8
+    },
+    {
+      "epoch": 1787192100,
+      "deal": 8,
+      "balance": 10075.17,
+      "net": -0.44
+    },
+    {
+      "epoch": 1787203695,
+      "deal": 9,
+      "balance": 9960.53,
+      "net": -114.64
+    },
+    {
+      "epoch": 1787233500,
+      "deal": 10,
+      "balance": 9960.2,
+      "net": -0.33
+    },
+    {
+      "epoch": 1787276155,
+      "deal": 11,
+      "balance": 10296.16,
+      "net": 335.96
+    },
+    {
+      "epoch": 1787529600,
+      "deal": 12,
+      "balance": 10295.83,
+      "net": -0.33
+    },
+    {
+      "epoch": 1787531118,
+      "deal": 13,
+      "balance": 10182.34,
+      "net": -113.49
+    },
+    {
+      "epoch": 1787532300,
+      "deal": 14,
+      "balance": 10181.9,
+      "net": -0.44
+    },
+    {
+      "epoch": 1787537460,
+      "deal": 15,
+      "balance": 10526.4,
+      "net": 344.5
+    },
+    {
+      "epoch": 1787540400,
+      "deal": 16,
+      "balance": 10526.07,
+      "net": -0.33
+    },
+    {
+      "epoch": 1787594945,
+      "deal": 17,
+      "balance": 10415.31,
+      "net": -110.76
+    },
+    {
+      "epoch": 1787622300,
+      "deal": 18,
+      "balance": 10414.54,
+      "net": -0.77
+    },
+    {
+      "epoch": 1787622931,
+      "deal": 19,
+      "balance": 10300.2,
+      "net": -114.34
+    },
+    {
+      "epoch": 1787627700,
+      "deal": 20,
+      "balance": 10299.87,
+      "net": -0.33
+    },
+    {
+      "epoch": 1787664181,
+      "deal": 21,
+      "balance": 10191.69,
+      "net": -108.18
+    },
+    {
+      "epoch": 1788480900,
+      "deal": 22,
+      "balance": 10190.81,
+      "net": -0.88
+    },
+    {
+      "epoch": 1788481535,
+      "deal": 23,
+      "balance": 10083.53,
+      "net": -107.28
+    },
+    {
+      "epoch": 1788483600,
+      "deal": 24,
+      "balance": 10083.09,
+      "net": -0.44
+    },
+    {
+      "epoch": 1788485174,
+      "deal": 25,
+      "balance": 9965.21,
+      "net": -117.88
+    },
+    {
+      "epoch": 1789002900,
+      "deal": 26,
+      "balance": 9964.82,
+      "net": -0.39
+    },
+    {
+      "epoch": 1789029730,
+      "deal": 27,
+      "balance": 9853.22,
+      "net": -111.6
+    },
+    {
+      "epoch": 1789039800,
+      "deal": 28,
+      "balance": 9852.72,
+      "net": -0.5
+    },
+    {
+      "epoch": 1789041411,
+      "deal": 29,
+      "balance": 9747.05,
+      "net": -105.67
+    },
+    {
+      "epoch": 1789607700,
+      "deal": 30,
+      "balance": 9746.77,
+      "net": -0.28
+    },
+    {
+      "epoch": 1789613643,
+      "deal": 31,
+      "balance": 9630.91,
+      "net": -115.86
+    },
+    {
+      "epoch": 1789692300,
+      "deal": 32,
+      "balance": 9630.25,
+      "net": -0.66
+    },
+    {
+      "epoch": 1789695590,
+      "deal": 33,
+      "balance": 9524.6,
+      "net": -105.65
+    },
+    {
+      "epoch": 1789703100,
+      "deal": 34,
+      "balance": 9524.38,
+      "net": -0.22
+    },
+    {
+      "epoch": 1789999419,
+      "deal": 35,
+      "balance": 9424.15,
+      "net": -100.23
+    },
+    {
+      "epoch": 1790684100,
+      "deal": 36,
+      "balance": 9423.54,
+      "net": -0.61
+    },
+    {
+      "epoch": 1790689058,
+      "deal": 37,
+      "balance": 9326.96,
+      "net": -96.58
+    },
+    {
+      "epoch": 1790694900,
+      "deal": 38,
+      "balance": 9326.57,
+      "net": -0.39
+    },
+    {
+      "epoch": 1790707212,
+      "deal": 39,
+      "balance": 9231.16,
+      "net": -95.41
+    },
+    {
+      "epoch": 1790847000,
+      "deal": 40,
+      "balance": 9229.89,
+      "net": -1.27
+    },
+    {
+      "epoch": 1790849933,
+      "deal": 41,
+      "balance": 9136.16,
+      "net": -93.73
+    },
+    {
+      "epoch": 1790853300,
+      "deal": 42,
+      "balance": 9135.66,
+      "net": -0.5
+    },
+    {
+      "epoch": 1790854959,
+      "deal": 43,
+      "balance": 9044.28,
+      "net": -91.38
+    },
+    {
+      "epoch": 1791247500,
+      "deal": 44,
+      "balance": 9043.56,
+      "net": -0.72
+    },
+    {
+      "epoch": 1791247775,
+      "deal": 45,
+      "balance": 8951.96,
+      "net": -91.6
+    },
+    {
+      "epoch": 1791251100,
+      "deal": 46,
+      "balance": 8951.63,
+      "net": -0.33
+    },
+    {
+      "epoch": 1791275830,
+      "deal": 47,
+      "balance": 8848.58,
+      "net": -103.05
+    },
+    {
+      "epoch": 1791419400,
+      "deal": 48,
+      "balance": 8847.7,
+      "net": -0.88
+    },
+    {
+      "epoch": 1791420553,
+      "deal": 49,
+      "balance": 8753.5,
+      "net": -94.2
+    },
+    {
+      "epoch": 1791428400,
+      "deal": 50,
+      "balance": 8753.0,
+      "net": -0.5
+    },
+    {
+      "epoch": 1791479882,
+      "deal": 51,
+      "balance": 8652.8,
+      "net": -100.2
+    },
+    {
+      "epoch": 1791850500,
+      "deal": 52,
+      "balance": 8652.41,
+      "net": -0.39
+    },
+    {
+      "epoch": 1791859151,
+      "deal": 53,
+      "balance": 8555.75,
+      "net": -96.66
+    },
+    {
+      "epoch": 1791870300,
+      "deal": 54,
+      "balance": 8555.25,
+      "net": -0.5
+    },
+    {
+      "epoch": 1791905333,
+      "deal": 55,
+      "balance": 8822.07,
+      "net": 266.82
+    },
+    {
+      "epoch": 1791942300,
+      "deal": 56,
+      "balance": 8821.79,
+      "net": -0.28
+    },
+    {
+      "epoch": 1791946523,
+      "deal": 57,
+      "balance": 8717.63,
+      "net": -104.16
+    },
+    {
+      "epoch": 1791957600,
+      "deal": 58,
+      "balance": 8717.3,
+      "net": -0.33
+    },
+    {
+      "epoch": 1791981658,
+      "deal": 59,
+      "balance": 8991.15,
+      "net": 273.85
+    },
+    {
+      "epoch": 1791981900,
+      "deal": 60,
+      "balance": 8991.04,
+      "net": -0.11
+    },
+    {
+      "epoch": 1792032908,
+      "deal": 61,
+      "balance": 8861.93,
+      "net": -129.11
+    },
+    {
+      "epoch": 1792043100,
+      "deal": 62,
+      "balance": 8861.27,
+      "net": -0.66
+    },
+    {
+      "epoch": 1792051476,
+      "deal": 63,
+      "balance": 8771.16,
+      "net": -90.11
+    }
+  ],
+  "seconds": 14.60887360572815,
+  "binary_sha256": "dc28fa8d66eeb909d56528cfca585842ba3a74c8e587a81d10ecae02c68ab3b4",
+  "report_sha256": "bb9032d948d74e1a29568e31ca063de79d5396f98fdb6234c22f0e6afb612714",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true,
+  "boundary_liquidation_positions": [],
+  "ranking_includes_boundary_liquidations": true,
+  "current_active_input_verification": true
+}

@@ -1,0 +1,530 @@
+{
+  "tag": "allrr05-xau-rsi-vwap-two-month-20261016",
+  "slug": "xau-rsi-vwap",
+  "variant": "two-month-20261016",
+  "window": [
+    "2026.08.16",
+    "2026.10.16"
+  ],
+  "inputs": {
+    "InpRSILength": "16",
+    "InpOversold": "18.0",
+    "InpOverbought": "80.0",
+    "InpRiskPercent": "1",
+    "InpAdaptivePortfolioControls": "false",
+    "InpExitMode": "2",
+    "InpStopMode": "1",
+    "InpATRPeriod": "14",
+    "InpStopATR": "2",
+    "InpSwingLookback": "5",
+    "InpStopBufferATR": "0.10",
+    "InpRewardRisk": "0.5",
+    "InpSignalClosePercent": "100.0",
+    "InpUseBreakEven": "true",
+    "InpBreakEvenAtR": "0.75",
+    "InpBreakEvenLockR": "0.05",
+    "InpUseATRTrailing": "false",
+    "InpTrailStartR": "1",
+    "InpTrailATR": "2",
+    "InpMaximumHoldingBars": "0",
+    "InpSession": "0",
+    "InpMaximumSpreadPoints": "0",
+    "InpMaximumDeviationPoints": "80",
+    "InpMagic": "926400006",
+    "InpRR05AuditTag": "allrr05-xau-rsi-vwap-two-month-20261016"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10039.96,
+    "net_profit": 39.96,
+    "return_pct": 0.4,
+    "profit_factor": 1.09,
+    "win_rate_pct": 66.67,
+    "max_drawdown_pct": 3.7,
+    "trades": 12,
+    "sharpe_ratio": 0.42,
+    "recovery_factor": 0.11,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 3.7,
+    "balance_dd_pct": 3.27
+  },
+  "metrics": {
+    "trades": 12,
+    "return_pct": 0.39960000000000023,
+    "net_profit": 39.96,
+    "pf": 1.0904092852779474,
+    "wins": 8,
+    "losses": 4,
+    "flat": 0,
+    "win_rate": 66.66666666666667,
+    "equity_dd_pct": 3.7,
+    "balance_dd_pct": 3.27,
+    "sharpe_daily_equity": 0.36989982330402227,
+    "win_streak": 5,
+    "loss_streak": 3,
+    "avg_win": 60.24375,
+    "avg_loss": -110.4975,
+    "partial_positions": 0,
+    "exit_legs": 12,
+    "commission": -2.7800000000000002,
+    "swap": -3.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1787104800,
+      "close_epoch": 1787137568,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4356.558,
+      "close_price": 4373.556,
+      "net": 50.83,
+      "magic": 926400006,
+      "sl": 4322.721,
+      "tp": 4373.477,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "tp 4373.477"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.0,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1787796000,
+      "close_epoch": 1787823427,
+      "last_deal": 5,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4640.395,
+      "close_price": 4581.746,
+      "net": -117.41,
+      "magic": 926400006,
+      "sl": 4581.845,
+      "tp": 4669.247,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "sl 4581.845"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -117.3,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1787886000,
+      "close_epoch": 1787895804,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 4586.474,
+      "close_price": 4573.235,
+      "net": -106.35,
+      "magic": 926400006,
+      "sl": 4573.255,
+      "tp": 4592.716,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "sl 4573.255"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.91,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1788224400,
+      "close_epoch": 1788237709,
+      "last_deal": 9,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4453.717,
+      "close_price": 4427.482,
+      "net": -105.16,
+      "magic": 926400006,
+      "sl": 4427.617,
+      "tp": 4466.767,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "sl 4427.617"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.94,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1788357600,
+      "close_epoch": 1788405162,
+      "last_deal": 11,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4384.996,
+      "close_price": 4428.322,
+      "net": 83.54,
+      "magic": 926400006,
+      "sl": 4299.573,
+      "tp": 4428.284,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "tp 4428.284"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 86.65,
+      "commission": -0.11,
+      "swap": -3.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1788919200,
+      "close_epoch": 1788932254,
+      "last_deal": 13,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4373.723,
+      "close_price": 4391.107,
+      "net": 51.98,
+      "magic": 926400006,
+      "sl": 4339.067,
+      "tp": 4391.092,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "tp 4391.092"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 52.15,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1789110000,
+      "close_epoch": 1789129817,
+      "last_deal": 15,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4352.712,
+      "close_price": 4296.229,
+      "net": -113.07,
+      "magic": 926400006,
+      "sl": 4298.708,
+      "tp": 4380.379,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "sl 4298.708"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -112.96,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1789437600,
+      "close_epoch": 1789440034,
+      "last_deal": 17,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 4304.87,
+      "close_price": 4316.813,
+      "net": 59.44,
+      "magic": 926400006,
+      "sl": 4280.39,
+      "tp": 4316.708,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "tp 4316.708"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.72,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1790298000,
+      "close_epoch": 1790298691,
+      "last_deal": 19,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 4278.776,
+      "close_price": 4286.924,
+      "net": 56.65,
+      "magic": 926400006,
+      "sl": 4262.566,
+      "tp": 4286.811,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "tp 4286.811"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.04,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1790665200,
+      "close_epoch": 1790676554,
+      "last_deal": 21,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 4140.655,
+      "close_price": 4150.788,
+      "net": 50.38,
+      "magic": 926400006,
+      "sl": 4120.456,
+      "tp": 4150.755,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "tp 4150.755"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.66,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1791421200,
+      "close_epoch": 1791421231,
+      "last_deal": 23,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 4117.16,
+      "close_price": 4126.555,
+      "net": 56.04,
+      "magic": 926400006,
+      "sl": 4098.63,
+      "tp": 4126.532,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "tp 4126.532"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.37,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1792026000,
+      "close_epoch": 1792070133,
+      "last_deal": 25,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4139.668,
+      "close_price": 4164.085,
+      "net": 73.09,
+      "magic": 926400006,
+      "sl": 4090.769,
+      "tp": 4164.052,
+      "entry_comment": "RSI-VWAP long",
+      "exit_comments": [
+        "tp 4164.052"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 73.26,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1787104800,
+      "deal": 2,
+      "balance": 9999.83,
+      "net": -0.17
+    },
+    {
+      "epoch": 1787137568,
+      "deal": 3,
+      "balance": 10050.83,
+      "net": 51.0
+    },
+    {
+      "epoch": 1787796000,
+      "deal": 4,
+      "balance": 10050.72,
+      "net": -0.11
+    },
+    {
+      "epoch": 1787823427,
+      "deal": 5,
+      "balance": 9933.42,
+      "net": -117.3
+    },
+    {
+      "epoch": 1787886000,
+      "deal": 6,
+      "balance": 9932.98,
+      "net": -0.44
+    },
+    {
+      "epoch": 1787895804,
+      "deal": 7,
+      "balance": 9827.07,
+      "net": -105.91
+    },
+    {
+      "epoch": 1788224400,
+      "deal": 8,
+      "balance": 9826.85,
+      "net": -0.22
+    },
+    {
+      "epoch": 1788237709,
+      "deal": 9,
+      "balance": 9721.91,
+      "net": -104.94
+    },
+    {
+      "epoch": 1788357600,
+      "deal": 10,
+      "balance": 9721.8,
+      "net": -0.11
+    },
+    {
+      "epoch": 1788405162,
+      "deal": 11,
+      "balance": 9805.45,
+      "net": 83.65
+    },
+    {
+      "epoch": 1788919200,
+      "deal": 12,
+      "balance": 9805.28,
+      "net": -0.17
+    },
+    {
+      "epoch": 1788932254,
+      "deal": 13,
+      "balance": 9857.43,
+      "net": 52.15
+    },
+    {
+      "epoch": 1789110000,
+      "deal": 14,
+      "balance": 9857.32,
+      "net": -0.11
+    },
+    {
+      "epoch": 1789129817,
+      "deal": 15,
+      "balance": 9744.36,
+      "net": -112.96
+    },
+    {
+      "epoch": 1789437600,
+      "deal": 16,
+      "balance": 9744.08,
+      "net": -0.28
+    },
+    {
+      "epoch": 1789440034,
+      "deal": 17,
+      "balance": 9803.8,
+      "net": 59.72
+    },
+    {
+      "epoch": 1790298000,
+      "deal": 18,
+      "balance": 9803.41,
+      "net": -0.39
+    },
+    {
+      "epoch": 1790298691,
+      "deal": 19,
+      "balance": 9860.45,
+      "net": 57.04
+    },
+    {
+      "epoch": 1790665200,
+      "deal": 20,
+      "balance": 9860.17,
+      "net": -0.28
+    },
+    {
+      "epoch": 1790676554,
+      "deal": 21,
+      "balance": 9910.83,
+      "net": 50.66
+    },
+    {
+      "epoch": 1791421200,
+      "deal": 22,
+      "balance": 9910.5,
+      "net": -0.33
+    },
+    {
+      "epoch": 1791421231,
+      "deal": 23,
+      "balance": 9966.87,
+      "net": 56.37
+    },
+    {
+      "epoch": 1792026000,
+      "deal": 24,
+      "balance": 9966.7,
+      "net": -0.17
+    },
+    {
+      "epoch": 1792070133,
+      "deal": 25,
+      "balance": 10039.96,
+      "net": 73.26
+    }
+  ],
+  "seconds": 13.187710762023926,
+  "binary_sha256": "c1fab07e34494d0425bf14d80f1f95777010e01c2a633a7d1991e084c7712e2a",
+  "report_sha256": "144807a253c38b99bd95afa0ab75ec0a113cecbdd5db3355f7234ca70247b6af",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true,
+  "boundary_liquidation_positions": [],
+  "ranking_includes_boundary_liquidations": true,
+  "current_active_input_verification": true
+}

@@ -1,0 +1,77 @@
+{
+  "gold": {
+    "status": "measured",
+    "mean_roundtrip_spread_cash": 4.387843505477191,
+    "mean_adverse_entry_slippage_cash": 0.1668075117370357,
+    "mean_commission_cash": 1.0732550860719874,
+    "scenarios": [
+      {
+        "extra_cost_multiple": 1,
+        "mean_extra_cash": 5.6279061032862145,
+        "net_profit": 517.9280000001099,
+        "return_pct": 5.179280000001099,
+        "pf": 1.0141519542617417,
+        "win_rate": 48.35680751173709
+      },
+      {
+        "extra_cost_multiple": 2,
+        "mean_extra_cash": 11.255812206572429,
+        "net_profit": -3078.303999999782,
+        "return_pct": -30.78303999999782,
+        "pf": 0.9205578630554931,
+        "win_rate": 46.322378716744915
+      }
+    ],
+    "scope": "Algebraic extra1x/2x recorded transaction-event quote spread + commissions + adverse requested-versus-filled entry slippage, above native costs. Quotes observed at transaction callbacks, not a claim of exchange orderbook fills. No invented spreads. Different exits/gap paths not replayed."
+  },
+  "us100": {
+    "status": "measured",
+    "mean_roundtrip_spread_cash": 4.620239316239284,
+    "mean_adverse_entry_slippage_cash": 0.12987179487177686,
+    "mean_commission_cash": 0.8087179487179488,
+    "scenarios": [
+      {
+        "extra_cost_multiple": 1,
+        "mean_extra_cash": 5.558829059829009,
+        "net_profit": 1741.7570000000055,
+        "return_pct": 17.417570000000055,
+        "pf": 1.306641847159754,
+        "win_rate": 47.008547008547005
+      },
+      {
+        "extra_cost_multiple": 2,
+        "mean_extra_cash": 11.117658119658017,
+        "net_profit": 1091.3740000000123,
+        "return_pct": 10.913740000000123,
+        "pf": 1.1790339815379651,
+        "win_rate": 47.008547008547005
+      }
+    ],
+    "scope": "Algebraic extra1x/2x recorded transaction-event quote spread + commissions + adverse requested-versus-filled entry slippage, above native costs. Quotes observed at transaction callbacks, not a claim of exchange orderbook fills. No invented spreads. Different exits/gap paths not replayed."
+  },
+  "btc": {
+    "status": "measured",
+    "mean_roundtrip_spread_cash": 1.1525817518248314,
+    "mean_adverse_entry_slippage_cash": 0.028183454987828795,
+    "mean_commission_cash": 0.2313138686131387,
+    "scenarios": [
+      {
+        "extra_cost_multiple": 1,
+        "mean_extra_cash": 1.4120790754257988,
+        "net_profit": -488.0145000000035,
+        "return_pct": -4.880145000000035,
+        "pf": 0.9292216398522307,
+        "win_rate": 46.95863746958637
+      },
+      {
+        "extra_cost_multiple": 2,
+        "mean_extra_cash": 2.8241581508515976,
+        "net_profit": -1068.3790000000065,
+        "return_pct": -10.683790000000066,
+        "pf": 0.8521427611567343,
+        "win_rate": 46.47201946472019
+      }
+    ],
+    "scope": "Algebraic extra1x/2x recorded transaction-event quote spread + commissions + adverse requested-versus-filled entry slippage, above native costs. Quotes observed at transaction callbacks, not a claim of exchange orderbook fills. No invented spreads. Different exits/gap paths not replayed."
+  }
+}

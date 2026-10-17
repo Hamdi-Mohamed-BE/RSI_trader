@@ -1,0 +1,615 @@
+{
+  "tag": "allrr05-lta-volume-profile-two-week-85b992cc30aa",
+  "slug": "lta-volume-profile",
+  "variant": "two-week-85b992cc30aa",
+  "window": [
+    "2026.09.25",
+    "2026.10.09"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpUseDynamicTrailingSL": "false",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpMacroBias": "0",
+    "InpArchetype": "1",
+    "InpMacroTF": "16408",
+    "InpZoneTF": "16388",
+    "InpStructureTF": "16385",
+    "InpExecutionTF": "15",
+    "InpProfileTF": "15",
+    "InpUsePreviousDayProfile": "true",
+    "InpUsePreviousWeekProfile": "true",
+    "InpUseSwingProfile": "false",
+    "InpUseSupplyDemandZones": "true",
+    "InpProfileBins": "64",
+    "InpValueAreaPercent": "70.0",
+    "InpSwingProfileBars": "96",
+    "InpInternalSwingBars": "32",
+    "InpMitigationLookbackBars": "5",
+    "InpKeyTouchBufferATR": "0.24",
+    "InpUsePOCFirstRetestConfirmation": "false",
+    "InpPOCHeavyZoneVolumeFraction": "0.50",
+    "InpPOCMinimumDepartureATR": "0.50",
+    "InpPOCRetestSignalBars": "3",
+    "InpZoneLookbackBars": "220",
+    "InpBaseBars": "3",
+    "InpZoneBreakLookbackBars": "18",
+    "InpBaseMaxRangeATR": "1.2",
+    "InpExpansionMinBodyATR": "0.75",
+    "InpExpansionMinRangeATR": "1.15",
+    "InpExpansionVolumeMult": "1.05",
+    "InpZoneExpiryBars": "160",
+    "InpRequireZoneBreakStruct": "true",
+    "InpUseEM1DoubleWick": "true",
+    "InpUseEM2InternalSwing": "false",
+    "InpUseEM3CME": "false",
+    "InpUseEM4Continuation": "true",
+    "InpMinConfirmWickRatio": "0.25",
+    "InpMinConfirmVolumeMult": "1.0",
+    "InpCMEBaseMaxATR": "1.35",
+    "InpSLBufferATR": "0.12",
+    "InpMomentumRiskPercent": "1.0",
+    "InpContrarianRiskPercent": "1.0",
+    "InpAbsoluteRiskCapPercent": "1",
+    "InpAdaptivePortfolioControls": "false",
+    "InpRewardRisk": "3.0",
+    "InpMaxConsecutiveLosses": "2",
+    "InpMoveContrarianBEAt1R": "true",
+    "InpMoveAllBEAt1R": "false",
+    "InpOnePositionPerSymbol": "true",
+    "InpMaxSpreadPoints": "100000",
+    "InpSlippagePoints": "20",
+    "InpMagicNumber": "7262250",
+    "InpUseSessionFilter": "false",
+    "InpLondonStartHour": "7",
+    "InpLondonEndHour": "11",
+    "InpNYStartHour": "13",
+    "InpNYEndHour": "17",
+    "InpCutFlatBeforeNYOpen": "false",
+    "InpNYOpenHour": "13",
+    "InpDeadTradeMinutes": "120",
+    "InpDeadTradeMaxR": "0.2",
+    "InpCloseLateNYDeadTrades": "false",
+    "InpLateNYHour": "20",
+    "InpAllowLongs": "true",
+    "InpAllowShorts": "true",
+    "InpRR05AuditTag": "allrr05-lta-volume-profile-two-week-85b992cc30aa"
+  },
+  "unsupported_set_inputs": [
+    "InpRiskPercent"
+  ],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 9083.35,
+    "net_profit": -916.65,
+    "return_pct": -9.17,
+    "profit_factor": 0.26,
+    "win_rate_pct": 7.69,
+    "max_drawdown_pct": 13.83,
+    "trades": 13,
+    "sharpe_ratio": -5.0,
+    "recovery_factor": -0.63,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 13.83,
+    "balance_dd_pct": 12.0
+  },
+  "metrics": {
+    "trades": 13,
+    "return_pct": -9.1665,
+    "net_profit": -916.65,
+    "pf": 0.2597154025067838,
+    "wins": 1,
+    "losses": 12,
+    "flat": 0,
+    "win_rate": 7.6923076923076925,
+    "equity_dd_pct": 13.83,
+    "balance_dd_pct": 12.0,
+    "sharpe_daily_equity": -19.974214247002774,
+    "win_streak": 1,
+    "loss_streak": 12,
+    "avg_win": 321.59,
+    "avg_loss": -103.18666666666667,
+    "partial_positions": 0,
+    "exit_legs": 13,
+    "commission": -8.78,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1790304300,
+      "close_epoch": 1790312316,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 0.14,
+      "open_price": 4285.908,
+      "close_price": 4262.882,
+      "net": 321.59,
+      "magic": 7262250,
+      "sl": 4293.348,
+      "tp": 4263.024,
+      "entry_comment": "LTA EM1-DoubleWick PW-POC MOM",
+      "exit_comments": [
+        "tp 4263.024"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 322.36,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1790344800,
+      "close_epoch": 1790350212,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 0.11,
+      "open_price": 4275.668,
+      "close_price": 4285.724,
+      "net": -111.22,
+      "magic": 7262250,
+      "sl": 4285.636,
+      "tp": 4246.86,
+      "entry_comment": "LTA EM1-DoubleWick PW-POC MOM",
+      "exit_comments": [
+        "sl 4285.636"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.61,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1790684100,
+      "close_epoch": 1790689058,
+      "last_deal": 7,
+      "side": "Short",
+      "volume": 0.12,
+      "open_price": 4152.944,
+      "close_price": 4161.724,
+      "net": -106.02,
+      "magic": 7262250,
+      "sl": 4161.658,
+      "tp": 4126.802,
+      "entry_comment": "LTA EM1-DoubleWick PD-POC MOM",
+      "exit_comments": [
+        "sl 4161.658"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.36,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1790694900,
+      "close_epoch": 1790707212,
+      "last_deal": 9,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 4162.301,
+      "close_price": 4175.932,
+      "net": -109.49,
+      "magic": 7262250,
+      "sl": 4175.923,
+      "tp": 4121.843,
+      "entry_comment": "LTA EM4-Continuation PD-VAH MOM",
+      "exit_comments": [
+        "sl 4175.923"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -109.05,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1790847000,
+      "close_epoch": 1790849933,
+      "last_deal": 11,
+      "side": "Short",
+      "volume": 0.25,
+      "open_price": 4159.95,
+      "close_price": 4164.025,
+      "net": -103.26,
+      "magic": 7262250,
+      "sl": 4163.996,
+      "tp": 4147.828,
+      "entry_comment": "LTA EM1-DoubleWick PD-VAL MOM",
+      "exit_comments": [
+        "sl 4163.996"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.88,
+      "commission": -1.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1790853300,
+      "close_epoch": 1790854959,
+      "last_deal": 13,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 4169.792,
+      "close_price": 4179.946,
+      "net": -102.09,
+      "magic": 7262250,
+      "sl": 4179.911,
+      "tp": 4138.967,
+      "entry_comment": "LTA EM1-DoubleWick PD-POC MOM",
+      "exit_comments": [
+        "sl 4179.911"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.54,
+      "commission": -0.55,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1790902800,
+      "close_epoch": 1790910068,
+      "last_deal": 15,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 4153.115,
+      "close_price": 4167.893,
+      "net": -103.83,
+      "magic": 7262250,
+      "sl": 4167.762,
+      "tp": 4110.67,
+      "entry_comment": "LTA EM1-DoubleWick PD-VAL MOM",
+      "exit_comments": [
+        "sl 4167.762"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.44,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1791163800,
+      "close_epoch": 1791166110,
+      "last_deal": 17,
+      "side": "Short",
+      "volume": 0.17,
+      "open_price": 4156.267,
+      "close_price": 4162.298,
+      "net": -103.47,
+      "magic": 7262250,
+      "sl": 4162.267,
+      "tp": 4138.267,
+      "entry_comment": "LTA EM1-DoubleWick PW-POC MOM",
+      "exit_comments": [
+        "sl 4162.267"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.53,
+      "commission": -0.94,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1791168300,
+      "close_epoch": 1791186322,
+      "last_deal": 19,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 4153.78,
+      "close_price": 4163.869,
+      "net": -101.44,
+      "magic": 7262250,
+      "sl": 4163.823,
+      "tp": 4122.975,
+      "entry_comment": "LTA EM1-DoubleWick PW-POC MOM",
+      "exit_comments": [
+        "sl 4163.823"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.89,
+      "commission": -0.55,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1791247500,
+      "close_epoch": 1791247775,
+      "last_deal": 21,
+      "side": "Short",
+      "volume": 0.13,
+      "open_price": 4138.75,
+      "close_price": 4145.796,
+      "net": -92.32,
+      "magic": 7262250,
+      "sl": 4145.66,
+      "tp": 4116.168,
+      "entry_comment": "LTA EM1-DoubleWick PD-POC MOM",
+      "exit_comments": [
+        "sl 4145.660"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -91.6,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1791251100,
+      "close_epoch": 1791275830,
+      "last_deal": 23,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 4133.296,
+      "close_price": 4150.471,
+      "net": -103.38,
+      "magic": 7262250,
+      "sl": 4150.383,
+      "tp": 4082.035,
+      "entry_comment": "LTA EM1-DoubleWick PW-VAL MOM",
+      "exit_comments": [
+        "sl 4150.383"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.05,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1791419400,
+      "close_epoch": 1791420553,
+      "last_deal": 25,
+      "side": "Short",
+      "volume": 0.17,
+      "open_price": 4107.274,
+      "close_price": 4113.161,
+      "net": -101.02,
+      "magic": 7262250,
+      "sl": 4113.135,
+      "tp": 4090.219,
+      "entry_comment": "LTA EM1-DoubleWick PD-POC MOM",
+      "exit_comments": [
+        "sl 4113.135"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.08,
+      "commission": -0.94,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1791428400,
+      "close_epoch": 1791479882,
+      "last_deal": 27,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 4133.599,
+      "close_price": 4144.732,
+      "net": -100.7,
+      "magic": 7262250,
+      "sl": 4144.534,
+      "tp": 4101.022,
+      "entry_comment": "LTA EM4-Continuation PW-VAL MOM",
+      "exit_comments": [
+        "sl 4144.534"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.2,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1790304300,
+      "deal": 2,
+      "balance": 9999.23,
+      "net": -0.77
+    },
+    {
+      "epoch": 1790312316,
+      "deal": 3,
+      "balance": 10321.59,
+      "net": 322.36
+    },
+    {
+      "epoch": 1790344800,
+      "deal": 4,
+      "balance": 10320.98,
+      "net": -0.61
+    },
+    {
+      "epoch": 1790350212,
+      "deal": 5,
+      "balance": 10210.37,
+      "net": -110.61
+    },
+    {
+      "epoch": 1790684100,
+      "deal": 6,
+      "balance": 10209.71,
+      "net": -0.66
+    },
+    {
+      "epoch": 1790689058,
+      "deal": 7,
+      "balance": 10104.35,
+      "net": -105.36
+    },
+    {
+      "epoch": 1790694900,
+      "deal": 8,
+      "balance": 10103.91,
+      "net": -0.44
+    },
+    {
+      "epoch": 1790707212,
+      "deal": 9,
+      "balance": 9994.86,
+      "net": -109.05
+    },
+    {
+      "epoch": 1790847000,
+      "deal": 10,
+      "balance": 9993.48,
+      "net": -1.38
+    },
+    {
+      "epoch": 1790849933,
+      "deal": 11,
+      "balance": 9891.6,
+      "net": -101.88
+    },
+    {
+      "epoch": 1790853300,
+      "deal": 12,
+      "balance": 9891.05,
+      "net": -0.55
+    },
+    {
+      "epoch": 1790854959,
+      "deal": 13,
+      "balance": 9789.51,
+      "net": -101.54
+    },
+    {
+      "epoch": 1790902800,
+      "deal": 14,
+      "balance": 9789.12,
+      "net": -0.39
+    },
+    {
+      "epoch": 1790910068,
+      "deal": 15,
+      "balance": 9685.68,
+      "net": -103.44
+    },
+    {
+      "epoch": 1791163800,
+      "deal": 16,
+      "balance": 9684.74,
+      "net": -0.94
+    },
+    {
+      "epoch": 1791166110,
+      "deal": 17,
+      "balance": 9582.21,
+      "net": -102.53
+    },
+    {
+      "epoch": 1791168300,
+      "deal": 18,
+      "balance": 9581.66,
+      "net": -0.55
+    },
+    {
+      "epoch": 1791186322,
+      "deal": 19,
+      "balance": 9480.77,
+      "net": -100.89
+    },
+    {
+      "epoch": 1791247500,
+      "deal": 20,
+      "balance": 9480.05,
+      "net": -0.72
+    },
+    {
+      "epoch": 1791247775,
+      "deal": 21,
+      "balance": 9388.45,
+      "net": -91.6
+    },
+    {
+      "epoch": 1791251100,
+      "deal": 22,
+      "balance": 9388.12,
+      "net": -0.33
+    },
+    {
+      "epoch": 1791275830,
+      "deal": 23,
+      "balance": 9285.07,
+      "net": -103.05
+    },
+    {
+      "epoch": 1791419400,
+      "deal": 24,
+      "balance": 9284.13,
+      "net": -0.94
+    },
+    {
+      "epoch": 1791420553,
+      "deal": 25,
+      "balance": 9184.05,
+      "net": -100.08
+    },
+    {
+      "epoch": 1791428400,
+      "deal": 26,
+      "balance": 9183.55,
+      "net": -0.5
+    },
+    {
+      "epoch": 1791479882,
+      "deal": 27,
+      "balance": 9083.35,
+      "net": -100.2
+    }
+  ],
+  "seconds": 9.970231056213379,
+  "binary_sha256": "0a26592a95d4664ff1012c7509d6790ef7463709b83a7eabf51481b997482229",
+  "report_sha256": "ca2a238333cf6e81a3fb604dee62805af91fe592509ab10abddfe93180d2eea2",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

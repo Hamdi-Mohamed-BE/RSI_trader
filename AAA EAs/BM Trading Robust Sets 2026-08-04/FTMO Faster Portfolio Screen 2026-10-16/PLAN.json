@@ -1,0 +1,342 @@
+{
+  "status": "PREDECLARED research-only12basket screen; no replay outcomes computed.",
+  "created_utc": "2026-10-16T22:36:23.704309+00:00",
+  "baskets": {
+    "CORE4": [
+      "nasdaq-5m-candle-momentum",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "xau-rsi-vwap"
+    ],
+    "CORE3": [
+      "nasdaq-5m-candle-momentum",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow"
+    ],
+    "CORE4_MINUS_NASDAQ": [
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "xau-rsi-vwap"
+    ],
+    "CORE4_MINUS_USDJPY": [
+      "nasdaq-5m-candle-momentum",
+      "us100-month-end-flow",
+      "xau-rsi-vwap"
+    ],
+    "CORE4_MINUS_MONTH_END": [
+      "nasdaq-5m-candle-momentum",
+      "usdjpy-london-open-momentum",
+      "xau-rsi-vwap"
+    ],
+    "CORE4_PLUS_GOLD_VA": [
+      "nasdaq-5m-candle-momentum",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "xau-rsi-vwap",
+      "gold-overnight-value-area"
+    ],
+    "CORE4_PLUS_EMA3": [
+      "nasdaq-5m-candle-momentum",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "xau-rsi-vwap",
+      "ema3"
+    ],
+    "CORE4_PLUS_TREND_06R": [
+      "nasdaq-5m-candle-momentum",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "xau-rsi-vwap",
+      "xau-trend-progression"
+    ],
+    "CORE4_PLUS_H1_ORB_05R": [
+      "nasdaq-5m-candle-momentum",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "xau-rsi-vwap",
+      "us100-h1-orb-13utc"
+    ],
+    "CORE4_PLUS_FIVE_ORBS_05R": [
+      "nasdaq-5m-candle-momentum",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "xau-rsi-vwap",
+      "us100-h1-orb-13utc",
+      "us100-orb-new-york-m30",
+      "us100-selective-orb-v3",
+      "xau-orb-new-york-m30",
+      "xau-orb-london-ny-overlap-m30"
+    ],
+    "CORE4_PLUS_GOLD_VA_H1_ORB": [
+      "nasdaq-5m-candle-momentum",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "xau-rsi-vwap",
+      "gold-overnight-value-area",
+      "us100-h1-orb-13utc"
+    ],
+    "CORE4_MINUS_NASDAQ_PLUS_GOLD_VA": [
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "xau-rsi-vwap",
+      "gold-overnight-value-area"
+    ]
+  },
+  "history": {
+    "start_prague": "2025-10-06",
+    "end_exclusive_prague": "2026-10-06",
+    "start_utc": "2025-10-05T22:00:00+00:00",
+    "end_exclusive_utc": "2026-10-05T22:00:00+00:00",
+    "all_eligible_weekday_starts": 134,
+    "excluded_incomplete_followup_starts": 127,
+    "first_start": "2025-10-06",
+    "last_start": "2026-04-09",
+    "total_horizon_prague_civil_days": 180,
+    "holidays_not_removed": true
+  },
+  "scenarios": [
+    {
+      "cost": "recorded_exness",
+      "handover": "next_prague_midnight"
+    },
+    {
+      "cost": "recorded_exness",
+      "handover": "two_business_day_wait"
+    },
+    {
+      "cost": "fixed_cost_stress",
+      "handover": "next_prague_midnight"
+    },
+    {
+      "cost": "fixed_cost_stress",
+      "handover": "two_business_day_wait"
+    }
+  ],
+  "risk": {
+    "initial_balance": 10000,
+    "currency": "USD",
+    "fixed_guard_allocation": 50,
+    "source_requested_risk_percent": 0.5,
+    "lot_sizing": "Source request=ceil(0.5% sampled equity/unit-risk) to broker step with original min/max; guard floors min(source-request volume,50/unit-risk,volumeMax); reject below broker min.",
+    "specs": {
+      "USTEC": {
+        "contract": 1,
+        "leverage": 15,
+        "minimum": 0.05,
+        "step": 0.01,
+        "maximum": 500
+      },
+      "USDJPY": {
+        "contract": 100000,
+        "leverage": 30,
+        "minimum": 0.01,
+        "step": 0.01,
+        "maximum": 200
+      },
+      "XAUUSD": {
+        "contract": 100,
+        "leverage": 15,
+        "minimum": 0.01,
+        "step": 0.01,
+        "maximum": 200
+      }
+    }
+  },
+  "guard": {
+    "daily_prague_anchor": "day-start cash balance",
+    "persistent_daily_entry_stop_loss": 300,
+    "permanent_static_equity_floor": 9000,
+    "permanent_daily_equity_loss": 500,
+    "admission_equity_buffer": 9200,
+    "aggregate_initial_risk_cap": 225,
+    "same_symbol_initial_risk_cap": 150,
+    "daily_entry_cap": 7,
+    "daily_completed_losses_cap": 3,
+    "entry_cooldown_seconds": 3,
+    "reserve": "1.25*retained filled initial risk +5 per open position; extra negative open-swap reserve unavailable and omitted (held swap already present in sampled floating).",
+    "projected": "min(sampled equity,balance-existingReserve)-1.25*candidateRisk-5",
+    "margin": "Gross per-symbol entry notional/leverage proxy; existing+proposed margin<=0.8*projected and proposed<=sampled free margin proxy. No hedging discount.",
+    "failure": "Hard observed sampled equity breach stops phase permanently; no liquidation. Existing positions retain source exits after guard soft-stop. Soft daily/buffer admission rejection is NOT failure.",
+    "target": "Phase1 balance>=11000;Phase2>=10500;>=4 distinct Prague entry-fill days per phase; no active positions; never native end-of-test liquidation."
+  },
+  "float_model": {
+    "source": "Single-EA native5-minute equity-minus-balance divided by uniquely owned native open volume.",
+    "ownership": "Strict source.open_epoch < mark_epoch < source.close_epoch; discard all source opening/closing epoch marks, duplicates and finalization marks; fail on nonzero unowned interior marks or nonfinite fields.",
+    "event_mark": "Latest mark at or before replay event belonging to SAME source position only. Initial floating=0 until first eligible mark; no future interpolation or backfill. Mark remains until later owned mark or source exit; stale age and zero-initial durations logged.",
+    "swap": "Native owned floating contains accrued source swap. Final swap booked at strategy close then position floating removed; no future final swap used for entry reserve.",
+    "unknowns": "No complete tick path, true broker margin, currentSL/request-cooldown execution, counterfactual entries after skipped source trades, or quote-level pre-request geometry.",
+    "staleness": "Latest-owned-past-mark carried without time limit, including closed-market weekends; all mark ages and counts over900seconds reported. No future backfill or cross-position mark reuse; zero before first owned mark explicitly flagged."
+  },
+  "costs": {
+    "base": "Actual raw entry costs at entry; recorded remaining commission/fee, gross and swap at original strategy close, scaled by replay lots. No future exit fee is split into entry.",
+    "stress": "Additional per-side execution cost:USTEC1price point,USDJPY0.01JPY,XAUUSD0.10USD, converted at side entry/exit quote; double negative recorded swap at exit, positive swap unchanged. Source exits unchanged; extra swap accrual between snapshots is not reconstructed."
+  },
+  "ordering": "Prague midnight reset; source exits before unrelated entries; owned mark updates; natural-flat target checks; scheduled phase2 activation; candidate ties use current FTMO manifest relative order (RSI,USDJPY,MonthEnd,Nasdaq). An own same-second opening precedes its exit. Three-second entry wait is a market-time proxy for live wall-clock reconciliation.",
+  "phases": {
+    "primary_handover": "Next Prague civil-date midnight after Phase1 pass.",
+    "two_business_day_wait": "Advance two weekdays after Phase1 local pass date; activate at midnight of that date; rerun subsequent path, not add waiting to prior result.",
+    "phase2": "Fresh10000 balance and all phase/day/account state, no position carry-over; same overall180-day deadline.",
+    "phase2_started": "Account activation before exclusive horizon, even with no trades; first fill separate.",
+    "qualification": "Both trading phases naturally flat-pass within horizon; optional access date=Phase2pass+5weekdays is arithmetic only, excluded from qualification.",
+    "statistics": "Phase1 median among Phase1passes; Phase2 median among Phase2passes after actual activation; total median among both-phase completions. No overall50% time if fewer than half all starts complete. No independent binomial CI: overlapping cohorts are dependent.",
+    "elapsed": "Inclusive Prague civil dates plus fractional elapsed24h and distinct entry days separately.",
+    "outcomes": "failed_phase1,failed_phase2,pending_phase1,pending_phase2,phase2_not_started_wait,horizon_completed_both; soft-buffer-blocked tagged separately, not hard-failed."
+  },
+  "sensitivity": "Additionally show Jan1,2026-and-later eligible-start subgroup from SAME paired trials; not a newly selected winner.",
+  "live_changes": false,
+  "optimization": false,
+  "native_simultaneous": false,
+  "probability_label": "Historical estimated replay completion fractions, NOT calibrated future FTMO pass probabilities.",
+  "source_hashes": {
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\PLAN.json": "aaaa65e6fee222f9c38d3da43d7c9c95bb7d1eec92753af3d23561539ee1b88b",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\RUN_STATUS.json": "fd5a92f072887b965116bf54a0889989de8c8b4b82e8ab0f4eeee7cbfee59be1",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\RISK_ROWS.json": "8b347559fce2d1d1e2f30a58262e9542a26147af6e85cde0250894392f3885a9",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_00 Live profiles\\Packages\\FTMO\\PACKAGE.json": "48b5ec012174d0baeaf134b3c3f495b2bcfbf465101400139b84ac99da368b1a",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_00 Live profiles\\Packages\\FTMO\\package\\CalyxFTMOGuard.mqh": "0378db52f0d3bde690808e007d9fcc6fdc69da2bf16692bd38f6aa2c362dcf5f",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Core3 vs Core4 Phase Timing 2026-10-16\\PLAN.json": "cf9a7dda2134acba218f34e15028accb2a813f03ceefb0e3e814de73bba742fe",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Core3 vs Core4 Phase Timing 2026-10-16\\INPUTS.json": "a0a4d61f0d8a3dda9f94ea7449221f05fec9fc0d680f16dfec6db057d81eca6d",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Core3 vs Core4 Phase Timing 2026-10-16\\SOURCE-COVERAGE.json": "a44112a99444863d5d54bc27b1fbc91a9007234390006d2ceb3a5f1f5ad8fc6e",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Core3 vs Core4 Phase Timing 2026-10-16\\FROZEN.json": "c38de468fa1a81a44b534310355161557e3e2830ab812125a9330c9e14e27cd2",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Core3 vs Core4 Phase Timing 2026-10-16\\run.py": "83c09daf588cc46206e32eb2950e5c09977ef352065e143feb4e39141a1bf63c",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Core3 vs Core4 Phase Timing 2026-10-16\\SUMMARY.json": "377685dcc5d94261e2bdc0f368df2abe80eaeb93f0621704d03facbca29e66cc",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Core3 vs Core4 Phase Timing 2026-10-16\\OUTCOMES.json": "12ccb89cc3be808a3855fb87e1353a32f9c2e9298bd2d0e51b97cde2128372ba",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Shared\\CalyxAdaptivePortfolio.mqh": "3adaecf62184cdf1568995c92da8e6e39a69bb6392bc8bce735e6f853daee06a",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq 5M DI ATR Deployment 2026-09-28\\EA\\DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq 5M DI ATR Deployment 2026-09-28\\EA\\Nasdaq 5M DI Wide ATR EA.ex5": "fe9f391db5af2bc3cb0b36e52ae5c0775786c8cb8353abe8b8b7542a2bc72dca",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq 5M DI ATR Deployment 2026-09-28\\EA\\Nasdaq 5M DI Wide ATR EA.mq5": "ac9b7eddfc3135ecd87b746888087fa0d41003aa25b400cccade31e6b5136ffa",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Nasdaq 5M DI ATR Deployment 2026-09-28\\EA\\SafeRegimeFilter.mqh": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set": "24911cd513b21077cf16d13058371d6998a706c7c8d090a8761fb80918db896a",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-nasdaq-5m-candle-momentum-long-0fba68cc8a1c\\results.json": "926692b58506aff78f99ef7f0684560a8521d1e88d38920fe281152591dcafcf",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-nasdaq-5m-candle-momentum-long-0fba68cc8a1c\\deals.csv": "979c8c59a516e2d8a9e2a1cea3fa1775677d3638892152058aea1ad843fd04e9",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-nasdaq-5m-candle-momentum-long-0fba68cc8a1c\\equity.csv": "676bda55a69abe8f0508036ad735e25def3dccc4da3f28d3e6f4461a351390cd",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-nasdaq-5m-candle-momentum-long-0fba68cc8a1c\\manifest.json": "a41e9915a945fcd3a8dbfc215fa4f027673a64cf6eb2447235a044d41c2b6669",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ADX DI Deployment 2026-10-03\\EA\\CalyxAdmission.mqh": "ca63c51e63571ea664b7540fa435a5d6f9725a3fb38eab16c2c5f9c3c93fa8de",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ADX DI Deployment 2026-10-03\\EA\\london\\Calyx London Open FX Momentum Pipeline EA.ex5": "c36eb37aa9638099d02e47fb3947e056fa7cd1bb713475f2ecf4931e2fccf1d2",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ADX DI Deployment 2026-10-03\\EA\\london\\Calyx London Open FX Momentum Pipeline EA.mq5": "01b41af84d48059b5043e8c9e464a937b2dcf08e43d8273a64ac6d72fdd08f31",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ADX DI Final Selection 2026-10-03\\Sets\\usdjpy-london-open-momentum.set": "7418e309d8fa0ab2f9a21975d2a5c38e8b0e82cfceb7aa66c79118888371344d",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-usdjpy-london-open-momentum-long-3d96bd694e93\\results.json": "714d3449501770ce83d6c170d5bc3d9f0aa5a182fba58dd9f2e1d927a1a08174",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-usdjpy-london-open-momentum-long-3d96bd694e93\\deals.csv": "455451b9f5cd047180706ca2fe1ad03781f21539bc65a2686a81bcb0ff1392c8",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-usdjpy-london-open-momentum-long-3d96bd694e93\\equity.csv": "160a867e942c8808019a543381c62d1f9aa143eb6f9389315a0810d74849ba4c",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-usdjpy-london-open-momentum-long-3d96bd694e93\\manifest.json": "d988df5ef45c99ccb0592388e8ba8481d917256d24f861b9539bd45254bee565",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Month End Institutional Flow Research 2026-09-06\\EA\\Calyx Month End Flow EA.ex5": "8148233c6ab4b36bd03256d0be3ad1b60e89ee861318ee990cc736a75990fa4b",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Month End Institutional Flow Research 2026-09-06\\EA\\Calyx Month End Flow EA.mq5": "a5e9ed1d46d16b3bb658828ef59577eb7e1372a5e3916c34e58dae7503bb4295",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\19 US100 Month End Flow M30 - FIRST3 NY - LOCKED 2P5R - HARD 1PCT.set": "0626fb536cd6383fa0f3c4f982a333cffd88ab4f23b1183c7936edf168a777a9",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-month-end-flow-long-3723b01f81aa\\results.json": "f93fba626fa84fa6ac1412d7a63fbdd0ab5c9384d4df39e28e6e5a817ee97019",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-month-end-flow-long-3723b01f81aa\\deals.csv": "4e724d5b0eba26ab85802848e1bee6d7f2529a50d20d47e638a0b455b4779e00",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-month-end-flow-long-3723b01f81aa\\equity.csv": "32508a46ef462e9ad3553e57f3943d2539efb1b485ef72827e1e40c11d802273",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-month-end-flow-long-3723b01f81aa\\manifest.json": "61c66a6f6e7f3cb5fc9105ebad6bd2cd632dfb710b2c0898227f50d73b1b6221",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\RSI VWAP Research 2026-09-02\\EA\\RSI VWAP Managed EA.ex5": "0a4eec4d2e7e143237bf3518ca166ccfe56e007347906d2b389d5e4aca104ab4",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\RSI VWAP Research 2026-09-02\\EA\\RSI VWAP Managed EA.mq5": "87de1238973cdcb7ed028508841139706ef4b939a22f3fea35ca3bea9d6f835c",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\13 XAU RSI VWAP - CURRENT - ALL DAY.set": "2f5efcbfdd7824be8fa0dd6d4b727c6b2ddf4239796ffde0a8988fca0468a0b0",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-rsi-vwap-long-791f4e00f0f5\\results.json": "4d9dc89e89b66c58a99d17390e6ee681a20625dc8defe5d86a8c701353a3b0cc",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-rsi-vwap-long-791f4e00f0f5\\deals.csv": "78a01d9f64e71d4ed6ff68125c99a090de421c22b2322a3ef3a6f563e2dbff45",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-rsi-vwap-long-791f4e00f0f5\\equity.csv": "ad59b64786fabe54998e65708a35bf22de672e5edf38f97cbb3afba57a2572cc",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-rsi-vwap-long-791f4e00f0f5\\manifest.json": "bf6586705942578f9974ee29c70d30e2cdcade1eca99a56c927858c86766a12e",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gold Overnight Value Area EA\\EA\\Gold Overnight Value Area EA.ex5": "7939971bbe0fba204ea7f08e5a1c95ac0c71675a3131d64f7b190124fd16063e",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gold Overnight Value Area EA\\EA\\Gold Overnight Value Area EA.mq5": "9f0f3d3dd9ecbed6095e2d70cd834f51d3a8a64dccf16c47444550679c8970d5",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\24 Gold Overnight Value Area - RAW - 1PCT.set": "64e66bb089621087866658f846799ecacaf85396d1604b5ea76a6bdbd7bf93d7",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-gold-overnight-value-area-long-f9042938fd27\\results.json": "07bb9d36ebbf5ee3e43cc6e6e8cd42f85cb3706e15ecded7f9b40d95a21cd2a5",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-gold-overnight-value-area-long-f9042938fd27\\deals.csv": "15a68df8b2c34dda21a0f1e169211e80c37c8d1f6dae3abfa7de1732a6495081",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-gold-overnight-value-area-long-f9042938fd27\\equity.csv": "606ff5f72e161b3736bf61004ae4d05445ed049013891bc57e3c587f3693948d",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-gold-overnight-value-area-long-f9042938fd27\\manifest.json": "4090b9b793ec42032c7cf3461c84a93fc0caa53dd926321cee0005505f3ef3cf",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\AAA Final EMA3 EA.ex5": "3d3d89360988e6a8c9cdee7fe277ad8e96ba11bf5f210cfd983c6fd80ddb481d",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\AAA Final EMA3 EA.mq5": "8cb426382f48f47acf5a5413dc88c28a7f00dd30947b69ae76db069a09da34e0",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\AAA_Final_Common.mqh": "89652f2750f68d1312705c88f46bd4ecacbd7d341cc55a9ae387d68c07fd4d37",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\AAA_Final_Strategy_Engine.mqh": "23f0bbc86d09e6cddf4083d6ff3e75579d36358663aa62d574b28f618d5b2027",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\AAA Final EAs\\AAA Final EMA3 EA\\SafeRegimeFilter.mqh": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ADX DI Final Selection 2026-10-03\\Sets\\ema3.set": "2e7c3a245f1a36f962b9eb367594ff78ea43bd7ff4d55b69f23d22e2250b75ca",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-ema3-long-824231b1376b\\results.json": "850ebe2647b32abddb2a6eb59d89bd4e5391144dc17964f11a63980f0f6b8484",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-ema3-long-824231b1376b\\deals.csv": "7fe0e720fa1b9714894a4586b9515513f685789c730c57ade2dc46dd69b1f542",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-ema3-long-824231b1376b\\equity.csv": "71e57050609526554491264d260dea95e59bced116a1537bd7f4b4614c8f2ef5",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-ema3-long-824231b1376b\\manifest.json": "fc277d2572ab84beff1aba3e5f33cd4b342870d382b09a3a386b0cbc9304ce6a",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ADX DI Final Selection 2026-10-03\\Sets\\xau-trend-progression.set": "c42979ec5c8d1be6d1c72fb84983effa7345008f8b5235d095155ccd3dc26899",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gold Targets Deployment 2026-10-02\\EA\\Trend Progression EA.ex5": "b727e8acfd7b0c7f8b5e62749e25cffc633f04f9e95dd2b6bf5aa3b658ba37b5",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gold Targets Deployment 2026-10-02\\EA\\Trend Progression EA.mq5": "4298a273f89d014dbded547d2c49a73e016220caa5c59c335217644b0cace00e",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-trend-progression-long-3ea55fd5bd70\\results.json": "c2aa5d1cbf8b00b9d17c81279ebebfff8873bcdbe82d7f28c17bfb58b9141f26",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-trend-progression-long-3ea55fd5bd70\\deals.csv": "31d76bb8f1c9ce99fbbfbd808ea6190124c27368d5dda7b0fedd03c7bb65d7b8",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-trend-progression-long-3ea55fd5bd70\\equity.csv": "7310865772eab8d2f593297a4efc54b6d046ba48ee05d915e58d95ef1bfddd88",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-trend-progression-long-3ea55fd5bd70\\manifest.json": "8e8f00b2443b749a56e6a580f0c3c797f9216426c76519abfcca7d3e9daed775",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_00 Live profiles\\ORB05 Sets\\us100-h1-orb-13utc.set": "92253ab093154ee8cb16d3c9d9d3f2a028042b7c103142db28e9cfa9b98a8df4",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Shared\\CalyxORBComments.mqh": "669fb48a3d800b8ad68ac0faa9e0355a157c2ac871b9895e6729982c42828055",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\DynamicTrailingSessionFilter.mqh": "54498db20170407002472b8f390ae3b4547df6096864b490a41e558f4d222d78",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\ORB Volume Data EA.ex5": "67ee6976b45e2e1d1f034729c2edcb3a9e2fcdf1355c988fad1bf54e7ef319b9",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\ORB Volume Data EA.mq5": "773770ae0cabce378436e889a096cc42cd33df7fc6149aecdbee3b245f2699d8",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\SafeRegimeFilter.mqh": "83e11a48b83821652466b7dc15de54e41b3787645eab5d2f4e57b3bc4e139b72",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-h1-orb-13utc-long-3713bc25f397\\results.json": "cc4cb72dfa3831bfa08b5a8515d90677145809cbe9261f3541832f9d2440dcd7",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-h1-orb-13utc-long-3713bc25f397\\deals.csv": "4b2c91f3d2f8d9678819ee4ebffb8a7396db10bb8425c368832a0fa5a249fe5e",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-h1-orb-13utc-long-3713bc25f397\\equity.csv": "c3114fe02c4395c1feb427aaf8ebf6ee2ead8e5000b750eb6386c68e41bea2fd",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-h1-orb-13utc-long-3713bc25f397\\manifest.json": "9108d89f6d8f9e279aea3215899e970017db6489f145dd3a3df8cfbbee2e2bfb",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_00 Live profiles\\ORB05 Sets\\us100-orb-new-york-m30.set": "66ee97226d6c3b6456862c3b020cba9340d50186de6da9b4b42812694006dcd9",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\native\\allrr05-us100-orb-new-york-m30-long-a5fa8253d80f\\results.json": "35c37aac7b2c90dcf4c16bee541ef87cfc9e2a067f91313d6db4020b2de6b7a0",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\native\\allrr05-us100-orb-new-york-m30-long-a5fa8253d80f\\deals.csv": "0ddff3098f95a482ad3e79328a81fd5fcdb19e1cfc7caab4f4e0119855ac2e79",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\native\\allrr05-us100-orb-new-york-m30-long-a5fa8253d80f\\equity.csv": "9a75756a0650edbc254666189f96d4c81d1a90b69899dce5fcb674227595fae9",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\native\\allrr05-us100-orb-new-york-m30-long-a5fa8253d80f\\manifest.json": "85763af8810c7542ca87c309e872835e56395b5577468423f28941619128c8a2",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_00 Live profiles\\ORB05 Sets\\us100-selective-orb-v3.set": "4273af196ac6e989aff210a816a713de01f105a5ab38cfa5d1e4b8e978f8efd4",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US100 Selective ORB Research 2026-08-21\\EA\\US100 Selective ORB Retest EA.ex5": "ca4bb88376dea81160d6090bb65b7946d9f2e170f3327f7f68019e3a32cdf280",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US100 Selective ORB Research 2026-08-21\\EA\\US100 Selective ORB Retest EA.mq5": "7c77c0c1e1a947812785d5300c6ddd24dbf3a65deccf0159703b32697e6cdc11",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\native\\allrr05-us100-selective-orb-v3-long-f75e8253b1f7\\results.json": "0efb59bc9a229b1ecf60c72ea9f41dd83195d0718cfd34e7659bf45f342d315c",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\native\\allrr05-us100-selective-orb-v3-long-f75e8253b1f7\\deals.csv": "60ee6216044342992c810dd43354450f550fabb651099dd98dba15805dc6a791",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\native\\allrr05-us100-selective-orb-v3-long-f75e8253b1f7\\equity.csv": "e210d78cfbfdaab8a77f6fdaa4275c4de2ff2d54e5862e7cd17f20d1f6fda381",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\native\\allrr05-us100-selective-orb-v3-long-f75e8253b1f7\\manifest.json": "5ddfb8cd29a7b5fc72108002f7345e4b1dc6bff0458abc09b419a58c5fdc088f",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_00 Live profiles\\ORB05 Sets\\xau-orb-new-york-m30.set": "629fa9732ec7cace49bcbb3bc1765ef7f9c7aec95f40944d10f9a750b70333e7",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-orb-new-york-m30-long-b31e79e1ca2b\\results.json": "34780678882f8332a7ac0ed29ddb483319b6d29f208402dbd11e78bc9ddf5a5b",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-orb-new-york-m30-long-b31e79e1ca2b\\deals.csv": "46be268582b0e4109cda7ea9050203eb50e6789d9d12c322a54c83251dc63bca",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-orb-new-york-m30-long-b31e79e1ca2b\\equity.csv": "291b3962fdd574d3556cb022ae629cba7269771203d225f013119f5c42e9046e",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-orb-new-york-m30-long-b31e79e1ca2b\\manifest.json": "f6b595ec5fb7af2e24021ab3ea318539ee35219b6cf7d4f9386c90faf1ad8675",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_00 Live profiles\\ORB05 Sets\\xau-orb-london-ny-overlap-m30.set": "32ea5b524b15dbf0026cbf48537df7dd55f5d1f56ca363361b626002e29d6811",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-orb-london-ny-overlap-m30-long-b2f66d090bda\\results.json": "26d6814b2162ab1a54cac89477c06b2726415f521f403f24926952b9051ef560",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-orb-london-ny-overlap-m30-long-b2f66d090bda\\deals.csv": "9a77bc3039476a67738fdbd13e51c978281021f997b724c4408a0e3a17ad8df5",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-orb-london-ny-overlap-m30-long-b2f66d090bda\\equity.csv": "91416f5ac502f8c1e33a593d6d27a148edce84385c3eebca035395657ccd13a4",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-orb-london-ny-overlap-m30-long-b2f66d090bda\\manifest.json": "d952b567948b3c41f1b91fc38242c9528aa46b2937528b0bea4c2cc874864ac1"
+  },
+  "candidate_priority": [
+    "xau-rsi-vwap",
+    "gold-overnight-value-area",
+    "ema3",
+    "xau-trend-progression",
+    "xau-orb-london-ny-overlap-m30",
+    "us100-h1-orb-13utc",
+    "usdjpy-london-open-momentum",
+    "us100-month-end-flow",
+    "nasdaq-5m-candle-momentum",
+    "us100-orb-new-york-m30",
+    "us100-selective-orb-v3",
+    "xau-orb-new-york-m30"
+  ],
+  "baseline_baskets": [
+    "CORE4",
+    "CORE3"
+  ],
+  "event_sources": "For each basket use baselineCore4 plus added member sources; removed baseline members retain only the original observation clock. Inactive source opens call unchanged observer but cannot open positions. This exactly preserves priorCore3/Core4 controls; no financial-state interpolation.",
+  "selection": {
+    "historical_only": true,
+    "retrospective_selection": true,
+    "no_forward_probability_claim": true,
+    "total_unique_baskets": 12,
+    "no_post_result_expansion": true,
+    "eligibility": "In EVERY four predefined cost/handover scenarios require both completed>=101/134 AND Jan2026-plus completed>=54/71.",
+    "main_minimum_completed": 101,
+    "main_starts": 134,
+    "jan_minimum_completed": 54,
+    "jan_starts": 71,
+    "rank_order": [
+      "worst_across_four_all_start_time_to_50pct_ascending",
+      "worst_across_four_conditional_total_median_ascending",
+      "fewer_eas",
+      "stable_basket_id_ascending"
+    ],
+    "no_eligible_result": "Report no configuration meets all frozen criteria; do not relax thresholds or add combinations.",
+    "tied_ablation": "CORE3 is also Core4 minusRSI; this duplicate is not rerun as a separate candidate.",
+    "excluded_optional_reference": "CurrentFTMO16 reference prospectively omitted byroot; full17 unsupported due3WayGold partial/overlapping lifecycles. No performance-based exclusion.",
+    "roster_authority": "Root approved exact12basket menu before outcomes; risk,DI,exits,guard,horizon not optimized."
+  },
+  "sizing_model": "All12sourceEAs verified full equity-percent request with upward lot normalization. GoldVA riskmode0; Selective fixedmoney0; EMA3 grid input inactive. Guard still floors cap50; archived filled-stop-risk geometry proxy retained.",
+  "comparison": {
+    "previous_study": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Core3 vs Core4 Phase Timing 2026-10-16",
+    "previous_summary_sha256": "377685dcc5d94261e2bdc0f368df2abe80eaeb93f0621704d03facbca29e66cc",
+    "previous_outcomes_sha256": "12ccb89cc3be808a3855fb87e1353a32f9c2e9298bd2d0e51b97cde2128372ba",
+    "baseline_parity_required": true,
+    "math_engine_sha256": "83c09daf588cc46206e32eb2950e5c09977ef352065e143feb4e39141a1bf63c"
+  }
+}

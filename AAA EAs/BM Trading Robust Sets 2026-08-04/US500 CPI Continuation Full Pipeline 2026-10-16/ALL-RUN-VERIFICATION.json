@@ -1,0 +1,2386 @@
+{
+  "generated_at_utc": "2026-10-16T15:55:45.283700+00:00",
+  "passed": true,
+  "scope": "All RUNS rows verified using read-only audit.enrich_and_verify plus protocol tests and independent coverage/hash/trial-count checks. Local accounting/causality consistency, not independent quote authenticity or strategy approval.",
+  "all_stages": 18,
+  "all_rows": 51,
+  "unique_native_rows": 51,
+  "total_checks": 15750,
+  "successful_rows": 51,
+  "protocol": {
+    "passed": true,
+    "expected_tests": 13,
+    "skips": 0,
+    "returncode": 0,
+    "output": "test_builder_baseline_order_and_parameter_bounds (__main__.PipelineProtocolTests.test_builder_baseline_order_and_parameter_bounds) ... ok\ntest_calendar_exact_unique_cpi_new_york_clock (__main__.PipelineProtocolTests.test_calendar_exact_unique_cpi_new_york_clock) ... ok\ntest_engine_is_tester_only_causal_and_matches_baseline_mechanics (__main__.PipelineProtocolTests.test_engine_is_tester_only_causal_and_matches_baseline_mechanics) ... ok\ntest_every_hypothetical_ofaat_path_respects_main_search_cap (__main__.PipelineProtocolTests.test_every_hypothetical_ofaat_path_respects_main_search_cap) ... ok\ntest_exact_two_year_split_and_preceding_validation (__main__.PipelineProtocolTests.test_exact_two_year_split_and_preceding_validation) ... ok\ntest_final_freeze_files_and_holdout_start_when_available (__main__.PipelineProtocolTests.test_final_freeze_files_and_holdout_start_when_available) ... ok\ntest_persisted_selection_lock_precedes_all_final_evaluation (__main__.PipelineProtocolTests.test_persisted_selection_lock_precedes_all_final_evaluation) ... ok\ntest_preregistration_file_hashes_are_unchanged (__main__.PipelineProtocolTests.test_preregistration_file_hashes_are_unchanged) ... ok\ntest_raw_gates_cannot_consume_validation_or_oos (__main__.PipelineProtocolTests.test_raw_gates_cannot_consume_validation_or_oos) ... ok\ntest_scope_and_fixed_risk (__main__.PipelineProtocolTests.test_scope_and_fixed_risk) ... ok\ntest_score_has_no_holdout_or_file_access (__main__.PipelineProtocolTests.test_score_has_no_holdout_or_file_access) ... ok\ntest_search_only_three_axes_and_fixed_signal_details (__main__.PipelineProtocolTests.test_search_only_three_axes_and_fixed_signal_details) ... ok\ntest_walk_forward_nine_case_grid_and_honest_chronology (__main__.PipelineProtocolTests.test_walk_forward_nine_case_grid_and_honest_chronology) ... ok\n\n----------------------------------------------------------------------\nRan 13 tests in 0.048s\n\nOK\n"
+  },
+  "unique_main_development_parameter_configurations": 18,
+  "maximum_main_unique_configurations": 20,
+  "unique_training_parameter_configurations": 22,
+  "recorded_training_evaluations": 36,
+  "walk_forward": {
+    "wf-train-0": {
+      "rows": 9,
+      "unique_parameter_configurations": 9,
+      "start": "2020-01-01",
+      "end_exclusive": "2022-01-01",
+      "next_test_start": "2022-01-01"
+    },
+    "wf-train-1": {
+      "rows": 9,
+      "unique_parameter_configurations": 9,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-01-01",
+      "next_test_start": "2023-01-01"
+    }
+  },
+  "duplicates": [],
+  "preregistration_hashes": {
+    "config.json": true,
+    "calendar.json": true,
+    "DATA-SPLIT.json": true,
+    "SEARCH-PLAN.json": true,
+    "engine.mq5": true,
+    "build_engine.py": true,
+    "search_plan.py": true
+  },
+  "final_frozen_hashes": {
+    "engine.mq5": true,
+    "build_engine.py": true,
+    "config.json": true,
+    "calendar.json": true,
+    "DATA-SPLIT.json": true,
+    "SEARCH-PLAN.json": true,
+    "SELECTION.json": true,
+    "trials.json": true
+  },
+  "frozen_evidence": {
+    "all_frozen_hashes_match": true,
+    "files": {
+      "engine.mq5": true,
+      "build_engine.py": true,
+      "config.json": true,
+      "calendar.json": true,
+      "DATA-SPLIT.json": true,
+      "SEARCH-PLAN.json": true,
+      "SELECTION.json": true,
+      "trials.json": true
+    },
+    "all_search_windows_end_before_oos": true,
+    "tester_only_source_guard": true,
+    "fixed_positive_entry_quote_policy": true,
+    "source_sha256": "14484f04b1dadcbe95b09e434081bad3ec70ca0c5dbd4d4dc0a6a92dc7ef00e7",
+    "frozen_at_utc": "2026-10-16T15:51:29.900405+00:00"
+  },
+  "holdout_launch_order": {
+    "frozen_at_utc": "2026-10-16T15:51:29.900405+00:00",
+    "selected_holdout_launches": [
+      {
+        "stage": "holdout-b0",
+        "available": true,
+        "owned_process_receipt": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\owned-process.json",
+        "receipt_sha256": "e916898c8720ec5a8db47cc0e8ba9ddf9817588902f3969e322f71921b481f44",
+        "started_utc": "2026-10-16T15:51:32.571901+00:00",
+        "freeze_precedes_launch": true
+      }
+    ],
+    "freeze_precedes_selected_holdout": true,
+    "interpretation": "Source hashes plus owned-process timestamps prove ordering of this replay, not genuinely untouched historical data"
+  },
+  "RUNS_unchanged_during_review": true,
+  "RUNS_sha256": "cea5d79ab0c60f317e49c173005323dc3e9180df074d730f8d2754a68d972fd9",
+  "audit_module_sha256_at_import": "7c463266cd5ab926db0be7b05c76bfaeb05349ccde17b5c9ff0c2ee59be54f66",
+  "audit_module_sha256_at_end": "7c463266cd5ab926db0be7b05c76bfaeb05349ccde17b5c9ff0c2ee59be54f66",
+  "audit_module_changed_during_review": false,
+  "stages": {
+    "parity": {
+      "rows": 1,
+      "checks": 810,
+      "passed": true
+    },
+    "raw-3y": {
+      "rows": 1,
+      "checks": 402,
+      "passed": true
+    },
+    "dev-baseline": {
+      "rows": 1,
+      "checks": 402,
+      "passed": true
+    },
+    "dev-target": {
+      "rows": 3,
+      "checks": 1206,
+      "passed": true
+    },
+    "dev-hold": {
+      "rows": 2,
+      "checks": 804,
+      "passed": true
+    },
+    "dev-impulse": {
+      "rows": 2,
+      "checks": 804,
+      "passed": true
+    },
+    "dev-neighbours-0": {
+      "rows": 6,
+      "checks": 2412,
+      "passed": true
+    },
+    "dev-neighbours-1": {
+      "rows": 4,
+      "checks": 1608,
+      "passed": true
+    },
+    "wf-train-0": {
+      "rows": 9,
+      "checks": 810,
+      "passed": true
+    },
+    "wf-test-0": {
+      "rows": 2,
+      "checks": 420,
+      "passed": true
+    },
+    "wf-train-1": {
+      "rows": 9,
+      "checks": 2538,
+      "passed": true
+    },
+    "wf-test-1": {
+      "rows": 2,
+      "checks": 276,
+      "passed": true
+    },
+    "validation": {
+      "rows": 2,
+      "checks": 420,
+      "passed": true
+    },
+    "holdout": {
+      "rows": 2,
+      "checks": 468,
+      "passed": true
+    },
+    "full": {
+      "rows": 2,
+      "checks": 1620,
+      "passed": true
+    },
+    "delay-500": {
+      "rows": 1,
+      "checks": 234,
+      "passed": true
+    },
+    "delay-1000": {
+      "rows": 1,
+      "checks": 234,
+      "passed": true
+    },
+    "generated-diagnostic": {
+      "rows": 1,
+      "checks": 282,
+      "passed": true
+    }
+  },
+  "rows": [
+    {
+      "alias": "parity",
+      "stage": "parity-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2026-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 810,
+      "trades": 33,
+      "scheduled_events": 81,
+      "logged_events": 81,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\parity-b0\\0-deals.csv.gz",
+          "sha256": "57983d2ead63706e79c1c0bcf0554e8c3c71bfcf7ebcc0cf0085e7fd7f075e8b"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\parity-b0\\0-decisions.csv.gz",
+          "sha256": "979b20690146d6776d87cff1c2edbed99d153b84911eb1beca88bd243658d401"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\parity-b0\\0-quotes.csv.gz",
+          "sha256": "8c4e08629dbfdeed7cb575e546089661ecbefd8f467705fdafb55ede882e6a07"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\parity-b0\\0-equity.csv.gz",
+          "sha256": "560a1ab06fa72f86c9935aa27c3a3e80a842a6ba3759e0a7f82c4b125d79806a"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\parity-b0\\0-stats.csv.gz",
+          "sha256": "33ce87658fbdf5358c53e2166ef18b5c6488626ef8af76760b2ef32352808148"
+        }
+      }
+    },
+    {
+      "alias": "raw-3y",
+      "stage": "raw-3y-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-10-16",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 36,
+      "logged_events": 36,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\raw-3y-b0\\0-deals.csv.gz",
+          "sha256": "ca2954213f0151f364530b1f18e50c6c9c88fbaf0510148456db63fac67ffaf8"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\raw-3y-b0\\0-decisions.csv.gz",
+          "sha256": "104eae1a1901447302e7d24bf79bc0f390f07761f559728ee627a9940754ca3c"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\raw-3y-b0\\0-quotes.csv.gz",
+          "sha256": "debc774f8dfe695e194189ca18c62b4495569ad6dde4233113f266eeaedc202f"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\raw-3y-b0\\0-equity.csv.gz",
+          "sha256": "5ac343f35765f89ac0eb7299769da4d195142da1524aad9d88d4467213300d22"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\raw-3y-b0\\0-stats.csv.gz",
+          "sha256": "452508779c900aaac79aaa933b8a061c622bb11175b5fd2db507a2215acebbae"
+        }
+      }
+    },
+    {
+      "alias": "dev-baseline",
+      "stage": "dev-baseline-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-baseline-b0\\0-deals.csv.gz",
+          "sha256": "ca2954213f0151f364530b1f18e50c6c9c88fbaf0510148456db63fac67ffaf8"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-baseline-b0\\0-decisions.csv.gz",
+          "sha256": "784743be7bde6e1c0d9326ead5c77e02bf977a5b90ed30d8e08dc36b9e793601"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-baseline-b0\\0-quotes.csv.gz",
+          "sha256": "debc774f8dfe695e194189ca18c62b4495569ad6dde4233113f266eeaedc202f"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-baseline-b0\\0-equity.csv.gz",
+          "sha256": "4020c77942fff9dca37bd98d1dd3e25e0eaf98f6e2fb8b680d51551db3d21d6e"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-baseline-b0\\0-stats.csv.gz",
+          "sha256": "eb62cab4b81d0692948414a5c2050287fd96016d173240da3ce2a5f695c120e4"
+        }
+      }
+    },
+    {
+      "alias": "dev-target",
+      "stage": "dev-target-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 0.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b0\\0-deals.csv.gz",
+          "sha256": "dd8da8777c953796bd6520d594efc7abeebc69dec578552c8b043c334a63c0d3"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b0\\0-decisions.csv.gz",
+          "sha256": "73093b5b004a04a7b0664035012e2e6d08696611e293acaddc8a6b17b761d5c2"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b0\\0-quotes.csv.gz",
+          "sha256": "da6e8a76b785d469d260f05b8776fa57dea1b776f321c507886c731e92f1986b"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b0\\0-equity.csv.gz",
+          "sha256": "09e1033ed852458e89b382b760c15039ea199466c7658e58064f6f4d448ad248"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b0\\0-stats.csv.gz",
+          "sha256": "67afdc4e2fd1c40c9bbd2486bf10412aa5fde90610647aa5d32ad6d424ac39a2"
+        }
+      }
+    },
+    {
+      "alias": "dev-target",
+      "stage": "dev-target-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.0,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b0\\1-deals.csv.gz",
+          "sha256": "1f1ce1c0f1c936652df8b5f7c832d40d419aff7335e749898d77a6c34d5da4e8"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b0\\1-decisions.csv.gz",
+          "sha256": "964ac4e07d08cebd449ee8d28bad5c7a66903719b8b5cd7419c6329f9465b5c9"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b0\\1-quotes.csv.gz",
+          "sha256": "d18817b83756b4caf55f96e2480c469348fb31e801754176f70f05fa8d9d5e87"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b0\\1-equity.csv.gz",
+          "sha256": "71a9852df23ab83af78463378c6ed136426d2678f4bebe42bc021afd4bb0aa23"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b0\\1-stats.csv.gz",
+          "sha256": "a870a1b9379d19e7ef875ff5e53db73fb94a3385855241d25fdbc166a34db957"
+        }
+      }
+    },
+    {
+      "alias": "dev-target",
+      "stage": "dev-target-b1",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 2.0,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b1\\0-deals.csv.gz",
+          "sha256": "14d066d239ba8953b1ad396963d279260d631eafce14a9cf1a1b32d5a487ddad"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b1\\0-decisions.csv.gz",
+          "sha256": "873cadaae3cbcfc11d1f5e00b1e5f13f4a75d6d0601371c0a125f055e22cc805"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b1\\0-quotes.csv.gz",
+          "sha256": "605e89db17ca05b7e1dc9aebb2f5541b67b31536aabd5ffc720dd4e4de36d9bd"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b1\\0-equity.csv.gz",
+          "sha256": "2d3bd9fe335e8661314d785e04ae85e32948e531ea844f9c1b3e7ea2806c8c2d"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-target-b1\\0-stats.csv.gz",
+          "sha256": "50fb6b652a4d59b7861f69acf15b3ff15afe3708a5d7c03c0f4c2b9a70ebe5d2"
+        }
+      }
+    },
+    {
+      "alias": "dev-hold",
+      "stage": "dev-hold-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 5,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-hold-b0\\0-deals.csv.gz",
+          "sha256": "3c5f2b7f492351e6ecac90161f414d26705c6c5080342a3eb74c9b336786c55a"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-hold-b0\\0-decisions.csv.gz",
+          "sha256": "bf919b30019190e227de62df1450d7dcdd528df672e5ffdd3bfb975d62a7b086"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-hold-b0\\0-quotes.csv.gz",
+          "sha256": "a4082d45189931d180386fa0de186e82c8218069789b39588abd9444e46f00df"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-hold-b0\\0-equity.csv.gz",
+          "sha256": "31135c713d43b3dc91abd1340d909826b4ae71e10f7dd93252c80fadc55d43a9"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-hold-b0\\0-stats.csv.gz",
+          "sha256": "dbd50e96a2ba9800434e4ed4e9f6b10facfdc52fc1a133f8c263926e1a3d384a"
+        }
+      }
+    },
+    {
+      "alias": "dev-hold",
+      "stage": "dev-hold-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-hold-b0\\1-deals.csv.gz",
+          "sha256": "abed85db4e04b4ef2d052cb83067116fbc34de7933e8182b0a59ee1a95dd097e"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-hold-b0\\1-decisions.csv.gz",
+          "sha256": "691dea7d0155557c52d1f885cc3dfb67e4c379eda45671c8d7594c8f6e504682"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-hold-b0\\1-quotes.csv.gz",
+          "sha256": "c24a321c37104c9f3fa24e82befe52c6230b9bb8f35a1f5c60a85744e4496b45"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-hold-b0\\1-equity.csv.gz",
+          "sha256": "eae394a40f3c9b91cc6866d878a952319fae1bd4fde1d5a88592449eb286b0fa"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-hold-b0\\1-stats.csv.gz",
+          "sha256": "4cc1b41d48997a17e3f821082d5936dbc5121298e0703c9d386c66f61f59195a"
+        }
+      }
+    },
+    {
+      "alias": "dev-impulse",
+      "stage": "dev-impulse-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 0.75,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-impulse-b0\\0-deals.csv.gz",
+          "sha256": "abed85db4e04b4ef2d052cb83067116fbc34de7933e8182b0a59ee1a95dd097e"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-impulse-b0\\0-decisions.csv.gz",
+          "sha256": "2fab3e0feff0d840d96bfd10f8e3bfc8f8becd809421801fe007f748efa89a4c"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-impulse-b0\\0-quotes.csv.gz",
+          "sha256": "c24a321c37104c9f3fa24e82befe52c6230b9bb8f35a1f5c60a85744e4496b45"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-impulse-b0\\0-equity.csv.gz",
+          "sha256": "eae394a40f3c9b91cc6866d878a952319fae1bd4fde1d5a88592449eb286b0fa"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-impulse-b0\\0-stats.csv.gz",
+          "sha256": "4cc1b41d48997a17e3f821082d5936dbc5121298e0703c9d386c66f61f59195a"
+        }
+      }
+    },
+    {
+      "alias": "dev-impulse",
+      "stage": "dev-impulse-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.25,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-impulse-b0\\1-deals.csv.gz",
+          "sha256": "abed85db4e04b4ef2d052cb83067116fbc34de7933e8182b0a59ee1a95dd097e"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-impulse-b0\\1-decisions.csv.gz",
+          "sha256": "ef7fa19bfa25508d9ed48b6050dc7f2156d6c5f3de683837618ad1b93e266416"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-impulse-b0\\1-quotes.csv.gz",
+          "sha256": "c24a321c37104c9f3fa24e82befe52c6230b9bb8f35a1f5c60a85744e4496b45"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-impulse-b0\\1-equity.csv.gz",
+          "sha256": "eae394a40f3c9b91cc6866d878a952319fae1bd4fde1d5a88592449eb286b0fa"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-impulse-b0\\1-stats.csv.gz",
+          "sha256": "4cc1b41d48997a17e3f821082d5936dbc5121298e0703c9d386c66f61f59195a"
+        }
+      }
+    },
+    {
+      "alias": "dev-neighbours-0",
+      "stage": "dev-neighbours-0-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.25,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b0\\0-deals.csv.gz",
+          "sha256": "05f480bb6d5a381a982804a6de5ef82553ce8023810f8f6a5e302b81d92686a7"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b0\\0-decisions.csv.gz",
+          "sha256": "0aec1a5ca5d9ac25ee0c12d3b3700a3125cd31f74ecefd80e6e2a030b3e677e0"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b0\\0-quotes.csv.gz",
+          "sha256": "7f7dbc325c9480c79df28272ce367747b5275503c95e16f151143122653089fd"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b0\\0-equity.csv.gz",
+          "sha256": "1e6cd8dafffa7ad5f45e4abb7a75c9f9bad538a709513155e3667349abaf6fa9"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b0\\0-stats.csv.gz",
+          "sha256": "2bcf720980a3f2f635b565fc5174dc704d82ae3ee4964af8305bd4d079d70be2"
+        }
+      }
+    },
+    {
+      "alias": "dev-neighbours-0",
+      "stage": "dev-neighbours-0-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.75,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b0\\1-deals.csv.gz",
+          "sha256": "eb65cefd768815ed0d2879bd12ad78ee707c8d73a8428845c7aefe12a607ac88"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b0\\1-decisions.csv.gz",
+          "sha256": "fcdb9c4cd659bcdca43a47fbcf605bd72a8a80cba6dd50c4563396f297003f37"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b0\\1-quotes.csv.gz",
+          "sha256": "605e89db17ca05b7e1dc9aebb2f5541b67b31536aabd5ffc720dd4e4de36d9bd"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b0\\1-equity.csv.gz",
+          "sha256": "2d3bd9fe335e8661314d785e04ae85e32948e531ea844f9c1b3e7ea2806c8c2d"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b0\\1-stats.csv.gz",
+          "sha256": "50fb6b652a4d59b7861f69acf15b3ff15afe3708a5d7c03c0f4c2b9a70ebe5d2"
+        }
+      }
+    },
+    {
+      "alias": "dev-neighbours-0",
+      "stage": "dev-neighbours-0-b1",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 10,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b1\\0-deals.csv.gz",
+          "sha256": "ff5afbc7404b014bfdd083837727c587a537a80df6396a6f3257f4f0d531da16"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b1\\0-decisions.csv.gz",
+          "sha256": "b117e812ef066b92b8592ba6a0217d4002501de5b71fcc76c9ce138fc641f6f9"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b1\\0-quotes.csv.gz",
+          "sha256": "83f206fb955524c06a687eddfd1ce2a806b12b31608a41dec39dce9e66b72d7e"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b1\\0-equity.csv.gz",
+          "sha256": "fcede2b51018f34a6e7fc138bce5844c52f405804fd5838073c707e528c8d131"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b1\\0-stats.csv.gz",
+          "sha256": "c15183987e4a2f0d915415017cd45d3d5a4815dc6bd0b9fad016f2eb05485944"
+        }
+      }
+    },
+    {
+      "alias": "dev-neighbours-0",
+      "stage": "dev-neighbours-0-b1",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 20,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b1\\1-deals.csv.gz",
+          "sha256": "1b8565ff29be22ea6a51c4ee6ba3e66a8f208d423e3aa3574a940794584a5fc0"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b1\\1-decisions.csv.gz",
+          "sha256": "eed4b28a81bf983f7a72fa45455bfad0732d601e5c83af98c28998d908c7573b"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b1\\1-quotes.csv.gz",
+          "sha256": "da36e4350a6a46fb054dd21efd43a9f343699286f9c5fa78bbf1b87a3e7ea766"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b1\\1-equity.csv.gz",
+          "sha256": "837a76885d77a643fed4ef67e933e417338d41572a3b23c4efafa0a652964bc2"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b1\\1-stats.csv.gz",
+          "sha256": "7f15223491df9845cf58c8c3424513c32f7b8a216772aa764e779cd44af37d1f"
+        }
+      }
+    },
+    {
+      "alias": "dev-neighbours-0",
+      "stage": "dev-neighbours-0-b2",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 0.75,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b2\\0-deals.csv.gz",
+          "sha256": "ca2954213f0151f364530b1f18e50c6c9c88fbaf0510148456db63fac67ffaf8"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b2\\0-decisions.csv.gz",
+          "sha256": "30b57e739d6713c0f62151b0e5eb443e6cdd1500ab16a40f0ff9cba12a52d2e3"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b2\\0-quotes.csv.gz",
+          "sha256": "debc774f8dfe695e194189ca18c62b4495569ad6dde4233113f266eeaedc202f"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b2\\0-equity.csv.gz",
+          "sha256": "4020c77942fff9dca37bd98d1dd3e25e0eaf98f6e2fb8b680d51551db3d21d6e"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b2\\0-stats.csv.gz",
+          "sha256": "eb62cab4b81d0692948414a5c2050287fd96016d173240da3ce2a5f695c120e4"
+        }
+      }
+    },
+    {
+      "alias": "dev-neighbours-0",
+      "stage": "dev-neighbours-0-b2",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.25,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b2\\1-deals.csv.gz",
+          "sha256": "ca2954213f0151f364530b1f18e50c6c9c88fbaf0510148456db63fac67ffaf8"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b2\\1-decisions.csv.gz",
+          "sha256": "34c9368ae7518f3593af154cb0a4e404a0ec123f1eca0807abc57204c3bf51e8"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b2\\1-quotes.csv.gz",
+          "sha256": "debc774f8dfe695e194189ca18c62b4495569ad6dde4233113f266eeaedc202f"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b2\\1-equity.csv.gz",
+          "sha256": "4020c77942fff9dca37bd98d1dd3e25e0eaf98f6e2fb8b680d51551db3d21d6e"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-0-b2\\1-stats.csv.gz",
+          "sha256": "eb62cab4b81d0692948414a5c2050287fd96016d173240da3ce2a5f695c120e4"
+        }
+      }
+    },
+    {
+      "alias": "dev-neighbours-1",
+      "stage": "dev-neighbours-1-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.25,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b0\\0-deals.csv.gz",
+          "sha256": "f4840c7614e2431fb431924836d06eb7f8fede43c7a5305a7daa96c17cf70aec"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b0\\0-decisions.csv.gz",
+          "sha256": "f0fd5f036c3358a424bd5c20056820f8e4a87b2ea05dcb8fb96adfca0a468923"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b0\\0-quotes.csv.gz",
+          "sha256": "8781654561826feaa75b01fa0210e3f285bb127fa221739232181efe6cd00a60"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b0\\0-equity.csv.gz",
+          "sha256": "20c02dfb0aa917953780d2de87d73056360ed2bd7bcefb33a1afa3eb34d72d88"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b0\\0-stats.csv.gz",
+          "sha256": "b5a5a9563b4a93d238103321384d55d64795c977d922552947559354a611c4f7"
+        }
+      }
+    },
+    {
+      "alias": "dev-neighbours-1",
+      "stage": "dev-neighbours-1-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.75,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b0\\1-deals.csv.gz",
+          "sha256": "ed7e6edd2682c3000184b27da54ab4508d64f3aec239a285533be0603df8bd4a"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b0\\1-decisions.csv.gz",
+          "sha256": "b3e4bafb37f0d3fc64dff07bd0979df79a9d0da93af630bbf2b7ddbc2a6f2905"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b0\\1-quotes.csv.gz",
+          "sha256": "d8ec69a41e6c02c1a010eba929e49fb19f40ab064e09acbbf58ae0ea71159468"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b0\\1-equity.csv.gz",
+          "sha256": "c05c2d0ca7f7b7ba2832e066325ced3275009ae590583486a1ae22a62f25206c"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b0\\1-stats.csv.gz",
+          "sha256": "4c73d6a2673f8abed9b2ba680112903156c93239f69a327533bb71358a50d283"
+        }
+      }
+    },
+    {
+      "alias": "dev-neighbours-1",
+      "stage": "dev-neighbours-1-b1",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 25,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b1\\0-deals.csv.gz",
+          "sha256": "de7bb1b71508716527be1b63d3742a52890008fc4e99ff28ac5dfb5835a5af58"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b1\\0-decisions.csv.gz",
+          "sha256": "a97dd9142a8fc6fe18c1702cd03496c269077f2c04aec61346e93f0fc78ef1ea"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b1\\0-quotes.csv.gz",
+          "sha256": "b3a6142f3d38955c8d661875f9ea1bd80ec2d4e2712ba9306ffce8fb60064804"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b1\\0-equity.csv.gz",
+          "sha256": "444f9f8e0b0fb741bb616116a37180f9e2a53a2903b8baf8b59c74886546f5bf"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b1\\0-stats.csv.gz",
+          "sha256": "cd2883dca1d60ac1970957e2e5488e52a6e91d6b75ff6b7d71e6a1c5e8d7fe63"
+        }
+      }
+    },
+    {
+      "alias": "dev-neighbours-1",
+      "stage": "dev-neighbours-1-b1",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 35,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 402,
+      "trades": 16,
+      "scheduled_events": 46,
+      "logged_events": 46,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b1\\1-deals.csv.gz",
+          "sha256": "db62fe6d25f654eae715f0ad21ca0955fb78585a4b2985b51a7bcb4146ab6b32"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b1\\1-decisions.csv.gz",
+          "sha256": "d98e35bd97202d169449a9e33070ed42e160706983cc4f7eab36565dcf438bfe"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b1\\1-quotes.csv.gz",
+          "sha256": "e3afdea417ef21972f29496b3e36be2bbf04f8f2d50f6e9a4bbc32ef73a2b3c4"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b1\\1-equity.csv.gz",
+          "sha256": "b3beddf0b70c02baba450ead4e4369da32f5826528fe2b5e1aa4322653a3aa95"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\dev-neighbours-1-b1\\1-stats.csv.gz",
+          "sha256": "ded19122767fd2edd5cda2122f3619514f38eea012ce883b1e87e28aa8ee7b3e"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-0",
+      "stage": "wf-train-0-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2022-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 5,
+        "target_r": 0.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 90,
+      "trades": 3,
+      "scheduled_events": 24,
+      "logged_events": 24,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b0\\0-deals.csv.gz",
+          "sha256": "67ca6d6965382f04be864ef3ad63eeaed84ed3063bad54deb42b3fd4d1b15967"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b0\\0-decisions.csv.gz",
+          "sha256": "ff1140ee4f8099c7aa4925a8af571e8cb67c832c983815244524fed9fb533274"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b0\\0-quotes.csv.gz",
+          "sha256": "c2d82a4425b449815031da59b605a996e1d486ef87f7968859b09c17902e31d5"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b0\\0-equity.csv.gz",
+          "sha256": "79d98be3da11d18b20857660ffbb37eb861c081374c5f5292e4c9b5e6049551a"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b0\\0-stats.csv.gz",
+          "sha256": "dc53ae4d619368ff0445d83589e43bca1d076b271456ef6a0210fffd60b339e6"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-0",
+      "stage": "wf-train-0-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2022-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 0.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 90,
+      "trades": 3,
+      "scheduled_events": 24,
+      "logged_events": 24,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b0\\1-deals.csv.gz",
+          "sha256": "bec6b5205ca0d01c63c09556f9e3bdfe20141af01c70b109a8dc7746655b3515"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b0\\1-decisions.csv.gz",
+          "sha256": "ae790cc42449c7bb89d01bac12086d75f59ae7979a41105769914a1ee0feb4ac"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b0\\1-quotes.csv.gz",
+          "sha256": "b0601e7a8123b2ec19c6ec69d9d56756cf02c5ad4efd8972ba88244e9a79bda6"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b0\\1-equity.csv.gz",
+          "sha256": "47099b7b906a115cb4284ff7d09fa199d6ed922824016e4f5b85b56422b8b191"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b0\\1-stats.csv.gz",
+          "sha256": "9b2447965f1fe5b54878c0d27bf5f5b623b91384743959ad7eb9ee6561beecc5"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-0",
+      "stage": "wf-train-0-b1",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2022-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 0.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 90,
+      "trades": 3,
+      "scheduled_events": 24,
+      "logged_events": 24,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b1\\0-deals.csv.gz",
+          "sha256": "f227a83a43036b56d0b9df698adb05b7e5fa195a52d30526965954853280b72e"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b1\\0-decisions.csv.gz",
+          "sha256": "4f133f1fe37b64f7a70fff10c51271d77d17a9838d59d738156b8cc2f281def2"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b1\\0-quotes.csv.gz",
+          "sha256": "498818034b29aeb216e379d3f9b72ae32ee90358373f80e4eb716b4fb2a036f4"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b1\\0-equity.csv.gz",
+          "sha256": "151e9acdb78f7b09f721d5db328527b270545b92bbbfcf68c1f30658a49b03ad"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b1\\0-stats.csv.gz",
+          "sha256": "ae97e6b0ef365250ea700e8735a7ae5cc8b793b0c7691f1e84e4313ab7a6855c"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-0",
+      "stage": "wf-train-0-b1",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2022-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 5,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 90,
+      "trades": 3,
+      "scheduled_events": 24,
+      "logged_events": 24,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b1\\1-deals.csv.gz",
+          "sha256": "eae153811154a915b03f780b9d4b19390699c0e63b7b21f96576b3bad5a91ed3"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b1\\1-decisions.csv.gz",
+          "sha256": "c8ec89f56c2238de18d80720beab0637de3f05ee7afc760be7eb4faba438cc71"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b1\\1-quotes.csv.gz",
+          "sha256": "e6e0d9e7197ae1f4a50442be01848d0413dcab0c787edb7085a82245fd2f13d3"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b1\\1-equity.csv.gz",
+          "sha256": "e56c46315374448593962b5cfb747a92414a6c3b49e4e409cb404e72c7d58316"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b1\\1-stats.csv.gz",
+          "sha256": "ab635c965ccd987aa11d4e84e3ff52f6f328ee4808d7c53d2c7599ed6325db2b"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-0",
+      "stage": "wf-train-0-b2",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2022-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 90,
+      "trades": 3,
+      "scheduled_events": 24,
+      "logged_events": 24,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b2\\0-deals.csv.gz",
+          "sha256": "1b1ad13b4d212579283c2df26a0d4721ebc873592a2406f95dd7e925e698942b"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b2\\0-decisions.csv.gz",
+          "sha256": "27aa4402aba5a389c3ae7282dd64fb40867f5124254b33c87b2f4c5872c4dcfc"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b2\\0-quotes.csv.gz",
+          "sha256": "9f64a40a867e6720d77c7e556f888993c56598671e02b0a7b34f1220f0596c40"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b2\\0-equity.csv.gz",
+          "sha256": "bf1d3c6fbd9955ed90af1571a1fd2919c4caa6703e249e63b87c68028eb299ba"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b2\\0-stats.csv.gz",
+          "sha256": "48f98fa2c9b33f43efd847bbe5c1b7d17370d04c63e3a192e5535eaa87eb8e67"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-0",
+      "stage": "wf-train-0-b2",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2022-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 90,
+      "trades": 3,
+      "scheduled_events": 24,
+      "logged_events": 24,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b2\\1-deals.csv.gz",
+          "sha256": "dc4b31112faa36de6638381abb3f414c73d2acbfad580569c79653a5204fd5db"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b2\\1-decisions.csv.gz",
+          "sha256": "2c74449df6476500105dc7f9d865d15e8ee6449ea92ee689f70e9cf1082a59d9"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b2\\1-quotes.csv.gz",
+          "sha256": "4f3f7bcb8b5a1efd170a9ad2cffd6fd5e7f774cc97daecebacc7addacc35b874"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b2\\1-equity.csv.gz",
+          "sha256": "f52522ea25de431e90cccfa177dac3c921b4186857f4ee775644d4033923ebc1"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b2\\1-stats.csv.gz",
+          "sha256": "d6f40b15bf4af92ef77113498baa582b8e573430a23be5c19cc7d61522cfaa34"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-0",
+      "stage": "wf-train-0-b3",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2022-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 5,
+        "target_r": 2.0,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 90,
+      "trades": 3,
+      "scheduled_events": 24,
+      "logged_events": 24,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b3\\0-deals.csv.gz",
+          "sha256": "198c3d2711964890bc21c5b17c08cdd348c482a3180e3f75cecd793e2c539a97"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b3\\0-decisions.csv.gz",
+          "sha256": "55094fffb533fdff4b00559a645e951561fd4366feccbbf8da476292020aa8a1"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b3\\0-quotes.csv.gz",
+          "sha256": "e6e0d9e7197ae1f4a50442be01848d0413dcab0c787edb7085a82245fd2f13d3"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b3\\0-equity.csv.gz",
+          "sha256": "e56c46315374448593962b5cfb747a92414a6c3b49e4e409cb404e72c7d58316"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b3\\0-stats.csv.gz",
+          "sha256": "ab635c965ccd987aa11d4e84e3ff52f6f328ee4808d7c53d2c7599ed6325db2b"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-0",
+      "stage": "wf-train-0-b3",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2022-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 2.0,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 90,
+      "trades": 3,
+      "scheduled_events": 24,
+      "logged_events": 24,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b3\\1-deals.csv.gz",
+          "sha256": "2a18b576ce3b8aea72d3c936040cd1ecaa758456416b76160f0e3cf5c09aa678"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b3\\1-decisions.csv.gz",
+          "sha256": "0022d86a200a4292016ee9c386bca5f9b45f125adae2213e29450cf3d03c0373"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b3\\1-quotes.csv.gz",
+          "sha256": "9f64a40a867e6720d77c7e556f888993c56598671e02b0a7b34f1220f0596c40"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b3\\1-equity.csv.gz",
+          "sha256": "bf1d3c6fbd9955ed90af1571a1fd2919c4caa6703e249e63b87c68028eb299ba"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b3\\1-stats.csv.gz",
+          "sha256": "48f98fa2c9b33f43efd847bbe5c1b7d17370d04c63e3a192e5535eaa87eb8e67"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-0",
+      "stage": "wf-train-0-b4",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2022-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 2.0,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 90,
+      "trades": 3,
+      "scheduled_events": 24,
+      "logged_events": 24,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b4\\0-deals.csv.gz",
+          "sha256": "7975202afe08eadcd1f5af5c722f4eca13f922ad5db42e09ae423f71205cb766"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b4\\0-decisions.csv.gz",
+          "sha256": "bbc8974e1e8737e78ca448d3acae755fe76b99cf31e662d97fba533a6954097d"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b4\\0-quotes.csv.gz",
+          "sha256": "4f3f7bcb8b5a1efd170a9ad2cffd6fd5e7f774cc97daecebacc7addacc35b874"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b4\\0-equity.csv.gz",
+          "sha256": "f52522ea25de431e90cccfa177dac3c921b4186857f4ee775644d4033923ebc1"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-0-b4\\0-stats.csv.gz",
+          "sha256": "d6f40b15bf4af92ef77113498baa582b8e573430a23be5c19cc7d61522cfaa34"
+        }
+      }
+    },
+    {
+      "alias": "wf-test-0",
+      "stage": "wf-test-0-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2022-01-01",
+      "end_exclusive": "2023-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 210,
+      "trades": 8,
+      "scheduled_events": 12,
+      "logged_events": 12,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-0-b0\\0-deals.csv.gz",
+          "sha256": "d69d6a2cfbf69294d59c1fd233cb95ec819dd0f2b27a58cd2df28d3fdfe17dd4"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-0-b0\\0-decisions.csv.gz",
+          "sha256": "f7ac500b3f34d9df432fa1c649da881ad346eab625b9a304bbc7c5322ff347ba"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-0-b0\\0-quotes.csv.gz",
+          "sha256": "50104a61a1776dc2c02ff9466e87b89b7ffb370f29954248d6cad1320dafb2aa"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-0-b0\\0-equity.csv.gz",
+          "sha256": "5c7ab8fa12bd9eaeb380a64a20927e6bacf58909647c470e11673c76ce0339ad"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-0-b0\\0-stats.csv.gz",
+          "sha256": "e627bee8cc443e4a2a47a3533d295ba435c621fb4abecb93f5e760c822d64ab4"
+        }
+      }
+    },
+    {
+      "alias": "wf-test-0",
+      "stage": "wf-test-0-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2022-01-01",
+      "end_exclusive": "2023-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 5,
+        "target_r": 0.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 210,
+      "trades": 8,
+      "scheduled_events": 12,
+      "logged_events": 12,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-0-b0\\1-deals.csv.gz",
+          "sha256": "2bad9f8702f209f47a8ed7f8647eee8a65a41830f832e48e708f9f5c81c74dd9"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-0-b0\\1-decisions.csv.gz",
+          "sha256": "509fcfc862980be5ffb7b74fbbd48a2c17011c365605dcffd78d5cb7ba77ba68"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-0-b0\\1-quotes.csv.gz",
+          "sha256": "2174be693a3f139482810834c0f797f8e43702883bbf17a8fe194eb9238b80c7"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-0-b0\\1-equity.csv.gz",
+          "sha256": "3106fe762aefb7d75334632e0f007a6a6e243db3639694447e7676a4f6a3134c"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-0-b0\\1-stats.csv.gz",
+          "sha256": "f2621bb24cb5aa8424c79b0fdd157cfd5c3f50060506862dd8e5f577ce1bdf61"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-1",
+      "stage": "wf-train-1-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 5,
+        "target_r": 0.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 282,
+      "trades": 11,
+      "scheduled_events": 36,
+      "logged_events": 36,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b0\\0-deals.csv.gz",
+          "sha256": "cbc99589babe8f735cacbd0c6789fc7d51a18165db6afb850487d821d2c9d182"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b0\\0-decisions.csv.gz",
+          "sha256": "4700baadd400aca27c9a5447ce3df18ed97d8c49eee5dca36fdf9fff7c903bab"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b0\\0-quotes.csv.gz",
+          "sha256": "bbbb9259a852d5ef5104e881c0db94152485a303a7746f4a27bb322368f7c0c3"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b0\\0-equity.csv.gz",
+          "sha256": "3c541e02d499e65efd1e616f92a75afb05e9b59b2c990d1fd9e742d41dc5158a"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b0\\0-stats.csv.gz",
+          "sha256": "441f2133f6f65dc2cb52d9b3243c91322e727c01340d610eb924d94eaa813f2c"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-1",
+      "stage": "wf-train-1-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 0.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 282,
+      "trades": 11,
+      "scheduled_events": 36,
+      "logged_events": 36,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b0\\1-deals.csv.gz",
+          "sha256": "0f24bd1b0c03b2dac93123f6897f73a804129b91c14efe1f8891a5754f5822de"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b0\\1-decisions.csv.gz",
+          "sha256": "17bdd11204a52755acc4216becc137a3102bfc2c6a818e78a5e7429f29fa50e8"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b0\\1-quotes.csv.gz",
+          "sha256": "8a6803f8cf64e5afd51c1439a03cc19d4d475c2cb0b65b7abc7561c89c551a4a"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b0\\1-equity.csv.gz",
+          "sha256": "3a17d0493d05fbc595db4f170baa3fe4c710aaad4ff61762cabc97835189bf99"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b0\\1-stats.csv.gz",
+          "sha256": "ec2b1d002a5f89574560c1014ae9e5124b38a4376cfbc1ea4360cec74aad818c"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-1",
+      "stage": "wf-train-1-b1",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 0.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 282,
+      "trades": 11,
+      "scheduled_events": 36,
+      "logged_events": 36,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b1\\0-deals.csv.gz",
+          "sha256": "5f5ec4262672b060b7c38fa2c83fa7981c5ae7abbcc77b9b4e65b4dc64769a73"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b1\\0-decisions.csv.gz",
+          "sha256": "9f6f212a8d63980923136a992407f10a4d9e5f4755845a5fa825829db37acffc"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b1\\0-quotes.csv.gz",
+          "sha256": "ec65a9bb13c0fbecd3c880165a008477a6ede0df2531d031e9990ee63a7e6f42"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b1\\0-equity.csv.gz",
+          "sha256": "51062bec1f602b4818231d5affd06dce03c9ffc60b0c0ee61add8fbc2d01c011"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b1\\0-stats.csv.gz",
+          "sha256": "7732ed8b0ac047672d172d323976c9daec5be8231f8ac520b78f1ff56b9097ed"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-1",
+      "stage": "wf-train-1-b1",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 5,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 282,
+      "trades": 11,
+      "scheduled_events": 36,
+      "logged_events": 36,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b1\\1-deals.csv.gz",
+          "sha256": "ea2c8a18f4226631849629810a7232e94e4fbee31a59cf0dfc0327982f26d966"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b1\\1-decisions.csv.gz",
+          "sha256": "f4e30a4ed595ef8d6fd60b508255fe51a2a01f22512863c1115feb9e565996b5"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b1\\1-quotes.csv.gz",
+          "sha256": "b9fc63bea2c7161d57e850ab84399cc0253771c992a292a5d22888f391492cfc"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b1\\1-equity.csv.gz",
+          "sha256": "a867e7d6fa8ea0ae24aa4a5196566164d097c2261cd5351134c8dbcf0cff1d2f"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b1\\1-stats.csv.gz",
+          "sha256": "9d25c69289727786b32a2bc4f1369e4bbb48361feaf440033979a1aadc6ddb17"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-1",
+      "stage": "wf-train-1-b2",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 282,
+      "trades": 11,
+      "scheduled_events": 36,
+      "logged_events": 36,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b2\\0-deals.csv.gz",
+          "sha256": "28e42934eabc659147ae7f69ea72bb448293f4703e2e60420603bb2f2eb8cea6"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b2\\0-decisions.csv.gz",
+          "sha256": "88119bb34f01f681b20c143d22be1ff62389438ac403eeef7b9a2913aae31dfe"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b2\\0-quotes.csv.gz",
+          "sha256": "2ff36d39f881e81934224b01df69e18faa23cc0455cab41a73a57a0cc4396392"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b2\\0-equity.csv.gz",
+          "sha256": "cf6e0e03469ad8fda2a185195c9c33a6e4e76ad12e912196d6bb454f631abaa4"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b2\\0-stats.csv.gz",
+          "sha256": "eb350dfc435b612fdf9177239a71047e43eadd3668cbc8bf064eda7c119aafcc"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-1",
+      "stage": "wf-train-1-b2",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 282,
+      "trades": 11,
+      "scheduled_events": 36,
+      "logged_events": 36,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b2\\1-deals.csv.gz",
+          "sha256": "89fe8824f057783252fcb2b57419232b56d47ac670fb9e07f74cc406598d060a"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b2\\1-decisions.csv.gz",
+          "sha256": "8edda504c19f5836ef452c35a590afbcd889a5668b2a3a2b370098e3b2f15955"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b2\\1-quotes.csv.gz",
+          "sha256": "ac59408132a87bddfad84d0e981713ccc802741ec77d20fe5fdff4db0917c6ce"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b2\\1-equity.csv.gz",
+          "sha256": "c20b70673f0350d3b3d0375a594843971925c5c663ab989c8aa922e304f62503"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b2\\1-stats.csv.gz",
+          "sha256": "75777a868f004641693aedbcb71646923edf9a646c86f678db8729b01566655f"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-1",
+      "stage": "wf-train-1-b3",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 5,
+        "target_r": 2.0,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 282,
+      "trades": 11,
+      "scheduled_events": 36,
+      "logged_events": 36,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b3\\0-deals.csv.gz",
+          "sha256": "9e22b1b4699eef446e279684bb4aa602da7fcdcc27729e3f1fe87215243abc5a"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b3\\0-decisions.csv.gz",
+          "sha256": "69eace2c92250662f4fcb50c90ed69216e36bf625c4e45fccc1158fb3f528716"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b3\\0-quotes.csv.gz",
+          "sha256": "728fd91c0e42d2a0f2408aae967347caa203a78dd2db7dfbfdb077335a4f49b4"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b3\\0-equity.csv.gz",
+          "sha256": "663e946e6d57e1fbc7424a3b18852a7de38eeaa0bab07c98015f75e539c538ee"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b3\\0-stats.csv.gz",
+          "sha256": "f3a611b3f4d96fdc791f09bcfd0c1907e1d845952bfbf9f8c2a00d3d1700dea6"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-1",
+      "stage": "wf-train-1-b3",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 2.0,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 282,
+      "trades": 11,
+      "scheduled_events": 36,
+      "logged_events": 36,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b3\\1-deals.csv.gz",
+          "sha256": "0e65d50f03104ad06a017c3f85d96579114f0d7d5adabc81c7ac3ab3b14244a2"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b3\\1-decisions.csv.gz",
+          "sha256": "f33d9d81a934df757df590f2ccc2f4982d3ac4ef97c3e26ac9466207cf27e81e"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b3\\1-quotes.csv.gz",
+          "sha256": "f9fb5c6a5e4447ae2c28af884925c50aaac6180171a54ed0f01baf5066e29ca2"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b3\\1-equity.csv.gz",
+          "sha256": "496d650e13bc4dc80075711a965fbf1fc21ca521fba73a04ff84d6d560a69dac"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b3\\1-stats.csv.gz",
+          "sha256": "3704e8feef58bc7cc925e5ebd512ea9d22146bd59965f0f1f1a4ac3aa7e5f60f"
+        }
+      }
+    },
+    {
+      "alias": "wf-train-1",
+      "stage": "wf-train-1-b4",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2023-01-01",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 2.0,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 282,
+      "trades": 11,
+      "scheduled_events": 36,
+      "logged_events": 36,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b4\\0-deals.csv.gz",
+          "sha256": "1b41d7a6150bdba1549793183f20ba37f1f36a0ee3740d6ad9e77a9cb477af97"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b4\\0-decisions.csv.gz",
+          "sha256": "b7d5b695cc62eda7b05ab35ade29868c2996ece8c1ec51046c4db41f860de51d"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b4\\0-quotes.csv.gz",
+          "sha256": "d6f26877d2ec9b6119e47f0605773fdbeafc3868dc4b19adac62c7c43420af70"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b4\\0-equity.csv.gz",
+          "sha256": "cdf84fc2316550f5e79a477f4db74737cbacce7c1d7399710d06bd0eacad9afb"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-train-1-b4\\0-stats.csv.gz",
+          "sha256": "fac8f7df9f5505438de7506db444b1ac3668b9f330b698bd1f53f92d8b8fc12f"
+        }
+      }
+    },
+    {
+      "alias": "wf-test-1",
+      "stage": "wf-test-1-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2023-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 138,
+      "trades": 5,
+      "scheduled_events": 10,
+      "logged_events": 10,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-1-b0\\0-deals.csv.gz",
+          "sha256": "71a6951d260379e08585719d4b702ddd6b927fe5e1737e93ab27899986f03bb6"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-1-b0\\0-decisions.csv.gz",
+          "sha256": "b0cd0bb9d629d349ffe035f14b7afb37d52add1fc179b6b9f175e88b6b4b38ad"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-1-b0\\0-quotes.csv.gz",
+          "sha256": "5485436a8cc147f5eb836166f20362797b012fa3066bb6db0cbf748162333687"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-1-b0\\0-equity.csv.gz",
+          "sha256": "15e6e3c00671feca02235c031f05736fbf0c9b1c63ba068166a8adf34995abc6"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-1-b0\\0-stats.csv.gz",
+          "sha256": "af45e59aa35d17d7ffece33e801e920e4918a10fc8dbe1b3bcc2c76258548c15"
+        }
+      }
+    },
+    {
+      "alias": "wf-test-1",
+      "stage": "wf-test-1-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2023-01-01",
+      "end_exclusive": "2023-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 0.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 138,
+      "trades": 5,
+      "scheduled_events": 10,
+      "logged_events": 10,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-1-b0\\1-deals.csv.gz",
+          "sha256": "b527a4eeadd3f17814982fbd2963ac67a9a65d530e62e20ac5a5e24be3b3dbe0"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-1-b0\\1-decisions.csv.gz",
+          "sha256": "eb0e86bf3125e099ea88632463e53300eb36f3546d2568af3ff734beb888c434"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-1-b0\\1-quotes.csv.gz",
+          "sha256": "b2abe51d8b8b3be3bc606459d52ec9267f194ce877c6bcc685ed13494d0081fc"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-1-b0\\1-equity.csv.gz",
+          "sha256": "39bcd307819b2a44f5bf41dab1f1a7f5b4a9cc07cfc238f20755af621cd6c71a"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\wf-test-1-b0\\1-stats.csv.gz",
+          "sha256": "a91be4c1b65a7c5fa5738e3822484c45b98d7002486f06ceae1a924d453258e0"
+        }
+      }
+    },
+    {
+      "alias": "validation",
+      "stage": "validation-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2023-10-16",
+      "end_exclusive": "2024-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 210,
+      "trades": 8,
+      "scheduled_events": 12,
+      "logged_events": 12,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\validation-b0\\0-deals.csv.gz",
+          "sha256": "e366e1a764fba7cb2edf8fb0a81e09e053f2602ead3156c3fbc33e0bc38cbc4e"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\validation-b0\\0-decisions.csv.gz",
+          "sha256": "1abc92061792f14c6e56c463e45ac789fb6dd867b2985ffe261792795a79980e"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\validation-b0\\0-quotes.csv.gz",
+          "sha256": "0e5fba60c99abf27073824502c6e003fce1393a9fa483b55239d08a661f70032"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\validation-b0\\0-equity.csv.gz",
+          "sha256": "09022a86a061e94b0757b6d723762b290193c03aa4975df6a1bda87e535271ea"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\validation-b0\\0-stats.csv.gz",
+          "sha256": "608c81c6828faa119fa1459970581c4c2549697dc02dc2e191e1dbc0008811c6"
+        }
+      }
+    },
+    {
+      "alias": "validation",
+      "stage": "validation-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2023-10-16",
+      "end_exclusive": "2024-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 210,
+      "trades": 8,
+      "scheduled_events": 12,
+      "logged_events": 12,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\validation-b0\\1-deals.csv.gz",
+          "sha256": "4d8b558b5de8a8b94ea945127488c4217288f8bd44f82722a219c7d2f2caf93a"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\validation-b0\\1-decisions.csv.gz",
+          "sha256": "43f24cfefd989a8e7692d071f81d2577a995ebd897546ebe771663bd581c8852"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\validation-b0\\1-quotes.csv.gz",
+          "sha256": "3b9f89a74f7af53a6844fe1e1256be829c4257796a07439540f50aba935eab30"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\validation-b0\\1-equity.csv.gz",
+          "sha256": "dc86bcf2ed66610064e521cce63409b65e070e4b4b5ee6440cbea5a5c8ec052e"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\validation-b0\\1-stats.csv.gz",
+          "sha256": "ab4f3b4bc347aae8e7c1a467693c3158a3f3c6754225b93a60a16a4c7672ae10"
+        }
+      }
+    },
+    {
+      "alias": "holdout",
+      "stage": "holdout-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2024-10-16",
+      "end_exclusive": "2026-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 234,
+      "trades": 9,
+      "scheduled_events": 23,
+      "logged_events": 23,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\0-deals.csv.gz",
+          "sha256": "6fcb56ab61c64d81fc790eddc0c8d09d9937eb4171a8e5cc1e1845871d3641ae"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\0-decisions.csv.gz",
+          "sha256": "1e2dbd26803fda0a0c3dea0e15e54681c1bffc52e0a37c039e705c2a771ea80b"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\0-quotes.csv.gz",
+          "sha256": "049030796edad000e86117db76ee6ef9a031fe60276c4adadbf21bc2024ca692"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\0-equity.csv.gz",
+          "sha256": "df00754de95fc530e61798c33b6981fed07b0beb38f68c1d2e873cdfd8ea7ad1"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\0-stats.csv.gz",
+          "sha256": "dc10ca44fbf6d6b38de2b788bd1e09b4b443aae67ddcff4822448875d900072f"
+        }
+      }
+    },
+    {
+      "alias": "holdout",
+      "stage": "holdout-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2024-10-16",
+      "end_exclusive": "2026-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 234,
+      "trades": 9,
+      "scheduled_events": 23,
+      "logged_events": 23,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\1-deals.csv.gz",
+          "sha256": "e0a706eac0f23fd378dea1f35ac65ce197fe82015f694f8217379a1b690dc322"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\1-decisions.csv.gz",
+          "sha256": "a7e67ab6c54fb68a85a9d81ad7b41c5dfac460f8322352b975cf019aa19ce427"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\1-quotes.csv.gz",
+          "sha256": "4734f029dc1c894767dd454fc5a048b5bb8039a085c3a4ae022176590fc82f16"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\1-equity.csv.gz",
+          "sha256": "11340f4d8dc17879016b6bf320945a3c907dffcd4b8341940c7e61473e3d8504"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\1-stats.csv.gz",
+          "sha256": "b027384baeca0c78280c4cfc875669bccaa1f5c2e4846dae806414e73f62d8b7"
+        }
+      }
+    },
+    {
+      "alias": "full",
+      "stage": "full-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2020-01-01",
+      "end_exclusive": "2026-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 15,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 810,
+      "trades": 33,
+      "scheduled_events": 81,
+      "logged_events": 81,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\full-b0\\0-deals.csv.gz",
+          "sha256": "57983d2ead63706e79c1c0bcf0554e8c3c71bfcf7ebcc0cf0085e7fd7f075e8b"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\full-b0\\0-decisions.csv.gz",
+          "sha256": "979b20690146d6776d87cff1c2edbed99d153b84911eb1beca88bd243658d401"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\full-b0\\0-quotes.csv.gz",
+          "sha256": "8c4e08629dbfdeed7cb575e546089661ecbefd8f467705fdafb55ede882e6a07"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\full-b0\\0-equity.csv.gz",
+          "sha256": "560a1ab06fa72f86c9935aa27c3a3e80a842a6ba3759e0a7f82c4b125d79806a"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\full-b0\\0-stats.csv.gz",
+          "sha256": "33ce87658fbdf5358c53e2166ef18b5c6488626ef8af76760b2ef32352808148"
+        }
+      }
+    },
+    {
+      "alias": "full",
+      "stage": "full-b0",
+      "index": 1,
+      "native_case_index": 1,
+      "start": "2020-01-01",
+      "end_exclusive": "2026-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 810,
+      "trades": 33,
+      "scheduled_events": 81,
+      "logged_events": 81,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\full-b0\\1-deals.csv.gz",
+          "sha256": "e3c2707989f064e15797630a33197ab6fc785f1490f409cc56ea447fbffa0626"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\full-b0\\1-decisions.csv.gz",
+          "sha256": "da7f3fc1923dbcfb6acd75e1ad1dfcd2e0b6917a73560b27ffed60c29db8faaa"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\full-b0\\1-quotes.csv.gz",
+          "sha256": "47e0d947056acc1aaa2ec4ffc68671325048c02eee14d3b4fe4f0b3016a11b20"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\full-b0\\1-equity.csv.gz",
+          "sha256": "1067e08007afa1ead946e368d7e3b45e2f7f979bbb8b327dd9c45d39f977fbfe"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\full-b0\\1-stats.csv.gz",
+          "sha256": "ad81c084b0cd1a083136266fa587edc6447bb0448ea7a3b93412e09d0560be3e"
+        }
+      }
+    },
+    {
+      "alias": "delay-500",
+      "stage": "delay-500-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2024-10-16",
+      "end_exclusive": "2026-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 234,
+      "trades": 9,
+      "scheduled_events": 23,
+      "logged_events": 23,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\delay-500-b0\\0-deals.csv.gz",
+          "sha256": "b8cd2d78dcb38fbf869a563f646087c4f98dc6f1cf5f210b667cbebe604d561d"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\delay-500-b0\\0-decisions.csv.gz",
+          "sha256": "d939feaf22e4fdc05dc4e239687d975983e908979e705cd80c38142ae300a318"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\delay-500-b0\\0-quotes.csv.gz",
+          "sha256": "d87c5e5f0e9d3c930c946cb557abe9e399f456367be4b79b258710f697398840"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\delay-500-b0\\0-equity.csv.gz",
+          "sha256": "acbc78d967275da7f047815627117b66d29e3f746ec1a28e4fabebaed68ebb72"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\delay-500-b0\\0-stats.csv.gz",
+          "sha256": "0c4c9149d74032887b7d525d671ff6c28dacffe316bffbc032d5778523996541"
+        }
+      }
+    },
+    {
+      "alias": "delay-1000",
+      "stage": "delay-1000-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2024-10-16",
+      "end_exclusive": "2026-10-16",
+      "model": 4,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 234,
+      "trades": 9,
+      "scheduled_events": 23,
+      "logged_events": 23,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\delay-1000-b0\\0-deals.csv.gz",
+          "sha256": "81c83871ef3884598735caaf7a4c0f959284468700f4a806541dfd5d8fa91d1e"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\delay-1000-b0\\0-decisions.csv.gz",
+          "sha256": "f9ff797277f21bc6d6b0a03f7751be463421676324434c49a2e52359fb4d963f"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\delay-1000-b0\\0-quotes.csv.gz",
+          "sha256": "79db034d9847d54a9986a18fc8d39d44c6e556b52ff72764d387608bef7d2aa4"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\delay-1000-b0\\0-equity.csv.gz",
+          "sha256": "43ddad2c01c0903440cb384da6153d61bffaaf921b327e7bc1b331d1d76f410e"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\delay-1000-b0\\0-stats.csv.gz",
+          "sha256": "098e9c1b854e2a3a28855688a0a96e764c72c495cf233c103dac922a0acfde0e"
+        }
+      }
+    },
+    {
+      "alias": "generated-diagnostic",
+      "stage": "generated-diagnostic-b0",
+      "index": 0,
+      "native_case_index": 0,
+      "start": "2024-10-16",
+      "end_exclusive": "2026-10-16",
+      "model": 0,
+      "parameters": {
+        "hold_minutes": 30,
+        "target_r": 1.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "passed": true,
+      "checks": 282,
+      "trades": 11,
+      "scheduled_events": 23,
+      "logged_events": 23,
+      "source_files": {
+        "deals": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\generated-diagnostic-b0\\0-deals.csv.gz",
+          "sha256": "c238614932be39e4256ccdd19b85d4186547e86230dd16357921903bf1cce593"
+        },
+        "decisions": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\generated-diagnostic-b0\\0-decisions.csv.gz",
+          "sha256": "03a9f1beb54dc3412db39173e62c1c4a2c80801a8ba15c2b35bf815c144cb7be"
+        },
+        "quotes": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\generated-diagnostic-b0\\0-quotes.csv.gz",
+          "sha256": "9f0d2bfedee74beee8484a62223d3ede98cc6d303450752ae6fdea0d1b23c6dc"
+        },
+        "equity": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\generated-diagnostic-b0\\0-equity.csv.gz",
+          "sha256": "d943e893851f6a2d817d5c27595df001a85aa6c747bf2f6012ffc08d2f9dfd45"
+        },
+        "stats": {
+          "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\generated-diagnostic-b0\\0-stats.csv.gz",
+          "sha256": "6575b088dcff0a3be717e13ac6b8c44ec557638435840f9e1daffcedf020ebac"
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "research_only": true,
+  "live_changes": false,
+  "execution_quality_verified": false
+}

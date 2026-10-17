@@ -1,0 +1,196 @@
+{
+  "version": "2026-10-13",
+  "capital": 25000.0,
+  "source_start": "2025-10-06",
+  "source_end_exclusive": "2026-10-06",
+  "ledger_sha256": "3fe936047d19e7b573e709dd8c00a380c30258a2ca0c746a98f7788fbf509853",
+  "publication_sha256": "3a7fab286b252a3a41f97a7c33e886a52cd9f6309ec8f2f85477244900973c44",
+  "firms": [
+    {
+      "id": "ftmo",
+      "label": "FTMO 2-Step Swing",
+      "targets": [
+        0.1,
+        0.05
+      ],
+      "days": 4,
+      "zone": "Europe/Prague",
+      "sources": [
+        "https://ftmo.com/en/trading-objectives/",
+        "https://ftmo.com/en/2-step-challenge/"
+      ],
+      "status": "EA use generally permitted; Swing needed for unchanged multi-day positions."
+    },
+    {
+      "id": "fundednext",
+      "label": "FundedNext Stellar 2-Step (MT5 + EA add-on)",
+      "targets": [
+        0.08,
+        0.05
+      ],
+      "days": 5,
+      "zone": "Europe/Helsinki",
+      "sources": [
+        "https://help.fundednext.com/en/articles/17255124-stellar-2-step-challenge",
+        "https://help.fundednext.com/en/articles/8019811-how-can-i-calculate-the-daily-loss-limit",
+        "https://help.fundednext.com/en/articles/14702245-what-are-the-risk-limits-on-a-fundednext-account",
+        "https://help.fundednext.com/en/articles/14702484-understanding-the-quick-strike-parameter-on-fundednext"
+      ],
+      "status": "EA eligibility only below $50k and with EA access. Server DST date approximation uses Helsinki."
+    },
+    {
+      "id": "fundingpips",
+      "label": "FundingPips 2-Step Standard + Swing add-on",
+      "targets": [
+        0.08,
+        0.05
+      ],
+      "days": 3,
+      "zone": "Etc/GMT-3",
+      "sources": [
+        "https://help.fundingpips.com/hc/en-us/articles/34501809112081-2-Step-Standard",
+        "https://help.fundingpips.com/hc/en-us/articles/34505029138449-Trading-Conduct-and-Security-Standards"
+      ],
+      "status": "Conditional on approval of personally developed entry EAs; no intentional news trading. Swing add-on assumed. Opposite-side positions need conduct review."
+    }
+  ],
+  "policies": [
+    "current_defaults",
+    "literal_buffer_7",
+    "guarded_buffer_7"
+  ],
+  "policy_details": {
+    "current_defaults": "Normalized 0.5% initial fixed risk for guarded FTMO; 0.5% balance combined/ORB; full 0.25% balance, news 0.10%, original adaptive tapers and Nasdaq x0.25.",
+    "literal_buffer_7": "At each entry, max(0, current closed balance minus static 90% floor)/7. Does not subtract existing open risk or daily allowance. Original allocation weights/tapers and FTMO hard ceiling still apply. News also receives the formula in this literal stress test.",
+    "guarded_buffer_7": "Min of (remaining total allowance minus open stop reserve)/7, (remaining firm daily allowance minus reserve)/7 and 0.5% initial capital. News capped at 0.10%. New-entry admission requires <=2% open risk, <=1% per symbol, and <=2% daily reserve; original FTMO guards additionally apply."
+  },
+  "ftmo_guard_note": "Roster, entry limits and cash ceilings normalized to $25k for comparison, NOT the account-bound $10k executable guard. Margin, pending orders, 3-second lock and all live guard behavior are not reconstructed.",
+  "horizons": {
+    "challenge_calendar_days": 180,
+    "fresh_funded_calendar_days": 90
+  },
+  "monte_carlo": {
+    "paths": 2000,
+    "block_days": 28,
+    "seed": 20261013,
+    "weekday_aligned": true
+  },
+  "fundingpips_reward_assumption": "Standard bi-weekly programme, not Monthly 100% or On-Demand; no payout simulation. Monthly-specific 1% trade-idea striking rules are outside this run.",
+  "float_modes": [
+    "closed_only",
+    "full_stop_reserve_stress"
+  ],
+  "cost_stress": "Winning gross P/L x0.90, losing gross x1.10, extra 0.05R cost; reserve x1.25. Not measured prop execution.",
+  "scope": "Simulation only; no live EAs, BATs, website settings or firm registries changed.",
+  "limitations": [
+    "All signals and exits are frozen; actual target ratios are retained, NOT changed to the video's 2R.",
+    "Standalone broker-ledger overlay, not a simultaneous MT5 account test. No intraday equity data: neither closed-only nor full-stop reserve is an actual floating equity path or guaranteed bound.",
+    "Simultaneous events use deterministic EA-slug ordering, with resets before exits before entries. Live broker sequencing and strategy signals after a skipped entry are not regenerated.",
+    "Closed balance is the entry equity proxy; commission/swap aggregate booked at final exit. Intratrade partial timing, pending-order risk, firm-specific spread, contract size, slippage, margin and leverage are not reconstructed.",
+    "Assume 0.01 minimum/step and round down. Too-small sizes skip, so asymptotic shrinkage can leave an unresolved or nearly inactive account.",
+    "Whole 28-day Monday-start blocks keep simultaneous signals correlated. Durations carry across block boundaries; correlations across seams are imperfect. No IID trade shuffle. Long holdings can leave unvalued positions at horizon.",
+    "Rolling-origin trials use their actual start dates for firm daily resets. Bootstrap dates are synthetic, beginning on October 6, 2025; their passing days are durations, not predicted future dates.",
+    "Challenge passes require target, minimum entry days and flat account; target freezes new entries. Phase-1 handover assumed two calendar days. Results measure both targets reached, not actual KYC issuance time.",
+    "Fresh-funded survival is measured for 90 calendar days with profits retained, no withdrawals. It is NOT payout or fee ROI; withdrawals reduce the loss buffer and need a separate run.",
+    "FundingPips daily reset is UTC+3 and uses opening balance as proxy for max(balance,equity); opening floating gains are unknown. 30-day completed-trade inactivity enforced.",
+    "FundedNext 30-second winning-profit share holds challenge advancement at >=30%, and is checked at 21-/14-day funded cycle ends. Its 3% funded exposure flags are shown, but full warning/deduction/reclassification mechanics are NOT simulated.",
+    "FundedNext known news-EA positive cash credited at 40% on funded accounts; losses retained. Complete official speech/news-calendar tagging for other strategies unavailable. FundingPips full news roster is ineligible unchanged.",
+    "FundingPips source ownership approval, conduct/hedging acceptance and news restrictions cannot be inferred from a mathematical pass. 50k+ funded strike variants are outside this $25k comparison.",
+    "Full portfolio missing gold-news-v9-direction, 36/37 members; no zero-return substitute. Hourly EAs have no stop: their historical-loss reserve is NOT a maximum loss.",
+    "Current ORB targets selected using the same recent data. Latest common coverage ends October 6, not today; no untouched-OOS claim and no credible under-1%-future-ruin certification."
+  ],
+  "members": {
+    "ftmo": [
+      "xau-rsi-vwap",
+      "gold-overnight-value-area",
+      "xau-squeeze-momentum-standard",
+      "dmc-fresh-reaction-us100",
+      "ema3",
+      "xau-trend-progression",
+      "xau-orb-london-ny-overlap-m30",
+      "nasdaq-overnight",
+      "us100-h1-orb-13utc",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "dmc-current-xau",
+      "nasdaq-5m-candle-momentum",
+      "3-way-gold",
+      "us100-orb-new-york-m30",
+      "us100-selective-orb-v3",
+      "xau-orb-new-york-m30"
+    ],
+    "current14-orb05": [
+      "xau-rsi-vwap",
+      "gold-overnight-value-area",
+      "xau-squeeze-momentum-standard",
+      "dmc-fresh-reaction-us100",
+      "ema3",
+      "xau-trend-progression",
+      "xau-orb-london-ny-overlap-m30",
+      "nasdaq-overnight",
+      "us100-h1-orb-13utc",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "dmc-current-xau",
+      "nasdaq-5m-candle-momentum",
+      "3-way-gold",
+      "us100-orb-new-york-m30",
+      "us100-selective-orb-v3",
+      "xau-orb-new-york-m30"
+    ],
+    "orbs-only": [
+      "us100-h1-orb-13utc",
+      "us100-orb-new-york-m30",
+      "us100-selective-orb-v3",
+      "xau-orb-new-york-m30",
+      "xau-orb-london-ny-overlap-m30"
+    ],
+    "full-eas": [
+      "gold-overnight-value-area",
+      "lta-volume-profile",
+      "btc-top-down-fvg-liquidity",
+      "btc-poc-fibonacci",
+      "eth-top-down-fvg-liquidity",
+      "orb-volume-profile",
+      "orb-volume-profile-volume-confirmed",
+      "xau-orb-new-york-m30",
+      "xau-orb-london-ny-overlap-m30",
+      "us100-orb-new-york-m30",
+      "us100-h1-orb-13utc",
+      "us100-selective-orb-v3",
+      "asia-breakout",
+      "dmc-current-xau",
+      "dmc-fresh-reaction-xau",
+      "dmc-fresh-reaction-us100",
+      "ema3",
+      "xau-weakness",
+      "nasdaq-overnight",
+      "nasdaq-5m-candle-momentum",
+      "sell-nasdaq-15min",
+      "usdjpy-london-open-momentum",
+      "xau-squeeze-momentum-standard",
+      "news-pulse-xau",
+      "gold-news-v9-direction",
+      "news-pulse-xag",
+      "news-pulse-btc",
+      "news-pulse-eurusd",
+      "xau-rsi-vwap",
+      "xau-trend-progression",
+      "xau-elliott-wave-1-2-3",
+      "xau-slow-trend",
+      "xau-regime-switch",
+      "us100-month-end-flow",
+      "3-way-gold",
+      "us30-hourly-profiles",
+      "us100-hourly-profiles"
+    ]
+  },
+  "missing": {
+    "ftmo": [],
+    "current14-orb05": [],
+    "orbs-only": [],
+    "full-eas": [
+      "gold-news-v9-direction"
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "version": "BTC-WEEKEND-RAW-20261017",
+  "status": "Fixed rules, no optimization, offline archived prices only",
+  "entry": "Friday 17:00 America/New_York, exact scheduled bar OPEN",
+  "exit": "Following Sunday 17:00 America/New_York, exact scheduled bar OPEN",
+  "timezone": "America/New_York",
+  "missing_endpoint_policy": "Skip; never forward-fill, interpolate, or use a different minute",
+  "initial_balance_usd": 10000.0,
+  "headline_allocation": "100% current cash; fractional BTC quantity = current balance / entry ask proxy",
+  "secondary_allocation": "Fixed initial USD10000 notional reference; may exceed current equity after losses, not claimed cash-funded execution",
+  "stop_loss": null,
+  "take_profit": null,
+  "stop_risk_percent": null,
+  "position_limit": 1,
+  "point_usd": 0.01,
+  "contract_btc_per_lot": 1.0,
+  "spread_proxy": "Entry ask = scheduled bid bar open + that bar's recorded spread points * 0.01; exit at scheduled bid bar open. Bar spread is not a synchronized opening ask quote.",
+  "recent_end": "2026-10-13T00:00:00+00:00",
+  "long_end": "2026-09-01T00:00:00+00:00",
+  "recent_calendar_month_windows": [3, 6, 12],
+  "archived_swap_long_points_per_lot": -1863.7,
+  "modeled_swap_charges_per_weekend": [0, 3, 4],
+  "financing_policy": "Sensitivity only: current archived long swap * point * BTC quantity, with 0/3/4 charges, booked at exit. Historical fees, swap entitlement and exact rollover ordering are unknown.",
+  "other_costs": "Commission, slippage, historical financing, liquidity, lot minimums and broker margin are not verified or modeled in the headline spread-only result.",
+  "recent_source": {
+    "relative_path": "New Ideas 01 Price Event Clock Raw 2026-10-13/BTCUSD-M1.npz",
+    "metadata_relative_path": "New Ideas 01 Price Event Clock Raw 2026-10-13/DATA.json",
+    "sha256": "1be538d9abe87583e0aea84768413d675b569b7fcc8ea31d96a34c7caca7b32c",
+    "server": "Exness-MT5Trial15",
+    "timeframe_seconds": 60
+  },
+  "long_source": {
+    "relative_path": "Bitcoin OBV Walk Forward Research 2026-09-09/Data/BTCUSD-M5.npz",
+    "metadata_relative_path": "Bitcoin OBV Walk Forward Research 2026-09-09/Data/metadata.json",
+    "sha256": "2b2cd03139ff0ec75e98f9fba8d4c4baa0bbecaaae614b8196517b1902ddeb8d",
+    "server": "Exness-MT5Trial16",
+    "timeframe_seconds": 300,
+    "cost_policy": "Separate gross descriptive panel only; zero recorded spreads invalidate a measured-cost reconstruction. Never splice this feed into the recent M1 panel."
+  },
+  "official_broker_reference": "https://get.exness.help/hc/en-us/articles/17854191888540-Cryptocurrencies",
+  "broker_reference_note": "BTCUSD is a continuously traded CFD, not a market that closes for the FX weekend. Friday triple financing is conditional on account/instrument terms; the historical charges here are not verified.",
+  "selection_policy": "No time, weekday, direction, holding period, parameter, or asset search. Earlier strategy experiments do not constitute untouched validation of this new idea."
+}

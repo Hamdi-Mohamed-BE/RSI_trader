@@ -1,0 +1,62 @@
+{
+  "verdict": "PREFLIGHT_PASS",
+  "generated_at_utc": "2026-10-16T17:51:23.211835+00:00",
+  "source_files_verified": 16,
+  "frozen_dependencies_verified": 11,
+  "modules": [
+    {
+      "slug": "nasdaq-5m-candle-momentum",
+      "source_and_set_hashes_match": true,
+      "effective_input_changes": {
+        "InpRequireDIAgreement": {
+          "before": "true",
+          "after": "false"
+        }
+      },
+      "explicit_adaptive_false": true,
+      "risk_percent": 1
+    },
+    {
+      "slug": "xau-rsi-vwap",
+      "source_and_set_hashes_match": true,
+      "effective_input_changes": {},
+      "explicit_adaptive_false": true,
+      "risk_percent": 1
+    },
+    {
+      "slug": "ema3",
+      "source_and_set_hashes_match": true,
+      "effective_input_changes": {},
+      "explicit_adaptive_false": true,
+      "risk_percent": 1
+    }
+  ],
+  "shared_account_not_sum_of_standalones": true,
+  "native_leverage": 15,
+  "account_policy": {
+    "daily_loss": 500,
+    "static_floor": 9000,
+    "challenge_target": 11000,
+    "verification_target": 10500,
+    "minimum_prague_entry_days": 4,
+    "reset_timezone": "Europe/Prague",
+    "breach": "equity strictly below floor; permanent failure; challenge liquidation after observed breach; no reset",
+    "target": "naturally flat only before OnTester; no target liquidation",
+    "phase2": "Fresh $10k from next Prague calendar day, model handover assumption, only if Phase1 passed",
+    "margin": "No resize; reject new entry when gross open + pending + proposed USD notional / 15 exceeds current equity. No additional percent buffer."
+  },
+  "no_terminal_account_or_network_calls": true,
+  "source_hashes": {
+    "PLAN.json": "e607d3d07da4b6f536f042b5da0f98a153ffa31a324443941f97523c354df547",
+    "FROZEN.json": "aa741853e9f74b69cc30f360081368a942fa27e2364870378920717c5410c697",
+    "CONFIG.json": "0859933bfd6d6ecc7a3bb1ce78b262f1f9ca4e765810aab8fea09b3b3cc846f2",
+    "PortfolioHarness.mqh": "bcd00c23850215fdd1bfaf4c5b033941a5aa360c86ca99b61a6de3db7bb248b4",
+    "SharedPortfolio.mq5": "c83730b83a71f3d223b129f559de69c7385bac8044e2aede04208aedf246dc3a",
+    "independent_verify.py": "5cbdeca2e19669274f751d51a8ab8e249fe0e90cef90944c25821799b3b84c4b"
+  },
+  "limitations": [
+    "Static source and settings audit; native output accounting/parity is checked separately after execution.",
+    "Primary-symbol ticks plus one-second secondary latest-quote sampling do not certify every historical floating-equity excursion.",
+    "Gross notional/15 margin is an explicit conservative research proxy, not a certified FTMO contract model."
+  ]
+}

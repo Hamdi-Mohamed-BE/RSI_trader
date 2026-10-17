@@ -1,0 +1,77 @@
+{
+  "study_date": "2026-10-16",
+  "scope": "Runtime investigation and independent artifact review, not a performance-validation pass",
+  "native_run": {
+    "batch": "cpi-raw-20261016",
+    "owned_terminal_pid": 34460,
+    "enumerated_cases": 6,
+    "reported_elapsed_seconds": 799.9,
+    "completed_on_its_own": true,
+    "stop_guard_found_process_already_exited": true,
+    "process_killed": false,
+    "restart_performed": false,
+    "client_shutdown_recovered": false,
+    "trading_rules_changed_after_start": false,
+    "native_results_reconciled": true,
+    "live_terminal_or_orders_changed": false
+  },
+  "resource_observations": {
+    "provenance": "Reported tool observations in the parent conversation; no retained independent monitor trace. These snapshots are not a complete time series or proven peak values.",
+    "timezone": "Africa/Lagos",
+    "snapshots": [
+      {
+        "local_time": "2026-10-16T16:00:42+01:00",
+        "free_physical_memory_KB": 3985852,
+        "total_physical_memory_KB": 29208636,
+        "local_agents_observed": 6,
+        "reported_agent_Private_MB_range": [1501, 1504],
+        "reported_agent_working_set_MB_range": [1334, 1335]
+      },
+      {
+        "local_time": "2026-10-16T16:04:25+01:00",
+        "reported_agent_Private_MB_range": [1557, 1581],
+        "reported_agent_CPU_seconds_range": [20.72, 21.70],
+        "free_C_drive_bytes": 21511434240
+      },
+      {
+        "phase": "after automatic tester shutdown",
+        "free_C_drive_bytes": 53118001152
+      }
+    ],
+    "additional_approximate_observation": "During execution, agent temp/bar*.tmp files were reported at about 4.5 GB each and growing in roughly 64 MB increments. These approximate observations were not saved as a reproducible monitor artifact.",
+    "interpretation": "Parallel tester cache and resource contention is a plausible explanation for the long wall time and disk use, but the root cause was not established. No strategy change was made on that basis."
+  },
+  "copyrates_overload_probe": {
+    "hypothesis": "Arithmetic date expressions might bind the datetime/count overload instead of the requested datetime/date-range overload",
+    "status": "Ruled out for all three tested source expressions under this compiler",
+    "method": "Overloaded RangeProbe returns int for positional/count and datetime/count forms, but string for datetime/datetime. Assigning each call to int produced string-to-int warning 93.",
+    "expressions": [
+      "RangeProbe(event,event+59)",
+      "RangeProbe((datetime)event,(datetime)(event+59))",
+      "RangeProbe(event-900,event-1)"
+    ],
+    "probe_event_epoch": 1791981000,
+    "compile_errors": 0,
+    "expected_diagnostic_warnings": 3,
+    "warning_source_lines": [7, 8, 9],
+    "probe_source_sha256": "98ffe878fce767da3ea66f07caca5f4733799e3e24f5787c7defd9428d4129c2",
+    "probe_compile_log_sha256": "f2f4be3cb190df17f5ff479f600aa95c3f2454e8937072c76a964e9d76687a77",
+    "production_engine_changed_for_probe": false,
+    "official_reference": "https://www.mql5.com/en/docs/series/copyrates"
+  },
+  "artifact_checks": {
+    "engine_sha256_matches_frozen_manifest": true,
+    "engine_sha256": "fe3468fd979b10ba819557b88f6394d57ed968fd2b5ad16d4eb1f2503ed08096",
+    "config_calendar_cases_build_hashes_match_frozen_manifest": true,
+    "all_six_case_binary_hashes_match_saved_ex5": true,
+    "binary_sha256": "37c4c3cfbd1ad64f77a6f2e1863a3c169b40ccb6e0231eed7ba009de0a767d3b",
+    "all_six_native_cash_sums_and_ending_balances_reconciled_independently": true,
+    "all_six_recomputed_full_period_PF_values_match_results": true,
+    "all_six_summary_full_period_cash_totals_match_native": true,
+    "all_six_cases_have_no_open_positions_or_failed_entries_or_failed_updates": true,
+    "last_native_quote_epoch_all_cases": 1792108798,
+    "last_native_quote_utc": "2026-10-15T23:59:58+00:00",
+    "execution_quality_verified": false,
+    "selection_or_deployment_authorized_by_these_checks": false
+  }
+}

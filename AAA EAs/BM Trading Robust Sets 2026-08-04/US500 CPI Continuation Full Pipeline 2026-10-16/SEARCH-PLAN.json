@@ -1,0 +1,120 @@
+{
+  "baseline": {
+    "hold_minutes": 15,
+    "target_r": 1.5,
+    "entry_window_minutes": 5,
+    "impulse_mult": 1.0,
+    "close_fraction": 0.25
+  },
+  "stages": [
+    [
+      "target",
+      "target_r",
+      [
+        0.5,
+        1.0,
+        1.5,
+        2.0
+      ]
+    ],
+    [
+      "hold",
+      "hold_minutes",
+      [
+        5,
+        15,
+        30
+      ]
+    ],
+    [
+      "impulse",
+      "impulse_mult",
+      [
+        0.75,
+        1.0,
+        1.25
+      ]
+    ]
+  ],
+  "beam_width": 1,
+  "neighbours": {
+    "target_r": [
+      -0.25,
+      0.25
+    ],
+    "hold_minutes": [
+      -5,
+      5
+    ],
+    "impulse_mult": [
+      -0.25,
+      0.25
+    ]
+  },
+  "bounds": {
+    "target_r": [
+      0.25,
+      4
+    ],
+    "hold_minutes": [
+      2,
+      45
+    ],
+    "impulse_mult": [
+      0.5,
+      2
+    ]
+  },
+  "centres": "Greedy development-only final centre and unchanged baseline; maximum two validation finalists",
+  "max_main_unique_configurations": 20,
+  "selection": "Stable development-neighbour median plus predeclared validation score; no selection on final two years",
+  "raw_gate_end": "2023-10-16",
+  "walk_forward": {
+    "grid_target_r": [
+      0.5,
+      1.5,
+      2.0
+    ],
+    "grid_hold_minutes": [
+      5,
+      15,
+      30
+    ],
+    "fixed_other_fields": {
+      "hold_minutes": 15,
+      "target_r": 1.5,
+      "entry_window_minutes": 5,
+      "impulse_mult": 1.0,
+      "close_fraction": 0.25
+    },
+    "folds": [
+      {
+        "train_start": "2020-01-01",
+        "train_end": "2022-01-01",
+        "test_start": "2022-01-01",
+        "test_end": "2023-01-01"
+      },
+      {
+        "train_start": "2020-01-01",
+        "train_end": "2023-01-01",
+        "test_start": "2023-01-01",
+        "test_end": "2023-10-16"
+      }
+    ],
+    "selection": "Each fold uses ONLY its training interval; diagnostic tests never select final parameters"
+  },
+  "execution_scenarios": [
+    {
+      "delay_ms": 500,
+      "model": 4
+    },
+    {
+      "delay_ms": 1000,
+      "model": 4
+    },
+    {
+      "delay_ms": 150,
+      "model": 0
+    }
+  ]
+}

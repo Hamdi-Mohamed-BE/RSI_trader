@@ -1,0 +1,112 @@
+{
+  "frozen_at_utc": "2026-10-17T01:15:06.498367+00:00",
+  "before_outcomes": true,
+  "files": {
+    "PROTOCOL.json": "262df1d0dd090cb2326d7b5a5628b354af51a253dac5f0a18ce05bfe1878714d",
+    "run.py": "52db34bc7308a2a9b26e8747f6f1c74beb291f5d96ccb2115431953bc7479597",
+    "test_weekend.py": "db15dd36415fe944a5cfeb4e492fa6012b6a72008eedce9c11c5fbd0e78acd65"
+  },
+  "sources": [
+    {
+      "relative_path": "New Ideas 01 Price Event Clock Raw 2026-10-13/BTCUSD-M1.npz",
+      "sha256": "1be538d9abe87583e0aea84768413d675b569b7fcc8ea31d96a34c7caca7b32c",
+      "metadata_relative_path": "New Ideas 01 Price Event Clock Raw 2026-10-13/DATA.json",
+      "metadata_sha256": "f23371de2f0aa73cbf916816844008a8ed11fb7c1c8671fcab21eeb6bcd79681",
+      "server": "Exness-MT5Trial15",
+      "timeframe_seconds": 60,
+      "rows": 630444,
+      "first_utc": "2025-08-01T00:00:00+00:00",
+      "last_bar_open_utc": "2026-10-13T00:02:00+00:00",
+      "gap_count": 25,
+      "largest_gap_seconds": 4560,
+      "zero_or_negative_spread_bars": 0,
+      "spread_points_median": 1260.0,
+      "spread_points_p95": 1512.0,
+      "schema": [
+        [
+          "time",
+          "int64"
+        ],
+        [
+          "open",
+          "float64"
+        ],
+        [
+          "high",
+          "float64"
+        ],
+        [
+          "low",
+          "float64"
+        ],
+        [
+          "close",
+          "float64"
+        ],
+        [
+          "tick_volume",
+          "uint64"
+        ],
+        [
+          "spread",
+          "int32"
+        ],
+        [
+          "real_volume",
+          "uint64"
+        ]
+      ]
+    },
+    {
+      "relative_path": "Bitcoin OBV Walk Forward Research 2026-09-09/Data/BTCUSD-M5.npz",
+      "sha256": "2b2cd03139ff0ec75e98f9fba8d4c4baa0bbecaaae614b8196517b1902ddeb8d",
+      "metadata_relative_path": "Bitcoin OBV Walk Forward Research 2026-09-09/Data/metadata.json",
+      "metadata_sha256": "c9ab35bcbc4f1637a29813c33764da5b1b17f4fe9a17935985123f1caa26c6e6",
+      "server": "Exness-MT5Trial16",
+      "timeframe_seconds": 300,
+      "rows": 490205,
+      "first_utc": "2022-01-01T00:00:00+00:00",
+      "last_bar_open_utc": "2026-08-31T23:55:00+00:00",
+      "gap_count": 52,
+      "largest_gap_seconds": 84600,
+      "zero_or_negative_spread_bars": 125578,
+      "spread_points_median": 1098.0,
+      "spread_points_p95": 2801.0,
+      "schema": [
+        [
+          "time",
+          "int64"
+        ],
+        [
+          "open",
+          "float64"
+        ],
+        [
+          "high",
+          "float64"
+        ],
+        [
+          "low",
+          "float64"
+        ],
+        [
+          "close",
+          "float64"
+        ],
+        [
+          "tick_volume",
+          "uint64"
+        ],
+        [
+          "spread",
+          "int32"
+        ],
+        [
+          "real_volume",
+          "uint64"
+        ]
+      ]
+    }
+  ],
+  "execution": "Offline NumPy only; no MT5, network, subprocesses, live charts, trading, or package changes"
+}

@@ -1,0 +1,142 @@
+{
+  "tag": "allrr05-xau-elliott-wave-1-2-3-two-week-067d56035da9",
+  "slug": "xau-elliott-wave-1-2-3",
+  "variant": "two-week-067d56035da9",
+  "window": [
+    "2026.09.25",
+    "2026.10.09"
+  ],
+  "inputs": {
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpAllowLong": "true",
+    "InpAllowShort": "true",
+    "InpPivotStrength": "3",
+    "InpPivotLookback": "300",
+    "InpMinimumWave1ATR": "1.5",
+    "InpMaximumWave1ATR": "10",
+    "InpMinimumWave2Retrace": "0.382",
+    "InpMaximumWave2Retrace": "0.786",
+    "InpBreakoutBufferATR": "0.05",
+    "InpMinimumBreakoutBodyATR": "0.15",
+    "InpTrendFilter": "1",
+    "InpFastEMA": "20",
+    "InpSlowEMA": "50",
+    "InpSlopeLookback": "3",
+    "InpStopMode": "1",
+    "InpStopBufferATR": "0.1",
+    "InpStopATR": "2",
+    "InpMaximumStopATR": "5",
+    "InpRewardRisk": "3",
+    "InpUseBreakEven": "false",
+    "InpBreakEvenAtR": "1",
+    "InpBreakEvenLockR": "0",
+    "InpUseATRTrailing": "false",
+    "InpTrailStartAtR": "1",
+    "InpTrailATR": "2",
+    "InpUseDynamicM15Stop": "false",
+    "InpDynamicTriggerR": "0.5",
+    "InpDynamicLockR": "0.2",
+    "InpMaximumHoldingBars": "0",
+    "InpSession": "0",
+    "InpMaximumSpreadATR": "0.15",
+    "InpMaximumDeviationPoints": "80",
+    "InpMagic": "965090002",
+    "InpRR05AuditTag": "allrr05-xau-elliott-wave-1-2-3-two-week-067d56035da9"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 9982.84,
+    "net_profit": -17.16,
+    "return_pct": -0.17,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "max_drawdown_pct": 0.76,
+    "trades": 1,
+    "sharpe_ratio": -0.03,
+    "recovery_factor": -0.23,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 0.76,
+    "balance_dd_pct": 0.17
+  },
+  "metrics": {
+    "trades": 1,
+    "return_pct": -0.1716,
+    "net_profit": -17.16,
+    "pf": 0.0,
+    "wins": 0,
+    "losses": 1,
+    "flat": 0,
+    "win_rate": 0.0,
+    "equity_dd_pct": 0.76,
+    "balance_dd_pct": 0.17,
+    "sharpe_daily_equity": -1.1032739409900951,
+    "win_streak": 0,
+    "loss_streak": 1,
+    "avg_win": null,
+    "avg_loss": -17.16,
+    "partial_positions": 0,
+    "exit_legs": 1,
+    "commission": -0.06,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1790956800,
+      "close_epoch": 1791503998,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 0.01,
+      "open_price": 4127.539,
+      "close_price": 4144.643,
+      "net": -17.16,
+      "magic": 965090002,
+      "sl": 4232.183,
+      "tp": 3813.607,
+      "entry_comment": "EW 1-2-3 short",
+      "exit_comments": [
+        "end of test"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -17.1,
+      "commission": -0.06,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1790956800,
+      "deal": 2,
+      "balance": 9999.94,
+      "net": -0.06
+    },
+    {
+      "epoch": 1791503998,
+      "deal": 3,
+      "balance": 9982.84,
+      "net": -17.1
+    }
+  ],
+  "seconds": 8.977701187133789,
+  "binary_sha256": "c867ea3fbd30a1c0fe7a5d3e432de5036b2d5845a4407fd5c343189a887da3fb",
+  "report_sha256": "6eb10b216a40931d53c78f113675d3001a5388a504865f81369de881fc1c184f",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

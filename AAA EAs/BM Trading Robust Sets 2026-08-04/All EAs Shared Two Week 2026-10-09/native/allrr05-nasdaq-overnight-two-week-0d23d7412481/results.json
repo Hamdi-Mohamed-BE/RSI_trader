@@ -1,0 +1,216 @@
+{
+  "tag": "allrr05-nasdaq-overnight-two-week-0d23d7412481",
+  "slug": "nasdaq-overnight",
+  "variant": "two-week-0d23d7412481",
+  "window": [
+    "2026.09.25",
+    "2026.10.09"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpUseDynamicTrailingSL": "false",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpEnableTrading": "true",
+    "InpRequireNegativeDay": "true",
+    "InpNegativeDayDefinition": "0",
+    "InpNegativeDayThresholdPercent": "0",
+    "InpAllowFridayEntry": "true",
+    "InpCashOpenHour": "9",
+    "InpCashOpenMinute": "30",
+    "InpCashCloseHour": "16",
+    "InpCashCloseMinute": "0",
+    "InpEntryHour": "16",
+    "InpEntryMinute": "0",
+    "InpExitHour": "9",
+    "InpExitMinute": "29",
+    "InpEntryWindowMinutes": "10",
+    "InpExitWindowMinutes": "31",
+    "InpMinimumCashSessionBars": "300",
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpEmergencyStopPercent": "2",
+    "InpRewardRisk": "0",
+    "InpMaxSpreadPoints": "0",
+    "InpMaxDeviationPoints": "30",
+    "InpMagic": "84081601",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpTesterServerUTCOffsetHours": "0",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpRR05AuditTag": "allrr05-nasdaq-overnight-two-week-0d23d7412481"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 9994.16,
+    "net_profit": -5.84,
+    "return_pct": -0.06,
+    "profit_factor": 0.79,
+    "win_rate_pct": 66.67,
+    "max_drawdown_pct": 0.57,
+    "trades": 3,
+    "sharpe_ratio": -0.05,
+    "recovery_factor": -0.1,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 0.57,
+    "balance_dd_pct": 0.28
+  },
+  "metrics": {
+    "trades": 3,
+    "return_pct": -0.058400000000000014,
+    "net_profit": -5.84,
+    "pf": 0.7927608232789213,
+    "wins": 2,
+    "losses": 1,
+    "flat": 0,
+    "win_rate": 66.66666666666667,
+    "equity_dd_pct": 0.57,
+    "balance_dd_pct": 0.28,
+    "sharpe_daily_equity": -0.7732853128396022,
+    "win_streak": 1,
+    "loss_streak": 1,
+    "avg_win": 11.17,
+    "avg_loss": -28.18,
+    "partial_positions": 0,
+    "exit_legs": 3,
+    "commission": -0.33,
+    "swap": -2.32,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1790625600,
+      "close_epoch": 1790688540,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.17,
+      "open_price": 30334.51,
+      "close_price": 30466.9,
+      "net": 21.24,
+      "magic": 84081601,
+      "sl": 29727.46,
+      "tp": 0.0,
+      "entry_comment": "Overnight after -1.029% cash da",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 22.51,
+      "commission": -0.11,
+      "swap": -1.16,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1791403200,
+      "close_epoch": 1791466140,
+      "last_deal": 5,
+      "side": "Long",
+      "volume": 0.17,
+      "open_price": 31189.5,
+      "close_price": 31031.199999999997,
+      "net": -28.18,
+      "magic": 84081601,
+      "sl": 30562.64,
+      "tp": 0.0,
+      "entry_comment": "Overnight after -0.270% cash da",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -26.91,
+      "commission": -0.11,
+      "swap": -1.16,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1791489600,
+      "close_epoch": 1791503998,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 0.17,
+      "open_price": 30773.45,
+      "close_price": 30780.55,
+      "net": 1.1,
+      "magic": 84081601,
+      "sl": 30154.31,
+      "tp": 0.0,
+      "entry_comment": "Overnight after -1.336% cash da",
+      "exit_comments": [
+        "end of test"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 1.21,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1790625600,
+      "deal": 2,
+      "balance": 9999.89,
+      "net": -0.11
+    },
+    {
+      "epoch": 1790688540,
+      "deal": 3,
+      "balance": 10021.24,
+      "net": 21.35
+    },
+    {
+      "epoch": 1791403200,
+      "deal": 4,
+      "balance": 10021.13,
+      "net": -0.11
+    },
+    {
+      "epoch": 1791466140,
+      "deal": 5,
+      "balance": 9993.06,
+      "net": -28.07
+    },
+    {
+      "epoch": 1791489600,
+      "deal": 6,
+      "balance": 9992.95,
+      "net": -0.11
+    },
+    {
+      "epoch": 1791503998,
+      "deal": 7,
+      "balance": 9994.16,
+      "net": 1.21
+    }
+  ],
+  "seconds": 12.78551959991455,
+  "binary_sha256": "f137f5b9920c032d9d430434acf93e6a9c90dc57823ca582cf321a35bb9519cc",
+  "report_sha256": "b563c73b7f0d4a77b6a5995f2643ea3f8d4e101a0aadcb8bb30a6fea1c045ded",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

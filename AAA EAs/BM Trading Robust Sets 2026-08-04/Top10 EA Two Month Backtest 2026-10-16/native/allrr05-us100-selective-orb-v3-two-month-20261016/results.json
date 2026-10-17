@@ -1,0 +1,183 @@
+{
+  "tag": "allrr05-us100-selective-orb-v3-two-month-20261016",
+  "slug": "us100-selective-orb-v3",
+  "variant": "two-month-20261016",
+  "window": [
+    "2026.08.16",
+    "2026.10.16"
+  ],
+  "inputs": {
+    "InpOpeningRangeMinutes": "30",
+    "InpEntryCutoffHour": "11",
+    "InpEntryCutoffMinute": "30",
+    "InpFlatHour": "15",
+    "InpFlatMinute": "55",
+    "InpSignalTimeframe": "5",
+    "InpBaselineDays": "20",
+    "InpMinimumOpeningRelativeVolume": "0.60",
+    "InpMinimumRangeDailyATR": "0.05",
+    "InpMaximumRangeDailyATR": "0.35",
+    "InpMinimumBreakoutRelativeVolume": "0.90",
+    "InpBreakoutBodyMinimum": "0.75",
+    "InpBreakoutBufferDailyATR": "0.015",
+    "InpRequireSessionVWAP": "true",
+    "InpTradeDirection": "0",
+    "InpUseTimeDirectionFilter": "true",
+    "InpLongOnlyStartHour": "10",
+    "InpLongOnlyStartMinute": "30",
+    "InpShortOnlyStartHour": "11",
+    "InpShortOnlyStartMinute": "0",
+    "InpMaximumRetestBars": "3",
+    "InpRetestToleranceRange": "0.25",
+    "InpMaximumPreRetestExcursionRange": "0.60",
+    "InpRiskPercent": "1",
+    "InpFixedRiskMoney": "0.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpStopBufferRange": "0.05",
+    "InpMaximumStopDailyATR": "0.80",
+    "InpRewardRisk": "0.5",
+    "InpBreakEvenAtR": "1.00",
+    "InpMaximumSpreadRangePercent": "10.0",
+    "InpMaximumDeviationPoints": "50",
+    "InpMagic": "86260823",
+    "InpOptimizeForWinRate": "false",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpTesterServerUTCOffsetHours": "0",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpRR05AuditTag": "allrr05-us100-selective-orb-v3-two-month-20261016"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10012.59,
+    "net_profit": 12.59,
+    "return_pct": 0.13,
+    "profit_factor": 3.03,
+    "win_rate_pct": 50.0,
+    "max_drawdown_pct": 0.69,
+    "trades": 2,
+    "sharpe_ratio": 0.06,
+    "recovery_factor": 0.18,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 0.69,
+    "balance_dd_pct": 0.06
+  },
+  "metrics": {
+    "trades": 2,
+    "return_pct": 0.1259,
+    "net_profit": 12.59,
+    "pf": 3.1782006920415227,
+    "wins": 1,
+    "losses": 1,
+    "flat": 0,
+    "win_rate": 50.0,
+    "equity_dd_pct": 0.69,
+    "balance_dd_pct": 0.06,
+    "sharpe_daily_equity": 1.5735652227946653,
+    "win_streak": 1,
+    "loss_streak": 1,
+    "avg_win": 18.37,
+    "avg_loss": -5.78,
+    "partial_positions": 0,
+    "exit_legs": 2,
+    "commission": -0.79,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1788358800,
+      "close_epoch": 1788378900,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.68,
+      "open_price": 29136.0,
+      "close_price": 29163.64,
+      "net": 18.37,
+      "magic": 86260823,
+      "sl": 28988.43,
+      "tp": 29210.91,
+      "entry_comment": "ORB 30m M5 NY09:30 V3Retest",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 18.8,
+      "commission": -0.43,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1791815100,
+      "close_epoch": 1791834900,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 0.57,
+      "open_price": 30687.2,
+      "close_price": 30696.7,
+      "net": -5.78,
+      "magic": 86260823,
+      "sl": 30864.08,
+      "tp": 30599.14,
+      "entry_comment": "ORB 30m M5 NY09:30 V3Retest",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -5.42,
+      "commission": -0.36,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1788358800,
+      "deal": 2,
+      "balance": 9999.57,
+      "net": -0.43
+    },
+    {
+      "epoch": 1788378900,
+      "deal": 3,
+      "balance": 10018.37,
+      "net": 18.8
+    },
+    {
+      "epoch": 1791815100,
+      "deal": 4,
+      "balance": 10018.01,
+      "net": -0.36
+    },
+    {
+      "epoch": 1791834900,
+      "deal": 5,
+      "balance": 10012.59,
+      "net": -5.42
+    }
+  ],
+  "seconds": 28.20052933692932,
+  "binary_sha256": "b994ba308c087ce4408d441b654587c80d7c86aeee58c68e6cc2baf2eba2e989",
+  "report_sha256": "c725d5d74c3c069cdc3a0dd2388d4c38a45c65e4266a2fb18a1a243da99913fe",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true,
+  "boundary_liquidation_positions": [],
+  "ranking_includes_boundary_liquidations": true,
+  "current_active_input_verification": true
+}

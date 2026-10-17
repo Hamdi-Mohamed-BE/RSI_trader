@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-10-16T16:55:23.326Z",
+  "scope": "Independent pre-launch read-only verification of the fresh last-two-month standalone EA backtest plan. No strategy selection, account/terminal API or native test launch by this reviewer.",
+  "verdict": "PREFLIGHT_PASS",
+  "requested_window_utc": {
+    "start_inclusive": "2026-08-16T00:00:00Z",
+    "end_exclusive": "2026-10-16T00:00:00Z"
+  },
+  "ranking": "At least one executed position; descending native ending net return including explicitly flagged tester-end liquidations; zero-trade cases shown unranked; natural-only secondary.",
+  "checks": {
+    "current_recommended_full_roster_count": 37,
+    "independently_resolved_installer_items": 37,
+    "all_current_input_dictionaries_match": true,
+    "all_source_and_preset_paths_match": true,
+    "production_unique_files_hash_checked": 128,
+    "production_hash_failures": [],
+    "selected_ex5_and_set_snapshots_checked": 74,
+    "frozen_file_hash_failures": [],
+    "calendar_events_checked": 5,
+    "gold_news_v9_is_explicitly_unavailable": true,
+    "no_live_changes": true
+  },
+  "independent_method": {
+    "description": "Imported only explicitly allowlisted pure PowerShell function definitions via Parser::ParseFile AST, never evaluated the installer script body. Resolved recommended Safe/Dynamic sets and Get-EffectiveInputs independently; compared each full dictionary and source/preset path with PLAN cases.",
+    "allowlist": [
+      "Select-NormalNewsItems",
+      "Stop-WithMessage",
+      "Get-PortfolioItems",
+      "Read-SetInputs",
+      "Test-NewsAdaptiveExemption",
+      "Get-EffectiveInputs"
+    ],
+    "normalization": "Normal dynamic risk 1%; news0.10% per order; adaptive governor disabled; fixed USD inputs remain inactive under percent modes. Entry/exit/filter settings otherwise come from current full Recommended normal BAT defaults.",
+    "comparison_exclusions": [
+      "InpTesterFromDateUTC",
+      "InpTesterToDateUTC",
+      "InpAuditTag"
+    ],
+    "evidence": [
+      {
+        "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Auto Deploy\\Install-BMTradingPortfolio.ps1",
+        "lines": [
+          78,
+          99,
+          195,
+          380,
+          516,
+          536,
+          641,
+          653
+        ]
+      },
+      {
+        "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_00 Live profiles\\Start-LiveProfile.ps1",
+        "lines": [
+          64,
+          84,
+          87,
+          90
+        ]
+      }
+    ]
+  },
+  "critical_current_settings": {
+    "safe_markov_on": [
+      "LTA Volume Profile",
+      "AAA Final XAU Weakness",
+      "XAU Squeeze Momentum Standard"
+    ],
+    "ema3_added_filter_removed": true,
+    "asia_existing_markov_on": true,
+    "nasdaq": {
+      "di_on": true,
+      "di_period": 14,
+      "initial_stop_percent": 0.6,
+      "fixed_tp": false,
+      "atr_trail_multiplier": 6,
+      "trail_start_r": 1
+    },
+    "usdjpy": {
+      "adx_on": true,
+      "adx_minimum": 20,
+      "di_on": true
+    },
+    "trend_progression_target_r": 0.6,
+    "slow_trend_target_r": 1,
+    "five_orb_target_r": 0.5,
+    "other_orb_volume_target_r": 2.5,
+    "hourly": {
+      "sizing_mode": 1,
+      "risk_percent": 1,
+      "us30_historical_loss_points": 611.53,
+      "us100_historical_loss_points": 358.71,
+      "no_protective_stop": true,
+      "not_actual_maximum_loss_cap": true
+    },
+    "weakness_split_risk": "Existing idea risk split across two half-risk pending entries retained",
+    "three_way_gold_risk": "1% per module, not 1% for all three combined"
+  },
+  "unavailable": {
+    "gold-news-v9-direction": "No historical pre-release AI direction/confidence ledger. Live HTTP/file bridge will not be called. Not a zero-profit test."
+  },
+  "calendar_epochs": [
+    {
+      "kind": "NFP",
+      "epoch": 1788525000
+    },
+    {
+      "kind": "CPI",
+      "epoch": 1789129800
+    },
+    {
+      "kind": "FOMC",
+      "epoch": 1789581600
+    },
+    {
+      "kind": "NFP",
+      "epoch": 1790944200
+    },
+    {
+      "kind": "CPI",
+      "epoch": 1791981000
+    }
+  ],
+  "caveats": [
+    "Ranks are hindsight-selected within the evaluation window, not untouched validation.",
+    "Standalone native results are not a simultaneous shared-margin portfolio, and not the full BAT adaptive-risk account overlay.",
+    "37 current catalogue entries include one unreproducible AI-news model; do not report it as zero returns.",
+    "Hourly historical-loss sizing has no protective SL; future losses can exceed the nominal1% scenario.",
+    "Tester-end closures are included in the preregistered primary return and must remain separately identifiable.",
+    "Trade/position/partial counts, cash and exact native DD require post-run evidence verification; this is only preflight."
+  ]
+}

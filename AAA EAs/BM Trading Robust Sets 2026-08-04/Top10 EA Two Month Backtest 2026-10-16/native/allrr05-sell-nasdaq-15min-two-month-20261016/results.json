@@ -1,0 +1,410 @@
+{
+  "tag": "allrr05-sell-nasdaq-15min-two-month-20261016",
+  "slug": "sell-nasdaq-15min",
+  "variant": "two-month-20261016",
+  "window": [
+    "2026.08.16",
+    "2026.10.16"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpEnableTrading": "true",
+    "InpNewYorkOpenHour": "9.5",
+    "InpOpeningRangeMinutes": "15",
+    "InpRequirePriorLondonBearish": "true",
+    "InpMinimumBodyFraction": "0.0",
+    "InpMinimumSetupRangePips": "0.0",
+    "InpMaximumSetupRangePips": "0.0",
+    "InpEntryBufferPips": "0.0",
+    "InpEntryWindowMinutes": "60",
+    "InpCancelIfSetupHighBreaks": "false",
+    "InpTradeMonday": "true",
+    "InpTradeTuesday": "true",
+    "InpTradeWednesday": "true",
+    "InpTradeThursday": "true",
+    "InpTradeFriday": "true",
+    "InpRiskPercent": "1",
+    "InpAdaptivePortfolioControls": "false",
+    "InpStopMode": "3",
+    "InpStopPips": "600.0",
+    "InpStopRangeMultiple": "1.0",
+    "InpAtrPeriod": "14",
+    "InpStopAtrMultiple": "2.5",
+    "InpDynamicStopBufferPips": "0.0",
+    "InpMinimumDynamicStopPips": "0.0",
+    "InpMaximumDynamicStopPips": "0.0",
+    "InpTargetMode": "1",
+    "InpTargetPips": "1000.0",
+    "InpTargetRMultiple": "3.0",
+    "InpTargetRangeMultiple": "2.0",
+    "InpTargetAtrMultiple": "3.0",
+    "InpHardExitNyHour": "15.9166667",
+    "InpBreakEvenAtR": "0.0",
+    "InpTrailStartAtR": "0.0",
+    "InpTrailDistanceR": "0.5",
+    "InpUseDynamic5020": "false",
+    "InpMaxSpreadBrokerPoints": "0",
+    "InpMaxDeviationBrokerPoints": "30",
+    "InpMagic": "981008002",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpTesterServerClock": "0",
+    "InpTesterManualUTCOffsetHours": "0",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpRR05AuditTag": "allrr05-sell-nasdaq-15min-two-month-20261016"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 9611.66,
+    "net_profit": -388.34,
+    "return_pct": -3.88,
+    "profit_factor": 0.24,
+    "win_rate_pct": 37.5,
+    "max_drawdown_pct": 5.29,
+    "trades": 8,
+    "sharpe_ratio": -1.74,
+    "recovery_factor": -0.73,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 5.29,
+    "balance_dd_pct": 4.32
+  },
+  "metrics": {
+    "trades": 8,
+    "return_pct": -3.8834000000000004,
+    "net_profit": -388.34,
+    "pf": 0.23454161985295563,
+    "wins": 3,
+    "losses": 5,
+    "flat": 0,
+    "win_rate": 37.5,
+    "equity_dd_pct": 5.29,
+    "balance_dd_pct": 4.32,
+    "sharpe_daily_equity": -3.2497229151565437,
+    "win_streak": 2,
+    "loss_streak": 4,
+    "avg_win": 39.663333333333334,
+    "avg_loss": -101.46600000000001,
+    "partial_positions": 0,
+    "exit_legs": 8,
+    "commission": -4.21,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1786975703,
+      "close_epoch": 1786979053,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 1.0,
+      "open_price": 30092.39,
+      "close_price": 30194.27,
+      "net": -102.51,
+      "magic": 981008002,
+      "sl": 30194.11,
+      "tp": 29793.28,
+      "entry_comment": "Sell Nasdaq dynamic exit resear",
+      "exit_comments": [
+        "sl 30194.11"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.88,
+      "commission": -0.63,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1787061308,
+      "close_epoch": 1787082900,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 0.92,
+      "open_price": 29560.69,
+      "close_price": 29505.7,
+      "net": 50.01,
+      "magic": 981008002,
+      "sl": 29673.16,
+      "tp": 29239.32,
+      "entry_comment": "Sell Nasdaq dynamic exit resear",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.59,
+      "commission": -0.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1787147293,
+      "close_epoch": 1787169300,
+      "last_deal": 7,
+      "side": "Short",
+      "volume": 0.66,
+      "open_price": 29486.08,
+      "close_price": 29446.259999999995,
+      "net": 25.87,
+      "magic": 981008002,
+      "sl": 29644.72,
+      "tp": 29040.85,
+      "entry_comment": "Sell Nasdaq dynamic exit resear",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 26.28,
+      "commission": -0.41,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1788875583,
+      "close_epoch": 1788880434,
+      "last_deal": 9,
+      "side": "Short",
+      "volume": 0.73,
+      "open_price": 29455.72,
+      "close_price": 29598.37,
+      "net": -104.59,
+      "magic": 981008002,
+      "sl": 29598.05,
+      "tp": 29046.87,
+      "entry_comment": "Sell Nasdaq dynamic exit resear",
+      "exit_comments": [
+        "sl 29598.05"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.13,
+      "commission": -0.46,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 11,
+      "open_epoch": 1790862413,
+      "close_epoch": 1790876746,
+      "last_deal": 11,
+      "side": "Short",
+      "volume": 0.77,
+      "open_price": 30506.6,
+      "close_price": 30636.1,
+      "net": -100.2,
+      "magic": 981008002,
+      "sl": 30636.0,
+      "tp": 30119.44,
+      "entry_comment": "Sell Nasdaq dynamic exit resear",
+      "exit_comments": [
+        "sl 30636.00"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -99.72,
+      "commission": -0.48,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 13,
+      "open_epoch": 1791380878,
+      "close_epoch": 1791382870,
+      "last_deal": 13,
+      "side": "Short",
+      "volume": 0.86,
+      "open_price": 30936.23,
+      "close_price": 31053.75,
+      "net": -101.61,
+      "magic": 981008002,
+      "sl": 31053.71,
+      "tp": 30598.53,
+      "entry_comment": "Sell Nasdaq dynamic exit resear",
+      "exit_comments": [
+        "sl 31053.71"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.07,
+      "commission": -0.54,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 15,
+      "open_epoch": 1791553504,
+      "close_epoch": 1791571847,
+      "last_deal": 15,
+      "side": "Short",
+      "volume": 0.84,
+      "open_price": 30820.81,
+      "close_price": 30937.349999999995,
+      "net": -98.42,
+      "magic": 981008002,
+      "sl": 30937.17,
+      "tp": 30472.07,
+      "entry_comment": "Sell Nasdaq dynamic exit resear",
+      "exit_comments": [
+        "sl 30937.17"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -97.89,
+      "commission": -0.53,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 17,
+      "open_epoch": 1791813919,
+      "close_epoch": 1791834900,
+      "last_deal": 17,
+      "side": "Short",
+      "volume": 0.92,
+      "open_price": 30744.19,
+      "close_price": 30696.700000000004,
+      "net": 43.11,
+      "magic": 981008002,
+      "sl": 30850.49,
+      "tp": 30432.33,
+      "entry_comment": "Sell Nasdaq dynamic exit resear",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 43.69,
+      "commission": -0.58,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1786975703,
+      "deal": 2,
+      "balance": 9999.37,
+      "net": -0.63
+    },
+    {
+      "epoch": 1786979053,
+      "deal": 3,
+      "balance": 9897.49,
+      "net": -101.88
+    },
+    {
+      "epoch": 1787061308,
+      "deal": 4,
+      "balance": 9896.91,
+      "net": -0.58
+    },
+    {
+      "epoch": 1787082900,
+      "deal": 5,
+      "balance": 9947.5,
+      "net": 50.59
+    },
+    {
+      "epoch": 1787147293,
+      "deal": 6,
+      "balance": 9947.09,
+      "net": -0.41
+    },
+    {
+      "epoch": 1787169300,
+      "deal": 7,
+      "balance": 9973.37,
+      "net": 26.28
+    },
+    {
+      "epoch": 1788875583,
+      "deal": 8,
+      "balance": 9972.91,
+      "net": -0.46
+    },
+    {
+      "epoch": 1788880434,
+      "deal": 9,
+      "balance": 9868.78,
+      "net": -104.13
+    },
+    {
+      "epoch": 1790862413,
+      "deal": 10,
+      "balance": 9868.3,
+      "net": -0.48
+    },
+    {
+      "epoch": 1790876746,
+      "deal": 11,
+      "balance": 9768.58,
+      "net": -99.72
+    },
+    {
+      "epoch": 1791380878,
+      "deal": 12,
+      "balance": 9768.04,
+      "net": -0.54
+    },
+    {
+      "epoch": 1791382870,
+      "deal": 13,
+      "balance": 9666.97,
+      "net": -101.07
+    },
+    {
+      "epoch": 1791553504,
+      "deal": 14,
+      "balance": 9666.44,
+      "net": -0.53
+    },
+    {
+      "epoch": 1791571847,
+      "deal": 15,
+      "balance": 9568.55,
+      "net": -97.89
+    },
+    {
+      "epoch": 1791813919,
+      "deal": 16,
+      "balance": 9567.97,
+      "net": -0.58
+    },
+    {
+      "epoch": 1791834900,
+      "deal": 17,
+      "balance": 9611.66,
+      "net": 43.69
+    }
+  ],
+  "seconds": 30.85131311416626,
+  "binary_sha256": "9df726a0fe865d32b62651e9e397ab03742fac3f8426d71bce8a2f9f5bb072ff",
+  "report_sha256": "c72326eb5f7cbdcc560bffbb1f91b9c99770cea362733b34adac9f2bcdfcb752",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true,
+  "boundary_liquidation_positions": [],
+  "ranking_includes_boundary_liquidations": true,
+  "current_active_input_verification": true
+}

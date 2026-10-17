@@ -1,0 +1,89 @@
+CHRONOS-2 GOLD M15 PILOT
+Held-out: May-July 2026; validation: February-April 2026
+Fixed one-ounce exposure. Costs are bar-spread proxies plus $0.27/oz round trip.
+Not a live fill simulation. No account balance or margin assumptions.
+
+Unfiltered held-out comparisons:
+         model  horizon  direction_accuracy  trades  win_rate       pf  net_usd_per_oz      mean  realized_dd_usd_per_oz
+       Chronos       15            0.506602    1441  0.458709 0.842802     -592.990781 -0.411513              596.980625
+   Always long       15            0.494788    1441  0.443442 0.770398     -904.870254 -0.627946              971.149131
+      Momentum       15            0.471855    1441  0.426787 0.737065    -1060.105098 -0.735673             1147.105010
+Mean reversion       15            0.528145    1441  0.480916 0.880815     -438.534902 -0.304327              492.235273
+       Chronos       30            0.486806    1441  0.455239 0.811695     -956.300537 -0.663637              976.971221
+   Always long       30            0.500000    1441  0.460097 0.792333    -1065.012100 -0.739078             1134.272910
+      Momentum       30            0.486111    1441  0.453851 0.774169    -1171.738643 -0.813143             1249.838457
+Mean reversion       30            0.513889    1441  0.480222 0.931085     -326.901357 -0.226857              465.369561
+       Chronos       60            0.463194    1441  0.435115 0.760933    -1785.314834 -1.238942             1967.144531
+   Always long       60            0.470833    1441  0.453158 0.792394    -1521.018447 -1.055530             1600.317217
+      Momentum       60            0.488194    1441  0.465649 0.767530    -1724.038936 -1.196418             1872.556484
+Mean reversion       60            0.511806    1441  0.489938 1.035091      225.398936  0.156418              413.559492
+
+Forecast accuracy:
+ horizon      mae  naive_mae  interval_coverage
+      15 5.054775   4.801770           0.784872
+      30 6.618432   6.353630           0.777932
+      60 9.620657   9.067895           0.782790
+
+Rule chosen using validation only:
+{
+  "horizon": 15,
+  "threshold": 0.1,
+  "trades": 463,
+  "win_rate": 0.509719222462203,
+  "pf": 1.0257353242827838,
+  "net_usd_per_oz": 48.51886718749827,
+  "mean": 0.10479236973541743,
+  "realized_dd_usd_per_oz": 279.482207031248
+}
+Held-out selected rule:
+{
+  "trades": 472,
+  "win_rate": 0.4385593220338983,
+  "pf": 0.7558830759417551,
+  "net_usd_per_oz": -364.4008300781319,
+  "mean": -0.7720356569451947,
+  "realized_dd_usd_per_oz": 370.7712207031315,
+  "coverage": 0.3275503122831367
+}
+Monthly:
+{
+  "2026-05": {
+    "trades": 159,
+    "win_rate": 0.4591194968553459,
+    "pf": 0.6645608253818919,
+    "net_usd_per_oz": -179.09117187499913,
+    "mean": -1.126359571540875,
+    "realized_dd_usd_per_oz": 183.66150390624898
+  },
+  "2026-06": {
+    "trades": 150,
+    "win_rate": 0.44666666666666666,
+    "pf": 1.0422157591332455,
+    "net_usd_per_oz": 21.191005859367657,
+    "mean": 0.14127337239578439,
+    "realized_dd_usd_per_oz": 62.28979492187466
+  },
+  "2026-07": {
+    "trades": 163,
+    "win_rate": 0.4110429447852761,
+    "pf": 0.5480011562425672,
+    "net_usd_per_oz": -206.5006640625004,
+    "mean": -1.2668752396472416,
+    "realized_dd_usd_per_oz": 208.30072265625068
+  }
+}
+Additional $0.50/oz cost stress:
+{
+  "trades": 472,
+  "win_rate": 0.3940677966101695,
+  "pf": 0.6318818049328225,
+  "net_usd_per_oz": -600.4008300781318,
+  "mean": -1.2720356569451945,
+  "realized_dd_usd_per_oz": 603.971162109377
+}
+95% day-block bootstrap interval for mean net P/L per trade:
+[-1.602840155611399, 0.08334136385659326]
+
+Limits: one broker archive, three test months, hourly origins on M15 bars,
+compressed overnight/weekend history, unverified archive timezone, estimated costs,
+no event-specific attribution, no assurance of exclusion from pretraining data.

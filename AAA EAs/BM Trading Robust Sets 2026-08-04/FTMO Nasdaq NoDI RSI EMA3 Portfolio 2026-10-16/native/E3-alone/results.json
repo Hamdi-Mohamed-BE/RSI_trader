@@ -1,0 +1,66 @@
+{
+  "manifest": {
+    "tag": "E3-alone",
+    "start": "2026-08-16",
+    "end_exclusive": "2026-10-16",
+    "trading_from_epoch": 0,
+    "primary_symbol": "XAUUSD",
+    "period": "H4",
+    "deposit": 10000,
+    "leverage": 15,
+    "model": 4,
+    "execution_delay_ms": 150,
+    "binary_sha256": "5edb209ba3a7e5faeab2aa2014ce8f57285ec8e82de89d63bcf7392a3929087d",
+    "config_sha256": "0859933bfd6d6ecc7a3bb1ce78b262f1f9ca4e765810aab8fea09b3b3cc846f2",
+    "inputs": {
+      "InpCase": "3",
+      "InpNasdaqDI": "false",
+      "InpChallenge": "false",
+      "InpPhase": "1",
+      "InpTag": "E3-alone",
+      "InpTradingFromEpoch": "0"
+    },
+    "case": {
+      "tag": "E3-alone",
+      "index": 3,
+      "di": false,
+      "challenge": false,
+      "phase": 1
+    }
+  },
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 9919.79,
+    "net_profit": -80.21,
+    "return_pct": -0.8,
+    "profit_factor": 0.87,
+    "win_rate_pct": 42.86,
+    "max_drawdown_pct": 3.84,
+    "trades": 7,
+    "sharpe_ratio": -0.05,
+    "recovery_factor": -0.21,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 3.84,
+    "balance_dd_pct": 2.14
+  },
+  "seconds": 42.0,
+  "warnings": {
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 0,
+    "not_enough_money": 0,
+    "entry_reject": 0
+  },
+  "report_sha256": "c3b1da18cdab35dec6b17c0c54149de25d145d213f22bea0c2bff46938703464",
+  "tick_notes": [
+    "CS\t0\t18:47:47.178\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "CS\t0\t18:47:48.243\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "MD\t0\t18:47:49.900\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "MS\t0\t18:47:49.900\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "raw_deals": 14,
+  "audit": [
+    "FTMO3_COMPLETE tag=E3-alone status=0 first=1786838400 last=1792108798 balance=9919.79 observed_daily_monitoring=primary_ticks_plus_1s_timer",
+    "FTMO3_COMPLETE tag=E3-alone status=0 first=1786838400 last=1792108798 balance=9919.79 observed_daily_monitoring=primary_ticks_plus_1s_timer"
+  ]
+}

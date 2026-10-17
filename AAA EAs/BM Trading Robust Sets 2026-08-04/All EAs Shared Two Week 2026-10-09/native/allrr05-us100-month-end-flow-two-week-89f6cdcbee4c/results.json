@@ -1,0 +1,199 @@
+{
+  "tag": "allrr05-us100-month-end-flow-two-week-89f6cdcbee4c",
+  "slug": "us100-month-end-flow",
+  "variant": "two-week-89f6cdcbee4c",
+  "window": [
+    "2026.09.25",
+    "2026.10.09"
+  ],
+  "inputs": {
+    "InpSignalTimeframe": "30",
+    "InpCalendarWindow": "5",
+    "InpEntryTime": "2",
+    "InpConfirmation": "0",
+    "InpTrendFilter": "0",
+    "InpDirection": "0",
+    "InpMaximumHoldHours": "6",
+    "InpStopMode": "0",
+    "InpStopValue": "1.5",
+    "InpRewardRisk": "2.5",
+    "InpManagement": "0",
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMaximumSpreadRiskPercent": "20.0",
+    "InpMaximumDeviationPoints": "100",
+    "InpMagic": "969060500",
+    "InpTesterOnly": "false",
+    "InpTesterServerUTCOffsetHours": "0",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpRR05AuditTag": "allrr05-us100-month-end-flow-two-week-89f6cdcbee4c"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10122.59,
+    "net_profit": 122.59,
+    "return_pct": 1.23,
+    "profit_factor": 2.19,
+    "win_rate_pct": 66.67,
+    "max_drawdown_pct": 1.9,
+    "trades": 3,
+    "sharpe_ratio": 0.43,
+    "recovery_factor": 0.63,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 1.9,
+    "balance_dd_pct": 1.01
+  },
+  "metrics": {
+    "trades": 3,
+    "return_pct": 1.2259,
+    "net_profit": 122.59,
+    "pf": 2.2019805863319935,
+    "wins": 2,
+    "losses": 1,
+    "flat": 0,
+    "win_rate": 66.66666666666667,
+    "equity_dd_pct": 1.9,
+    "balance_dd_pct": 1.01,
+    "sharpe_daily_equity": 3.3444026263236077,
+    "win_streak": 1,
+    "loss_streak": 1,
+    "avg_win": 112.28999999999999,
+    "avg_loss": -101.99,
+    "partial_positions": 0,
+    "exit_legs": 3,
+    "commission": -1.56,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1790865000,
+      "close_epoch": 1790886600,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.7,
+      "open_price": 30389.86,
+      "close_price": 30570.85,
+      "net": 126.25,
+      "magic": 969060500,
+      "sl": 30246.53,
+      "tp": 30753.43,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 126.69,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1790951400,
+      "close_epoch": 1790953397,
+      "last_deal": 5,
+      "side": "Long",
+      "volume": 0.82,
+      "open_price": 31039.4,
+      "close_price": 30915.65,
+      "net": -101.99,
+      "magic": 969060500,
+      "sl": 30915.75,
+      "tp": 31348.53,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 30915.75"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.48,
+      "commission": -0.51,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1791210600,
+      "close_epoch": 1791232200,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 0.97,
+      "open_price": 31019.15,
+      "close_price": 31121.15,
+      "net": 98.33,
+      "magic": 969060500,
+      "sl": 30914.69,
+      "tp": 31278.56,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 98.94,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1790865000,
+      "deal": 2,
+      "balance": 9999.56,
+      "net": -0.44
+    },
+    {
+      "epoch": 1790886600,
+      "deal": 3,
+      "balance": 10126.25,
+      "net": 126.69
+    },
+    {
+      "epoch": 1790951400,
+      "deal": 4,
+      "balance": 10125.74,
+      "net": -0.51
+    },
+    {
+      "epoch": 1790953397,
+      "deal": 5,
+      "balance": 10024.26,
+      "net": -101.48
+    },
+    {
+      "epoch": 1791210600,
+      "deal": 6,
+      "balance": 10023.65,
+      "net": -0.61
+    },
+    {
+      "epoch": 1791232200,
+      "deal": 7,
+      "balance": 10122.59,
+      "net": 98.94
+    }
+  ],
+  "seconds": 12.23809289932251,
+  "binary_sha256": "d134be07f85b8f19917f4d0e6273874ec56fbc7d3a21dff22b07f99b8d910a88",
+  "report_sha256": "2733ac4d84a469b904861deb664b24ad811a0d06790095a2e7a0cff772301613",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

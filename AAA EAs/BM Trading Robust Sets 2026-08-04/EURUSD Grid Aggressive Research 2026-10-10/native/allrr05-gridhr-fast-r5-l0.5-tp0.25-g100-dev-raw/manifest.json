@@ -1,0 +1,46 @@
+{
+  "tag": "allrr05-gridhr-fast-r5-l0.5-tp0.25-g100-dev-raw",
+  "inputs": {
+    "InpSignalTF": "5",
+    "InpEMAPeriod": "5",
+    "InpMagicBase": "261010000",
+    "InpBasketTargetUSD": "10.0",
+    "InpStartingLot": "0.5",
+    "InpLotIncrement": "0",
+    "InpGridPoints": "100",
+    "InpAlternateAfterBasket": "false",
+    "InpMaxOrders": "5",
+    "InpBasketLossPercent": "5",
+    "InpBasketTargetR": "0.25",
+    "InpScaleLotsWithBalance": "true",
+    "InpMaxAgeHours": "72",
+    "InpGridAuditTag": "gridhr-fast-r5-l0.5-tp0.25-g100-dev",
+    "InpRR05AuditTag": "allrr05-gridhr-fast-r5-l0.5-tp0.25-g100-dev-raw"
+  },
+  "start": "2020.10.10",
+  "end_exclusive": "2024.10.10",
+  "deposit": 10000,
+  "leverage": "1:2000",
+  "model": 4,
+  "delay_ms": 150,
+  "symbol": "EURUSD",
+  "period": "M5",
+  "build": {
+    "source_sha256": "e10baed2a5ab5afa4d6bcdd4d3ce6c3cd0790eeb680c0a61408689d0fd5f6bda",
+    "source_copy_sha256": "326818c9305b0c8b2756be0023d84dadbf5fd1a5215a73a3cc08e473a5c7d695",
+    "audit_sha256": "f232acd6fe94bee98409ec0b5a14c2984461d441d7e413201e06357151b09705",
+    "binary_sha256": "ca279dadfe423352083f01adbe6882cf7820691eb6f1c3f8a377a32be5a37e6a",
+    "callbacks": {
+      "OnInit": true,
+      "OnDeinit": true,
+      "OnTick": true,
+      "OnTimer": false
+    },
+    "patches": [],
+    "production_hashes": {
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\EURUSD Grid Aggressive Research 2026-10-10\\EURUSD Grid Aggressive Research.mq5": "ade8576704b7c2c55d364ae123c1555e8dbe9ce39d7e03b159366d941c994634"
+    },
+    "compile": "0 errors, 0 warnings",
+    "tester_only": true
+  }
+}

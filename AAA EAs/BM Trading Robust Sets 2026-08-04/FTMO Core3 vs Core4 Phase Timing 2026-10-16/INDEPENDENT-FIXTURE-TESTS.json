@@ -1,0 +1,150 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "total": 35,
+  "failed": 0,
+  "checked_utc": "2026-10-16T21:52:08.234109+00:00",
+  "engine_sha256": "83c09daf588cc46206e32eb2950e5c09977ef352065e143feb4e39141a1bf63c",
+  "checks": [
+    {
+      "name": "below_initial_equity_keeps_source_requested_cap",
+      "passed": true
+    },
+    {
+      "name": "broker_minimum_is_rejected_not_oversized",
+      "passed": true
+    },
+    {
+      "name": "source_rounds_up_guard_rounds_down",
+      "passed": true
+    },
+    {
+      "name": "usdjpy_margin_base_currency_not_quote_multiplied",
+      "passed": true
+    },
+    {
+      "name": "source_static_floor_equality_is_hard_failure",
+      "passed": true
+    },
+    {
+      "name": "hard_failure_never_recovers_next_day",
+      "passed": true
+    },
+    {
+      "name": "source_daily_floor_equality_is_hard_failure",
+      "passed": true
+    },
+    {
+      "name": "soft_daily_300_latches_without_failure",
+      "passed": true
+    },
+    {
+      "name": "soft_daily_stop_does_not_clear_after_intraday_recovery",
+      "passed": true
+    },
+    {
+      "name": "soft_daily_stop_resets_next_prague_day",
+      "passed": true
+    },
+    {
+      "name": "projected_9200_equality_is_admissible",
+      "passed": true
+    },
+    {
+      "name": "projected_below_9200_is_soft_rejection_not_failure",
+      "passed": true
+    },
+    {
+      "name": "aggregate_risk_exact_225_permitted",
+      "passed": true
+    },
+    {
+      "name": "aggregate_risk_above_225_rejected",
+      "passed": true
+    },
+    {
+      "name": "same_symbol_150_independent_limit",
+      "passed": true
+    },
+    {
+      "name": "reconciliation_wait_blocks_second_entry_two_seconds_later",
+      "passed": true
+    },
+    {
+      "name": "reconciliation_wait_ends_at_three_seconds",
+      "passed": true
+    },
+    {
+      "name": "daily_entry_cap_counts_seven",
+      "passed": true
+    },
+    {
+      "name": "three_completed_losses_stop_new_entries",
+      "passed": true
+    },
+    {
+      "name": "target_with_three_entry_days_does_not_pass",
+      "passed": true
+    },
+    {
+      "name": "target_blocks_new_entries_even_not_flat",
+      "passed": true
+    },
+    {
+      "name": "target_not_flat_does_not_qualify",
+      "passed": true
+    },
+    {
+      "name": "target_flat_with_four_entry_days_passes",
+      "passed": true
+    },
+    {
+      "name": "phase2_is_fresh_10000_and_resets_days",
+      "passed": true
+    },
+    {
+      "name": "entry_cost_is_booked_at_entry",
+      "passed": true
+    },
+    {
+      "name": "initial_float_is_zero_not_future_first_mark",
+      "passed": true
+    },
+    {
+      "name": "entry_second_pre_strategy_mark_is_rejected",
+      "passed": true
+    },
+    {
+      "name": "future_mark_cannot_be_backfilled",
+      "passed": true
+    },
+    {
+      "name": "owned_floating_scales_to_replay_volume",
+      "passed": true
+    },
+    {
+      "name": "cash_cost_conservation_no_double_booked_entry_fee",
+      "passed": true
+    },
+    {
+      "name": "closing_removes_floating_before_cash_equity_check",
+      "passed": true
+    },
+    {
+      "name": "forced_source_finalization_not_emitted_as_natural_exit",
+      "passed": true
+    },
+    {
+      "name": "end_censored_open_position_never_false_passes",
+      "passed": true
+    },
+    {
+      "name": "dst_handover_is_next_prague_midnight_not_fixed_24h",
+      "passed": true
+    },
+    {
+      "name": "two_business_day_wait_skips_weekend",
+      "passed": true
+    }
+  ]
+}

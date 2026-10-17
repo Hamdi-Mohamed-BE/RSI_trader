@@ -1,0 +1,152 @@
+{
+  "tag": "allrr05-news-pulse-btc-two-week-37f664d80809",
+  "slug": "news-pulse-btc",
+  "variant": "two-week-37f664d80809",
+  "window": [
+    "2026.09.25",
+    "2026.10.09"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpUseDynamicTrailingSL": "false",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpEnableTrading": "true",
+    "InpEnableBuySide": "true",
+    "InpEnableSellSide": "true",
+    "InpRiskPercent": "0.10",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMagic": "861305",
+    "InpMaxDeviationPoints": "100",
+    "InpMarketFallbackOnCrossedLevel": "true",
+    "InpUseEconomicCalendar": "true",
+    "InpWatchNFP": "true",
+    "InpWatchCPI": "true",
+    "InpWatchFOMC": "true",
+    "InpPlacementLeadSeconds": "30",
+    "InpMaxQuoteAgeSeconds": "5",
+    "InpCalendarLookaheadDays": "8",
+    "InpCalendarRefreshSeconds": "300",
+    "InpUseAssetEventSpecific": "true",
+    "InpEntryOffsetPrice": "75",
+    "InpStopLossPrice": "75",
+    "InpTrailStartR": "1.5",
+    "InpTrailDistancePrice": "112.5",
+    "InpForceCloseSecondsAfterEvent": "60",
+    "InpTesterServerClockMode": "0",
+    "InpTesterFromDateUTC": "20260925",
+    "InpTesterToDateUTC": "20261009",
+    "InpRR05AuditTag": "allrr05-news-pulse-btc-two-week-37f664d80809"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10017.9,
+    "net_profit": 17.9,
+    "return_pct": 0.18,
+    "profit_factor": 6.11,
+    "win_rate_pct": 100.0,
+    "max_drawdown_pct": 0.57,
+    "trades": 1,
+    "sharpe_ratio": 0.0,
+    "recovery_factor": 0.31,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 0.57,
+    "balance_dd_pct": 0.03
+  },
+  "metrics": {
+    "trades": 1,
+    "return_pct": 0.179,
+    "net_profit": 17.9,
+    "pf": null,
+    "wins": 1,
+    "losses": 0,
+    "flat": 0,
+    "win_rate": 100.0,
+    "equity_dd_pct": 0.57,
+    "balance_dd_pct": 0.03,
+    "sharpe_daily_equity": 5.291502622129181,
+    "win_streak": 1,
+    "loss_streak": 0,
+    "avg_win": 17.9,
+    "avg_loss": null,
+    "partial_positions": 0,
+    "exit_legs": 1,
+    "commission": -3.5,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1790944201,
+      "close_epoch": 1790944202,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.8,
+      "open_price": 86694.74,
+      "close_price": 86721.49,
+      "net": 17.9,
+      "magic": 861305,
+      "sl": 86632.45,
+      "tp": 0.0,
+      "entry_comment": "NP|1790944200|NFP|B",
+      "exit_comments": [
+        "sl 86725.60"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 21.4,
+      "commission": -3.5,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1790944201,
+      "deal": 2,
+      "balance": 9996.5,
+      "net": -3.5
+    },
+    {
+      "epoch": 1790944202,
+      "deal": 3,
+      "balance": 10017.9,
+      "net": 21.4
+    }
+  ],
+  "seconds": 9.428722620010376,
+  "binary_sha256": "52e13363622a10a7373d7d3c46e4293d8172c0a52e258c0b3fc88f6cedae85c2",
+  "report_sha256": "2a0745a15544353cd75a352eb384a7a52a8cb79354606641982c406f146c515b",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [
+    "immutable-utc-calendar-binary-search-v1; timer/callbacks/trading unchanged"
+  ],
+  "no_live_changes": true,
+  "calendar_audit": {
+    "expected": 1,
+    "attempted": 1,
+    "placed": 1,
+    "boundary_violation": false,
+    "lookup_parity_verified": true
+  }
+}

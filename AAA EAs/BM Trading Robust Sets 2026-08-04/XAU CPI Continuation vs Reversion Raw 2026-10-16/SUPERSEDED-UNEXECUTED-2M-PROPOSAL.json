@@ -1,0 +1,97 @@
+{
+  "reason": "Unexecuted two-minute proposed holding policy superseded by direct user reply to keep original 15-/30-minute holds; no native folder or test existed at supersession",
+  "locked": {
+    "config_sha256": "147117be43b2695a982cedb6cb068aa46676ad734dd5714e25274cee6af1db4a",
+    "calendar_sha256": "42594dfdef0cea45ce871ece7859028127ad52d07dda204b0ad9a64a9f74b06f",
+    "cases_sha256": "681f24a67ee01b61bb4091c1402febada015591c1d8e5a8a59475503c1bb5676",
+    "engine_sha256": "f895c8f78746d22f76e1afc2724e8ac430905c7a503959eba8f039b0d2566b0b",
+    "build_sha256": "a06c1a39aa24be276dd2aebc92ec179cf3e03a5b510e8ae5afc5d1f817ba91a5",
+    "run_sha256": "fffb605dac9e0a81b2dc440be0989ffc05c4bc9e9e4cc882ea1aa8523238617f",
+    "parameters_searched": 0,
+    "enumerated_cases": 6,
+    "research_only": true,
+    "live_changes": false
+  },
+  "frozen_at_utc": "2026-10-16T16:04:45.493603+00:00",
+  "superseded_config": {
+    "study": "Gold CPI continuation versus failed-spike reversion — frozen raw comparison",
+    "study_date": "2026-10-16",
+    "symbol": "XAUUSD",
+    "instrument": "Exness XAUUSD spot-gold CFD, not COMEX gold futures",
+    "start": "2020-01-01",
+    "end_exclusive": "2026-10-16",
+    "development_end_exclusive": "2023-10-16",
+    "validation_end_exclusive": "2024-10-16",
+    "oos_start": "2024-10-16",
+    "oos_status": "Retrospective evaluation: related strategies and some history previously inspected; no tuning in this raw study",
+    "deposit": 10000,
+    "risk_percent": 0.25,
+    "execution_delay_ms": 150,
+    "event_types": [
+      "CPI"
+    ],
+    "event_clock": "08:30 America/New_York, DST-aware exact source-receipted dates; Exness archive/tester timestamps UTC",
+    "anchor": "Exact completed M1 bid close immediately before scheduled release",
+    "atr": "Simple mean of 14 M1 true ranges strictly before release, requiring 15 consecutive pre-release M1 bars",
+    "common_impulse": {
+      "bar": "The first fixed release-aligned M1 candle; never a later qualifying candle",
+      "minimum_absolute_close_displacement_atr": 1,
+      "close_in_directional_outer_fraction": 0.25
+    },
+    "stop_buffer": "0.1 pre-release ATR plus one tick, outward-rounded to broker tick size",
+    "continuation": {
+      "mode": 0,
+      "entry": "First executable bid-price breakout beyond the fixed impulse high/low after its close",
+      "entry_deadline_minutes_after_release": 5,
+      "stop": "Beyond the opposite extreme of the fixed first-minute candle",
+      "target_r": 1.5,
+      "maximum_hold_minutes_from_fill": 2
+    },
+    "reversion": {
+      "mode": 1,
+      "entry": "First subsequent completed M1 close crossing the fixed high/low midpoint against the impulse; next executable quote",
+      "entry_deadline_minutes_after_release": 10,
+      "stop": "Beyond the impulse-direction extreme of the fixed first-minute candle",
+      "target": "Pre-release anchor",
+      "minimum_entry_reward_risk": 1.5,
+      "maximum_hold_minutes_from_fill": 2
+    },
+    "anchor_diagnostic": {
+      "mode": 2,
+      "difference": "Same reversion signal and anchor target, WITHOUT the minimum 1.5R gate",
+      "reason": "Predeclared before any results: midpoint entry plus spike-extreme stop usually cannot offer 1.5R back to the anchor. Do not mistake structural exclusions for evidence against reversal.",
+      "selection_eligible": false
+    },
+    "execution": {
+      "one_signal_attempt_per_model_event": true,
+      "maximum_quote_age_seconds": 2,
+      "maximum_spread_fraction_of_stop_distance": 0.1,
+      "cases": "Three frozen models x two predeclared quote policies, six enumerated cases, no parameter search or optimization selection",
+      "reference_policy": "Archive diagnostic; zero-spread quotes retained and explicitly counted; not execution-valid performance",
+      "positive_spread_policy": "Same full replay but reject zero-spread entry quotes; positive spread alone does not prove real ticks or complete historical liquidity",
+      "hard_flat_minutes_after_release": 60,
+      "market_fallback": false,
+      "trailing": false,
+      "break_even": false,
+      "partials": false
+    },
+    "consensus_filter": "None: complete pre-release market consensus archive has not been verified. Observed price reaction is NOT an actual-versus-consensus surprise filter.",
+    "execution_quality": "Use this Gold native replay's actual tick-history and quote audit. Model4 and positive entry spreads alone do not establish authentic event liquidity; generated fallback and zero-spread quotes, if present, are reported rather than assumed away.",
+    "live_changes": false,
+    "installers_changed": false,
+    "website_changed": false,
+    "next_asset_requires_review": true,
+    "gold_holding_cap": {
+      "minutes_from_fill": 2,
+      "applies_to_all_models": true,
+      "reason": "Earlier user preference: maximum gold news holding time is two minutes; applied as the explicitly stated default for this raw-study question, not claimed as a new confirmation",
+      "difference_from_us500_raw": "Only holding limits change: continuation 15 to 2 minutes; reversion/anchor diagnostic 30 to 2 minutes. Entry windows and all signal/target/risk rules remain unchanged."
+    },
+    "description_price_units": "Gold price differences are USD per troy ounce, not MT5 points; native OrderCalcProfit converts actual broker lots to USD.",
+    "raw_only": true,
+    "optimization": false,
+    "research_only": true,
+    "push_authorized": false
+  },
+  "superseded_before_any_native_run": true
+}

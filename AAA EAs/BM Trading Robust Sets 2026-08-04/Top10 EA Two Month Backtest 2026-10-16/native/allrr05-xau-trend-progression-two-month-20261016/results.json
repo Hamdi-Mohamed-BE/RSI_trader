@@ -1,0 +1,259 @@
+{
+  "tag": "allrr05-xau-trend-progression-two-month-20261016",
+  "slug": "xau-trend-progression",
+  "variant": "two-month-20261016",
+  "window": [
+    "2026.08.16",
+    "2026.10.16"
+  ],
+  "inputs": {
+    "InpRiskPercent": "1",
+    "InpAdaptivePortfolioControls": "false",
+    "InpAllowLong": "true",
+    "InpAllowShort": "false",
+    "InpFastEMA": "20",
+    "InpSlowEMA": "50",
+    "InpSlopeLookback": "3",
+    "InpMomentumLookback": "24",
+    "InpMinimumMomentumATR": "0.5",
+    "InpRangeLookback": "48",
+    "InpRangePositionMinimum": "0.65",
+    "InpUseRangeFilter": "false",
+    "InpPullbackMode": "0",
+    "InpPullbackToleranceATR": "0.25",
+    "InpConfirmation": "0",
+    "InpMinimumBodyATR": "0.05",
+    "InpMaximumSignalATR": "2.5",
+    "InpStopMode": "1",
+    "InpSwingLookback": "5",
+    "InpStopATR": "2",
+    "InpStopBufferATR": "0.1",
+    "InpRewardRisk": "0.6",
+    "InpUseBreakEven": "true",
+    "InpBreakEvenAtR": "1",
+    "InpBreakEvenLockR": "0.05",
+    "InpUseATRTrailing": "false",
+    "InpTrailStartR": "1",
+    "InpTrailATR": "2",
+    "InpUseDynamicM15Stop": "false",
+    "InpDynamicTriggerR": "0.5",
+    "InpDynamicLockR": "0.2",
+    "InpMaximumHoldingBars": "0",
+    "InpSession": "0",
+    "InpUseRegimeGate": "false",
+    "InpRegimeReturnBars": "20",
+    "InpRegimeThresholdATR": "2",
+    "InpRegimeTrainingBars": "500",
+    "InpRegimeMinimumProbability": "0.4",
+    "InpMaximumSpreadPoints": "0",
+    "InpMaximumDeviationPoints": "80",
+    "InpMagic": "926300006",
+    "InpRR05AuditTag": "allrr05-xau-trend-progression-two-month-20261016"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 9694.4,
+    "net_profit": -305.6,
+    "return_pct": -3.06,
+    "profit_factor": 0.17,
+    "win_rate_pct": 25.0,
+    "max_drawdown_pct": 3.78,
+    "trades": 4,
+    "sharpe_ratio": -0.65,
+    "recovery_factor": -0.8,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 3.78,
+    "balance_dd_pct": 3.66
+  },
+  "metrics": {
+    "trades": 4,
+    "return_pct": -3.056,
+    "net_profit": -305.6,
+    "pf": 0.1696554722312792,
+    "wins": 1,
+    "losses": 3,
+    "flat": 0,
+    "win_rate": 25.0,
+    "equity_dd_pct": 3.78,
+    "balance_dd_pct": 3.66,
+    "sharpe_daily_equity": -4.215993840277739,
+    "win_streak": 1,
+    "loss_streak": 3,
+    "avg_win": 62.44,
+    "avg_loss": -122.68,
+    "partial_positions": 0,
+    "exit_legs": 4,
+    "commission": -0.56,
+    "swap": -2.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1786939200,
+      "close_epoch": 1786976261,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4397.067,
+      "close_price": 4417.937,
+      "net": 62.44,
+      "magic": 926300006,
+      "sl": 4362.33,
+      "tp": 4417.909,
+      "entry_comment": "Trend progression long",
+      "exit_comments": [
+        "tp 4417.909"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 62.61,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1786982400,
+      "close_epoch": 1787065160,
+      "last_deal": 5,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4427.761,
+      "close_price": 4363.682,
+      "net": -129.27,
+      "magic": 926300006,
+      "sl": 4364.109,
+      "tp": 4465.655,
+      "entry_comment": "Trend progression long",
+      "exit_comments": [
+        "sl 4364.109"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -128.16,
+      "commission": -0.11,
+      "swap": -1.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1787673600,
+      "close_epoch": 1787750161,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4652.731,
+      "close_price": 4601.333,
+      "net": -103.9,
+      "magic": 926300006,
+      "sl": 4601.334,
+      "tp": 4683.566,
+      "entry_comment": "Trend progression long",
+      "exit_comments": [
+        "sl 4601.334"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.79,
+      "commission": -0.11,
+      "swap": -1.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1787788800,
+      "close_epoch": 1787823429,
+      "last_deal": 9,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4624.244,
+      "close_price": 4579.344,
+      "net": -134.87,
+      "magic": 926300006,
+      "sl": 4579.345,
+      "tp": 4650.308,
+      "entry_comment": "Trend progression long",
+      "exit_comments": [
+        "sl 4579.345"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -134.7,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1786939200,
+      "deal": 2,
+      "balance": 9999.83,
+      "net": -0.17
+    },
+    {
+      "epoch": 1786976261,
+      "deal": 3,
+      "balance": 10062.44,
+      "net": 62.61
+    },
+    {
+      "epoch": 1786982400,
+      "deal": 4,
+      "balance": 10062.33,
+      "net": -0.11
+    },
+    {
+      "epoch": 1787065160,
+      "deal": 5,
+      "balance": 9933.17,
+      "net": -129.16
+    },
+    {
+      "epoch": 1787673600,
+      "deal": 6,
+      "balance": 9933.06,
+      "net": -0.11
+    },
+    {
+      "epoch": 1787750161,
+      "deal": 7,
+      "balance": 9829.27,
+      "net": -103.79
+    },
+    {
+      "epoch": 1787788800,
+      "deal": 8,
+      "balance": 9829.1,
+      "net": -0.17
+    },
+    {
+      "epoch": 1787823429,
+      "deal": 9,
+      "balance": 9694.4,
+      "net": -134.7
+    }
+  ],
+  "seconds": 14.040770292282104,
+  "binary_sha256": "58535c081e2f8885dfc546eec71f8a1aaa8980ec18c3e9d721f09c81d7294e36",
+  "report_sha256": "8fb30754384b08938e049dd670850f2ea23faae73b5f08967fa37db65c4984d5",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true,
+  "boundary_liquidation_positions": [],
+  "ranking_includes_boundary_liquidations": true,
+  "current_active_input_verification": true
+}

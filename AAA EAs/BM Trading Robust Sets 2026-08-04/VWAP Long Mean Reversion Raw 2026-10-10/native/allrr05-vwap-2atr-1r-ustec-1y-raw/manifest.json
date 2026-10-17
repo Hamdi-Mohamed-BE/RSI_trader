@@ -1,0 +1,44 @@
+{
+  "tag": "allrr05-vwap-2atr-1r-ustec-1y-raw",
+  "slug": "vwap-2atr-1r-ustec-1y",
+  "variant": "raw",
+  "inputs": {
+    "InpRiskPercent": "1.0",
+    "InpATRPeriod": "14",
+    "InpDiscountATR": "2.0",
+    "InpStopATR": "1.0",
+    "InpRewardRisk": "1.0",
+    "InpMinSessionBars": "15",
+    "InpEntryUntilMinuteUTC": "1430",
+    "InpCloseMinuteUTC": "1435",
+    "InpServerUTCOffsetHours": "0",
+    "InpMagic": "26101021",
+    "InpDeviationPoints": "1000",
+    "InpSignalAuditTag": "vwap-2atr-1r-ustec-1y",
+    "InpRR05AuditTag": "allrr05-vwap-2atr-1r-ustec-1y-raw"
+  },
+  "start": "2025.10.10",
+  "end_exclusive": "2026.10.10",
+  "model": 4,
+  "delay": 150,
+  "symbol": "USTEC",
+  "period": "M5",
+  "build": {
+    "source_sha256": "7f1f37bb191c2189ed46197142cdaf3f589ce80cb27a1818e79de447cded3332",
+    "source_copy_sha256": "c68c24b4bf72951d39ea5d3c24952297a315bd5cf1634cc8e3259e7b660a35a3",
+    "audit_sha256": "f232acd6fe94bee98409ec0b5a14c2984461d441d7e413201e06357151b09705",
+    "binary_sha256": "424ed238cc7506243b1253f0fadcac138aa243b00e236fb5d1ef9cdbdfb4eb92",
+    "callbacks": {
+      "OnInit": true,
+      "OnDeinit": true,
+      "OnTick": true,
+      "OnTimer": false
+    },
+    "patches": [],
+    "production_hashes": {
+      "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\VWAP Long Mean Reversion Raw 2026-10-10\\VWAP Mean Reversion Raw.mq5": "223ac140f08c7abc66636b7ac19091525e0863a0c7c0d2b6c87f847fcad81cf8"
+    },
+    "compile": "0 errors, 0 warnings",
+    "tester_only": true
+  }
+}

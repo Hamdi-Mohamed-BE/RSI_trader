@@ -1,0 +1,329 @@
+{
+  "tag": "allrr05-eth-top-down-fvg-liquidity-two-month-20261016",
+  "slug": "eth-top-down-fvg-liquidity",
+  "variant": "two-month-20261016",
+  "window": [
+    "2026.08.16",
+    "2026.10.16"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpUseDynamicTrailingSL": "true",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpEnableTrading": "true",
+    "InpSignalTimeframe": "15",
+    "InpBiasMode": "1",
+    "InpBiasFastPeriod": "20",
+    "InpBiasSlowPeriod": "50",
+    "InpAllowLong": "true",
+    "InpAllowShort": "true",
+    "InpSweepLookbackBars": "24",
+    "InpSweepBufferATR": "0.02",
+    "InpRequireSweepCloseBack": "true",
+    "InpDisplacementBodyATR": "0.6",
+    "InpMinimumFVGATR": "0.03",
+    "InpMaximumFVGATR": "1.00",
+    "InpRetestExpiryBars": "3",
+    "InpATRPeriod": "14",
+    "InpStopBufferATR": "0.10",
+    "InpMinimumStopATR": "0.30",
+    "InpMaximumStopATR": "3.00",
+    "InpRewardRisk": "4",
+    "InpBreakEvenAtR": "0",
+    "InpMaximumHoldingBars": "96",
+    "InpRiskPercent": "1",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMaximumSpreadATRPercent": "15.0",
+    "InpMaximumTradesPerBrokerDay": "2",
+    "InpWeekdaysOnly": "false",
+    "InpMaximumDeviationPoints": "50",
+    "InpMagic": "86270828",
+    "InpRR05AuditTag": "allrr05-eth-top-down-fvg-liquidity-two-month-20261016"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 9372.51,
+    "net_profit": -627.49,
+    "return_pct": -6.27,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "max_drawdown_pct": 6.43,
+    "trades": 6,
+    "sharpe_ratio": -1.62,
+    "recovery_factor": -0.97,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 6.43,
+    "balance_dd_pct": 6.27
+  },
+  "metrics": {
+    "trades": 6,
+    "return_pct": -6.2749,
+    "net_profit": -627.49,
+    "pf": 0.0,
+    "wins": 0,
+    "losses": 6,
+    "flat": 0,
+    "win_rate": 0.0,
+    "equity_dd_pct": 6.43,
+    "balance_dd_pct": 6.27,
+    "sharpe_daily_equity": -5.500135471603585,
+    "win_streak": 0,
+    "loss_streak": 6,
+    "avg_win": null,
+    "avg_loss": -104.58166666666666,
+    "partial_positions": 0,
+    "exit_legs": 6,
+    "commission": -27.87,
+    "swap": -2.23,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1787754480,
+      "close_epoch": 1787756581,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 7.12,
+      "open_price": 2448.77,
+      "close_price": 2434.58,
+      "net": -104.59,
+      "magic": 86270828,
+      "sl": 2434.87,
+      "tp": 2505.12,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 2434.87"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.03,
+      "commission": -3.56,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1789612704,
+      "close_epoch": 1789621311,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 5.97,
+      "open_price": 2427.84,
+      "close_price": 2444.4,
+      "net": -101.86,
+      "magic": 86270828,
+      "sl": 2444.27,
+      "tp": 2361.37,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 2444.27"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -98.87,
+      "commission": -2.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1790090286,
+      "close_epoch": 1790165866,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 3.9,
+      "open_price": 2739.0,
+      "close_price": 2712.45,
+      "net": -107.72,
+      "magic": 86270828,
+      "sl": 2714.11,
+      "tp": 2839.71,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 2714.11"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.54,
+      "commission": -1.95,
+      "swap": -2.23,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1791207042,
+      "close_epoch": 1791210682,
+      "last_deal": 9,
+      "side": "Long",
+      "volume": 13.13,
+      "open_price": 2714.75,
+      "close_price": 2707.29,
+      "net": -104.52,
+      "magic": 86270828,
+      "sl": 2707.37,
+      "tp": 2744.27,
+      "entry_comment": "TDFVG long",
+      "exit_comments": [
+        "sl 2707.37"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -97.95,
+      "commission": -6.57,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1791535787,
+      "close_epoch": 1791536167,
+      "last_deal": 11,
+      "side": "Short",
+      "volume": 15.29,
+      "open_price": 2498.53,
+      "close_price": 2505.05,
+      "net": -107.34,
+      "magic": 86270828,
+      "sl": 2504.8,
+      "tp": 2473.45,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 2504.80"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -99.69,
+      "commission": -7.65,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1791952215,
+      "close_epoch": 1791965214,
+      "last_deal": 13,
+      "side": "Short",
+      "volume": 10.29,
+      "open_price": 2511.65,
+      "close_price": 2521.01,
+      "net": -101.46,
+      "magic": 86270828,
+      "sl": 2520.86,
+      "tp": 2474.81,
+      "entry_comment": "TDFVG short",
+      "exit_comments": [
+        "sl 2520.86"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.31,
+      "commission": -5.15,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1787754480,
+      "deal": 2,
+      "balance": 9996.44,
+      "net": -3.56
+    },
+    {
+      "epoch": 1787756581,
+      "deal": 3,
+      "balance": 9895.41,
+      "net": -101.03
+    },
+    {
+      "epoch": 1789612704,
+      "deal": 4,
+      "balance": 9892.42,
+      "net": -2.99
+    },
+    {
+      "epoch": 1789621311,
+      "deal": 5,
+      "balance": 9793.55,
+      "net": -98.87
+    },
+    {
+      "epoch": 1790090286,
+      "deal": 6,
+      "balance": 9791.6,
+      "net": -1.95
+    },
+    {
+      "epoch": 1790165866,
+      "deal": 7,
+      "balance": 9685.83,
+      "net": -105.77
+    },
+    {
+      "epoch": 1791207042,
+      "deal": 8,
+      "balance": 9679.26,
+      "net": -6.57
+    },
+    {
+      "epoch": 1791210682,
+      "deal": 9,
+      "balance": 9581.31,
+      "net": -97.95
+    },
+    {
+      "epoch": 1791535787,
+      "deal": 10,
+      "balance": 9573.66,
+      "net": -7.65
+    },
+    {
+      "epoch": 1791536167,
+      "deal": 11,
+      "balance": 9473.97,
+      "net": -99.69
+    },
+    {
+      "epoch": 1791952215,
+      "deal": 12,
+      "balance": 9468.82,
+      "net": -5.15
+    },
+    {
+      "epoch": 1791965214,
+      "deal": 13,
+      "balance": 9372.51,
+      "net": -96.31
+    }
+  ],
+  "seconds": 12.266805171966553,
+  "binary_sha256": "6f8f2d24f0296938d5fecd49f7a0e082cbcef53ba2ef584a89d3cd5e135c6c84",
+  "report_sha256": "09e9831d09cfacabaf782c5f736c60e27f41e36fa12fbbd324515c4c6fa77d00",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true,
+  "boundary_liquidation_positions": [],
+  "ranking_includes_boundary_liquidations": true,
+  "current_active_input_verification": true
+}

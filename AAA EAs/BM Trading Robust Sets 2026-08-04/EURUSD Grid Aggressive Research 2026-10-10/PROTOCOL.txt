@@ -1,0 +1,16 @@
+EXPLORATORY HIGH-RISK EURUSD GRID STUDY — NOT LIVE DEPLOYMENT
+Frozen candidate list before results. Aim: assess 10% average monthly return, NOT guarantee it.
+
+Native MT5, EURUSD M5, $10,000 USD, Exness-MT5Trial16 hedging, leverage 1:2000, real-tick Model4 with broker generated-tick fallback, 150ms delay, broker bid/ask/commission/swap. No deposits or top-ups. Stopouts and final losing baskets remain in results.
+
+Original stress tests: unchanged EMA5 + three increasing closed-bar tick volumes, 300 points/30 pips spacing, arithmetic grid, forced alternating baskets, no SL/cap/time exit. Scale starting lot, lot increment AND $10 basket target together by 5x, 10x, 20x. Fixed lots, not percent risk. Run each on 1 year and 3 years. These are risk-scaling diagnostics, not optimisation or holdout tests.
+
+Guarded research derivative: same signal and absolute nearest-entry spacing. Fixed equal lot size within each basket, max 5 filled orders, no forced alternation, max basket age 72 hours. Starting lot at $10k is 0.10 for 5% budget, 0.20 for 10% budget, scaled proportionally to CLOSED balance when a new basket starts; floor broker lot step, skip below minimum. Budget frozen at 5% or 10% of basket starting balance. EA attempts market close when estimated net liquidation value reaches minus the budget. This is a client-side cash exit, NOT a guaranteed maximum loss or broker-held stop. Gaps/fees/rejection can exceed it. Basket profit target = 0.25R, 0.5R or 1R of that budget. Grid spacing = 100 or 300 native points (10/30 pips). All combinations: 2 risk budgets x 3 targets x 2 spacings = 12 finite candidates.
+
+Development: 2020-10-10 to 2024-10-10 exclusive. Rank candidates without any later history: first require >=30 baskets, positive return, basket PF >=1.05, no stopout and max floating-equity DD <=70%. Select top 3 by compounded equivalent monthly growth, then PF, then lower DD. If fewer than 3 pass, report gate failure and fill remaining slots with best other candidates, clearly labelled FAILED DEVELOPMENT GATE; do not silently replace failed candidates using later results.
+
+Freeze selection before validation. Test those 3 settings on 2024-10-10 to 2026-10-10 (latest 2 years), and an independent fresh-account last-year run. Earlier raw work has already exposed parts of recent history: this is parameter-selection-excluded validation, NOT genuinely untouched OOS. No repeat tuning on validation outcomes.
+
+Report calendar-month floating-equity percentage returns, arithmetic mean, median, equivalent compounded monthly growth, 10%+ month frequency, positive month count, worst month, PF/order and basket WR, tick-floating DD, stopout events, min observed equity, maximum lots/orders, unfinished baskets. Partial boundary October months are explicitly labelled and excluded from monthly averages/frequency; total/CAGR metrics use the full requested window. Equity monthly snapshots use final available tick per UTC calendar month. Keep all no-trade months. Final test liquidation included. Preserve individual orders and full baskets separately.
+
+Both source versions refuse live execution. No live terminal API, existing EAs, BATs, website or Git push. No claim that selecting from these candidates establishes a new robust edge. Full genuine real-tick history is unavailable in older years; disclose native tick-quality percentages.

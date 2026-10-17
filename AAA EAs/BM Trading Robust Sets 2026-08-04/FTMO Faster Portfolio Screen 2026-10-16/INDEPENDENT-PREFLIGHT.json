@@ -1,0 +1,756 @@
+{
+  "status": "PREFLIGHT_PASS",
+  "checked_utc": "2026-10-16T22:43:43.902398+00:00",
+  "no_portfolio_outcomes_computed_by_this_script": true,
+  "plan_sha256": "d6666b327b7c26a3305c0736fcdd795941c78f0229ed3d09c09dbe2068420ba5",
+  "inputs_sha256": "e41ad0167dacc9bb3fa911f1160ebefcbbd49d91fbd9a015ae6af136d00c8a29",
+  "frozen_sha256": "b2a1929f59818496510a9b00f37569a67599e1723eba197cb79831af42fb7905",
+  "checks": 176308,
+  "failed_checks": 0,
+  "source_trade_count": 760,
+  "owned_marks_checked": 84255,
+  "sources": [
+    {
+      "ea": "nasdaq-5m-candle-momentum",
+      "candidates": 179,
+      "owned_marks": 17197,
+      "no_owned_mark": 1,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "usdjpy-london-open-momentum",
+      "candidates": 83,
+      "owned_marks": 6319,
+      "no_owned_mark": 0,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "us100-month-end-flow",
+      "candidates": 34,
+      "owned_marks": 1407,
+      "no_owned_mark": 0,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "xau-rsi-vwap",
+      "candidates": 49,
+      "owned_marks": 5870,
+      "no_owned_mark": 1,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "gold-overnight-value-area",
+      "candidates": 203,
+      "owned_marks": 4461,
+      "no_owned_mark": 37,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "ema3",
+      "candidates": 41,
+      "owned_marks": 40620,
+      "no_owned_mark": 0,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ],
+        "InpGridRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "xau-trend-progression",
+      "candidates": 36,
+      "owned_marks": 6586,
+      "no_owned_mark": 0,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "us100-h1-orb-13utc",
+      "candidates": 77,
+      "owned_marks": 1258,
+      "no_owned_mark": 8,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "us100-orb-new-york-m30",
+      "candidates": 15,
+      "owned_marks": 166,
+      "no_owned_mark": 2,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "us100-selective-orb-v3",
+      "candidates": 5,
+      "owned_marks": 73,
+      "no_owned_mark": 0,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "xau-orb-new-york-m30",
+      "candidates": 12,
+      "owned_marks": 241,
+      "no_owned_mark": 2,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "xau-orb-london-ny-overlap-m30",
+      "candidates": 26,
+      "owned_marks": 57,
+      "no_owned_mark": 9,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    }
+  ],
+  "same_second_cross_ea_entries": [
+    {
+      "epoch": 1760016900,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1760362500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1760515200,
+      "eas": [
+        "usdjpy-london-open-momentum",
+        "ema3"
+      ]
+    },
+    {
+      "epoch": 1760708100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1760967300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1761053700,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1761226500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1761572100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1762526100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1762871700,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1763130900,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1764081300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1764340500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1764858900,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1765411200,
+      "eas": [
+        "ema3",
+        "xau-trend-progression"
+      ]
+    },
+    {
+      "epoch": 1765463700,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1765895700,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1765900800,
+      "eas": [
+        "xau-trend-progression",
+        "us100-orb-new-york-m30"
+      ]
+    },
+    {
+      "epoch": 1765982100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1766500500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1768228500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1770215700,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1771603200,
+      "eas": [
+        "ema3",
+        "xau-trend-progression"
+      ]
+    },
+    {
+      "epoch": 1771857300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1771943700,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1772030100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1772116500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1772462100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1772721300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1773149700,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1773236100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1773668100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1773754500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1773840900,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1773927300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1774281600,
+      "eas": [
+        "us100-orb-new-york-m30",
+        "xau-orb-new-york-m30"
+      ]
+    },
+    {
+      "epoch": 1775655300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1775721600,
+      "eas": [
+        "usdjpy-london-open-momentum",
+        "xau-trend-progression"
+      ]
+    },
+    {
+      "epoch": 1775828100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1776173700,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1776432900,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1776692100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1777296900,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1777988100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1777991400,
+      "eas": [
+        "us100-month-end-flow",
+        "us100-h1-orb-13utc"
+      ]
+    },
+    {
+      "epoch": 1778506500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1778679300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1778852100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1779114600,
+      "eas": [
+        "xau-orb-new-york-m30",
+        "xau-orb-london-ny-overlap-m30"
+      ]
+    },
+    {
+      "epoch": 1779888900,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1780320900,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1780666500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1781703300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1782394500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1782480900,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1782999300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1783002600,
+      "eas": [
+        "us100-month-end-flow",
+        "us100-h1-orb-13utc"
+      ]
+    },
+    {
+      "epoch": 1783431300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1783690500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1784036100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1784295300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1784813700,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1785159300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1785504900,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1785850500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1787299200,
+      "eas": [
+        "usdjpy-london-open-momentum",
+        "ema3"
+      ]
+    },
+    {
+      "epoch": 1787751300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1787837700,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1788273000,
+      "eas": [
+        "us100-month-end-flow",
+        "us100-h1-orb-13utc"
+      ]
+    },
+    {
+      "epoch": 1788442500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1789047300,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1789137000,
+      "eas": [
+        "xau-orb-new-york-m30",
+        "xau-orb-london-ny-overlap-m30"
+      ]
+    },
+    {
+      "epoch": 1789392900,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1789652100,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1789738500,
+      "eas": [
+        "nasdaq-5m-candle-momentum",
+        "gold-overnight-value-area"
+      ]
+    },
+    {
+      "epoch": 1790951400,
+      "eas": [
+        "us100-month-end-flow",
+        "us100-h1-orb-13utc"
+      ]
+    }
+  ],
+  "same_second_ustec_pair_ties": [],
+  "limitations": [
+    "Estimated ledger replay, not a simultaneous native FTMO-server test.",
+    "First mark at opening second excluded because source observes before strategy callback.",
+    "Initial floating zero and stale owned mark carry are declared model approximations.",
+    "Only five-minute sampled equity; between-mark breaches can be missed.",
+    "Filled initial SL risk approximates requested quote geometry; current SL and extra swap reserve unavailable.",
+    "Immutable source exits omit counterfactual signals after a rejected source trade.",
+    "Source whole-history quality15% real ticks; real ticks begin2026Jan1.",
+    "Market-time3second wait/manifest order is not historical live cross-chart fill-race evidence."
+  ],
+  "guard_implementation_audit": "See INDEPENDENT-FIXTURE-TESTS.json and INDEPENDENT-VERIFICATION.json for implementation/final checks."
+}

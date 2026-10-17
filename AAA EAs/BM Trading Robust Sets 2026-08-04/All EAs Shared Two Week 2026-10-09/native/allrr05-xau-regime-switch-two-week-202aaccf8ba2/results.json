@@ -1,0 +1,132 @@
+{
+  "tag": "allrr05-xau-regime-switch-two-week-202aaccf8ba2",
+  "slug": "xau-regime-switch",
+  "variant": "two-week-202aaccf8ba2",
+  "window": [
+    "2026.09.25",
+    "2026.10.09"
+  ],
+  "inputs": {
+    "InpRegimeReturnWindow": "40",
+    "InpRegimeThreshold": "0.02",
+    "InpRegimeHistory": "126",
+    "InpRegimeSignalGate": "0.0",
+    "InpSidewaysProbability": "0.50",
+    "InpTrendTimeframe": "16388",
+    "InpTrendStopATR": "1.50",
+    "InpTrendRewardRisk": "6.00",
+    "InpVWAPTimeframe": "5",
+    "InpVWAPSigma": "2.00",
+    "InpMaximumVWAPADX": "20.00",
+    "InpVWAPStopATR": "1.50",
+    "InpVWAPRewardRisk": "3.00",
+    "InpMaximumVWAPTradesPerSession": "1",
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMaximumSpreadRiskPercent": "25.00",
+    "InpMaximumDeviationPoints": "100",
+    "InpMagic": "969070101",
+    "InpTesterOnly": "false",
+    "InpDemoOnly": "true",
+    "InpTesterServerUTCOffsetHours": "0",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpShowStatus": "true",
+    "InpRR05AuditTag": "allrr05-xau-regime-switch-two-week-202aaccf8ba2"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10375.59,
+    "net_profit": 375.59,
+    "return_pct": 3.76,
+    "profit_factor": 2210.35,
+    "win_rate_pct": 100.0,
+    "max_drawdown_pct": 3.22,
+    "trades": 1,
+    "sharpe_ratio": 0.09,
+    "recovery_factor": 1.11,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 3.22,
+    "balance_dd_pct": 0.0
+  },
+  "metrics": {
+    "trades": 1,
+    "return_pct": 3.7558999999999996,
+    "net_profit": 375.59,
+    "pf": null,
+    "wins": 1,
+    "losses": 0,
+    "flat": 0,
+    "win_rate": 100.0,
+    "equity_dd_pct": 3.22,
+    "balance_dd_pct": 0.0,
+    "sharpe_daily_equity": 3.595673520507873,
+    "win_streak": 1,
+    "loss_streak": 0,
+    "avg_win": 375.59,
+    "avg_loss": null,
+    "partial_positions": 0,
+    "exit_legs": 1,
+    "commission": -0.17,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1790546490,
+      "close_epoch": 1791503998,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4269.896,
+      "close_price": 4144.643,
+      "net": 375.59,
+      "magic": 969070101,
+      "sl": 4312.96,
+      "tp": 4015.231,
+      "entry_comment": "Calyx Regime Trend",
+      "exit_comments": [
+        "end of test"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 375.76,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1790546490,
+      "deal": 2,
+      "balance": 9999.83,
+      "net": -0.17
+    },
+    {
+      "epoch": 1791503998,
+      "deal": 3,
+      "balance": 10375.59,
+      "net": 375.76
+    }
+  ],
+  "seconds": 19.465309143066406,
+  "binary_sha256": "50c3fe9421b445914cad2584d302956e9b7e6a9e401871cdde988e6265604d96",
+  "report_sha256": "96ab9a4346f7d57117cac2bbe2f4ecf695d92c9adffc61c47e9e82edffa1fe88",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

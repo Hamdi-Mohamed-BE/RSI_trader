@@ -1,0 +1,69 @@
+{
+  "study": "US500 CPI continuation versus failed-spike reversion — frozen raw comparison",
+  "study_date": "2026-10-16",
+  "symbol": "US500",
+  "instrument": "Exness S&P 500 CFD, not ES futures",
+  "start": "2020-01-01",
+  "end_exclusive": "2026-10-16",
+  "development_end_exclusive": "2023-10-16",
+  "validation_end_exclusive": "2024-10-16",
+  "oos_start": "2024-10-16",
+  "oos_status": "Retrospective evaluation: related strategies and some history previously inspected; no tuning in this raw study",
+  "deposit": 10000,
+  "risk_percent": 0.25,
+  "execution_delay_ms": 150,
+  "event_types": [
+    "CPI"
+  ],
+  "event_clock": "08:30 America/New_York, DST-aware exact source-receipted dates; Exness archive/tester timestamps UTC",
+  "anchor": "Exact completed M1 bid close immediately before scheduled release",
+  "atr": "Simple mean of 14 M1 true ranges strictly before release, requiring 15 consecutive pre-release M1 bars",
+  "common_impulse": {
+    "bar": "The first fixed release-aligned M1 candle; never a later qualifying candle",
+    "minimum_absolute_close_displacement_atr": 1,
+    "close_in_directional_outer_fraction": 0.25
+  },
+  "stop_buffer": "0.1 pre-release ATR plus one tick, outward-rounded to broker tick size",
+  "continuation": {
+    "mode": 0,
+    "entry": "First executable bid-price breakout beyond the fixed impulse high/low after its close",
+    "entry_deadline_minutes_after_release": 5,
+    "stop": "Beyond the opposite extreme of the fixed first-minute candle",
+    "target_r": 1.5,
+    "maximum_hold_minutes_from_fill": 15
+  },
+  "reversion": {
+    "mode": 1,
+    "entry": "First subsequent completed M1 close crossing the fixed high/low midpoint against the impulse; next executable quote",
+    "entry_deadline_minutes_after_release": 10,
+    "stop": "Beyond the impulse-direction extreme of the fixed first-minute candle",
+    "target": "Pre-release anchor",
+    "minimum_entry_reward_risk": 1.5,
+    "maximum_hold_minutes_from_fill": 30
+  },
+  "anchor_diagnostic": {
+    "mode": 2,
+    "difference": "Same reversion signal and anchor target, WITHOUT the minimum 1.5R gate",
+    "reason": "Predeclared before any results: midpoint entry plus spike-extreme stop usually cannot offer 1.5R back to the anchor. Do not mistake structural exclusions for evidence against reversal.",
+    "selection_eligible": false
+  },
+  "execution": {
+    "one_signal_attempt_per_model_event": true,
+    "maximum_quote_age_seconds": 2,
+    "maximum_spread_fraction_of_stop_distance": 0.1,
+    "cases": "Three frozen models x two predeclared quote policies, six enumerated cases, no parameter search or optimization selection",
+    "reference_policy": "Archive diagnostic; zero-spread quotes retained and explicitly counted; not execution-valid performance",
+    "positive_spread_policy": "Same full replay but reject zero-spread entry quotes; positive spread alone does not prove real ticks or complete historical liquidity",
+    "hard_flat_minutes_after_release": 60,
+    "market_fallback": false,
+    "trailing": false,
+    "break_even": false,
+    "partials": false
+  },
+  "consensus_filter": "None: complete pre-release market consensus archive has not been verified. Observed price reaction is NOT an actual-versus-consensus surprise filter.",
+  "execution_quality": "Known archive issues: pre-2026 generated fallback ticks and many zero-spread event quotes. Native Model4 alone does not establish real tick fills. Results are research diagnostics, not promotion evidence.",
+  "live_changes": false,
+  "installers_changed": false,
+  "website_changed": false,
+  "next_asset_requires_review": true
+}

@@ -1,0 +1,2209 @@
+{
+  "id": "gold-overnight-value-area",
+  "slug": "gold-overnight-value-area",
+  "name": "Gold Overnight Value Area",
+  "symbol": "XAUUSD",
+  "timeframe": "M5",
+  "status": "tested",
+  "metrics": {
+    "trades": 38,
+    "positions": 38,
+    "exit_fills": 38,
+    "wins": 24,
+    "losses": 14,
+    "breakeven": 0,
+    "net_profit": -7.61,
+    "net_pnl": -7.61,
+    "return_pct": -0.0761,
+    "profit_factor": 0.9905991352686844,
+    "profit_factor_status": "finite",
+    "win_rate_pct": 63.1578947368421,
+    "gross_profit": 801.89,
+    "gross_loss": 809.5,
+    "max_win_streak": 7,
+    "max_loss_streak": 3,
+    "avg_win": 33.412083333333335,
+    "avg_loss": -57.82142857142857,
+    "avg_trade": -0.20026315789473684,
+    "payoff_ratio": 0.5778494955733993,
+    "largest_win": 78.82,
+    "largest_loss": -118.11,
+    "mean_hold_minutes": 155.27938596491228,
+    "position_recognition_drawdown_cash": 279.5,
+    "partial_positions": 0,
+    "commission": -6.800000000000001,
+    "swap": 0.0,
+    "fee": 0.0,
+    "max_closed_drawdown_cash": 279.66999999999825,
+    "max_closed_drawdown_pct": 2.7696707828303424,
+    "closed_balance_daily_sharpe": -0.01624887352520205,
+    "closed_balance_sharpe_days": 61,
+    "closed_balance_sharpe_annualization": 365,
+    "final_balance": 9992.389999999998,
+    "native_equity_drawdown_pct": 3.01,
+    "native_balance_drawdown_pct": 2.77,
+    "native_mt5_sharpe": -0.18,
+    "native_report_profit_factor": 0.99
+  },
+  "natural_close_only_metrics": {
+    "trades": 38,
+    "positions": 38,
+    "exit_fills": 38,
+    "wins": 24,
+    "losses": 14,
+    "breakeven": 0,
+    "net_profit": -7.61,
+    "net_pnl": -7.61,
+    "return_pct": -0.0761,
+    "profit_factor": 0.9905991352686844,
+    "profit_factor_status": "finite",
+    "win_rate_pct": 63.1578947368421,
+    "gross_profit": 801.89,
+    "gross_loss": 809.5,
+    "max_win_streak": 7,
+    "max_loss_streak": 3,
+    "avg_win": 33.412083333333335,
+    "avg_loss": -57.82142857142857,
+    "avg_trade": -0.20026315789473684,
+    "payoff_ratio": 0.5778494955733993,
+    "largest_win": 78.82,
+    "largest_loss": -118.11,
+    "mean_hold_minutes": 155.27938596491228,
+    "position_recognition_drawdown_cash": 279.5,
+    "partial_positions": 0,
+    "commission": -6.800000000000001,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "rules": {
+    "rr": {
+      "InpTargetR": "0",
+      "InpBreakEvenR": "0",
+      "InpTrailDistanceR": "0"
+    },
+    "filters": {},
+    "current_inputs": {
+      "InpEnableTrading": "true",
+      "InpAdaptivePortfolioControls": "false",
+      "InpRiskMode": "0",
+      "InpFixedRiskMoney": "100.00",
+      "InpAutoServerUTCOffset": "true",
+      "InpWriteAudit": "false",
+      "InpEntryEndMinute": "960",
+      "InpExitMinute": "960",
+      "InpStopMode": "0",
+      "InpMinimumR": "0",
+      "InpTargetR": "0",
+      "InpBreakEvenR": "0",
+      "InpTrailDistanceR": "0",
+      "InpDirectionMode": "0",
+      "InpBins": "64",
+      "InpValueAreaPercent": "70",
+      "InpMinimumProfileBars": "120",
+      "InpRiskPercent": "1",
+      "InpServerUTCOffsetHours": "0",
+      "InpExpectedLogin": "0",
+      "InpExpectedServer": "",
+      "InpMagic": "89191901",
+      "InpCase": "gold-overnight-va-live",
+      "InpRR05AuditTag": "allrr05-gold-overnight-value-area-two-month-20261016"
+    },
+    "safe_by_design": false,
+    "dynamic_by_design": false
+  },
+  "sizing": {
+    "selected_dynamic_risk_percent": 1,
+    "news_per_order": false,
+    "adaptive_portfolio_controls": false,
+    "historical_loss_reference_only": false,
+    "historical_loss_points": null,
+    "note": "Native 1% equity-risk input (news 0.10% per order); original broker lot rounding, split-order/module allocations, costs and gaps retained. Not a guaranteed loss cap."
+  },
+  "quality": {
+    "history_quality": "100% real ticks",
+    "tick_notes": [
+      "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "flags": {
+      "init_failed": 0,
+      "runtime": 0,
+      "history": 0,
+      "stopout": 0,
+      "invalid_stops": 0,
+      "invalid_volume": 0,
+      "export_failed": 0
+    },
+    "calendar_audit": null,
+    "boundary_position_count": 0,
+    "sample_label": "Short two-month sample",
+    "native_seconds": 66.2054603099823,
+    "native_cash_reconciled": true,
+    "report_sha256": "85c0b33ce8cfc67d709e9984345e404caf729192083db84bbeed712ae271ac33",
+    "binary_sha256": "77140829a78f9bdb6d684ac53e6397b378466fb3c6e9c616b2bb154a37485c22",
+    "first_captured_native_snapshot_utc": "2026-08-16T00:00:00+00:00",
+    "last_captured_native_snapshot_utc": "2026-10-15T23:59:58+00:00",
+    "actual_first_quote_not_exported": true,
+    "cutoff_note": "Read-only equity snapshots record native TimeCurrent; first captured snapshot is not certified as the first history quote. Last snapshot is the last observed native test time, not the last trade.",
+    "last_observation_on_final_calendar_day": true
+  },
+  "monthly": [
+    {
+      "month": "2026-08",
+      "trades": 10,
+      "positions": 10,
+      "exit_fills": 10,
+      "wins": 7,
+      "losses": 3,
+      "breakeven": 0,
+      "net_profit": -89.89,
+      "net_pnl": -89.89,
+      "profit_factor": 0.6954017146148893,
+      "profit_factor_status": "finite",
+      "win_rate_pct": 70.0,
+      "gross_profit": 205.22,
+      "gross_loss": 295.11,
+      "max_win_streak": 7,
+      "max_loss_streak": 2,
+      "avg_win": 29.31714285714286,
+      "avg_loss": -98.37,
+      "avg_trade": -8.988999999999999,
+      "payoff_ratio": 0.29802930626352403,
+      "largest_win": 59.13,
+      "largest_loss": -111.24,
+      "mean_hold_minutes": 59.39833333333333,
+      "position_recognition_drawdown_cash": 212.32,
+      "partial_positions": 0,
+      "commission": -1.84,
+      "swap": 0.0,
+      "fee": 0.0,
+      "position_return_pct_of_original_capital": -0.8989,
+      "cash_net_profit": -89.88999999999999,
+      "cash_return_pct": -0.8988999999999914
+    },
+    {
+      "month": "2026-09",
+      "trades": 17,
+      "positions": 17,
+      "exit_fills": 17,
+      "wins": 11,
+      "losses": 6,
+      "breakeven": 0,
+      "net_profit": 98.39,
+      "net_pnl": 98.39,
+      "profit_factor": 1.4233466718299557,
+      "profit_factor_status": "finite",
+      "win_rate_pct": 64.70588235294117,
+      "gross_profit": 330.8,
+      "gross_loss": 232.41,
+      "max_win_streak": 3,
+      "max_loss_streak": 2,
+      "avg_win": 30.072727272727274,
+      "avg_loss": -38.735,
+      "avg_trade": 5.787647058823529,
+      "payoff_ratio": 0.7763709119072486,
+      "largest_win": 78.82,
+      "largest_loss": -60.67,
+      "mean_hold_minutes": 188.78725490196078,
+      "position_recognition_drawdown_cash": 178.45,
+      "partial_positions": 0,
+      "commission": -2.74,
+      "swap": 0.0,
+      "fee": 0.0,
+      "position_return_pct_of_original_capital": 0.9839,
+      "cash_net_profit": 98.38999999999999,
+      "cash_return_pct": 0.9928244994253266
+    },
+    {
+      "month": "2026-10",
+      "trades": 11,
+      "positions": 11,
+      "exit_fills": 11,
+      "wins": 6,
+      "losses": 5,
+      "breakeven": 0,
+      "net_profit": -16.11,
+      "net_pnl": -16.11,
+      "profit_factor": 0.9428682885311015,
+      "profit_factor_status": "finite",
+      "win_rate_pct": 54.54545454545455,
+      "gross_profit": 265.87,
+      "gross_loss": 281.98,
+      "max_win_streak": 4,
+      "max_loss_streak": 3,
+      "avg_win": 44.31166666666667,
+      "avg_loss": -56.396,
+      "avg_trade": -1.4645454545454542,
+      "payoff_ratio": 0.785723573775918,
+      "largest_win": 73.68,
+      "largest_loss": -118.11,
+      "mean_hold_minutes": 190.6590909090909,
+      "position_recognition_drawdown_cash": 190.41,
+      "partial_positions": 0,
+      "commission": -2.22,
+      "swap": 0.0,
+      "fee": 0.0,
+      "position_return_pct_of_original_capital": -0.1611,
+      "cash_net_profit": -16.109999999999996,
+      "cash_return_pct": -0.16096318129590337
+    }
+  ],
+  "daily": [
+    {
+      "date": "2026-08-16",
+      "net_profit": 0.0,
+      "opening_balance": 10000.0,
+      "ending_balance": 10000.0,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-08-17",
+      "net_profit": -111.24,
+      "opening_balance": 10000.0,
+      "ending_balance": 9888.76,
+      "return_pct": -1.1124
+    },
+    {
+      "date": "2026-08-18",
+      "net_profit": -101.08,
+      "opening_balance": 9888.76,
+      "ending_balance": 9787.68,
+      "return_pct": -1.0221706260441146
+    },
+    {
+      "date": "2026-08-19",
+      "net_profit": 2.39,
+      "opening_balance": 9787.68,
+      "ending_balance": 9790.07,
+      "return_pct": 0.024418452585290896
+    },
+    {
+      "date": "2026-08-20",
+      "net_profit": 59.13,
+      "opening_balance": 9790.07,
+      "ending_balance": 9849.2,
+      "return_pct": 0.6039793382478368
+    },
+    {
+      "date": "2026-08-21",
+      "net_profit": 2.24,
+      "opening_balance": 9849.2,
+      "ending_balance": 9851.44,
+      "return_pct": 0.02274296389554482
+    },
+    {
+      "date": "2026-08-22",
+      "net_profit": 0.0,
+      "opening_balance": 9851.44,
+      "ending_balance": 9851.44,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-08-23",
+      "net_profit": 0.0,
+      "opening_balance": 9851.44,
+      "ending_balance": 9851.44,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-08-24",
+      "net_profit": 0.0,
+      "opening_balance": 9851.44,
+      "ending_balance": 9851.44,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-08-25",
+      "net_profit": 53.02,
+      "opening_balance": 9851.44,
+      "ending_balance": 9904.46,
+      "return_pct": 0.538195431327806
+    },
+    {
+      "date": "2026-08-26",
+      "net_profit": 54.74,
+      "opening_balance": 9904.46,
+      "ending_balance": 9959.2,
+      "return_pct": 0.5526803076593777
+    },
+    {
+      "date": "2026-08-27",
+      "net_profit": 14.15,
+      "opening_balance": 9959.2,
+      "ending_balance": 9973.35,
+      "return_pct": 0.14207968511527033
+    },
+    {
+      "date": "2026-08-28",
+      "net_profit": 19.55,
+      "opening_balance": 9973.35,
+      "ending_balance": 9992.9,
+      "return_pct": 0.19602239969518767
+    },
+    {
+      "date": "2026-08-29",
+      "net_profit": 0.0,
+      "opening_balance": 9992.9,
+      "ending_balance": 9992.9,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-08-30",
+      "net_profit": 0.0,
+      "opening_balance": 9992.9,
+      "ending_balance": 9992.9,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-08-31",
+      "net_profit": -82.79,
+      "opening_balance": 9992.9,
+      "ending_balance": 9910.11,
+      "return_pct": -0.8284882266409154
+    },
+    {
+      "date": "2026-09-01",
+      "net_profit": 45.78,
+      "opening_balance": 9910.11,
+      "ending_balance": 9955.89,
+      "return_pct": 0.46195249094106944
+    },
+    {
+      "date": "2026-09-02",
+      "net_profit": 0.0,
+      "opening_balance": 9955.89,
+      "ending_balance": 9955.89,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-03",
+      "net_profit": 37.37,
+      "opening_balance": 9955.89,
+      "ending_balance": 9993.26,
+      "return_pct": 0.3753556939660845
+    },
+    {
+      "date": "2026-09-04",
+      "net_profit": 0.0,
+      "opening_balance": 9993.26,
+      "ending_balance": 9993.26,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-05",
+      "net_profit": 0.0,
+      "opening_balance": 9993.26,
+      "ending_balance": 9993.26,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-06",
+      "net_profit": 0.0,
+      "opening_balance": 9993.26,
+      "ending_balance": 9993.26,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-07",
+      "net_profit": -20.7,
+      "opening_balance": 9993.26,
+      "ending_balance": 9972.56,
+      "return_pct": -0.20713961209855447
+    },
+    {
+      "date": "2026-09-08",
+      "net_profit": 39.04,
+      "opening_balance": 9972.56,
+      "ending_balance": 10011.6,
+      "return_pct": 0.39147420521912135
+    },
+    {
+      "date": "2026-09-09",
+      "net_profit": 0.0,
+      "opening_balance": 10011.6,
+      "ending_balance": 10011.6,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-10",
+      "net_profit": 78.82,
+      "opening_balance": 10011.6,
+      "ending_balance": 10090.42,
+      "return_pct": 0.7872867473730475
+    },
+    {
+      "date": "2026-09-11",
+      "net_profit": 7.17,
+      "opening_balance": 10090.42,
+      "ending_balance": 10097.59,
+      "return_pct": 0.07105749810216028
+    },
+    {
+      "date": "2026-09-12",
+      "net_profit": 0.0,
+      "opening_balance": 10097.59,
+      "ending_balance": 10097.59,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-13",
+      "net_profit": 0.0,
+      "opening_balance": 10097.59,
+      "ending_balance": 10097.59,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-14",
+      "net_profit": -22.75,
+      "opening_balance": 10097.59,
+      "ending_balance": 10074.84,
+      "return_pct": -0.22530128476200761
+    },
+    {
+      "date": "2026-09-15",
+      "net_profit": -60.67,
+      "opening_balance": 10074.84,
+      "ending_balance": 10014.17,
+      "return_pct": -0.6021931861945203
+    },
+    {
+      "date": "2026-09-16",
+      "net_profit": 10.04,
+      "opening_balance": 10014.17,
+      "ending_balance": 10024.21,
+      "return_pct": 0.10025793450680388
+    },
+    {
+      "date": "2026-09-17",
+      "net_profit": -50.59,
+      "opening_balance": 10024.21,
+      "ending_balance": 9973.62,
+      "return_pct": -0.504678174140406
+    },
+    {
+      "date": "2026-09-18",
+      "net_profit": -54.48,
+      "opening_balance": 9973.62,
+      "ending_balance": 9919.14,
+      "return_pct": -0.5462409837150404
+    },
+    {
+      "date": "2026-09-19",
+      "net_profit": 0.0,
+      "opening_balance": 9919.14,
+      "ending_balance": 9919.14,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-20",
+      "net_profit": 0.0,
+      "opening_balance": 9919.14,
+      "ending_balance": 9919.14,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-21",
+      "net_profit": 30.65,
+      "opening_balance": 9919.14,
+      "ending_balance": 9949.79,
+      "return_pct": 0.3089985623753672
+    },
+    {
+      "date": "2026-09-22",
+      "net_profit": 43.04,
+      "opening_balance": 9949.79,
+      "ending_balance": 9992.83,
+      "return_pct": 0.43257194372946567
+    },
+    {
+      "date": "2026-09-23",
+      "net_profit": 0.0,
+      "opening_balance": 9992.83,
+      "ending_balance": 9992.83,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-24",
+      "net_profit": -23.22,
+      "opening_balance": 9992.83,
+      "ending_balance": 9969.61,
+      "return_pct": -0.2323666068571166
+    },
+    {
+      "date": "2026-09-25",
+      "net_profit": 5.65,
+      "opening_balance": 9969.61,
+      "ending_balance": 9975.26,
+      "return_pct": 0.056672226897541624
+    },
+    {
+      "date": "2026-09-26",
+      "net_profit": 0.0,
+      "opening_balance": 9975.26,
+      "ending_balance": 9975.26,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-27",
+      "net_profit": 0.0,
+      "opening_balance": 9975.26,
+      "ending_balance": 9975.26,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-28",
+      "net_profit": 0.0,
+      "opening_balance": 9975.26,
+      "ending_balance": 9975.26,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-09-29",
+      "net_profit": 21.36,
+      "opening_balance": 9975.26,
+      "ending_balance": 9996.62,
+      "return_pct": 0.21412975701886466
+    },
+    {
+      "date": "2026-09-30",
+      "net_profit": 11.88,
+      "opening_balance": 9996.62,
+      "ending_balance": 10008.5,
+      "return_pct": 0.11884016797677613
+    },
+    {
+      "date": "2026-10-01",
+      "net_profit": -15.33,
+      "opening_balance": 10008.5,
+      "ending_balance": 9993.17,
+      "return_pct": -0.1531698056651846
+    },
+    {
+      "date": "2026-10-02",
+      "net_profit": -113.01,
+      "opening_balance": 9993.17,
+      "ending_balance": 9880.16,
+      "return_pct": -1.1308723858395284
+    },
+    {
+      "date": "2026-10-03",
+      "net_profit": 0.0,
+      "opening_balance": 9880.16,
+      "ending_balance": 9880.16,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-10-04",
+      "net_profit": 0.0,
+      "opening_balance": 9880.16,
+      "ending_balance": 9880.16,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-10-05",
+      "net_profit": 56.57,
+      "opening_balance": 9880.16,
+      "ending_balance": 9936.73,
+      "return_pct": 0.5725615779501546
+    },
+    {
+      "date": "2026-10-06",
+      "net_profit": 35.0,
+      "opening_balance": 9936.73,
+      "ending_balance": 9971.73,
+      "return_pct": 0.3522285500360783
+    },
+    {
+      "date": "2026-10-07",
+      "net_profit": -29.0,
+      "opening_balance": 9971.73,
+      "ending_balance": 9942.73,
+      "return_pct": -0.29082215423000823
+    },
+    {
+      "date": "2026-10-08",
+      "net_profit": -118.11,
+      "opening_balance": 9942.73,
+      "ending_balance": 9824.62,
+      "return_pct": -1.187903121174969
+    },
+    {
+      "date": "2026-10-09",
+      "net_profit": -6.53,
+      "opening_balance": 9824.62,
+      "ending_balance": 9818.09,
+      "return_pct": -0.06646567500829549
+    },
+    {
+      "date": "2026-10-10",
+      "net_profit": 0.0,
+      "opening_balance": 9818.09,
+      "ending_balance": 9818.09,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-10-11",
+      "net_profit": 0.0,
+      "opening_balance": 9818.09,
+      "ending_balance": 9818.09,
+      "return_pct": 0.0
+    },
+    {
+      "date": "2026-10-12",
+      "net_profit": 8.59,
+      "opening_balance": 9818.09,
+      "ending_balance": 9826.68,
+      "return_pct": 0.08749155894883834
+    },
+    {
+      "date": "2026-10-13",
+      "net_profit": 73.68,
+      "opening_balance": 9826.68,
+      "ending_balance": 9900.36,
+      "return_pct": 0.7497954548229923
+    },
+    {
+      "date": "2026-10-14",
+      "net_profit": 44.7,
+      "opening_balance": 9900.36,
+      "ending_balance": 9945.06,
+      "return_pct": 0.4514987333793924
+    },
+    {
+      "date": "2026-10-15",
+      "net_profit": 47.33,
+      "opening_balance": 9945.06,
+      "ending_balance": 9992.39,
+      "return_pct": 0.47591467522569
+    }
+  ],
+  "closed_balance_curve": [
+    {
+      "time": "2026-08-16T00:00:00+00:00",
+      "balance": 10000.0
+    },
+    {
+      "time": "2026-08-17T13:45:00.175000+00:00",
+      "balance": 9999.67,
+      "deal_ticket": 2
+    },
+    {
+      "time": "2026-08-17T13:52:12.566000+00:00",
+      "balance": 9888.76,
+      "deal_ticket": 3
+    },
+    {
+      "time": "2026-08-18T14:05:00.171000+00:00",
+      "balance": 9888.43,
+      "deal_ticket": 4
+    },
+    {
+      "time": "2026-08-18T14:32:06.071000+00:00",
+      "balance": 9787.68,
+      "deal_ticket": 5
+    },
+    {
+      "time": "2026-08-19T13:35:00.245000+00:00",
+      "balance": 9787.62,
+      "deal_ticket": 6
+    },
+    {
+      "time": "2026-08-19T13:44:03.124000+00:00",
+      "balance": 9790.07,
+      "deal_ticket": 7
+    },
+    {
+      "time": "2026-08-20T14:50:00.257000+00:00",
+      "balance": 9789.9,
+      "deal_ticket": 8
+    },
+    {
+      "time": "2026-08-20T15:01:28.615000+00:00",
+      "balance": 9849.2,
+      "deal_ticket": 9
+    },
+    {
+      "time": "2026-08-21T14:30:00.335000+00:00",
+      "balance": 9849.09,
+      "deal_ticket": 10
+    },
+    {
+      "time": "2026-08-21T15:25:05.849000+00:00",
+      "balance": 9851.44,
+      "deal_ticket": 11
+    },
+    {
+      "time": "2026-08-25T13:35:00.183000+00:00",
+      "balance": 9851.22,
+      "deal_ticket": 12
+    },
+    {
+      "time": "2026-08-25T13:47:31.893000+00:00",
+      "balance": 9904.46,
+      "deal_ticket": 13
+    },
+    {
+      "time": "2026-08-26T13:35:00.226000+00:00",
+      "balance": 9904.29,
+      "deal_ticket": 14
+    },
+    {
+      "time": "2026-08-26T15:02:52.558000+00:00",
+      "balance": 9959.2,
+      "deal_ticket": 15
+    },
+    {
+      "time": "2026-08-27T13:35:00.390000+00:00",
+      "balance": 9959.09,
+      "deal_ticket": 16
+    },
+    {
+      "time": "2026-08-27T13:48:29.663000+00:00",
+      "balance": 9973.35,
+      "deal_ticket": 17
+    },
+    {
+      "time": "2026-08-28T14:05:00.242000+00:00",
+      "balance": 9973.18,
+      "deal_ticket": 18
+    },
+    {
+      "time": "2026-08-28T14:05:13.723000+00:00",
+      "balance": 9992.9,
+      "deal_ticket": 19
+    },
+    {
+      "time": "2026-08-31T13:50:00.214000+00:00",
+      "balance": 9992.73,
+      "deal_ticket": 20
+    },
+    {
+      "time": "2026-08-31T20:00:00.161000+00:00",
+      "balance": 9910.11,
+      "deal_ticket": 21
+    },
+    {
+      "time": "2026-09-01T16:35:00.271000+00:00",
+      "balance": 9910.0,
+      "deal_ticket": 22
+    },
+    {
+      "time": "2026-09-01T19:39:54.345000+00:00",
+      "balance": 9955.89,
+      "deal_ticket": 23
+    },
+    {
+      "time": "2026-09-03T13:35:00.150000+00:00",
+      "balance": 9955.78,
+      "deal_ticket": 24
+    },
+    {
+      "time": "2026-09-03T15:04:10.226000+00:00",
+      "balance": 9993.26,
+      "deal_ticket": 25
+    },
+    {
+      "time": "2026-09-07T14:55:00.265000+00:00",
+      "balance": 9993.04,
+      "deal_ticket": 26
+    },
+    {
+      "time": "2026-09-07T22:01:31.515000+00:00",
+      "balance": 9972.56,
+      "deal_ticket": 27
+    },
+    {
+      "time": "2026-09-08T13:35:00.157000+00:00",
+      "balance": 9972.39,
+      "deal_ticket": 28
+    },
+    {
+      "time": "2026-09-08T16:09:53.808000+00:00",
+      "balance": 10011.6,
+      "deal_ticket": 29
+    },
+    {
+      "time": "2026-09-10T13:35:00.258000+00:00",
+      "balance": 10011.49,
+      "deal_ticket": 30
+    },
+    {
+      "time": "2026-09-10T19:01:27.171000+00:00",
+      "balance": 10090.42,
+      "deal_ticket": 31
+    },
+    {
+      "time": "2026-09-11T13:35:00.187000+00:00",
+      "balance": 10090.31,
+      "deal_ticket": 32
+    },
+    {
+      "time": "2026-09-11T13:35:04.526000+00:00",
+      "balance": 10097.59,
+      "deal_ticket": 33
+    },
+    {
+      "time": "2026-09-14T13:35:00.150000+00:00",
+      "balance": 10097.48,
+      "deal_ticket": 34
+    },
+    {
+      "time": "2026-09-14T20:00:00.163000+00:00",
+      "balance": 10074.84,
+      "deal_ticket": 35
+    },
+    {
+      "time": "2026-09-15T14:40:00.302000+00:00",
+      "balance": 10074.67,
+      "deal_ticket": 36
+    },
+    {
+      "time": "2026-09-15T20:00:00.547000+00:00",
+      "balance": 10014.17,
+      "deal_ticket": 37
+    },
+    {
+      "time": "2026-09-16T15:10:00.442000+00:00",
+      "balance": 10014.0,
+      "deal_ticket": 38
+    },
+    {
+      "time": "2026-09-16T15:47:10.981000+00:00",
+      "balance": 10024.21,
+      "deal_ticket": 39
+    },
+    {
+      "time": "2026-09-17T13:35:00.237000+00:00",
+      "balance": 10024.1,
+      "deal_ticket": 40
+    },
+    {
+      "time": "2026-09-17T20:00:00.207000+00:00",
+      "balance": 9973.62,
+      "deal_ticket": 41
+    },
+    {
+      "time": "2026-09-18T13:35:00.361000+00:00",
+      "balance": 9973.45,
+      "deal_ticket": 42
+    },
+    {
+      "time": "2026-09-18T20:00:00.169000+00:00",
+      "balance": 9919.14,
+      "deal_ticket": 43
+    },
+    {
+      "time": "2026-09-21T14:00:00.255000+00:00",
+      "balance": 9918.86,
+      "deal_ticket": 44
+    },
+    {
+      "time": "2026-09-21T14:02:25.807000+00:00",
+      "balance": 9949.79,
+      "deal_ticket": 45
+    },
+    {
+      "time": "2026-09-22T17:55:00.320000+00:00",
+      "balance": 9949.62,
+      "deal_ticket": 46
+    },
+    {
+      "time": "2026-09-22T20:00:00.162000+00:00",
+      "balance": 9992.83,
+      "deal_ticket": 47
+    },
+    {
+      "time": "2026-09-24T13:55:00.648000+00:00",
+      "balance": 9992.66,
+      "deal_ticket": 48
+    },
+    {
+      "time": "2026-09-24T20:00:00.213000+00:00",
+      "balance": 9969.61,
+      "deal_ticket": 49
+    },
+    {
+      "time": "2026-09-25T14:05:00.185000+00:00",
+      "balance": 9969.44,
+      "deal_ticket": 50
+    },
+    {
+      "time": "2026-09-25T14:05:16.533000+00:00",
+      "balance": 9975.26,
+      "deal_ticket": 51
+    },
+    {
+      "time": "2026-09-29T13:35:00.517000+00:00",
+      "balance": 9975.09,
+      "deal_ticket": 52
+    },
+    {
+      "time": "2026-09-29T13:37:37.026000+00:00",
+      "balance": 9996.62,
+      "deal_ticket": 53
+    },
+    {
+      "time": "2026-09-30T14:40:00.244000+00:00",
+      "balance": 9996.4,
+      "deal_ticket": 54
+    },
+    {
+      "time": "2026-09-30T14:59:56.964000+00:00",
+      "balance": 10008.5,
+      "deal_ticket": 55
+    },
+    {
+      "time": "2026-10-01T18:35:00.353000+00:00",
+      "balance": 10008.28,
+      "deal_ticket": 56
+    },
+    {
+      "time": "2026-10-01T20:00:00.199000+00:00",
+      "balance": 9993.17,
+      "deal_ticket": 57
+    },
+    {
+      "time": "2026-10-02T13:35:00.183000+00:00",
+      "balance": 9993.0,
+      "deal_ticket": 58
+    },
+    {
+      "time": "2026-10-02T14:55:00.776000+00:00",
+      "balance": 9880.16,
+      "deal_ticket": 59
+    },
+    {
+      "time": "2026-10-05T13:45:00.195000+00:00",
+      "balance": 9879.94,
+      "deal_ticket": 60
+    },
+    {
+      "time": "2026-10-05T15:22:38.573000+00:00",
+      "balance": 9936.73,
+      "deal_ticket": 61
+    },
+    {
+      "time": "2026-10-06T15:35:00.861000+00:00",
+      "balance": 9936.56,
+      "deal_ticket": 62
+    },
+    {
+      "time": "2026-10-06T19:02:07.710000+00:00",
+      "balance": 9971.73,
+      "deal_ticket": 63
+    },
+    {
+      "time": "2026-10-07T13:35:00.252000+00:00",
+      "balance": 9971.62,
+      "deal_ticket": 64
+    },
+    {
+      "time": "2026-10-07T20:00:00.177000+00:00",
+      "balance": 9942.73,
+      "deal_ticket": 65
+    },
+    {
+      "time": "2026-10-08T14:30:00.228000+00:00",
+      "balance": 9942.4,
+      "deal_ticket": 66
+    },
+    {
+      "time": "2026-10-08T15:10:48.561000+00:00",
+      "balance": 9824.62,
+      "deal_ticket": 67
+    },
+    {
+      "time": "2026-10-09T17:55:00.204000+00:00",
+      "balance": 9824.4,
+      "deal_ticket": 68
+    },
+    {
+      "time": "2026-10-09T20:00:00.251000+00:00",
+      "balance": 9818.09,
+      "deal_ticket": 69
+    },
+    {
+      "time": "2026-10-12T13:35:00.272000+00:00",
+      "balance": 9817.92,
+      "deal_ticket": 70
+    },
+    {
+      "time": "2026-10-12T20:00:00.352000+00:00",
+      "balance": 9826.68,
+      "deal_ticket": 71
+    },
+    {
+      "time": "2026-10-13T14:00:00.235000+00:00",
+      "balance": 9826.46,
+      "deal_ticket": 72
+    },
+    {
+      "time": "2026-10-13T17:00:45.496000+00:00",
+      "balance": 9900.36,
+      "deal_ticket": 73
+    },
+    {
+      "time": "2026-10-14T13:35:00.159000+00:00",
+      "balance": 9900.25,
+      "deal_ticket": 74
+    },
+    {
+      "time": "2026-10-14T16:01:17.843000+00:00",
+      "balance": 9945.06,
+      "deal_ticket": 75
+    },
+    {
+      "time": "2026-10-15T13:40:00.229000+00:00",
+      "balance": 9944.78,
+      "deal_ticket": 76
+    },
+    {
+      "time": "2026-10-15T19:44:40.073000+00:00",
+      "balance": 9992.39,
+      "deal_ticket": 77
+    }
+  ],
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1786974300,
+      "close_epoch": 1786974732,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 4385.943,
+      "close_price": 4404.429,
+      "net": -111.24,
+      "magic": 89191901,
+      "sl": 4404.307,
+      "tp": 4367.156,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "sl 4404.307"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.91,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-08-17T13:45:00.175000+00:00",
+      "close_time": "2026-08-17T13:52:12.566000+00:00",
+      "open_epoch_msc": 1786974300175,
+      "close_epoch_msc": 1786974732566,
+      "date": "2026-08-17",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1787061900,
+      "close_epoch": 1787063526,
+      "last_deal": 5,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 4404.366,
+      "close_price": 4387.575000000001,
+      "net": -101.08,
+      "magic": 89191901,
+      "sl": 4387.614,
+      "tp": 4436.454,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "sl 4387.614"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.75,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-08-18T14:05:00.171000+00:00",
+      "close_time": "2026-08-18T14:32:06.071000+00:00",
+      "open_epoch_msc": 1787061900171,
+      "close_epoch_msc": 1787063526071,
+      "date": "2026-08-18",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1787146500,
+      "close_epoch": 1787147043,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 0.01,
+      "open_price": 4462.139,
+      "close_price": 4464.588,
+      "net": 2.39,
+      "magic": 89191901,
+      "sl": 4331.14,
+      "tp": 4464.517,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4464.517"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 2.45,
+      "commission": -0.06,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-08-19T13:35:00.245000+00:00",
+      "close_time": "2026-08-19T13:44:03.124000+00:00",
+      "open_epoch_msc": 1787146500245,
+      "close_epoch_msc": 1787147043124,
+      "date": "2026-08-19",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1787237400,
+      "close_epoch": 1787238088,
+      "last_deal": 9,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4507.947,
+      "close_price": 4527.713,
+      "net": 59.13,
+      "magic": 89191901,
+      "sl": 4472.253,
+      "tp": 4527.709,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4527.709"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.3,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-08-20T14:50:00.257000+00:00",
+      "close_time": "2026-08-20T15:01:28.615000+00:00",
+      "open_epoch_msc": 1787237400257,
+      "close_epoch_msc": 1787238088615,
+      "date": "2026-08-20",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1787322600,
+      "close_epoch": 1787325905,
+      "last_deal": 11,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4603.499,
+      "close_price": 4604.676,
+      "net": 2.24,
+      "magic": 89191901,
+      "sl": 4531.199,
+      "tp": 4604.64,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4604.640"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 2.35,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-08-21T14:30:00.335000+00:00",
+      "close_time": "2026-08-21T15:25:05.849000+00:00",
+      "open_epoch_msc": 1787322600335,
+      "close_epoch_msc": 1787325905849,
+      "date": "2026-08-21",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1787664900,
+      "close_epoch": 1787665651,
+      "last_deal": 13,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4621.852,
+      "close_price": 4608.542,
+      "net": 53.02,
+      "magic": 89191901,
+      "sl": 4651.514,
+      "tp": 4608.564,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4608.564"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 53.24,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-08-25T13:35:00.183000+00:00",
+      "close_time": "2026-08-25T13:47:31.893000+00:00",
+      "open_epoch_msc": 1787664900183,
+      "close_epoch_msc": 1787665651893,
+      "date": "2026-08-25",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1787751300,
+      "close_epoch": 1787756572,
+      "last_deal": 15,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4616.206,
+      "close_price": 4597.902,
+      "net": 54.74,
+      "magic": 89191901,
+      "sl": 4650.056,
+      "tp": 4597.972,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4597.972"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.91,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-08-26T13:35:00.226000+00:00",
+      "close_time": "2026-08-26T15:02:52.558000+00:00",
+      "open_epoch_msc": 1787751300226,
+      "close_epoch_msc": 1787756572558,
+      "date": "2026-08-26",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1787837700,
+      "close_epoch": 1787838509,
+      "last_deal": 17,
+      "side": "Short",
+      "volume": 0.02,
+      "open_price": 4576.058,
+      "close_price": 4568.928,
+      "net": 14.15,
+      "magic": 89191901,
+      "sl": 4630.449,
+      "tp": 4568.954,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4568.954"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 14.26,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-08-27T13:35:00.390000+00:00",
+      "close_time": "2026-08-27T13:48:29.663000+00:00",
+      "open_epoch_msc": 1787837700390,
+      "close_epoch_msc": 1787838509663,
+      "date": "2026-08-27",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1787925900,
+      "close_epoch": 1787925913,
+      "last_deal": 19,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4577.583,
+      "close_price": 4571.011,
+      "net": 19.55,
+      "magic": 89191901,
+      "sl": 4612.756,
+      "tp": 4571.415,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4571.415"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 19.72,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-08-28T14:05:00.242000+00:00",
+      "close_time": "2026-08-28T14:05:13.723000+00:00",
+      "open_epoch_msc": 1787925900242,
+      "close_epoch_msc": 1787925913723,
+      "date": "2026-08-28",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1788184200,
+      "close_epoch": 1788206400,
+      "last_deal": 21,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4425.788,
+      "close_price": 4453.327,
+      "net": -82.79,
+      "magic": 89191901,
+      "sl": 4460.65,
+      "tp": 4396.502,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -82.62,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-08-31T13:50:00.214000+00:00",
+      "close_time": "2026-08-31T20:00:00.161000+00:00",
+      "open_epoch_msc": 1788184200214,
+      "close_epoch_msc": 1788206400161,
+      "date": "2026-08-31",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1788280500,
+      "close_epoch": 1788291594,
+      "last_deal": 23,
+      "side": "Short",
+      "volume": 0.02,
+      "open_price": 4348.99,
+      "close_price": 4326.047,
+      "net": 45.78,
+      "magic": 89191901,
+      "sl": 4442.535,
+      "tp": 4326.124,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4326.124"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 45.89,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-01T16:35:00.271000+00:00",
+      "close_time": "2026-09-01T19:39:54.345000+00:00",
+      "open_epoch_msc": 1788280500271,
+      "close_epoch_msc": 1788291594345,
+      "date": "2026-09-01",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1788442500,
+      "close_epoch": 1788447850,
+      "last_deal": 25,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4477.6,
+      "close_price": 4496.34,
+      "net": 37.37,
+      "magic": 89191901,
+      "sl": 4395.602,
+      "tp": 4496.25,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4496.250"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 37.48,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-03T13:35:00.150000+00:00",
+      "close_time": "2026-09-03T15:04:10.226000+00:00",
+      "open_epoch_msc": 1788442500150,
+      "close_epoch_msc": 1788447850226,
+      "date": "2026-09-03",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1788792900,
+      "close_epoch": 1788818491,
+      "last_deal": 27,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4417.272,
+      "close_price": 4412.152,
+      "net": -20.7,
+      "magic": 89191901,
+      "sl": 4392.048,
+      "tp": 4435.12,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -20.48,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-07T14:55:00.265000+00:00",
+      "close_time": "2026-09-07T22:01:31.515000+00:00",
+      "open_epoch_msc": 1788792900265,
+      "close_epoch_msc": 1788818491515,
+      "date": "2026-09-07",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 28,
+      "open_epoch": 1788874500,
+      "close_epoch": 1788883793,
+      "last_deal": 29,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4398.17,
+      "close_price": 4385.099,
+      "net": 39.04,
+      "magic": 89191901,
+      "sl": 4443.203,
+      "tp": 4385.257,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4385.257"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 39.21,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-08T13:35:00.157000+00:00",
+      "close_time": "2026-09-08T16:09:53.808000+00:00",
+      "open_epoch_msc": 1788874500157,
+      "close_epoch_msc": 1788883793808,
+      "date": "2026-09-08",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 30,
+      "open_epoch": 1789047300,
+      "close_epoch": 1789066887,
+      "last_deal": 31,
+      "side": "Short",
+      "volume": 0.02,
+      "open_price": 4363.104,
+      "close_price": 4323.641,
+      "net": 78.82,
+      "magic": 89191901,
+      "sl": 4422.932,
+      "tp": 4324.032,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4324.032"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 78.93,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-10T13:35:00.258000+00:00",
+      "close_time": "2026-09-10T19:01:27.171000+00:00",
+      "open_epoch_msc": 1789047300258,
+      "close_epoch_msc": 1789066887171,
+      "date": "2026-09-10",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 32,
+      "open_epoch": 1789133700,
+      "close_epoch": 1789133704,
+      "last_deal": 33,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4395.228,
+      "close_price": 4398.868,
+      "net": 7.17,
+      "magic": 89191901,
+      "sl": 4315.342,
+      "tp": 4398.813,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4398.813"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 7.28,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-11T13:35:00.187000+00:00",
+      "close_time": "2026-09-11T13:35:04.526000+00:00",
+      "open_epoch_msc": 1789133700187,
+      "close_epoch_msc": 1789133704526,
+      "date": "2026-09-11",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 34,
+      "open_epoch": 1789392900,
+      "close_epoch": 1789416000,
+      "last_deal": 35,
+      "side": "Short",
+      "volume": 0.02,
+      "open_price": 4272.299,
+      "close_price": 4283.618,
+      "net": -22.75,
+      "magic": 89191901,
+      "sl": 4355.482,
+      "tp": 4253.5,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -22.64,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-14T13:35:00.150000+00:00",
+      "close_time": "2026-09-14T20:00:00.163000+00:00",
+      "open_epoch_msc": 1789392900150,
+      "close_epoch_msc": 1789416000163,
+      "date": "2026-09-14",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 36,
+      "open_epoch": 1789483200,
+      "close_epoch": 1789502400,
+      "last_deal": 37,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4277.673,
+      "close_price": 4297.841,
+      "net": -60.67,
+      "magic": 89191901,
+      "sl": 4312.283,
+      "tp": 4261.235,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -60.5,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-15T14:40:00.302000+00:00",
+      "close_time": "2026-09-15T20:00:00.547000+00:00",
+      "open_epoch_msc": 1789483200302,
+      "close_epoch_msc": 1789502400547,
+      "date": "2026-09-15",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 38,
+      "open_epoch": 1789571400,
+      "close_epoch": 1789573630,
+      "last_deal": 39,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4357.331,
+      "close_price": 4360.733,
+      "net": 10.04,
+      "magic": 89191901,
+      "sl": 4320.704,
+      "tp": 4360.643,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4360.643"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.21,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-16T15:10:00.442000+00:00",
+      "close_time": "2026-09-16T15:47:10.981000+00:00",
+      "open_epoch_msc": 1789571400442,
+      "close_epoch_msc": 1789573630981,
+      "date": "2026-09-16",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 40,
+      "open_epoch": 1789652100,
+      "close_epoch": 1789675200,
+      "last_deal": 41,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 4371.854,
+      "close_price": 4346.617,
+      "net": -50.59,
+      "magic": 89191901,
+      "sl": 4274.932,
+      "tp": 4381.343,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -50.48,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-17T13:35:00.237000+00:00",
+      "close_time": "2026-09-17T20:00:00.207000+00:00",
+      "open_epoch_msc": 1789652100237,
+      "close_epoch_msc": 1789675200207,
+      "date": "2026-09-17",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 42,
+      "open_epoch": 1789738500,
+      "close_epoch": 1789761600,
+      "last_deal": 43,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4358.445,
+      "close_price": 4376.551,
+      "net": -54.48,
+      "magic": 89191901,
+      "sl": 4397.773,
+      "tp": 4334.102,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -54.31,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-18T13:35:00.361000+00:00",
+      "close_time": "2026-09-18T20:00:00.169000+00:00",
+      "open_epoch_msc": 1789738500361,
+      "close_epoch_msc": 1789761600169,
+      "date": "2026-09-18",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 44,
+      "open_epoch": 1789999200,
+      "close_epoch": 1789999345,
+      "last_deal": 45,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 4346.159,
+      "close_price": 4339.974,
+      "net": 30.65,
+      "magic": 89191901,
+      "sl": 4368.579,
+      "tp": 4339.979,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4339.979"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 30.93,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-21T14:00:00.255000+00:00",
+      "close_time": "2026-09-21T14:02:25.807000+00:00",
+      "open_epoch_msc": 1789999200255,
+      "close_epoch_msc": 1789999345807,
+      "date": "2026-09-21",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 46,
+      "open_epoch": 1790099700,
+      "close_epoch": 1790107200,
+      "last_deal": 47,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4349.862,
+      "close_price": 4364.267,
+      "net": 43.04,
+      "magic": 89191901,
+      "sl": 4311.293,
+      "tp": 4376.07,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 43.21,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-22T17:55:00.320000+00:00",
+      "close_time": "2026-09-22T20:00:00.162000+00:00",
+      "open_epoch_msc": 1790099700320,
+      "close_epoch_msc": 1790107200162,
+      "date": "2026-09-22",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 48,
+      "open_epoch": 1790258100,
+      "close_epoch": 1790280000,
+      "last_deal": 49,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4266.269,
+      "close_price": 4273.952,
+      "net": -23.22,
+      "magic": 89191901,
+      "sl": 4299.798,
+      "tp": 4244.136,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -23.05,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-24T13:55:00.648000+00:00",
+      "close_time": "2026-09-24T20:00:00.213000+00:00",
+      "open_epoch_msc": 1790258100648,
+      "close_epoch_msc": 1790280000213,
+      "date": "2026-09-24",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 50,
+      "open_epoch": 1790345100,
+      "close_epoch": 1790345116,
+      "last_deal": 51,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4258.279,
+      "close_price": 4256.339,
+      "net": 5.65,
+      "magic": 89191901,
+      "sl": 4297.305,
+      "tp": 4256.391,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4256.391"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 5.82,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-25T14:05:00.185000+00:00",
+      "close_time": "2026-09-25T14:05:16.533000+00:00",
+      "open_epoch_msc": 1790345100185,
+      "close_epoch_msc": 1790345116533,
+      "date": "2026-09-25",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 52,
+      "open_epoch": 1790688900,
+      "close_epoch": 1790689057,
+      "last_deal": 53,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4154.245,
+      "close_price": 4161.422,
+      "net": 21.36,
+      "magic": 89191901,
+      "sl": 4120.055,
+      "tp": 4161.406,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4161.406"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 21.53,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-29T13:35:00.517000+00:00",
+      "close_time": "2026-09-29T13:37:37.026000+00:00",
+      "open_epoch_msc": 1790688900517,
+      "close_epoch_msc": 1790689057026,
+      "date": "2026-09-29",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 54,
+      "open_epoch": 1790779200,
+      "close_epoch": 1790780396,
+      "last_deal": 55,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4168.543,
+      "close_price": 4165.517,
+      "net": 11.88,
+      "magic": 89191901,
+      "sl": 4194.183,
+      "tp": 4165.574,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4165.574"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 12.1,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-09-30T14:40:00.244000+00:00",
+      "close_time": "2026-09-30T14:59:56.964000+00:00",
+      "open_epoch_msc": 1790779200244,
+      "close_epoch_msc": 1790780396964,
+      "date": "2026-09-30",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 56,
+      "open_epoch": 1790879700,
+      "close_epoch": 1790884800,
+      "last_deal": 57,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4180.578,
+      "close_price": 4176.799,
+      "net": -15.33,
+      "magic": 89191901,
+      "sl": 4150.953,
+      "tp": 4193.031,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -15.11,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-10-01T18:35:00.353000+00:00",
+      "close_time": "2026-10-01T20:00:00.199000+00:00",
+      "open_epoch_msc": 1790879700353,
+      "close_epoch_msc": 1790884800199,
+      "date": "2026-10-01",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 58,
+      "open_epoch": 1790948100,
+      "close_epoch": 1790952900,
+      "last_deal": 59,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4194.907,
+      "close_price": 4157.293,
+      "net": -113.01,
+      "magic": 89191901,
+      "sl": 4157.389,
+      "tp": 4228.52,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "sl 4157.389"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -112.84,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-10-02T13:35:00.183000+00:00",
+      "close_time": "2026-10-02T14:55:00.776000+00:00",
+      "open_epoch_msc": 1790948100183,
+      "close_epoch_msc": 1790952900776,
+      "date": "2026-10-02",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 60,
+      "open_epoch": 1791207900,
+      "close_epoch": 1791213758,
+      "last_deal": 61,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4138.556,
+      "close_price": 4124.357,
+      "net": 56.57,
+      "magic": 89191901,
+      "sl": 4165.456,
+      "tp": 4124.408,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4124.408"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.79,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-10-05T13:45:00.195000+00:00",
+      "close_time": "2026-10-05T15:22:38.573000+00:00",
+      "open_epoch_msc": 1791207900195,
+      "close_epoch_msc": 1791213758573,
+      "date": "2026-10-05",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 62,
+      "open_epoch": 1791300900,
+      "close_epoch": 1791313327,
+      "last_deal": 63,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 4168.25,
+      "close_price": 4179.972,
+      "net": 35.0,
+      "magic": 89191901,
+      "sl": 4125.185,
+      "tp": 4179.805,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4179.805"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 35.17,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-10-06T15:35:00.861000+00:00",
+      "close_time": "2026-10-06T19:02:07.710000+00:00",
+      "open_epoch_msc": 1791300900861,
+      "close_epoch_msc": 1791313327710,
+      "date": "2026-10-06",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 64,
+      "open_epoch": 1791380100,
+      "close_epoch": 1791403200,
+      "last_deal": 65,
+      "side": "Short",
+      "volume": 0.02,
+      "open_price": 4086.828,
+      "close_price": 4101.275,
+      "net": -29.0,
+      "magic": 89191901,
+      "sl": 4166.843,
+      "tp": 4066.403,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -28.89,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-10-07T13:35:00.252000+00:00",
+      "close_time": "2026-10-07T20:00:00.177000+00:00",
+      "open_epoch_msc": 1791380100252,
+      "close_epoch_msc": 1791403200177,
+      "date": "2026-10-07",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 66,
+      "open_epoch": 1791469800,
+      "close_epoch": 1791472248,
+      "last_deal": 67,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 4136.726,
+      "close_price": 4117.097,
+      "net": -118.11,
+      "magic": 89191901,
+      "sl": 4117.153,
+      "tp": 4143.499,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "sl 4117.153"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -117.78,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-10-08T14:30:00.228000+00:00",
+      "close_time": "2026-10-08T15:10:48.561000+00:00",
+      "open_epoch_msc": 1791469800228,
+      "close_epoch_msc": 1791472248561,
+      "date": "2026-10-08",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 68,
+      "open_epoch": 1791568500,
+      "close_epoch": 1791576000,
+      "last_deal": 69,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 4197.04,
+      "close_price": 4195.463,
+      "net": -6.53,
+      "magic": 89191901,
+      "sl": 4170.458,
+      "tp": 4207.582,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -6.31,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-10-09T17:55:00.204000+00:00",
+      "close_time": "2026-10-09T20:00:00.251000+00:00",
+      "open_epoch_msc": 1791568500204,
+      "close_epoch_msc": 1791576000251,
+      "date": "2026-10-09",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 70,
+      "open_epoch": 1791812100,
+      "close_epoch": 1791835200,
+      "last_deal": 71,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4172.465,
+      "close_price": 4169.546,
+      "net": 8.59,
+      "magic": 89191901,
+      "sl": 4213.511,
+      "tp": 4154.704,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 8.76,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-10-12T13:35:00.272000+00:00",
+      "close_time": "2026-10-12T20:00:00.352000+00:00",
+      "open_epoch_msc": 1791812100272,
+      "close_epoch_msc": 1791835200352,
+      "date": "2026-10-12",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 72,
+      "open_epoch": 1791900000,
+      "close_epoch": 1791910845,
+      "last_deal": 73,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4169.145,
+      "close_price": 4150.67,
+      "net": 73.68,
+      "magic": 89191901,
+      "sl": 4198.937,
+      "tp": 4150.73,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4150.730"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 73.9,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-10-13T14:00:00.235000+00:00",
+      "close_time": "2026-10-13T17:00:45.496000+00:00",
+      "open_epoch_msc": 1791900000235,
+      "close_epoch_msc": 1791910845496,
+      "date": "2026-10-13",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 74,
+      "open_epoch": 1791984900,
+      "close_epoch": 1791993677,
+      "last_deal": 75,
+      "side": "Short",
+      "volume": 0.02,
+      "open_price": 4101.863,
+      "close_price": 4079.46,
+      "net": 44.7,
+      "magic": 89191901,
+      "sl": 4167.769,
+      "tp": 4079.545,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4079.545"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 44.81,
+      "commission": -0.11,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-10-14T13:35:00.159000+00:00",
+      "close_time": "2026-10-14T16:01:17.843000+00:00",
+      "open_epoch_msc": 1791984900159,
+      "close_epoch_msc": 1791993677843,
+      "date": "2026-10-14",
+      "end_of_test_liquidation": false
+    },
+    {
+      "position_id": 76,
+      "open_epoch": 1792071600,
+      "close_epoch": 1792093480,
+      "last_deal": 77,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 4159.153,
+      "close_price": 4168.675,
+      "net": 47.33,
+      "magic": 89191901,
+      "sl": 4137.547,
+      "tp": 4168.655,
+      "entry_comment": "Gold Overnight VA",
+      "exit_comments": [
+        "tp 4168.655"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 47.61,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0,
+      "open_time": "2026-10-15T13:40:00.229000+00:00",
+      "close_time": "2026-10-15T19:44:40.073000+00:00",
+      "open_epoch_msc": 1792071600229,
+      "close_epoch_msc": 1792093480073,
+      "date": "2026-10-15",
+      "end_of_test_liquidation": false
+    }
+  ],
+  "source_path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gold Overnight Value Area EA\\EA\\Gold Overnight Value Area EA.mq5",
+  "preset_path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Selected Portfolio Settings 2026-09-01\\24 Gold Overnight Value Area - RAW - 1PCT.set"
+}

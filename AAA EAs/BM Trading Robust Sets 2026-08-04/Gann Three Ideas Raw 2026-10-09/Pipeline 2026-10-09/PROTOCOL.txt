@@ -1,0 +1,50 @@
+Gann-inspired candidates: gold eighth-range rejection, US100 H1 time-cycle gate,
+BTC weekly quartile rejection control. Research stages1-6; no live, BAT, website,
+production-source or Git changes. Preserve original42-case raw study untouched.
+
+Frozen end-exclusive2026-10-09. Development2021-10-09 to2023-10-09,
+older selection validation2023-10-09 to2024-10-09, final two-year retrospective
+validation2024-10-09 to2026-10-09. Raw recent periods were previously inspected.
+No optimisation/ranking on recent1Y/6M/3M or final2Y. One finalist per asset is
+frozen before final2Y; a failure never selects a second candidate on those dates.
+Prior42 raw configurations count toward conservative multiple-testing adjustment.
+
+Standardised1% current closed-balance initial-stop budget; floor broker lot step.
+This deliberately retains the raw strategy's safer flooring, despite the old
+pipeline document's rounding-up helper. Entry commission, gaps and slippage can
+exceed budget; undersized/margin-constrained trades are skipped, not oversised.
+Separate10kaccounts; not a combined shared-account native backtest.
+
+Raw native3Y/5Y/1Y/6M: Model4,150ms, native broker costs. Raw gates: positive,
+netPF>=1.15,>=30 whole positions in3Y/5Y and stronger PF/mean netR than control.
+Gold control changes1/8 to1/4; BTC control changes1/4 to1/8. US100 has ungated
+EMA baseline and seeded equal-exposure random-clock control. Failure remains
+failure during any exploratory continuation. No proprietary-Gann attribution.
+
+Parameterisation must reproduce raw3Y at1% trade for trade before searching.
+Stage5: bounded full-dimension staged search in SEARCH PLAN.json; top3 per stage,
+joint27-neighbour plateau per finalist, then older native validation chooses one.
+Minimum30 development and30 older-validation positions; insufficient cases stay
+insufficient, no reduction to15 or shortening final2Y. Diagnostic finalist may
+still be evaluated/MonteCarloed, but cannot become a validated candidate.
+Model1 M1OHLC used only for screening; never labelled real-tick evidence.
+Conditional-market retrace/breakout is distinctly labelled, not resting orders.
+All attempted configurations, including controls, failed tests and parity are
+recorded. Omitted dimensions/reasons are explicit; no untested exhaustive claim.
+
+Native confirmation: development, older validation, final2Y,5Y,3Y,1Y,6M,3M,
+fresh2026. Distinguish native tick-equity DD, sampled equity DD, closed-balance
+simulation DD. Reject boundary forced liquidations for selection. Verify exact
+dates, actual inputs, source hashes, signal-known-at-entry and cash reconciliation.
+Disclose generated pre2026 ticks and broker CFD/tick-volume differences.
+
+Mandatory MonteCarlo:10000 paths, block5; OOS plus5Ycontext; shuffle and streaks;
+10/20% missed trades; measured extra transaction-event quote spread/commission
+and requested-versus-filled entry slippage; native300ms delay post-freeze test;
+FTMO standard2step closed-PnL proxy using existing simulator with equity caveat.
+Portfolio overlap may use aligned saved ledgers, labelled retrospective overlays
+and different window/cost/lot/margin/risk evidence. Never claim native shared fills.
+
+Final verdict preserves raw failure, older-validation eligibility and all policy
+gates including DSR>=95%, MCp05return>0/PF>1 and broker-specific costs. A higher
+backtest win rate does not establish a special Gann-level or time-cycle advantage.

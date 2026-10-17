@@ -1,0 +1,22 @@
+const {chromium}=require('C:/Users/hama101/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {pathToFileURL}=require('url');const fs=require('fs');const path=require('path');
+(async()=>{
+ const root=__dirname,summary=JSON.parse(fs.readFileSync(path.join(root,'SUMMARY.json'),'utf8'));
+ if(summary.completed!==2)throw Error('Incomplete batch');
+ const browser=await chromium.launch({headless:true,args:['--disable-gpu']});
+ const page=await browser.newPage({viewport:{width:1500,height:1100}});let errors=[];
+ page.on('pageerror',e=>errors.push(String(e)));await page.goto(pathToFileURL(path.join(root,'Results.html')).href);
+ if(await page.locator('section.window:not(.hidden)').count()!==1)throw Error('Initial window');
+ await page.getByRole('button',{name:'Three years',exact:true}).click();
+ if(await page.locator('section.window:not(.hidden)').getAttribute('data-window')!=='3y')throw Error('3y filter');
+ await page.getByRole('button',{name:'Both',exact:true}).click();
+ if(await page.locator('section.window:not(.hidden)').count()!==2)throw Error('Both filter');
+ const links=await page.locator('a').evaluateAll(xs=>xs.map(x=>x.getAttribute('href')).filter(x=>!x.startsWith('https:')));
+ for(const link of links)if(!fs.existsSync(path.join(root,link)))throw Error('Missing '+link);
+ await page.getByRole('button',{name:'Last year',exact:true}).click();await page.screenshot({path:path.join(root,'Report preview.png')});
+ await page.setViewportSize({width:390,height:844});
+ const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth);
+ if(overflow||errors.length)throw Error(JSON.stringify({overflow,errors}));
+ fs.writeFileSync(path.join(root,'HTML QA.json'),JSON.stringify({errors,mobile_overflow:overflow,local_links:links.length,period_filters_passed:true},null,2));
+ await browser.close();console.log('HTML QA passed');
+})().catch(e=>{console.error(e);process.exit(1)});

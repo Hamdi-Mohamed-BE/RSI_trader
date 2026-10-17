@@ -1,0 +1,18 @@
+APPROVED MECHANICAL RECONSTRUCTION — NOT ORIGINAL VIDEO CODE
+Frozen before results, 10 October 2026. No optimisation, deployment, BAT/website change or push.
+
+EURUSD M5. Buy when the last three COMPLETED bars have strictly increasing broker tick volume and the newest closes above EMA5(close); mirror below EMA5 for sells with the SAME increasing-volume test. Enter on the next bar's first available tick. One evaluation per completed bar. No current-bar volume or future bars.
+
+One directional basket at a time. Either initial side is eligible. Same-direction fresh signals add only when the executable quote is at least 300 native points from EVERY open entry, on either side of those entries (absolute spacing, not adverse-only). After an entire basket closes, only the opposite direction may start the next basket.
+
+User approved assumptions: starting lot 0.01; arithmetic lot increment +0.01 each filled order; $10 estimated NET basket target; $10,000 initial USD balance. On five-digit EURUSD 300 points = 30 pips. These missing inputs were NOT recovered from original code.
+
+No individual SL/TP, basket loss stop, maximum number of orders, time exit or equity guard. Broker volume and margin constraints apply. No meaningful fixed percentage loss ceiling exists. No martingale doubling is assumed, but arithmetic position size and cumulative exposure still grow.
+
+Target estimate is current account equity minus basket starting balance, minus a conservative closing-fee reserve equal to charged opening commission/fee. Account equity already includes floating P/L, entry costs and accrued swaps. All basket positions close at market, sequentially, with retries on failed closes; additions are disabled while closing. Actual net realised profit may differ because of closing fees, price movement, gaps or rejection. Broker fees/swaps and observed net results are recorded, not assumed absent.
+
+Independent one-year (2025-10-10 to 2026-10-10 exclusive) and three-year (2023-10-10 to 2026-10-10 exclusive) accounts, existing isolated Exness-MT5Trial16 hedging tester, leverage 1:2000, model 4, 150ms execution delay. Broker real-tick availability and generated-tick fallback disclosed. No claim of untouched out-of-sample validation.
+
+Research EA refuses non-tester execution. Empty research chart profile; live trading and DLLs disabled. Do not apply to a live account.
+
+Report both individual orders and complete baskets. Natural target closes separated from tester-end liquidations and stopouts. Include all terminal losses in headline portfolio return/PF, not just target-closed winners. Tick-level floating-equity drawdown, peak open lots/orders/margin and unfinished-basket duration matter more than artificially high target-basket win rate. Equity trace is sampled once per minute; native drawdown and custom drawdown maxima are measured each tick.

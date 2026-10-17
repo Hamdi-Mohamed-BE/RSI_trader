@@ -1,0 +1,161 @@
+{
+  "tag": "allrr05-3-way-gold-two-week-affd1a315195",
+  "slug": "3-way-gold",
+  "variant": "two-week-affd1a315195",
+  "window": [
+    "2026.09.25",
+    "2026.10.09"
+  ],
+  "inputs": {
+    "InpRR05ModuleTarget": "0",
+    "InpEnableTrading": "true",
+    "InpEnableMomentum": "true",
+    "InpEnableBreakout": "true",
+    "InpEnableTurnOfMonth": "true",
+    "InpMarketEntries": "false",
+    "InpRiskPercent": "1.0",
+    "InpRiskMode": "0",
+    "InpFixedRiskMoney": "0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMagic": "930930100",
+    "InpMaximumDeviationPoints": "1000",
+    "InpAutoServerUtcOffsetLive": "true",
+    "InpServerUtcOffsetHours": "0",
+    "InpTradeFrom": "0",
+    "InpResearchLedger": "false",
+    "InpRR05AuditTag": "allrr05-3-way-gold-two-week-affd1a315195"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 9820.05,
+    "net_profit": -179.95,
+    "return_pct": -1.8,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "max_drawdown_pct": 2.16,
+    "trades": 2,
+    "sharpe_ratio": -0.25,
+    "recovery_factor": -0.83,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 2.16,
+    "balance_dd_pct": 1.8
+  },
+  "metrics": {
+    "trades": 2,
+    "return_pct": -1.7994999999999999,
+    "net_profit": -179.95,
+    "pf": 0.0,
+    "wins": 0,
+    "losses": 2,
+    "flat": 0,
+    "win_rate": 0.0,
+    "equity_dd_pct": 2.16,
+    "balance_dd_pct": 1.8,
+    "sharpe_daily_equity": -6.831295054174125,
+    "win_streak": 0,
+    "loss_streak": 2,
+    "avg_win": null,
+    "avg_loss": -89.975,
+    "partial_positions": 0,
+    "exit_legs": 2,
+    "commission": -0.28,
+    "swap": -2.09,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 3,
+      "open_epoch": 1790726400,
+      "close_epoch": 1790973780,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.01,
+      "open_price": 4184.844,
+      "close_price": 4138.939,
+      "net": -48.05,
+      "magic": 930930102,
+      "sl": 4027.81,
+      "tp": 4578.269,
+      "entry_comment": "3WG TOM",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -45.9,
+      "commission": -0.06,
+      "swap": -2.09,
+      "fee": 0.0
+    },
+    {
+      "position_id": 5,
+      "open_epoch": 1791376330,
+      "close_epoch": 1791392880,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 4084.784,
+      "close_price": 4117.704,
+      "net": -131.9,
+      "magic": 930930101,
+      "sl": 4117.687,
+      "tp": 4002.475,
+      "entry_comment": "3WG BRK",
+      "exit_comments": [
+        "sl 4117.687"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -131.68,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1790726400,
+      "deal": 2,
+      "balance": 9999.94,
+      "net": -0.06
+    },
+    {
+      "epoch": 1790973780,
+      "deal": 3,
+      "balance": 9951.95,
+      "net": -47.99
+    },
+    {
+      "epoch": 1791376330,
+      "deal": 4,
+      "balance": 9951.73,
+      "net": -0.22
+    },
+    {
+      "epoch": 1791392880,
+      "deal": 5,
+      "balance": 9820.05,
+      "net": -131.68
+    }
+  ],
+  "seconds": 11.66132116317749,
+  "binary_sha256": "70dfcdafba568cf81aed73d8b31da56423c261b0c8855b257071d045ae74c42a",
+  "report_sha256": "5d4ea2bef2c92a95ef236dbd9c753f40e769c09d7aa43b640eba08f98ef6bfdd",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [
+    "TP accessor override for MOM/BRK only; baseline override is zero."
+  ],
+  "no_live_changes": true
+}

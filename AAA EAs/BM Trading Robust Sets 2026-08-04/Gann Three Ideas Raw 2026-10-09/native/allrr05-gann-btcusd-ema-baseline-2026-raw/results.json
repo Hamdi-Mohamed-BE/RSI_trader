@@ -1,0 +1,8101 @@
+{
+  "tag": "allrr05-gann-btcusd-ema-baseline-2026-raw",
+  "slug": "gann-btcusd-ema-baseline-2026",
+  "variant": "raw",
+  "window": [
+    "2026.01.01",
+    "2026.10.09"
+  ],
+  "inputs": {
+    "InpIdea": "3",
+    "InpSignalTF": "16385",
+    "InpReferenceTF": "32769",
+    "InpRiskPercent": "0.5",
+    "InpATRPeriod": "14",
+    "InpPivotNeighbours": "2",
+    "InpFanMaxH4Bars": "32",
+    "InpRetestBars": "8",
+    "InpTargetR": "2",
+    "InpStopBufferATR": "0.25",
+    "InpRetestBufferATR": "0.10",
+    "InpCloseMinuteUTC": "1255",
+    "InpEntryUntilMinuteUTC": "1230",
+    "InpMaxHoldMinutes": "480",
+    "InpServerUTCOffsetHours": "0",
+    "InpRandomSeed": "26100950",
+    "InpMagic": "26100950",
+    "InpDeviationPoints": "1000",
+    "InpSignalAuditTag": "gann-btcusd-ema-baseline-2026",
+    "InpRR05AuditTag": "allrr05-gann-btcusd-ema-baseline-2026-raw"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10213.11,
+    "net_profit": 213.11,
+    "return_pct": 2.13,
+    "profit_factor": 1.08,
+    "win_rate_pct": 45.65,
+    "max_drawdown_pct": 4.03,
+    "trades": 138,
+    "sharpe_ratio": 1.04,
+    "recovery_factor": 0.52,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 4.03,
+    "balance_dd_pct": 3.33
+  },
+  "metrics": {
+    "trades": 138,
+    "return_pct": 2.1311,
+    "net_profit": 213.11,
+    "pf": 1.0782020608266791,
+    "wins": 63,
+    "losses": 75,
+    "flat": 0,
+    "win_rate": 45.65217391304348,
+    "equity_dd_pct": 4.03,
+    "balance_dd_pct": 3.33,
+    "sharpe_daily_equity": 0.48183765721976085,
+    "win_streak": 4,
+    "loss_streak": 5,
+    "avg_win": 46.63857142857143,
+    "avg_loss": -36.33493333333333,
+    "partial_positions": 0,
+    "exit_legs": 138,
+    "commission": -56.79,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1767290401,
+      "close_epoch": 1767300903,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.16,
+      "open_price": 88221.23,
+      "close_price": 88153.06,
+      "net": -11.61,
+      "magic": 26100950,
+      "sl": 87916.49,
+      "tp": 88806.5,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -10.91,
+      "commission": -0.7,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1767722400,
+      "close_epoch": 1767729953,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 91538.48,
+      "close_price": 92402.38999999998,
+      "net": -43.42,
+      "magic": 26100950,
+      "sl": 92401.2,
+      "tp": 89840.55,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 92401.20"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -43.2,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1767920400,
+      "close_epoch": 1767945873,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 91227.33,
+      "close_price": 90426.22,
+      "net": -48.33,
+      "magic": 26100950,
+      "sl": 90429.83,
+      "tp": 92800.25,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 90429.83"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.07,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1768111201,
+      "close_epoch": 1768140006,
+      "last_deal": 9,
+      "side": "Long",
+      "volume": 0.25,
+      "open_price": 90654.78,
+      "close_price": 90744.58,
+      "net": 21.36,
+      "magic": 26100950,
+      "sl": 90462.91,
+      "tp": 91038.52,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 22.45,
+      "commission": -1.09,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1768222800,
+      "close_epoch": 1768233596,
+      "last_deal": 11,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 90672.02,
+      "close_price": 91574.56999999999,
+      "net": -45.35,
+      "magic": 26100950,
+      "sl": 91562.92,
+      "tp": 88890.22,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 91562.92"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -45.13,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1768766402,
+      "close_epoch": 1768769701,
+      "last_deal": 13,
+      "side": "Long",
+      "volume": 0.16,
+      "open_price": 95335.59,
+      "close_price": 95303.43,
+      "net": -5.84,
+      "magic": 26100950,
+      "sl": 95046.78,
+      "tp": 95934.78,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -5.14,
+      "commission": -0.7,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1768780800,
+      "close_epoch": 1768780920,
+      "last_deal": 15,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 93648.83,
+      "close_price": 92668.54,
+      "net": 97.59,
+      "magic": 26100950,
+      "sl": 94137.02,
+      "tp": 92672.45,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 92672.45"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 98.03,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1769047202,
+      "close_epoch": 1769076003,
+      "last_deal": 17,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 90015.16,
+      "close_price": 89985.83,
+      "net": -1.01,
+      "magic": 26100950,
+      "sl": 88485.7,
+      "tp": 93094.87,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.88,
+      "commission": -0.13,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1769144404,
+      "close_epoch": 1769157226,
+      "last_deal": 19,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 89857.14,
+      "close_price": 89123.6,
+      "net": -44.27,
+      "magic": 26100950,
+      "sl": 89124.12,
+      "tp": 91347.51,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 89124.12"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -44.01,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1769256002,
+      "close_epoch": 1769284808,
+      "last_deal": 21,
+      "side": "Short",
+      "volume": 0.19,
+      "open_price": 89457.98,
+      "close_price": 89199.97000000002,
+      "net": 48.2,
+      "magic": 26100950,
+      "sl": 89708.91,
+      "tp": 88956.12,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 49.03,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1769457602,
+      "close_epoch": 1769460900,
+      "last_deal": 23,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 87913.87,
+      "close_price": 87477.95999999999,
+      "net": -22.01,
+      "magic": 26100950,
+      "sl": 87018.54,
+      "tp": 89720.61,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -21.79,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1769522403,
+      "close_epoch": 1769529980,
+      "last_deal": 25,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 87869.03,
+      "close_price": 88362.66,
+      "net": -49.81,
+      "magic": 26100950,
+      "sl": 88359.92,
+      "tp": 86910.59,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 88359.92"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.37,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1769655600,
+      "close_epoch": 1769684402,
+      "last_deal": 27,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 87787.32,
+      "close_price": 87815.84,
+      "net": -1.32,
+      "magic": 26100950,
+      "sl": 88881.83,
+      "tp": 85598.3,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -1.14,
+      "commission": -0.18,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 28,
+      "open_epoch": 1770048000,
+      "close_epoch": 1770065700,
+      "last_deal": 29,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 78822.49,
+      "close_price": 78002.27999999998,
+      "net": -24.73,
+      "magic": 26100950,
+      "sl": 77183.4,
+      "tp": 82100.67,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -24.6,
+      "commission": -0.13,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 30,
+      "open_epoch": 1770130800,
+      "close_epoch": 1770140697,
+      "last_deal": 31,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 77129.56,
+      "close_price": 75064.38,
+      "net": 82.42,
+      "magic": 26100950,
+      "sl": 78189.21,
+      "tp": 75066.75,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 75066.75"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 82.6,
+      "commission": -0.18,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 32,
+      "open_epoch": 1770397200,
+      "close_epoch": 1770411300,
+      "last_deal": 33,
+      "side": "Long",
+      "volume": 0.02,
+      "open_price": 69909.56,
+      "close_price": 70313.26,
+      "net": 7.99,
+      "magic": 26100950,
+      "sl": 67961.04,
+      "tp": 73813.5,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 8.08,
+      "commission": -0.09,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 34,
+      "open_epoch": 1770634800,
+      "close_epoch": 1770655457,
+      "last_deal": 35,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 68677.35,
+      "close_price": 69941.75,
+      "net": -38.06,
+      "magic": 26100950,
+      "sl": 69939.6,
+      "tp": 66133.29,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 69939.60"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -37.93,
+      "commission": -0.13,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 36,
+      "open_epoch": 1770696002,
+      "close_epoch": 1770724802,
+      "last_deal": 37,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 69467.3,
+      "close_price": 68482.57,
+      "net": 29.41,
+      "magic": 26100950,
+      "sl": 70771.3,
+      "tp": 66859.3,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 29.54,
+      "commission": -0.13,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 38,
+      "open_epoch": 1770901200,
+      "close_epoch": 1770909004,
+      "last_deal": 39,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 67826.21,
+      "close_price": 67030.97,
+      "net": -47.97,
+      "magic": 26100950,
+      "sl": 67033.37,
+      "tp": 69445.34,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 67033.37"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -47.71,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 40,
+      "open_epoch": 1770987601,
+      "close_epoch": 1770995515,
+      "last_deal": 41,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 67023.97,
+      "close_price": 68367.24,
+      "net": 93.72,
+      "magic": 26100950,
+      "sl": 66362.39,
+      "tp": 68362.88,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 68362.88"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 94.03,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 42,
+      "open_epoch": 1771171200,
+      "close_epoch": 1771188903,
+      "last_deal": 43,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 69060.42,
+      "close_price": 68389.54,
+      "net": 40.0,
+      "magic": 26100950,
+      "sl": 69875.57,
+      "tp": 67450.88,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 40.26,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 44,
+      "open_epoch": 1771549200,
+      "close_epoch": 1771578005,
+      "last_deal": 45,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 67201.13,
+      "close_price": 67847.4,
+      "net": 32.09,
+      "magic": 26100950,
+      "sl": 66315.68,
+      "tp": 68946.68,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 32.31,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 46,
+      "open_epoch": 1771750800,
+      "close_epoch": 1771779604,
+      "last_deal": 47,
+      "side": "Short",
+      "volume": 0.13,
+      "open_price": 67941.91,
+      "close_price": 67607.36,
+      "net": 42.92,
+      "magic": 26100950,
+      "sl": 68293.17,
+      "tp": 67188.36,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 43.49,
+      "commission": -0.57,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 48,
+      "open_epoch": 1771984800,
+      "close_epoch": 1771997858,
+      "last_deal": 49,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 65888.37,
+      "close_price": 64869.44000000001,
+      "net": -40.93,
+      "magic": 26100950,
+      "sl": 64871.67,
+      "tp": 67921.77,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 64871.67"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -40.75,
+      "commission": -0.18,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 50,
+      "open_epoch": 1772172002,
+      "close_epoch": 1772187169,
+      "last_deal": 51,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 67730.93,
+      "close_price": 66929.82,
+      "net": -48.33,
+      "magic": 26100950,
+      "sl": 66930.15,
+      "tp": 69332.49,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 66930.15"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.07,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 52,
+      "open_epoch": 1772427600,
+      "close_epoch": 1772435398,
+      "last_deal": 53,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 66859.3,
+      "close_price": 65630.28,
+      "net": -49.34,
+      "magic": 26100950,
+      "sl": 65631.83,
+      "tp": 69340.25,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 65631.83"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.16,
+      "commission": -0.18,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 54,
+      "open_epoch": 1772535600,
+      "close_epoch": 1772539934,
+      "last_deal": 55,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 66843.72,
+      "close_price": 67771.2,
+      "net": -46.59,
+      "magic": 26100950,
+      "sl": 67761.01,
+      "tp": 65009.14,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 67761.01"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -46.37,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 56,
+      "open_epoch": 1772737200,
+      "close_epoch": 1772744100,
+      "last_deal": 57,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 71007.79,
+      "close_price": 71210.01,
+      "net": -8.27,
+      "magic": 26100950,
+      "sl": 72193.42,
+      "tp": 68614.54,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -8.09,
+      "commission": -0.18,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 58,
+      "open_epoch": 1773046800,
+      "close_epoch": 1773075600,
+      "last_deal": 59,
+      "side": "Long",
+      "volume": 0.04,
+      "open_price": 67813.09,
+      "close_price": 68982.93,
+      "net": 46.62,
+      "magic": 26100950,
+      "sl": 66658.04,
+      "tp": 70105.79,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 46.8,
+      "commission": -0.18,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 60,
+      "open_epoch": 1773219600,
+      "close_epoch": 1773235908,
+      "last_deal": 61,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 69646.01,
+      "close_price": 70427.41,
+      "net": -47.14,
+      "magic": 26100950,
+      "sl": 70419.43,
+      "tp": 68112.1,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 70419.43"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -46.88,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 62,
+      "open_epoch": 1773288001,
+      "close_epoch": 1773308668,
+      "last_deal": 63,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 69456.38,
+      "close_price": 70301.35,
+      "net": -42.47,
+      "magic": 26100950,
+      "sl": 70292.82,
+      "tp": 67762.86,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 70292.82"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -42.25,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 64,
+      "open_epoch": 1773450002,
+      "close_epoch": 1773478802,
+      "last_deal": 65,
+      "side": "Short",
+      "volume": 0.04,
+      "open_price": 70644.04,
+      "close_price": 70583.3,
+      "net": 2.25,
+      "magic": 26100950,
+      "sl": 71709.45,
+      "tp": 68513.22,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 2.43,
+      "commission": -0.18,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 66,
+      "open_epoch": 1773543600,
+      "close_epoch": 1773572402,
+      "last_deal": 67,
+      "side": "Long",
+      "volume": 0.12,
+      "open_price": 71453.53,
+      "close_price": 71788.25,
+      "net": 39.64,
+      "magic": 26100950,
+      "sl": 71057.87,
+      "tp": 72244.85,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 40.17,
+      "commission": -0.53,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 68,
+      "open_epoch": 1773820806,
+      "close_epoch": 1773837051,
+      "last_deal": 69,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 73909.27,
+      "close_price": 72595.19,
+      "net": 91.68,
+      "magic": 26100950,
+      "sl": 74552.38,
+      "tp": 72596.32,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 72596.32"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 91.99,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 70,
+      "open_epoch": 1774000802,
+      "close_epoch": 1774013711,
+      "last_deal": 71,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 70571.77,
+      "close_price": 69847.14,
+      "net": -43.74,
+      "magic": 26100950,
+      "sl": 69848.77,
+      "tp": 72028.69,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 69848.77"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -43.48,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 72,
+      "open_epoch": 1774058401,
+      "close_epoch": 1774087201,
+      "last_deal": 73,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 70455.78,
+      "close_price": 70659.3,
+      "net": 11.95,
+      "magic": 26100950,
+      "sl": 69648.21,
+      "tp": 72070.92,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 12.21,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 74,
+      "open_epoch": 1774270800,
+      "close_epoch": 1774299301,
+      "last_deal": 75,
+      "side": "Long",
+      "volume": 0.03,
+      "open_price": 70733.26,
+      "close_price": 70916.91,
+      "net": 5.38,
+      "magic": 26100950,
+      "sl": 69466.81,
+      "tp": 73247.68,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 5.51,
+      "commission": -0.13,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 76,
+      "open_epoch": 1774375200,
+      "close_epoch": 1774384006,
+      "last_deal": 77,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 69217.3,
+      "close_price": 70068.01,
+      "net": -42.75,
+      "magic": 26100950,
+      "sl": 70066.9,
+      "tp": 67506.22,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 70066.90"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -42.53,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 78,
+      "open_epoch": 1774400400,
+      "close_epoch": 1774429200,
+      "last_deal": 79,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 70809.47,
+      "close_price": 71207.46,
+      "net": 19.68,
+      "magic": 26100950,
+      "sl": 69859.3,
+      "tp": 72709.81,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 19.9,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 80,
+      "open_epoch": 1774504800,
+      "close_epoch": 1774533600,
+      "last_deal": 81,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 69969.18,
+      "close_price": 69621.68,
+      "net": 20.59,
+      "magic": 26100950,
+      "sl": 70697.03,
+      "tp": 68545.76,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 20.85,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 82,
+      "open_epoch": 1774742400,
+      "close_epoch": 1774754113,
+      "last_deal": 83,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 66324.29,
+      "close_price": 66807.65,
+      "net": -48.78,
+      "magic": 26100950,
+      "sl": 66802.75,
+      "tp": 65367.37,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 66802.75"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.34,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 84,
+      "open_epoch": 1774843200,
+      "close_epoch": 1774872000,
+      "last_deal": 85,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 67115.1,
+      "close_price": 67644.55,
+      "net": 26.25,
+      "magic": 26100950,
+      "sl": 66265.42,
+      "tp": 68805.49,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 26.47,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 86,
+      "open_epoch": 1774922400,
+      "close_epoch": 1774946350,
+      "last_deal": 87,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 67884.36,
+      "close_price": 67020.9,
+      "net": -43.39,
+      "magic": 26100950,
+      "sl": 67023.16,
+      "tp": 69584.2,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 67023.16"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -43.17,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 88,
+      "open_epoch": 1775098800,
+      "close_epoch": 1775127600,
+      "last_deal": 89,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 66852.11,
+      "close_price": 66453.32,
+      "net": 19.72,
+      "magic": 26100950,
+      "sl": 67719.33,
+      "tp": 65117.67,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 19.94,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 90,
+      "open_epoch": 1775260803,
+      "close_epoch": 1775289603,
+      "last_deal": 91,
+      "side": "Long",
+      "volume": 0.13,
+      "open_price": 66954.21,
+      "close_price": 67011.88,
+      "net": 6.92,
+      "magic": 26100950,
+      "sl": 66584.53,
+      "tp": 67693.57,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 7.49,
+      "commission": -0.57,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 92,
+      "open_epoch": 1775372400,
+      "close_epoch": 1775385415,
+      "last_deal": 93,
+      "side": "Short",
+      "volume": 0.17,
+      "open_price": 66793.26,
+      "close_price": 67079.14,
+      "net": -49.34,
+      "magic": 26100950,
+      "sl": 67079.09,
+      "tp": 66221.6,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 67079.09"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.6,
+      "commission": -0.74,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 94,
+      "open_epoch": 1775541600,
+      "close_epoch": 1775570400,
+      "last_deal": 95,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 68657.3,
+      "close_price": 68225.76,
+      "net": 29.9,
+      "magic": 26100950,
+      "sl": 69361.39,
+      "tp": 67249.12,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 30.21,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 96,
+      "open_epoch": 1775962801,
+      "close_epoch": 1775991604,
+      "last_deal": 97,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 71777.98,
+      "close_price": 71477.1,
+      "net": 17.79,
+      "magic": 26100950,
+      "sl": 72537.32,
+      "tp": 70313.69,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 18.05,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 98,
+      "open_epoch": 1776096000,
+      "close_epoch": 1776108971,
+      "last_deal": 99,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 71900.15,
+      "close_price": 73191.87,
+      "net": 90.11,
+      "magic": 26100950,
+      "sl": 71259.99,
+      "tp": 73186.77,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 73186.77"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 90.42,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 100,
+      "open_epoch": 1776250800,
+      "close_epoch": 1776256797,
+      "last_deal": 101,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 73900.53,
+      "close_price": 74505.1,
+      "net": -48.72,
+      "magic": 26100950,
+      "sl": 74497.17,
+      "tp": 72707.25,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 74497.17"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.37,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 102,
+      "open_epoch": 1776348000,
+      "close_epoch": 1776353815,
+      "last_deal": 103,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 73807.89,
+      "close_price": 74502.94,
+      "net": -48.97,
+      "magic": 26100950,
+      "sl": 74502.23,
+      "tp": 72405.77,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 74502.23"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.66,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 104,
+      "open_epoch": 1776520800,
+      "close_epoch": 1776545703,
+      "last_deal": 105,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 76151.58,
+      "close_price": 75845.09,
+      "net": 30.21,
+      "magic": 26100950,
+      "sl": 76635.69,
+      "tp": 75183.36,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 30.65,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 106,
+      "open_epoch": 1776700800,
+      "close_epoch": 1776718500,
+      "last_deal": 107,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 75761.03,
+      "close_price": 76322.17,
+      "net": 27.84,
+      "magic": 26100950,
+      "sl": 74917.53,
+      "tp": 77415.6,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 28.06,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 108,
+      "open_epoch": 1776801600,
+      "close_epoch": 1776804907,
+      "last_deal": 109,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 75020.48,
+      "close_price": 75730.7,
+      "net": -35.74,
+      "magic": 26100950,
+      "sl": 75990.78,
+      "tp": 73132.83,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -35.52,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 110,
+      "open_epoch": 1776816000,
+      "close_epoch": 1776835455,
+      "last_deal": 111,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 76361.94,
+      "close_price": 78319.81,
+      "net": 97.67,
+      "magic": 26100950,
+      "sl": 75391.09,
+      "tp": 78297.58,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 78297.58"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 97.89,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 112,
+      "open_epoch": 1776942000,
+      "close_epoch": 1776956194,
+      "last_deal": 113,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 77455.38,
+      "close_price": 78194.09999999999,
+      "net": -44.59,
+      "magic": 26100950,
+      "sl": 78189.66,
+      "tp": 75934.32,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 78189.66"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -44.33,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 114,
+      "open_epoch": 1776988800,
+      "close_epoch": 1777017600,
+      "last_deal": 115,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 78291.92,
+      "close_price": 77679.89,
+      "net": -30.83,
+      "magic": 26100950,
+      "sl": 77444.77,
+      "tp": 79957.21,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -30.61,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 116,
+      "open_epoch": 1777183200,
+      "close_epoch": 1777212000,
+      "last_deal": 117,
+      "side": "Long",
+      "volume": 0.15,
+      "open_price": 78013.53,
+      "close_price": 77984.61,
+      "net": -5.0,
+      "magic": 26100950,
+      "sl": 77684.59,
+      "tp": 78671.41,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -4.34,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 118,
+      "open_epoch": 1777284000,
+      "close_epoch": 1777312800,
+      "last_deal": 119,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 77902.54,
+      "close_price": 76723.19,
+      "net": 58.75,
+      "magic": 26100950,
+      "sl": 78790.07,
+      "tp": 76127.48,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 58.97,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 120,
+      "open_epoch": 1777442400,
+      "close_epoch": 1777469600,
+      "last_deal": 121,
+      "side": "Long",
+      "volume": 0.1,
+      "open_price": 77276.1,
+      "close_price": 76809.26,
+      "net": -47.12,
+      "magic": 26100950,
+      "sl": 76811.19,
+      "tp": 78237.27,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 76811.19"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -46.68,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 122,
+      "open_epoch": 1777572000,
+      "close_epoch": 1777582506,
+      "last_deal": 123,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 76210.06,
+      "close_price": 76508.85,
+      "net": 23.56,
+      "magic": 26100950,
+      "sl": 75631.88,
+      "tp": 77372.93,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 23.91,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 124,
+      "open_epoch": 1778115600,
+      "close_epoch": 1778138237,
+      "last_deal": 125,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 81001.83,
+      "close_price": 81713.93,
+      "net": -50.16,
+      "magic": 26100950,
+      "sl": 81710.07,
+      "tp": 79615.65,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 81710.07"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.85,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 126,
+      "open_epoch": 1778284802,
+      "close_epoch": 1778313602,
+      "last_deal": 127,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 80198.08,
+      "close_price": 80220.7,
+      "net": 1.46,
+      "magic": 26100950,
+      "sl": 79605.79,
+      "tp": 81382.66,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 1.81,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 128,
+      "open_epoch": 1778490000,
+      "close_epoch": 1778515775,
+      "last_deal": 129,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 80743.3,
+      "close_price": 81583.52,
+      "net": -42.23,
+      "magic": 26100950,
+      "sl": 81583.04,
+      "tp": 79070.63,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 81583.04"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -42.01,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 130,
+      "open_epoch": 1778572800,
+      "close_epoch": 1778601600,
+      "last_deal": 131,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 80846.62,
+      "close_price": 80315.8,
+      "net": 47.39,
+      "magic": 26100950,
+      "sl": 81350.66,
+      "tp": 79809.32,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 47.78,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 132,
+      "open_epoch": 1778648401,
+      "close_epoch": 1778670336,
+      "last_deal": 133,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 81219.96,
+      "close_price": 80668.71,
+      "net": -50.01,
+      "magic": 26100950,
+      "sl": 80671.37,
+      "tp": 82317.14,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 80671.37"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.62,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 134,
+      "open_epoch": 1778774400,
+      "close_epoch": 1778792100,
+      "last_deal": 135,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 81292.3,
+      "close_price": 81378.43,
+      "net": 4.91,
+      "magic": 26100950,
+      "sl": 80540.04,
+      "tp": 82796.82,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 5.17,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 136,
+      "open_epoch": 1778853600,
+      "close_epoch": 1778868097,
+      "last_deal": 137,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 78733.59,
+      "close_price": 79519.67,
+      "net": -47.42,
+      "magic": 26100950,
+      "sl": 79518.47,
+      "tp": 77155.49,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 79518.47"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -47.16,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 138,
+      "open_epoch": 1779260400,
+      "close_epoch": 1779284254,
+      "last_deal": 139,
+      "side": "Long",
+      "volume": 0.11,
+      "open_price": 77345.6,
+      "close_price": 76904.08,
+      "net": -49.05,
+      "magic": 26100950,
+      "sl": 76907.52,
+      "tp": 78212.76,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 76907.52"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.57,
+      "commission": -0.48,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 140,
+      "open_epoch": 1779372001,
+      "close_epoch": 1779383754,
+      "last_deal": 141,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 77057.73,
+      "close_price": 77621.86,
+      "net": -45.48,
+      "magic": 26100950,
+      "sl": 77621.46,
+      "tp": 75924.3,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 77621.46"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -45.13,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 142,
+      "open_epoch": 1779440400,
+      "close_epoch": 1779469200,
+      "last_deal": 143,
+      "side": "Short",
+      "volume": 0.12,
+      "open_price": 77196.79,
+      "close_price": 76873.4,
+      "net": 38.27,
+      "magic": 26100950,
+      "sl": 77574.34,
+      "tp": 76441.69,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 38.8,
+      "commission": -0.53,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 144,
+      "open_epoch": 1779760800,
+      "close_epoch": 1779789601,
+      "last_deal": 145,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 76718.32,
+      "close_price": 76586.08,
+      "net": 12.78,
+      "magic": 26100950,
+      "sl": 77165.17,
+      "tp": 75750.52,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 13.22,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 146,
+      "open_epoch": 1780146001,
+      "close_epoch": 1780174501,
+      "last_deal": 147,
+      "side": "Long",
+      "volume": 0.17,
+      "open_price": 73597.99,
+      "close_price": 73864.66,
+      "net": 44.59,
+      "magic": 26100950,
+      "sl": 73316.61,
+      "tp": 74160.75,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 45.33,
+      "commission": -0.74,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 148,
+      "open_epoch": 1780243203,
+      "close_epoch": 1780260902,
+      "last_deal": 149,
+      "side": "Short",
+      "volume": 0.16,
+      "open_price": 73548.0,
+      "close_price": 73639.12,
+      "net": -15.28,
+      "magic": 26100950,
+      "sl": 73849.19,
+      "tp": 72954.02,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -14.58,
+      "commission": -0.7,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 150,
+      "open_epoch": 1780804800,
+      "close_epoch": 1780822097,
+      "last_deal": 151,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 61664.76,
+      "close_price": 62882.07,
+      "net": 97.04,
+      "magic": 26100950,
+      "sl": 61064.72,
+      "tp": 62875.19,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 62875.19"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 97.39,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 152,
+      "open_epoch": 1780999200,
+      "close_epoch": 1781015968,
+      "last_deal": 153,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 62690.71,
+      "close_price": 61343.41000000001,
+      "net": 94.0,
+      "magic": 26100950,
+      "sl": 63363.69,
+      "tp": 61344.75,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 61344.75"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 94.31,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 154,
+      "open_epoch": 1781150400,
+      "close_epoch": 1781179201,
+      "last_deal": 155,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 62608.38,
+      "close_price": 63052.08,
+      "net": 21.96,
+      "magic": 26100950,
+      "sl": 61742.69,
+      "tp": 64335.05,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 22.18,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 156,
+      "open_epoch": 1781460001,
+      "close_epoch": 1781470503,
+      "last_deal": 157,
+      "side": "Short",
+      "volume": 0.13,
+      "open_price": 63708.03,
+      "close_price": 64009.11,
+      "net": -39.71,
+      "magic": 26100950,
+      "sl": 64071.89,
+      "tp": 62969.0,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -39.14,
+      "commission": -0.57,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 158,
+      "open_epoch": 1781629200,
+      "close_epoch": 1781643300,
+      "last_deal": 159,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 65715.52,
+      "close_price": 65795.69,
+      "net": -5.92,
+      "magic": 26100950,
+      "sl": 66391.45,
+      "tp": 64338.49,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -5.61,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 160,
+      "open_epoch": 1781913600,
+      "close_epoch": 1781942400,
+      "last_deal": 161,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 63469.79,
+      "close_price": 63600.66999999999,
+      "net": 11.39,
+      "magic": 26100950,
+      "sl": 62948.46,
+      "tp": 64559.91,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 11.78,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 162,
+      "open_epoch": 1782097201,
+      "close_epoch": 1782126004,
+      "last_deal": 163,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 64193.0,
+      "close_price": 64071.68,
+      "net": -10.06,
+      "magic": 26100950,
+      "sl": 63599.54,
+      "tp": 65379.92,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -9.71,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 164,
+      "open_epoch": 1782176401,
+      "close_epoch": 1782195669,
+      "last_deal": 165,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 64086.6,
+      "close_price": 62707.729999999996,
+      "net": 96.21,
+      "magic": 26100950,
+      "sl": 64772.09,
+      "tp": 62707.91,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 62707.91"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 96.52,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 166,
+      "open_epoch": 1782529200,
+      "close_epoch": 1782558004,
+      "last_deal": 167,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 60185.75,
+      "close_price": 60322.12,
+      "net": 6.6,
+      "magic": 26100950,
+      "sl": 59335.18,
+      "tp": 61920.58,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 6.82,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 168,
+      "open_epoch": 1782612001,
+      "close_epoch": 1782640801,
+      "last_deal": 169,
+      "side": "Short",
+      "volume": 0.11,
+      "open_price": 60136.26,
+      "close_price": 60172.92,
+      "net": -4.51,
+      "magic": 26100950,
+      "sl": 60584.41,
+      "tp": 59239.96,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -4.03,
+      "commission": -0.48,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 170,
+      "open_epoch": 1782730800,
+      "close_epoch": 1782741936,
+      "last_deal": 171,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 60001.46,
+      "close_price": 59200.04,
+      "net": -48.35,
+      "magic": 26100950,
+      "sl": 59202.55,
+      "tp": 61616.98,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 59202.55"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.09,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 172,
+      "open_epoch": 1782795600,
+      "close_epoch": 1782824400,
+      "last_deal": 173,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 59399.95,
+      "close_price": 58329.25,
+      "net": 85.31,
+      "magic": 26100950,
+      "sl": 60008.78,
+      "tp": 58153.82,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 85.66,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 174,
+      "open_epoch": 1782921600,
+      "close_epoch": 1782939303,
+      "last_deal": 175,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 60101.89,
+      "close_price": 60065.61,
+      "net": -2.43,
+      "magic": 26100950,
+      "sl": 59334.44,
+      "tp": 61614.8,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -2.17,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 176,
+      "open_epoch": 1783270800,
+      "close_epoch": 1783284900,
+      "last_deal": 177,
+      "side": "Short",
+      "volume": 0.14,
+      "open_price": 62597.32,
+      "close_price": 62678.88,
+      "net": -12.03,
+      "magic": 26100950,
+      "sl": 62940.42,
+      "tp": 61884.51,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -11.42,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 178,
+      "open_epoch": 1783339200,
+      "close_epoch": 1783353050,
+      "last_deal": 179,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 62426.79,
+      "close_price": 63034.65,
+      "net": -48.98,
+      "magic": 26100950,
+      "sl": 63023.33,
+      "tp": 61252.49,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 63023.33"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.63,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 180,
+      "open_epoch": 1783432800,
+      "close_epoch": 1783436318,
+      "last_deal": 181,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 63000.72,
+      "close_price": 63570.39,
+      "net": -45.92,
+      "magic": 26100950,
+      "sl": 63569.23,
+      "tp": 61863.7,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 63569.23"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -45.57,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 182,
+      "open_epoch": 1783479600,
+      "close_epoch": 1783508400,
+      "last_deal": 183,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 62959.28,
+      "close_price": 62127.63,
+      "net": 49.64,
+      "magic": 26100950,
+      "sl": 63758.65,
+      "tp": 61328.83,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 49.9,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 184,
+      "open_epoch": 1783587600,
+      "close_epoch": 1783616401,
+      "last_deal": 185,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 62840.28,
+      "close_price": 62655.89,
+      "net": -16.99,
+      "magic": 26100950,
+      "sl": 62280.37,
+      "tp": 63960.1,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -16.6,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 186,
+      "open_epoch": 1783832401,
+      "close_epoch": 1783861200,
+      "last_deal": 187,
+      "side": "Short",
+      "volume": 0.12,
+      "open_price": 63966.41,
+      "close_price": 63986.66,
+      "net": -2.96,
+      "magic": 26100950,
+      "sl": 64355.15,
+      "tp": 63188.93,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -2.43,
+      "commission": -0.53,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 188,
+      "open_epoch": 1784034000,
+      "close_epoch": 1784062500,
+      "last_deal": 189,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 63906.38,
+      "close_price": 64481.44999999999,
+      "net": 51.37,
+      "magic": 26100950,
+      "sl": 63392.78,
+      "tp": 64933.58,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.76,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 190,
+      "open_epoch": 1784192400,
+      "close_epoch": 1784210890,
+      "last_deal": 191,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 64076.15,
+      "close_price": 64554.4,
+      "net": -48.26,
+      "magic": 26100950,
+      "sl": 64552.09,
+      "tp": 63124.27,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 64552.09"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -47.82,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 192,
+      "open_epoch": 1784530800,
+      "close_epoch": 1784547015,
+      "last_deal": 193,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 63861.93,
+      "close_price": 64406.8,
+      "net": -49.43,
+      "magic": 26100950,
+      "sl": 64405.07,
+      "tp": 62775.65,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 64405.07"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.04,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 194,
+      "open_epoch": 1784725200,
+      "close_epoch": 1784729104,
+      "last_deal": 195,
+      "side": "Short",
+      "volume": 0.11,
+      "open_price": 65589.97,
+      "close_price": 66026.37,
+      "net": -48.48,
+      "magic": 26100950,
+      "sl": 66023.8,
+      "tp": 64722.31,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 66023.80"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.0,
+      "commission": -0.48,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 196,
+      "open_epoch": 1785024000,
+      "close_epoch": 1785052800,
+      "last_deal": 197,
+      "side": "Long",
+      "volume": 0.28,
+      "open_price": 64308.74,
+      "close_price": 64305.740000000005,
+      "net": -2.07,
+      "magic": 26100950,
+      "sl": 64135.04,
+      "tp": 64656.14,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.84,
+      "commission": -1.23,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 198,
+      "open_epoch": 1785308400,
+      "close_epoch": 1785337200,
+      "last_deal": 199,
+      "side": "Long",
+      "volume": 0.1,
+      "open_price": 64355.28,
+      "close_price": 64032.08,
+      "net": -32.76,
+      "magic": 26100950,
+      "sl": 63870.31,
+      "tp": 65305.27,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -32.32,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 200,
+      "open_epoch": 1785402000,
+      "close_epoch": 1785430801,
+      "last_deal": 201,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 64209.8,
+      "close_price": 64763.39,
+      "net": 43.94,
+      "magic": 26100950,
+      "sl": 63634.55,
+      "tp": 65360.3,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 44.29,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 202,
+      "open_epoch": 1785481200,
+      "close_epoch": 1785505689,
+      "last_deal": 203,
+      "side": "Short",
+      "volume": 0.11,
+      "open_price": 64171.91,
+      "close_price": 63268.00000000001,
+      "net": 98.95,
+      "magic": 26100950,
+      "sl": 64624.75,
+      "tp": 63270.61,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 63270.61"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 99.43,
+      "commission": -0.48,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 204,
+      "open_epoch": 1785646800,
+      "close_epoch": 1785660062,
+      "last_deal": 205,
+      "side": "Long",
+      "volume": 0.14,
+      "open_price": 63510.84,
+      "close_price": 63157.66,
+      "net": -50.06,
+      "magic": 26100950,
+      "sl": 63158.86,
+      "tp": 64214.8,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 63158.86"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.45,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 206,
+      "open_epoch": 1785733200,
+      "close_epoch": 1785762000,
+      "last_deal": 207,
+      "side": "Short",
+      "volume": 0.12,
+      "open_price": 62716.49,
+      "close_price": 62627.94,
+      "net": 10.1,
+      "magic": 26100950,
+      "sl": 63114.99,
+      "tp": 61919.49,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.63,
+      "commission": -0.53,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 208,
+      "open_epoch": 1786100400,
+      "close_epoch": 1786123857,
+      "last_deal": 209,
+      "side": "Long",
+      "volume": 0.15,
+      "open_price": 64849.32,
+      "close_price": 64530.71,
+      "net": -48.45,
+      "magic": 26100950,
+      "sl": 64531.77,
+      "tp": 65484.42,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 64531.77"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -47.79,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 210,
+      "open_epoch": 1786244401,
+      "close_epoch": 1786270453,
+      "last_deal": 211,
+      "side": "Short",
+      "volume": 0.36,
+      "open_price": 64762.72,
+      "close_price": 64900.22,
+      "net": -51.08,
+      "magic": 26100950,
+      "sl": 64900.02,
+      "tp": 64488.12,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 64900.02"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.5,
+      "commission": -1.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 212,
+      "open_epoch": 1786366800,
+      "close_epoch": 1786378786,
+      "last_deal": 213,
+      "side": "Short",
+      "volume": 0.12,
+      "open_price": 64818.25,
+      "close_price": 64003.14,
+      "net": 97.28,
+      "magic": 26100950,
+      "sl": 65223.32,
+      "tp": 64008.11,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 64008.11"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 97.81,
+      "commission": -0.53,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 214,
+      "open_epoch": 1786536000,
+      "close_epoch": 1786538961,
+      "last_deal": 215,
+      "side": "Long",
+      "volume": 0.18,
+      "open_price": 64182.51,
+      "close_price": 63907.27,
+      "net": -50.33,
+      "magic": 26100950,
+      "sl": 63909.35,
+      "tp": 64728.83,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 63909.35"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.54,
+      "commission": -0.79,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 216,
+      "open_epoch": 1786608000,
+      "close_epoch": 1786617278,
+      "last_deal": 217,
+      "side": "Long",
+      "volume": 0.16,
+      "open_price": 63808.32,
+      "close_price": 63504.77,
+      "net": -49.27,
+      "magic": 26100950,
+      "sl": 63506.34,
+      "tp": 64412.28,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 63506.34"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.57,
+      "commission": -0.7,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 218,
+      "open_epoch": 1786824000,
+      "close_epoch": 1786827300,
+      "last_deal": 219,
+      "side": "Long",
+      "volume": 0.36,
+      "open_price": 63050.84,
+      "close_price": 63029.6,
+      "net": -9.22,
+      "magic": 26100950,
+      "sl": 62915.69,
+      "tp": 63321.14,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -7.64,
+      "commission": -1.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 220,
+      "open_epoch": 1786874400,
+      "close_epoch": 1786890019,
+      "last_deal": 221,
+      "side": "Short",
+      "volume": 0.53,
+      "open_price": 62926.32,
+      "close_price": 63018.64,
+      "net": -51.25,
+      "magic": 26100950,
+      "sl": 63018.59,
+      "tp": 62741.78,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 63018.59"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -48.93,
+      "commission": -2.32,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 222,
+      "open_epoch": 1786935600,
+      "close_epoch": 1786964400,
+      "last_deal": 223,
+      "side": "Long",
+      "volume": 0.16,
+      "open_price": 63342.81,
+      "close_price": 63601.72,
+      "net": 40.73,
+      "magic": 26100950,
+      "sl": 63045.28,
+      "tp": 63932.77,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 41.43,
+      "commission": -0.7,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 224,
+      "open_epoch": 1787461200,
+      "close_epoch": 1787462259,
+      "last_deal": 225,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 76587.55,
+      "close_price": 75573.74,
+      "net": 90.85,
+      "magic": 26100950,
+      "sl": 77102.69,
+      "tp": 75576.74,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 75576.74"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 91.24,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 226,
+      "open_epoch": 1787803200,
+      "close_epoch": 1787822740,
+      "last_deal": 227,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 78824.4,
+      "close_price": 80178.76,
+      "net": 94.49,
+      "magic": 26100950,
+      "sl": 78149.42,
+      "tp": 80174.36,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 80174.36"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 94.8,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 228,
+      "open_epoch": 1787922000,
+      "close_epoch": 1787932965,
+      "last_deal": 229,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 79409.23,
+      "close_price": 78067.17,
+      "net": 93.64,
+      "magic": 26100950,
+      "sl": 80091.48,
+      "tp": 78069.45,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 78069.45"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 93.95,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 230,
+      "open_epoch": 1788051600,
+      "close_epoch": 1788080400,
+      "last_deal": 231,
+      "side": "Long",
+      "volume": 0.15,
+      "open_price": 78176.62,
+      "close_price": 78071.66,
+      "net": -16.4,
+      "magic": 26100950,
+      "sl": 77853.37,
+      "tp": 78823.12,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -15.74,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 232,
+      "open_epoch": 1788141600,
+      "close_epoch": 1788166703,
+      "last_deal": 233,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 77636.18,
+      "close_price": 78484.88,
+      "net": -51.18,
+      "magic": 26100950,
+      "sl": 78482.6,
+      "tp": 75943.34,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 78482.60"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -50.92,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 234,
+      "open_epoch": 1788256801,
+      "close_epoch": 1788285600,
+      "last_deal": 235,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 77884.44,
+      "close_price": 77259.64,
+      "net": 49.64,
+      "magic": 26100950,
+      "sl": 78493.68,
+      "tp": 76665.96,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 49.99,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 236,
+      "open_epoch": 1788408000,
+      "close_epoch": 1788413285,
+      "last_deal": 237,
+      "side": "Long",
+      "volume": 0.08,
+      "open_price": 77679.89,
+      "close_price": 77065.05,
+      "net": -49.54,
+      "magic": 26100950,
+      "sl": 77065.81,
+      "tp": 78908.05,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 77065.81"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.19,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 238,
+      "open_epoch": 1788541200,
+      "close_epoch": 1788555300,
+      "last_deal": 239,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 79757.12,
+      "close_price": 79743.76,
+      "net": 0.45,
+      "magic": 26100950,
+      "sl": 80715.36,
+      "tp": 77840.64,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 0.67,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 240,
+      "open_epoch": 1788631200,
+      "close_epoch": 1788636894,
+      "last_deal": 241,
+      "side": "Long",
+      "volume": 0.2,
+      "open_price": 80075.92,
+      "close_price": 79810.88,
+      "net": -53.88,
+      "magic": 26100950,
+      "sl": 79814.9,
+      "tp": 80565.26,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 79814.90"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -53.0,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 242,
+      "open_epoch": 1788706800,
+      "close_epoch": 1788719106,
+      "last_deal": 243,
+      "side": "Short",
+      "volume": 0.14,
+      "open_price": 79546.72,
+      "close_price": 79911.3,
+      "net": -51.65,
+      "magic": 26100950,
+      "sl": 79905.83,
+      "tp": 78828.5,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 79905.83"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -51.04,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 244,
+      "open_epoch": 1788757200,
+      "close_epoch": 1788786000,
+      "last_deal": 245,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 79708.0,
+      "close_price": 79591.65,
+      "net": 11.19,
+      "magic": 26100950,
+      "sl": 80207.17,
+      "tp": 78709.66,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 11.63,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 246,
+      "open_epoch": 1788933600,
+      "close_epoch": 1788962400,
+      "last_deal": 247,
+      "side": "Long",
+      "volume": 0.1,
+      "open_price": 78930.15,
+      "close_price": 79118.9,
+      "net": 18.43,
+      "magic": 26100950,
+      "sl": 78435.53,
+      "tp": 79919.39,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 18.87,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 248,
+      "open_epoch": 1789135200,
+      "close_epoch": 1789141870,
+      "last_deal": 249,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 79207.33,
+      "close_price": 78383.85,
+      "net": -49.67,
+      "magic": 26100950,
+      "sl": 78387.4,
+      "tp": 80889.73,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 78387.40"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.41,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 250,
+      "open_epoch": 1789358400,
+      "close_epoch": 1789387200,
+      "last_deal": 251,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 77562.97,
+      "close_price": 77752.82,
+      "net": 16.69,
+      "magic": 26100950,
+      "sl": 77039.7,
+      "tp": 78609.51,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 17.08,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 252,
+      "open_epoch": 1789455600,
+      "close_epoch": 1789479568,
+      "last_deal": 253,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 77261.76,
+      "close_price": 76115.16,
+      "net": 91.38,
+      "magic": 26100950,
+      "sl": 77833.54,
+      "tp": 76118.2,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 76118.20"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 91.73,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 254,
+      "open_epoch": 1789614001,
+      "close_epoch": 1789642801,
+      "last_deal": 255,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 76310.32,
+      "close_price": 76339.23,
+      "net": 1.47,
+      "magic": 26100950,
+      "sl": 75499.08,
+      "tp": 77932.8,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 1.73,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 256,
+      "open_epoch": 1789884000,
+      "close_epoch": 1789912801,
+      "last_deal": 257,
+      "side": "Short",
+      "volume": 0.1,
+      "open_price": 80462.96,
+      "close_price": 80526.86,
+      "net": -6.83,
+      "magic": 26100950,
+      "sl": 80963.83,
+      "tp": 79461.22,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -6.39,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 258,
+      "open_epoch": 1790168400,
+      "close_epoch": 1790173774,
+      "last_deal": 259,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 85468.49,
+      "close_price": 83981.09,
+      "net": 88.98,
+      "magic": 26100950,
+      "sl": 86204.59,
+      "tp": 84001.99,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 84001.99"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 89.24,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 260,
+      "open_epoch": 1790301600,
+      "close_epoch": 1790320152,
+      "last_deal": 261,
+      "side": "Long",
+      "volume": 0.05,
+      "open_price": 84608.13,
+      "close_price": 83729.85,
+      "net": -44.14,
+      "magic": 26100950,
+      "sl": 83731.25,
+      "tp": 86357.69,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 83731.25"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -43.92,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 262,
+      "open_epoch": 1790445600,
+      "close_epoch": 1790455276,
+      "last_deal": 263,
+      "side": "Long",
+      "volume": 0.18,
+      "open_price": 84125.44,
+      "close_price": 83849.28,
+      "net": -50.5,
+      "magic": 26100950,
+      "sl": 83853.21,
+      "tp": 84669.9,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 83853.21"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -49.71,
+      "commission": -0.79,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 264,
+      "open_epoch": 1790560800,
+      "close_epoch": 1790589600,
+      "last_deal": 265,
+      "side": "Short",
+      "volume": 0.07,
+      "open_price": 83671.73,
+      "close_price": 82650.78,
+      "net": 71.16,
+      "magic": 26100950,
+      "sl": 84309.5,
+      "tp": 82412.27,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 71.47,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 266,
+      "open_epoch": 1790672401,
+      "close_epoch": 1790695394,
+      "last_deal": 267,
+      "side": "Long",
+      "volume": 0.07,
+      "open_price": 83847.46,
+      "close_price": 83171.56,
+      "net": -47.62,
+      "magic": 26100950,
+      "sl": 83175.69,
+      "tp": 85191.0,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 83175.69"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -47.31,
+      "commission": -0.31,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 268,
+      "open_epoch": 1790769601,
+      "close_epoch": 1790772025,
+      "last_deal": 269,
+      "side": "Long",
+      "volume": 0.09,
+      "open_price": 83889.96,
+      "close_price": 84968.37,
+      "net": 96.66,
+      "magic": 26100950,
+      "sl": 83351.07,
+      "tp": 84967.74,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 84967.74"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 97.05,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 270,
+      "open_epoch": 1790816400,
+      "close_epoch": 1790835258,
+      "last_deal": 271,
+      "side": "Short",
+      "volume": 0.05,
+      "open_price": 83440.74,
+      "close_price": 84365.73,
+      "net": -46.47,
+      "magic": 26100950,
+      "sl": 84355.56,
+      "tp": 81611.1,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 84355.56"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -46.25,
+      "commission": -0.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 272,
+      "open_epoch": 1791093600,
+      "close_epoch": 1791107249,
+      "last_deal": 273,
+      "side": "Long",
+      "volume": 0.24,
+      "open_price": 84902.52,
+      "close_price": 85311.33,
+      "net": 97.07,
+      "magic": 26100950,
+      "sl": 84698.59,
+      "tp": 85310.38,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "tp 85310.38"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 98.12,
+      "commission": -1.05,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 274,
+      "open_epoch": 1791223200,
+      "close_epoch": 1791233700,
+      "last_deal": 275,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 85425.6,
+      "close_price": 85802.01,
+      "net": -22.84,
+      "magic": 26100950,
+      "sl": 86185.44,
+      "tp": 83905.92,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -22.58,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 276,
+      "open_epoch": 1791255600,
+      "close_epoch": 1791280300,
+      "last_deal": 277,
+      "side": "Short",
+      "volume": 0.08,
+      "open_price": 85520.18,
+      "close_price": 86146.78,
+      "net": -50.48,
+      "magic": 26100950,
+      "sl": 86146.21,
+      "tp": 84268.12,
+      "entry_comment": "Gann raw 3",
+      "exit_comments": [
+        "sl 86146.21"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -50.13,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1767290401,
+      "deal": 2,
+      "balance": 9999.3,
+      "net": -0.7
+    },
+    {
+      "epoch": 1767300903,
+      "deal": 3,
+      "balance": 9988.39,
+      "net": -10.91
+    },
+    {
+      "epoch": 1767722400,
+      "deal": 4,
+      "balance": 9988.17,
+      "net": -0.22
+    },
+    {
+      "epoch": 1767729953,
+      "deal": 5,
+      "balance": 9944.97,
+      "net": -43.2
+    },
+    {
+      "epoch": 1767920400,
+      "deal": 6,
+      "balance": 9944.71,
+      "net": -0.26
+    },
+    {
+      "epoch": 1767945873,
+      "deal": 7,
+      "balance": 9896.64,
+      "net": -48.07
+    },
+    {
+      "epoch": 1768111201,
+      "deal": 8,
+      "balance": 9895.55,
+      "net": -1.09
+    },
+    {
+      "epoch": 1768140006,
+      "deal": 9,
+      "balance": 9918.0,
+      "net": 22.45
+    },
+    {
+      "epoch": 1768222800,
+      "deal": 10,
+      "balance": 9917.78,
+      "net": -0.22
+    },
+    {
+      "epoch": 1768233596,
+      "deal": 11,
+      "balance": 9872.65,
+      "net": -45.13
+    },
+    {
+      "epoch": 1768766402,
+      "deal": 12,
+      "balance": 9871.95,
+      "net": -0.7
+    },
+    {
+      "epoch": 1768769701,
+      "deal": 13,
+      "balance": 9866.81,
+      "net": -5.14
+    },
+    {
+      "epoch": 1768780800,
+      "deal": 14,
+      "balance": 9866.37,
+      "net": -0.44
+    },
+    {
+      "epoch": 1768780920,
+      "deal": 15,
+      "balance": 9964.4,
+      "net": 98.03
+    },
+    {
+      "epoch": 1769047202,
+      "deal": 16,
+      "balance": 9964.27,
+      "net": -0.13
+    },
+    {
+      "epoch": 1769076003,
+      "deal": 17,
+      "balance": 9963.39,
+      "net": -0.88
+    },
+    {
+      "epoch": 1769144404,
+      "deal": 18,
+      "balance": 9963.13,
+      "net": -0.26
+    },
+    {
+      "epoch": 1769157226,
+      "deal": 19,
+      "balance": 9919.12,
+      "net": -44.01
+    },
+    {
+      "epoch": 1769256002,
+      "deal": 20,
+      "balance": 9918.29,
+      "net": -0.83
+    },
+    {
+      "epoch": 1769284808,
+      "deal": 21,
+      "balance": 9967.32,
+      "net": 49.03
+    },
+    {
+      "epoch": 1769457602,
+      "deal": 22,
+      "balance": 9967.1,
+      "net": -0.22
+    },
+    {
+      "epoch": 1769460900,
+      "deal": 23,
+      "balance": 9945.31,
+      "net": -21.79
+    },
+    {
+      "epoch": 1769522403,
+      "deal": 24,
+      "balance": 9944.87,
+      "net": -0.44
+    },
+    {
+      "epoch": 1769529980,
+      "deal": 25,
+      "balance": 9895.5,
+      "net": -49.37
+    },
+    {
+      "epoch": 1769655600,
+      "deal": 26,
+      "balance": 9895.32,
+      "net": -0.18
+    },
+    {
+      "epoch": 1769684402,
+      "deal": 27,
+      "balance": 9894.18,
+      "net": -1.14
+    },
+    {
+      "epoch": 1770048000,
+      "deal": 28,
+      "balance": 9894.05,
+      "net": -0.13
+    },
+    {
+      "epoch": 1770065700,
+      "deal": 29,
+      "balance": 9869.45,
+      "net": -24.6
+    },
+    {
+      "epoch": 1770130800,
+      "deal": 30,
+      "balance": 9869.27,
+      "net": -0.18
+    },
+    {
+      "epoch": 1770140697,
+      "deal": 31,
+      "balance": 9951.87,
+      "net": 82.6
+    },
+    {
+      "epoch": 1770397200,
+      "deal": 32,
+      "balance": 9951.78,
+      "net": -0.09
+    },
+    {
+      "epoch": 1770411300,
+      "deal": 33,
+      "balance": 9959.86,
+      "net": 8.08
+    },
+    {
+      "epoch": 1770634800,
+      "deal": 34,
+      "balance": 9959.73,
+      "net": -0.13
+    },
+    {
+      "epoch": 1770655457,
+      "deal": 35,
+      "balance": 9921.8,
+      "net": -37.93
+    },
+    {
+      "epoch": 1770696002,
+      "deal": 36,
+      "balance": 9921.67,
+      "net": -0.13
+    },
+    {
+      "epoch": 1770724802,
+      "deal": 37,
+      "balance": 9951.21,
+      "net": 29.54
+    },
+    {
+      "epoch": 1770901200,
+      "deal": 38,
+      "balance": 9950.95,
+      "net": -0.26
+    },
+    {
+      "epoch": 1770909004,
+      "deal": 39,
+      "balance": 9903.24,
+      "net": -47.71
+    },
+    {
+      "epoch": 1770987601,
+      "deal": 40,
+      "balance": 9902.93,
+      "net": -0.31
+    },
+    {
+      "epoch": 1770995515,
+      "deal": 41,
+      "balance": 9996.96,
+      "net": 94.03
+    },
+    {
+      "epoch": 1771171200,
+      "deal": 42,
+      "balance": 9996.7,
+      "net": -0.26
+    },
+    {
+      "epoch": 1771188903,
+      "deal": 43,
+      "balance": 10036.96,
+      "net": 40.26
+    },
+    {
+      "epoch": 1771549200,
+      "deal": 44,
+      "balance": 10036.74,
+      "net": -0.22
+    },
+    {
+      "epoch": 1771578005,
+      "deal": 45,
+      "balance": 10069.05,
+      "net": 32.31
+    },
+    {
+      "epoch": 1771750800,
+      "deal": 46,
+      "balance": 10068.48,
+      "net": -0.57
+    },
+    {
+      "epoch": 1771779604,
+      "deal": 47,
+      "balance": 10111.97,
+      "net": 43.49
+    },
+    {
+      "epoch": 1771984800,
+      "deal": 48,
+      "balance": 10111.79,
+      "net": -0.18
+    },
+    {
+      "epoch": 1771997858,
+      "deal": 49,
+      "balance": 10071.04,
+      "net": -40.75
+    },
+    {
+      "epoch": 1772172002,
+      "deal": 50,
+      "balance": 10070.78,
+      "net": -0.26
+    },
+    {
+      "epoch": 1772187169,
+      "deal": 51,
+      "balance": 10022.71,
+      "net": -48.07
+    },
+    {
+      "epoch": 1772427600,
+      "deal": 52,
+      "balance": 10022.53,
+      "net": -0.18
+    },
+    {
+      "epoch": 1772435398,
+      "deal": 53,
+      "balance": 9973.37,
+      "net": -49.16
+    },
+    {
+      "epoch": 1772535600,
+      "deal": 54,
+      "balance": 9973.15,
+      "net": -0.22
+    },
+    {
+      "epoch": 1772539934,
+      "deal": 55,
+      "balance": 9926.78,
+      "net": -46.37
+    },
+    {
+      "epoch": 1772737200,
+      "deal": 56,
+      "balance": 9926.6,
+      "net": -0.18
+    },
+    {
+      "epoch": 1772744100,
+      "deal": 57,
+      "balance": 9918.51,
+      "net": -8.09
+    },
+    {
+      "epoch": 1773046800,
+      "deal": 58,
+      "balance": 9918.33,
+      "net": -0.18
+    },
+    {
+      "epoch": 1773075600,
+      "deal": 59,
+      "balance": 9965.13,
+      "net": 46.8
+    },
+    {
+      "epoch": 1773219600,
+      "deal": 60,
+      "balance": 9964.87,
+      "net": -0.26
+    },
+    {
+      "epoch": 1773235908,
+      "deal": 61,
+      "balance": 9917.99,
+      "net": -46.88
+    },
+    {
+      "epoch": 1773288001,
+      "deal": 62,
+      "balance": 9917.77,
+      "net": -0.22
+    },
+    {
+      "epoch": 1773308668,
+      "deal": 63,
+      "balance": 9875.52,
+      "net": -42.25
+    },
+    {
+      "epoch": 1773450002,
+      "deal": 64,
+      "balance": 9875.34,
+      "net": -0.18
+    },
+    {
+      "epoch": 1773478802,
+      "deal": 65,
+      "balance": 9877.77,
+      "net": 2.43
+    },
+    {
+      "epoch": 1773543600,
+      "deal": 66,
+      "balance": 9877.24,
+      "net": -0.53
+    },
+    {
+      "epoch": 1773572402,
+      "deal": 67,
+      "balance": 9917.41,
+      "net": 40.17
+    },
+    {
+      "epoch": 1773820806,
+      "deal": 68,
+      "balance": 9917.1,
+      "net": -0.31
+    },
+    {
+      "epoch": 1773837051,
+      "deal": 69,
+      "balance": 10009.09,
+      "net": 91.99
+    },
+    {
+      "epoch": 1774000802,
+      "deal": 70,
+      "balance": 10008.83,
+      "net": -0.26
+    },
+    {
+      "epoch": 1774013711,
+      "deal": 71,
+      "balance": 9965.35,
+      "net": -43.48
+    },
+    {
+      "epoch": 1774058401,
+      "deal": 72,
+      "balance": 9965.09,
+      "net": -0.26
+    },
+    {
+      "epoch": 1774087201,
+      "deal": 73,
+      "balance": 9977.3,
+      "net": 12.21
+    },
+    {
+      "epoch": 1774270800,
+      "deal": 74,
+      "balance": 9977.17,
+      "net": -0.13
+    },
+    {
+      "epoch": 1774299301,
+      "deal": 75,
+      "balance": 9982.68,
+      "net": 5.51
+    },
+    {
+      "epoch": 1774375200,
+      "deal": 76,
+      "balance": 9982.46,
+      "net": -0.22
+    },
+    {
+      "epoch": 1774384006,
+      "deal": 77,
+      "balance": 9939.93,
+      "net": -42.53
+    },
+    {
+      "epoch": 1774400400,
+      "deal": 78,
+      "balance": 9939.71,
+      "net": -0.22
+    },
+    {
+      "epoch": 1774429200,
+      "deal": 79,
+      "balance": 9959.61,
+      "net": 19.9
+    },
+    {
+      "epoch": 1774504800,
+      "deal": 80,
+      "balance": 9959.35,
+      "net": -0.26
+    },
+    {
+      "epoch": 1774533600,
+      "deal": 81,
+      "balance": 9980.2,
+      "net": 20.85
+    },
+    {
+      "epoch": 1774742400,
+      "deal": 82,
+      "balance": 9979.76,
+      "net": -0.44
+    },
+    {
+      "epoch": 1774754113,
+      "deal": 83,
+      "balance": 9931.42,
+      "net": -48.34
+    },
+    {
+      "epoch": 1774843200,
+      "deal": 84,
+      "balance": 9931.2,
+      "net": -0.22
+    },
+    {
+      "epoch": 1774872000,
+      "deal": 85,
+      "balance": 9957.67,
+      "net": 26.47
+    },
+    {
+      "epoch": 1774922400,
+      "deal": 86,
+      "balance": 9957.45,
+      "net": -0.22
+    },
+    {
+      "epoch": 1774946350,
+      "deal": 87,
+      "balance": 9914.28,
+      "net": -43.17
+    },
+    {
+      "epoch": 1775098800,
+      "deal": 88,
+      "balance": 9914.06,
+      "net": -0.22
+    },
+    {
+      "epoch": 1775127600,
+      "deal": 89,
+      "balance": 9934.0,
+      "net": 19.94
+    },
+    {
+      "epoch": 1775260803,
+      "deal": 90,
+      "balance": 9933.43,
+      "net": -0.57
+    },
+    {
+      "epoch": 1775289603,
+      "deal": 91,
+      "balance": 9940.92,
+      "net": 7.49
+    },
+    {
+      "epoch": 1775372400,
+      "deal": 92,
+      "balance": 9940.18,
+      "net": -0.74
+    },
+    {
+      "epoch": 1775385415,
+      "deal": 93,
+      "balance": 9891.58,
+      "net": -48.6
+    },
+    {
+      "epoch": 1775541600,
+      "deal": 94,
+      "balance": 9891.27,
+      "net": -0.31
+    },
+    {
+      "epoch": 1775570400,
+      "deal": 95,
+      "balance": 9921.48,
+      "net": 30.21
+    },
+    {
+      "epoch": 1775962801,
+      "deal": 96,
+      "balance": 9921.22,
+      "net": -0.26
+    },
+    {
+      "epoch": 1775991604,
+      "deal": 97,
+      "balance": 9939.27,
+      "net": 18.05
+    },
+    {
+      "epoch": 1776096000,
+      "deal": 98,
+      "balance": 9938.96,
+      "net": -0.31
+    },
+    {
+      "epoch": 1776108971,
+      "deal": 99,
+      "balance": 10029.38,
+      "net": 90.42
+    },
+    {
+      "epoch": 1776250800,
+      "deal": 100,
+      "balance": 10029.03,
+      "net": -0.35
+    },
+    {
+      "epoch": 1776256797,
+      "deal": 101,
+      "balance": 9980.66,
+      "net": -48.37
+    },
+    {
+      "epoch": 1776348000,
+      "deal": 102,
+      "balance": 9980.35,
+      "net": -0.31
+    },
+    {
+      "epoch": 1776353815,
+      "deal": 103,
+      "balance": 9931.69,
+      "net": -48.66
+    },
+    {
+      "epoch": 1776520800,
+      "deal": 104,
+      "balance": 9931.25,
+      "net": -0.44
+    },
+    {
+      "epoch": 1776545703,
+      "deal": 105,
+      "balance": 9961.9,
+      "net": 30.65
+    },
+    {
+      "epoch": 1776700800,
+      "deal": 106,
+      "balance": 9961.68,
+      "net": -0.22
+    },
+    {
+      "epoch": 1776718500,
+      "deal": 107,
+      "balance": 9989.74,
+      "net": 28.06
+    },
+    {
+      "epoch": 1776801600,
+      "deal": 108,
+      "balance": 9989.52,
+      "net": -0.22
+    },
+    {
+      "epoch": 1776804907,
+      "deal": 109,
+      "balance": 9954.0,
+      "net": -35.52
+    },
+    {
+      "epoch": 1776816000,
+      "deal": 110,
+      "balance": 9953.78,
+      "net": -0.22
+    },
+    {
+      "epoch": 1776835455,
+      "deal": 111,
+      "balance": 10051.67,
+      "net": 97.89
+    },
+    {
+      "epoch": 1776942000,
+      "deal": 112,
+      "balance": 10051.41,
+      "net": -0.26
+    },
+    {
+      "epoch": 1776956194,
+      "deal": 113,
+      "balance": 10007.08,
+      "net": -44.33
+    },
+    {
+      "epoch": 1776988800,
+      "deal": 114,
+      "balance": 10006.86,
+      "net": -0.22
+    },
+    {
+      "epoch": 1777017600,
+      "deal": 115,
+      "balance": 9976.25,
+      "net": -30.61
+    },
+    {
+      "epoch": 1777183200,
+      "deal": 116,
+      "balance": 9975.59,
+      "net": -0.66
+    },
+    {
+      "epoch": 1777212000,
+      "deal": 117,
+      "balance": 9971.25,
+      "net": -4.34
+    },
+    {
+      "epoch": 1777284000,
+      "deal": 118,
+      "balance": 9971.03,
+      "net": -0.22
+    },
+    {
+      "epoch": 1777312800,
+      "deal": 119,
+      "balance": 10030.0,
+      "net": 58.97
+    },
+    {
+      "epoch": 1777442400,
+      "deal": 120,
+      "balance": 10029.56,
+      "net": -0.44
+    },
+    {
+      "epoch": 1777469600,
+      "deal": 121,
+      "balance": 9982.88,
+      "net": -46.68
+    },
+    {
+      "epoch": 1777572000,
+      "deal": 122,
+      "balance": 9982.53,
+      "net": -0.35
+    },
+    {
+      "epoch": 1777582506,
+      "deal": 123,
+      "balance": 10006.44,
+      "net": 23.91
+    },
+    {
+      "epoch": 1778115600,
+      "deal": 124,
+      "balance": 10006.13,
+      "net": -0.31
+    },
+    {
+      "epoch": 1778138237,
+      "deal": 125,
+      "balance": 9956.28,
+      "net": -49.85
+    },
+    {
+      "epoch": 1778284802,
+      "deal": 126,
+      "balance": 9955.93,
+      "net": -0.35
+    },
+    {
+      "epoch": 1778313602,
+      "deal": 127,
+      "balance": 9957.74,
+      "net": 1.81
+    },
+    {
+      "epoch": 1778490000,
+      "deal": 128,
+      "balance": 9957.52,
+      "net": -0.22
+    },
+    {
+      "epoch": 1778515775,
+      "deal": 129,
+      "balance": 9915.51,
+      "net": -42.01
+    },
+    {
+      "epoch": 1778572800,
+      "deal": 130,
+      "balance": 9915.12,
+      "net": -0.39
+    },
+    {
+      "epoch": 1778601600,
+      "deal": 131,
+      "balance": 9962.9,
+      "net": 47.78
+    },
+    {
+      "epoch": 1778648401,
+      "deal": 132,
+      "balance": 9962.51,
+      "net": -0.39
+    },
+    {
+      "epoch": 1778670336,
+      "deal": 133,
+      "balance": 9912.89,
+      "net": -49.62
+    },
+    {
+      "epoch": 1778774400,
+      "deal": 134,
+      "balance": 9912.63,
+      "net": -0.26
+    },
+    {
+      "epoch": 1778792100,
+      "deal": 135,
+      "balance": 9917.8,
+      "net": 5.17
+    },
+    {
+      "epoch": 1778853600,
+      "deal": 136,
+      "balance": 9917.54,
+      "net": -0.26
+    },
+    {
+      "epoch": 1778868097,
+      "deal": 137,
+      "balance": 9870.38,
+      "net": -47.16
+    },
+    {
+      "epoch": 1779260400,
+      "deal": 138,
+      "balance": 9869.9,
+      "net": -0.48
+    },
+    {
+      "epoch": 1779284254,
+      "deal": 139,
+      "balance": 9821.33,
+      "net": -48.57
+    },
+    {
+      "epoch": 1779372001,
+      "deal": 140,
+      "balance": 9820.98,
+      "net": -0.35
+    },
+    {
+      "epoch": 1779383754,
+      "deal": 141,
+      "balance": 9775.85,
+      "net": -45.13
+    },
+    {
+      "epoch": 1779440400,
+      "deal": 142,
+      "balance": 9775.32,
+      "net": -0.53
+    },
+    {
+      "epoch": 1779469200,
+      "deal": 143,
+      "balance": 9814.12,
+      "net": 38.8
+    },
+    {
+      "epoch": 1779760800,
+      "deal": 144,
+      "balance": 9813.68,
+      "net": -0.44
+    },
+    {
+      "epoch": 1779789601,
+      "deal": 145,
+      "balance": 9826.9,
+      "net": 13.22
+    },
+    {
+      "epoch": 1780146001,
+      "deal": 146,
+      "balance": 9826.16,
+      "net": -0.74
+    },
+    {
+      "epoch": 1780174501,
+      "deal": 147,
+      "balance": 9871.49,
+      "net": 45.33
+    },
+    {
+      "epoch": 1780243203,
+      "deal": 148,
+      "balance": 9870.79,
+      "net": -0.7
+    },
+    {
+      "epoch": 1780260902,
+      "deal": 149,
+      "balance": 9856.21,
+      "net": -14.58
+    },
+    {
+      "epoch": 1780804800,
+      "deal": 150,
+      "balance": 9855.86,
+      "net": -0.35
+    },
+    {
+      "epoch": 1780822097,
+      "deal": 151,
+      "balance": 9953.25,
+      "net": 97.39
+    },
+    {
+      "epoch": 1780999200,
+      "deal": 152,
+      "balance": 9952.94,
+      "net": -0.31
+    },
+    {
+      "epoch": 1781015968,
+      "deal": 153,
+      "balance": 10047.25,
+      "net": 94.31
+    },
+    {
+      "epoch": 1781150400,
+      "deal": 154,
+      "balance": 10047.03,
+      "net": -0.22
+    },
+    {
+      "epoch": 1781179201,
+      "deal": 155,
+      "balance": 10069.21,
+      "net": 22.18
+    },
+    {
+      "epoch": 1781460001,
+      "deal": 156,
+      "balance": 10068.64,
+      "net": -0.57
+    },
+    {
+      "epoch": 1781470503,
+      "deal": 157,
+      "balance": 10029.5,
+      "net": -39.14
+    },
+    {
+      "epoch": 1781629200,
+      "deal": 158,
+      "balance": 10029.19,
+      "net": -0.31
+    },
+    {
+      "epoch": 1781643300,
+      "deal": 159,
+      "balance": 10023.58,
+      "net": -5.61
+    },
+    {
+      "epoch": 1781913600,
+      "deal": 160,
+      "balance": 10023.19,
+      "net": -0.39
+    },
+    {
+      "epoch": 1781942400,
+      "deal": 161,
+      "balance": 10034.97,
+      "net": 11.78
+    },
+    {
+      "epoch": 1782097201,
+      "deal": 162,
+      "balance": 10034.62,
+      "net": -0.35
+    },
+    {
+      "epoch": 1782126004,
+      "deal": 163,
+      "balance": 10024.91,
+      "net": -9.71
+    },
+    {
+      "epoch": 1782176401,
+      "deal": 164,
+      "balance": 10024.6,
+      "net": -0.31
+    },
+    {
+      "epoch": 1782195669,
+      "deal": 165,
+      "balance": 10121.12,
+      "net": 96.52
+    },
+    {
+      "epoch": 1782529200,
+      "deal": 166,
+      "balance": 10120.9,
+      "net": -0.22
+    },
+    {
+      "epoch": 1782558004,
+      "deal": 167,
+      "balance": 10127.72,
+      "net": 6.82
+    },
+    {
+      "epoch": 1782612001,
+      "deal": 168,
+      "balance": 10127.24,
+      "net": -0.48
+    },
+    {
+      "epoch": 1782640801,
+      "deal": 169,
+      "balance": 10123.21,
+      "net": -4.03
+    },
+    {
+      "epoch": 1782730800,
+      "deal": 170,
+      "balance": 10122.95,
+      "net": -0.26
+    },
+    {
+      "epoch": 1782741936,
+      "deal": 171,
+      "balance": 10074.86,
+      "net": -48.09
+    },
+    {
+      "epoch": 1782795600,
+      "deal": 172,
+      "balance": 10074.51,
+      "net": -0.35
+    },
+    {
+      "epoch": 1782824400,
+      "deal": 173,
+      "balance": 10160.17,
+      "net": 85.66
+    },
+    {
+      "epoch": 1782921600,
+      "deal": 174,
+      "balance": 10159.91,
+      "net": -0.26
+    },
+    {
+      "epoch": 1782939303,
+      "deal": 175,
+      "balance": 10157.74,
+      "net": -2.17
+    },
+    {
+      "epoch": 1783270800,
+      "deal": 176,
+      "balance": 10157.13,
+      "net": -0.61
+    },
+    {
+      "epoch": 1783284900,
+      "deal": 177,
+      "balance": 10145.71,
+      "net": -11.42
+    },
+    {
+      "epoch": 1783339200,
+      "deal": 178,
+      "balance": 10145.36,
+      "net": -0.35
+    },
+    {
+      "epoch": 1783353050,
+      "deal": 179,
+      "balance": 10096.73,
+      "net": -48.63
+    },
+    {
+      "epoch": 1783432800,
+      "deal": 180,
+      "balance": 10096.38,
+      "net": -0.35
+    },
+    {
+      "epoch": 1783436318,
+      "deal": 181,
+      "balance": 10050.81,
+      "net": -45.57
+    },
+    {
+      "epoch": 1783479600,
+      "deal": 182,
+      "balance": 10050.55,
+      "net": -0.26
+    },
+    {
+      "epoch": 1783508400,
+      "deal": 183,
+      "balance": 10100.45,
+      "net": 49.9
+    },
+    {
+      "epoch": 1783587600,
+      "deal": 184,
+      "balance": 10100.06,
+      "net": -0.39
+    },
+    {
+      "epoch": 1783616401,
+      "deal": 185,
+      "balance": 10083.46,
+      "net": -16.6
+    },
+    {
+      "epoch": 1783832401,
+      "deal": 186,
+      "balance": 10082.93,
+      "net": -0.53
+    },
+    {
+      "epoch": 1783861200,
+      "deal": 187,
+      "balance": 10080.5,
+      "net": -2.43
+    },
+    {
+      "epoch": 1784034000,
+      "deal": 188,
+      "balance": 10080.11,
+      "net": -0.39
+    },
+    {
+      "epoch": 1784062500,
+      "deal": 189,
+      "balance": 10131.87,
+      "net": 51.76
+    },
+    {
+      "epoch": 1784192400,
+      "deal": 190,
+      "balance": 10131.43,
+      "net": -0.44
+    },
+    {
+      "epoch": 1784210890,
+      "deal": 191,
+      "balance": 10083.61,
+      "net": -47.82
+    },
+    {
+      "epoch": 1784530800,
+      "deal": 192,
+      "balance": 10083.22,
+      "net": -0.39
+    },
+    {
+      "epoch": 1784547015,
+      "deal": 193,
+      "balance": 10034.18,
+      "net": -49.04
+    },
+    {
+      "epoch": 1784725200,
+      "deal": 194,
+      "balance": 10033.7,
+      "net": -0.48
+    },
+    {
+      "epoch": 1784729104,
+      "deal": 195,
+      "balance": 9985.7,
+      "net": -48.0
+    },
+    {
+      "epoch": 1785024000,
+      "deal": 196,
+      "balance": 9984.47,
+      "net": -1.23
+    },
+    {
+      "epoch": 1785052800,
+      "deal": 197,
+      "balance": 9983.63,
+      "net": -0.84
+    },
+    {
+      "epoch": 1785308400,
+      "deal": 198,
+      "balance": 9983.19,
+      "net": -0.44
+    },
+    {
+      "epoch": 1785337200,
+      "deal": 199,
+      "balance": 9950.87,
+      "net": -32.32
+    },
+    {
+      "epoch": 1785402000,
+      "deal": 200,
+      "balance": 9950.52,
+      "net": -0.35
+    },
+    {
+      "epoch": 1785430801,
+      "deal": 201,
+      "balance": 9994.81,
+      "net": 44.29
+    },
+    {
+      "epoch": 1785481200,
+      "deal": 202,
+      "balance": 9994.33,
+      "net": -0.48
+    },
+    {
+      "epoch": 1785505689,
+      "deal": 203,
+      "balance": 10093.76,
+      "net": 99.43
+    },
+    {
+      "epoch": 1785646800,
+      "deal": 204,
+      "balance": 10093.15,
+      "net": -0.61
+    },
+    {
+      "epoch": 1785660062,
+      "deal": 205,
+      "balance": 10043.7,
+      "net": -49.45
+    },
+    {
+      "epoch": 1785733200,
+      "deal": 206,
+      "balance": 10043.17,
+      "net": -0.53
+    },
+    {
+      "epoch": 1785762000,
+      "deal": 207,
+      "balance": 10053.8,
+      "net": 10.63
+    },
+    {
+      "epoch": 1786100400,
+      "deal": 208,
+      "balance": 10053.14,
+      "net": -0.66
+    },
+    {
+      "epoch": 1786123857,
+      "deal": 209,
+      "balance": 10005.35,
+      "net": -47.79
+    },
+    {
+      "epoch": 1786244401,
+      "deal": 210,
+      "balance": 10003.77,
+      "net": -1.58
+    },
+    {
+      "epoch": 1786270453,
+      "deal": 211,
+      "balance": 9954.27,
+      "net": -49.5
+    },
+    {
+      "epoch": 1786366800,
+      "deal": 212,
+      "balance": 9953.74,
+      "net": -0.53
+    },
+    {
+      "epoch": 1786378786,
+      "deal": 213,
+      "balance": 10051.55,
+      "net": 97.81
+    },
+    {
+      "epoch": 1786536000,
+      "deal": 214,
+      "balance": 10050.76,
+      "net": -0.79
+    },
+    {
+      "epoch": 1786538961,
+      "deal": 215,
+      "balance": 10001.22,
+      "net": -49.54
+    },
+    {
+      "epoch": 1786608000,
+      "deal": 216,
+      "balance": 10000.52,
+      "net": -0.7
+    },
+    {
+      "epoch": 1786617278,
+      "deal": 217,
+      "balance": 9951.95,
+      "net": -48.57
+    },
+    {
+      "epoch": 1786824000,
+      "deal": 218,
+      "balance": 9950.37,
+      "net": -1.58
+    },
+    {
+      "epoch": 1786827300,
+      "deal": 219,
+      "balance": 9942.73,
+      "net": -7.64
+    },
+    {
+      "epoch": 1786874400,
+      "deal": 220,
+      "balance": 9940.41,
+      "net": -2.32
+    },
+    {
+      "epoch": 1786890019,
+      "deal": 221,
+      "balance": 9891.48,
+      "net": -48.93
+    },
+    {
+      "epoch": 1786935600,
+      "deal": 222,
+      "balance": 9890.78,
+      "net": -0.7
+    },
+    {
+      "epoch": 1786964400,
+      "deal": 223,
+      "balance": 9932.21,
+      "net": 41.43
+    },
+    {
+      "epoch": 1787461200,
+      "deal": 224,
+      "balance": 9931.82,
+      "net": -0.39
+    },
+    {
+      "epoch": 1787462259,
+      "deal": 225,
+      "balance": 10023.06,
+      "net": 91.24
+    },
+    {
+      "epoch": 1787803200,
+      "deal": 226,
+      "balance": 10022.75,
+      "net": -0.31
+    },
+    {
+      "epoch": 1787822740,
+      "deal": 227,
+      "balance": 10117.55,
+      "net": 94.8
+    },
+    {
+      "epoch": 1787922000,
+      "deal": 228,
+      "balance": 10117.24,
+      "net": -0.31
+    },
+    {
+      "epoch": 1787932965,
+      "deal": 229,
+      "balance": 10211.19,
+      "net": 93.95
+    },
+    {
+      "epoch": 1788051600,
+      "deal": 230,
+      "balance": 10210.53,
+      "net": -0.66
+    },
+    {
+      "epoch": 1788080400,
+      "deal": 231,
+      "balance": 10194.79,
+      "net": -15.74
+    },
+    {
+      "epoch": 1788141600,
+      "deal": 232,
+      "balance": 10194.53,
+      "net": -0.26
+    },
+    {
+      "epoch": 1788166703,
+      "deal": 233,
+      "balance": 10143.61,
+      "net": -50.92
+    },
+    {
+      "epoch": 1788256801,
+      "deal": 234,
+      "balance": 10143.26,
+      "net": -0.35
+    },
+    {
+      "epoch": 1788285600,
+      "deal": 235,
+      "balance": 10193.25,
+      "net": 49.99
+    },
+    {
+      "epoch": 1788408000,
+      "deal": 236,
+      "balance": 10192.9,
+      "net": -0.35
+    },
+    {
+      "epoch": 1788413285,
+      "deal": 237,
+      "balance": 10143.71,
+      "net": -49.19
+    },
+    {
+      "epoch": 1788541200,
+      "deal": 238,
+      "balance": 10143.49,
+      "net": -0.22
+    },
+    {
+      "epoch": 1788555300,
+      "deal": 239,
+      "balance": 10144.16,
+      "net": 0.67
+    },
+    {
+      "epoch": 1788631200,
+      "deal": 240,
+      "balance": 10143.28,
+      "net": -0.88
+    },
+    {
+      "epoch": 1788636894,
+      "deal": 241,
+      "balance": 10090.28,
+      "net": -53.0
+    },
+    {
+      "epoch": 1788706800,
+      "deal": 242,
+      "balance": 10089.67,
+      "net": -0.61
+    },
+    {
+      "epoch": 1788719106,
+      "deal": 243,
+      "balance": 10038.63,
+      "net": -51.04
+    },
+    {
+      "epoch": 1788757200,
+      "deal": 244,
+      "balance": 10038.19,
+      "net": -0.44
+    },
+    {
+      "epoch": 1788786000,
+      "deal": 245,
+      "balance": 10049.82,
+      "net": 11.63
+    },
+    {
+      "epoch": 1788933600,
+      "deal": 246,
+      "balance": 10049.38,
+      "net": -0.44
+    },
+    {
+      "epoch": 1788962400,
+      "deal": 247,
+      "balance": 10068.25,
+      "net": 18.87
+    },
+    {
+      "epoch": 1789135200,
+      "deal": 248,
+      "balance": 10067.99,
+      "net": -0.26
+    },
+    {
+      "epoch": 1789141870,
+      "deal": 249,
+      "balance": 10018.58,
+      "net": -49.41
+    },
+    {
+      "epoch": 1789358400,
+      "deal": 250,
+      "balance": 10018.19,
+      "net": -0.39
+    },
+    {
+      "epoch": 1789387200,
+      "deal": 251,
+      "balance": 10035.27,
+      "net": 17.08
+    },
+    {
+      "epoch": 1789455600,
+      "deal": 252,
+      "balance": 10034.92,
+      "net": -0.35
+    },
+    {
+      "epoch": 1789479568,
+      "deal": 253,
+      "balance": 10126.65,
+      "net": 91.73
+    },
+    {
+      "epoch": 1789614001,
+      "deal": 254,
+      "balance": 10126.39,
+      "net": -0.26
+    },
+    {
+      "epoch": 1789642801,
+      "deal": 255,
+      "balance": 10128.12,
+      "net": 1.73
+    },
+    {
+      "epoch": 1789884000,
+      "deal": 256,
+      "balance": 10127.68,
+      "net": -0.44
+    },
+    {
+      "epoch": 1789912801,
+      "deal": 257,
+      "balance": 10121.29,
+      "net": -6.39
+    },
+    {
+      "epoch": 1790168400,
+      "deal": 258,
+      "balance": 10121.03,
+      "net": -0.26
+    },
+    {
+      "epoch": 1790173774,
+      "deal": 259,
+      "balance": 10210.27,
+      "net": 89.24
+    },
+    {
+      "epoch": 1790301600,
+      "deal": 260,
+      "balance": 10210.05,
+      "net": -0.22
+    },
+    {
+      "epoch": 1790320152,
+      "deal": 261,
+      "balance": 10166.13,
+      "net": -43.92
+    },
+    {
+      "epoch": 1790445600,
+      "deal": 262,
+      "balance": 10165.34,
+      "net": -0.79
+    },
+    {
+      "epoch": 1790455276,
+      "deal": 263,
+      "balance": 10115.63,
+      "net": -49.71
+    },
+    {
+      "epoch": 1790560800,
+      "deal": 264,
+      "balance": 10115.32,
+      "net": -0.31
+    },
+    {
+      "epoch": 1790589600,
+      "deal": 265,
+      "balance": 10186.79,
+      "net": 71.47
+    },
+    {
+      "epoch": 1790672401,
+      "deal": 266,
+      "balance": 10186.48,
+      "net": -0.31
+    },
+    {
+      "epoch": 1790695394,
+      "deal": 267,
+      "balance": 10139.17,
+      "net": -47.31
+    },
+    {
+      "epoch": 1790769601,
+      "deal": 268,
+      "balance": 10138.78,
+      "net": -0.39
+    },
+    {
+      "epoch": 1790772025,
+      "deal": 269,
+      "balance": 10235.83,
+      "net": 97.05
+    },
+    {
+      "epoch": 1790816400,
+      "deal": 270,
+      "balance": 10235.61,
+      "net": -0.22
+    },
+    {
+      "epoch": 1790835258,
+      "deal": 271,
+      "balance": 10189.36,
+      "net": -46.25
+    },
+    {
+      "epoch": 1791093600,
+      "deal": 272,
+      "balance": 10188.31,
+      "net": -1.05
+    },
+    {
+      "epoch": 1791107249,
+      "deal": 273,
+      "balance": 10286.43,
+      "net": 98.12
+    },
+    {
+      "epoch": 1791223200,
+      "deal": 274,
+      "balance": 10286.17,
+      "net": -0.26
+    },
+    {
+      "epoch": 1791233700,
+      "deal": 275,
+      "balance": 10263.59,
+      "net": -22.58
+    },
+    {
+      "epoch": 1791255600,
+      "deal": 276,
+      "balance": 10263.24,
+      "net": -0.35
+    },
+    {
+      "epoch": 1791280300,
+      "deal": 277,
+      "balance": 10213.11,
+      "net": -50.13
+    }
+  ],
+  "seconds": 16.22985005378723,
+  "binary_sha256": "addf4d217633148c736b076e34768da7fda52253d188a878f237a275607beb71",
+  "report_sha256": "381544f8ece04569233636da55f56d8e68538b90af02c1d6d192c780c7df3dc7",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true,
+  "signal_audit": [
+    {
+      "position_id": 2,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1767286800",
+        "signal_close_epoch": "1767290400",
+        "feature_known_epoch": "1767290400",
+        "anchor_epoch": "0",
+        "requested_entry": "88213.16000000",
+        "stop": "87916.49000000",
+        "target": "88806.50000000",
+        "requested_risk_usd": "50.00",
+        "lots": "0.16000000",
+        "atr": "197.78285714",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "7",
+        "random2": "25",
+        "random3": "12"
+      }
+    },
+    {
+      "position_id": 4,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1767718800",
+        "signal_close_epoch": "1767722400",
+        "feature_known_epoch": "1767722400",
+        "anchor_epoch": "0",
+        "requested_entry": "91547.65000000",
+        "stop": "92401.20000000",
+        "target": "89840.55000000",
+        "requested_risk_usd": "49.94",
+        "lots": "0.05000000",
+        "atr": "569.03285714",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "28",
+        "random2": "19",
+        "random3": "6"
+      }
+    },
+    {
+      "position_id": 6,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1767916800",
+        "signal_close_epoch": "1767920400",
+        "feature_known_epoch": "1767920400",
+        "anchor_epoch": "0",
+        "requested_entry": "91219.97000000",
+        "stop": "90429.83000000",
+        "target": "92800.25000000",
+        "requested_risk_usd": "49.72",
+        "lots": "0.06000000",
+        "atr": "526.75928571",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "11",
+        "random2": "19",
+        "random3": "26"
+      }
+    },
+    {
+      "position_id": 8,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1768107600",
+        "signal_close_epoch": "1768111200",
+        "feature_known_epoch": "1768111200",
+        "anchor_epoch": "0",
+        "requested_entry": "90654.78000000",
+        "stop": "90462.91000000",
+        "target": "91038.52000000",
+        "requested_risk_usd": "49.48",
+        "lots": "0.25000000",
+        "atr": "127.91642857",
+        "feature": "10.00000000",
+        "age": "10.00000000",
+        "random1": "4",
+        "random2": "19",
+        "random3": "27"
+      }
+    },
+    {
+      "position_id": 10,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1768219200",
+        "signal_close_epoch": "1768222800",
+        "feature_known_epoch": "1768222800",
+        "anchor_epoch": "0",
+        "requested_entry": "90672.02000000",
+        "stop": "91562.92000000",
+        "target": "88890.22000000",
+        "requested_risk_usd": "49.59",
+        "lots": "0.05000000",
+        "atr": "593.93500000",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "8",
+        "random2": "23",
+        "random3": "27"
+      }
+    },
+    {
+      "position_id": 12,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1768762800",
+        "signal_close_epoch": "1768766400",
+        "feature_known_epoch": "1768766400",
+        "anchor_epoch": "0",
+        "requested_entry": "95342.78000000",
+        "stop": "95046.78000000",
+        "target": "95934.78000000",
+        "requested_risk_usd": "49.36",
+        "lots": "0.16000000",
+        "atr": "197.33571429",
+        "feature": "8.00000000",
+        "age": "8.00000000",
+        "random1": "26",
+        "random2": "7",
+        "random3": "17"
+      }
+    },
+    {
+      "position_id": 14,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1768777200",
+        "signal_close_epoch": "1768780800",
+        "feature_known_epoch": "1768780800",
+        "anchor_epoch": "0",
+        "requested_entry": "93648.83000000",
+        "stop": "94137.02000000",
+        "target": "92672.45000000",
+        "requested_risk_usd": "49.33",
+        "lots": "0.10000000",
+        "atr": "325.45714286",
+        "feature": "12.00000000",
+        "age": "12.00000000",
+        "random1": "26",
+        "random2": "7",
+        "random3": "17"
+      }
+    },
+    {
+      "position_id": 16,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1769043600",
+        "signal_close_epoch": "1769047200",
+        "feature_known_epoch": "1769047200",
+        "anchor_epoch": "0",
+        "requested_entry": "90022.09000000",
+        "stop": "88485.70000000",
+        "target": "93094.87000000",
+        "requested_risk_usd": "49.82",
+        "lots": "0.03000000",
+        "atr": "1024.25928571",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "31",
+        "random2": "11",
+        "random3": "25"
+      }
+    },
+    {
+      "position_id": 18,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1769140800",
+        "signal_close_epoch": "1769144400",
+        "feature_known_epoch": "1769144400",
+        "anchor_epoch": "0",
+        "requested_entry": "89865.25000000",
+        "stop": "89124.12000000",
+        "target": "91347.51000000",
+        "requested_risk_usd": "49.82",
+        "lots": "0.06000000",
+        "atr": "494.08642857",
+        "feature": "5.00000000",
+        "age": "5.00000000",
+        "random1": "16",
+        "random2": "11",
+        "random3": "25"
+      }
+    },
+    {
+      "position_id": 20,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1769252400",
+        "signal_close_epoch": "1769256000",
+        "feature_known_epoch": "1769256000",
+        "anchor_epoch": "0",
+        "requested_entry": "89457.98000000",
+        "stop": "89708.91000000",
+        "target": "88956.12000000",
+        "requested_risk_usd": "49.60",
+        "lots": "0.19000000",
+        "atr": "167.28642857",
+        "feature": "8.00000000",
+        "age": "8.00000000",
+        "random1": "8",
+        "random2": "11",
+        "random3": "25"
+      }
+    },
+    {
+      "position_id": 22,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1769454000",
+        "signal_close_epoch": "1769457600",
+        "feature_known_epoch": "1769457600",
+        "anchor_epoch": "0",
+        "requested_entry": "87919.23000000",
+        "stop": "87018.54000000",
+        "target": "89720.61000000",
+        "requested_risk_usd": "49.84",
+        "lots": "0.05000000",
+        "atr": "600.45857143",
+        "feature": "12.00000000",
+        "age": "12.00000000",
+        "random1": "4",
+        "random2": "11",
+        "random3": "18"
+      }
+    },
+    {
+      "position_id": 24,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1769518800",
+        "signal_close_epoch": "1769522400",
+        "feature_known_epoch": "1769522400",
+        "anchor_epoch": "0",
+        "requested_entry": "87876.81000000",
+        "stop": "88359.92000000",
+        "target": "86910.59000000",
+        "requested_risk_usd": "49.73",
+        "lots": "0.10000000",
+        "atr": "322.07571429",
+        "feature": "10.00000000",
+        "age": "10.00000000",
+        "random1": "8",
+        "random2": "20",
+        "random3": "23"
+      }
+    },
+    {
+      "position_id": 26,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1769652000",
+        "signal_close_epoch": "1769655600",
+        "feature_known_epoch": "1769655600",
+        "anchor_epoch": "0",
+        "requested_entry": "87787.32000000",
+        "stop": "88881.83000000",
+        "target": "85598.30000000",
+        "requested_risk_usd": "49.48",
+        "lots": "0.04000000",
+        "atr": "729.67571429",
+        "feature": "19.00000000",
+        "age": "19.00000000",
+        "random1": "32",
+        "random2": "20",
+        "random3": "5"
+      }
+    },
+    {
+      "position_id": 28,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1770044400",
+        "signal_close_epoch": "1770048000",
+        "feature_known_epoch": "1770048000",
+        "anchor_epoch": "0",
+        "requested_entry": "78822.49000000",
+        "stop": "77183.40000000",
+        "target": "82100.67000000",
+        "requested_risk_usd": "49.47",
+        "lots": "0.03000000",
+        "atr": "1092.72714286",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "31",
+        "random2": "2",
+        "random3": "8"
+      }
+    },
+    {
+      "position_id": 30,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1770127200",
+        "signal_close_epoch": "1770130800",
+        "feature_known_epoch": "1770130800",
+        "anchor_epoch": "0",
+        "requested_entry": "77148.39000000",
+        "stop": "78189.21000000",
+        "target": "75066.75000000",
+        "requested_risk_usd": "49.35",
+        "lots": "0.04000000",
+        "atr": "693.88285714",
+        "feature": "3.00000000",
+        "age": "3.00000000",
+        "random1": "16",
+        "random2": "2",
+        "random3": "5"
+      }
+    },
+    {
+      "position_id": 32,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1770393600",
+        "signal_close_epoch": "1770397200",
+        "feature_known_epoch": "1770397200",
+        "anchor_epoch": "0",
+        "requested_entry": "69911.86000000",
+        "stop": "67961.04000000",
+        "target": "73813.50000000",
+        "requested_risk_usd": "49.76",
+        "lots": "0.02000000",
+        "atr": "1300.54785714",
+        "feature": "5.00000000",
+        "age": "5.00000000",
+        "random1": "20",
+        "random2": "24",
+        "random3": "27"
+      }
+    },
+    {
+      "position_id": 34,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1770631200",
+        "signal_close_epoch": "1770634800",
+        "feature_known_epoch": "1770634800",
+        "anchor_epoch": "0",
+        "requested_entry": "68670.83000000",
+        "stop": "69939.60000000",
+        "target": "66133.29000000",
+        "requested_risk_usd": "49.80",
+        "lots": "0.03000000",
+        "atr": "845.84642857",
+        "feature": "3.00000000",
+        "age": "3.00000000",
+        "random1": "25",
+        "random2": "3",
+        "random3": "6"
+      }
+    },
+    {
+      "position_id": 36,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1770692400",
+        "signal_close_epoch": "1770696000",
+        "feature_known_epoch": "1770696000",
+        "anchor_epoch": "0",
+        "requested_entry": "69467.30000000",
+        "stop": "70771.30000000",
+        "target": "66859.30000000",
+        "requested_risk_usd": "49.61",
+        "lots": "0.03000000",
+        "atr": "869.33500000",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "4",
+        "random2": "12",
+        "random3": "24"
+      }
+    },
+    {
+      "position_id": 38,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1770897600",
+        "signal_close_epoch": "1770901200",
+        "feature_known_epoch": "1770901200",
+        "anchor_epoch": "0",
+        "requested_entry": "67837.36000000",
+        "stop": "67033.37000000",
+        "target": "69445.34000000",
+        "requested_risk_usd": "49.76",
+        "lots": "0.06000000",
+        "atr": "535.99428571",
+        "feature": "13.00000000",
+        "age": "13.00000000",
+        "random1": "3",
+        "random2": "16",
+        "random3": "28"
+      }
+    },
+    {
+      "position_id": 40,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1770984000",
+        "signal_close_epoch": "1770987600",
+        "feature_known_epoch": "1770987600",
+        "anchor_epoch": "0",
+        "requested_entry": "67029.22000000",
+        "stop": "66362.39000000",
+        "target": "68362.88000000",
+        "requested_risk_usd": "49.52",
+        "lots": "0.07000000",
+        "atr": "444.55428571",
+        "feature": "9.00000000",
+        "age": "9.00000000",
+        "random1": "26",
+        "random2": "16",
+        "random3": "32"
+      }
+    },
+    {
+      "position_id": 42,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1771167600",
+        "signal_close_epoch": "1771171200",
+        "feature_known_epoch": "1771171200",
+        "anchor_epoch": "0",
+        "requested_entry": "69067.34000000",
+        "stop": "69875.57000000",
+        "target": "67450.88000000",
+        "requested_risk_usd": "49.98",
+        "lots": "0.06000000",
+        "atr": "538.81928571",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "9",
+        "random2": "16",
+        "random3": "5"
+      }
+    },
+    {
+      "position_id": 44,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1771545600",
+        "signal_close_epoch": "1771549200",
+        "feature_known_epoch": "1771549200",
+        "anchor_epoch": "0",
+        "requested_entry": "67192.68000000",
+        "stop": "66315.68000000",
+        "target": "68946.68000000",
+        "requested_risk_usd": "50.18",
+        "lots": "0.05000000",
+        "atr": "584.66857143",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "20",
+        "random2": "17",
+        "random3": "26"
+      }
+    },
+    {
+      "position_id": 46,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1771747200",
+        "signal_close_epoch": "1771750800",
+        "feature_known_epoch": "1771750800",
+        "anchor_epoch": "0",
+        "requested_entry": "67924.90000000",
+        "stop": "68293.17000000",
+        "target": "67188.36000000",
+        "requested_risk_usd": "50.35",
+        "lots": "0.13000000",
+        "atr": "245.51285714",
+        "feature": "9.00000000",
+        "age": "9.00000000",
+        "random1": "10",
+        "random2": "4",
+        "random3": "24"
+      }
+    },
+    {
+      "position_id": 48,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1771981200",
+        "signal_close_epoch": "1771984800",
+        "feature_known_epoch": "1771984800",
+        "anchor_epoch": "0",
+        "requested_entry": "65888.37000000",
+        "stop": "64871.67000000",
+        "target": "67921.77000000",
+        "requested_risk_usd": "50.56",
+        "lots": "0.04000000",
+        "atr": "677.79857143",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "14",
+        "random2": "26",
+        "random3": "21"
+      }
+    },
+    {
+      "position_id": 50,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1772168400",
+        "signal_close_epoch": "1772172000",
+        "feature_known_epoch": "1772172000",
+        "anchor_epoch": "0",
+        "requested_entry": "67730.93000000",
+        "stop": "66930.15000000",
+        "target": "69332.49000000",
+        "requested_risk_usd": "50.36",
+        "lots": "0.06000000",
+        "atr": "533.85142857",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "31",
+        "random2": "8",
+        "random3": "12"
+      }
+    },
+    {
+      "position_id": 52,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1772424000",
+        "signal_close_epoch": "1772427600",
+        "feature_known_epoch": "1772427600",
+        "anchor_epoch": "0",
+        "requested_entry": "66867.97000000",
+        "stop": "65631.83000000",
+        "target": "69340.25000000",
+        "requested_risk_usd": "50.11",
+        "lots": "0.04000000",
+        "atr": "824.09214286",
+        "feature": "17.00000000",
+        "age": "17.00000000",
+        "random1": "4",
+        "random2": "17",
+        "random3": "8"
+      }
+    },
+    {
+      "position_id": 54,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1772532000",
+        "signal_close_epoch": "1772535600",
+        "feature_known_epoch": "1772535600",
+        "anchor_epoch": "0",
+        "requested_entry": "66843.72000000",
+        "stop": "67761.01000000",
+        "target": "65009.14000000",
+        "requested_risk_usd": "49.87",
+        "lots": "0.05000000",
+        "atr": "611.52500000",
+        "feature": "7.00000000",
+        "age": "7.00000000",
+        "random1": "28",
+        "random2": "18",
+        "random3": "22"
+      }
+    },
+    {
+      "position_id": 56,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1772733600",
+        "signal_close_epoch": "1772737200",
+        "feature_known_epoch": "1772737200",
+        "anchor_epoch": "0",
+        "requested_entry": "71000.46000000",
+        "stop": "72193.42000000",
+        "target": "68614.54000000",
+        "requested_risk_usd": "49.63",
+        "lots": "0.04000000",
+        "atr": "795.30928571",
+        "feature": "15.00000000",
+        "age": "15.00000000",
+        "random1": "18",
+        "random2": "9",
+        "random3": "6"
+      }
+    },
+    {
+      "position_id": 58,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1773043200",
+        "signal_close_epoch": "1773046800",
+        "feature_known_epoch": "1773046800",
+        "anchor_epoch": "0",
+        "requested_entry": "67807.29000000",
+        "stop": "66658.04000000",
+        "target": "70105.79000000",
+        "requested_risk_usd": "49.59",
+        "lots": "0.04000000",
+        "atr": "766.16714286",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "13",
+        "random2": "31",
+        "random3": "27"
+      }
+    },
+    {
+      "position_id": 60,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1773216000",
+        "signal_close_epoch": "1773219600",
+        "feature_known_epoch": "1773219600",
+        "anchor_epoch": "0",
+        "requested_entry": "69650.32000000",
+        "stop": "70419.43000000",
+        "target": "68112.10000000",
+        "requested_risk_usd": "49.83",
+        "lots": "0.06000000",
+        "atr": "512.74000000",
+        "feature": "9.00000000",
+        "age": "9.00000000",
+        "random1": "5",
+        "random2": "30",
+        "random3": "10"
+      }
+    },
+    {
+      "position_id": 62,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1773284400",
+        "signal_close_epoch": "1773288000",
+        "feature_known_epoch": "1773288000",
+        "anchor_epoch": "0",
+        "requested_entry": "69449.50000000",
+        "stop": "70292.82000000",
+        "target": "67762.86000000",
+        "requested_risk_usd": "49.59",
+        "lots": "0.05000000",
+        "atr": "562.21428571",
+        "feature": "0.00000000",
+        "age": "0.00000000",
+        "random1": "8",
+        "random2": "28",
+        "random3": "16"
+      }
+    },
+    {
+      "position_id": 64,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1773446400",
+        "signal_close_epoch": "1773450000",
+        "feature_known_epoch": "1773450000",
+        "anchor_epoch": "0",
+        "requested_entry": "70644.04000000",
+        "stop": "71709.45000000",
+        "target": "68513.22000000",
+        "requested_risk_usd": "49.38",
+        "lots": "0.04000000",
+        "atr": "710.27285714",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "29",
+        "random2": "12",
+        "random3": "5"
+      }
+    },
+    {
+      "position_id": 66,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1773540000",
+        "signal_close_epoch": "1773543600",
+        "feature_known_epoch": "1773543600",
+        "anchor_epoch": "0",
+        "requested_entry": "71453.53000000",
+        "stop": "71057.87000000",
+        "target": "72244.85000000",
+        "requested_risk_usd": "49.39",
+        "lots": "0.12000000",
+        "atr": "263.77428571",
+        "feature": "11.00000000",
+        "age": "11.00000000",
+        "random1": "30",
+        "random2": "8",
+        "random3": "20"
+      }
+    },
+    {
+      "position_id": 68,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1773817200",
+        "signal_close_epoch": "1773820800",
+        "feature_known_epoch": "1773820800",
+        "anchor_epoch": "0",
+        "requested_entry": "73900.36000000",
+        "stop": "74552.38000000",
+        "target": "72596.32000000",
+        "requested_risk_usd": "49.59",
+        "lots": "0.07000000",
+        "atr": "434.68071429",
+        "feature": "8.00000000",
+        "age": "8.00000000",
+        "random1": "22",
+        "random2": "30",
+        "random3": "18"
+      }
+    },
+    {
+      "position_id": 70,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1773997200",
+        "signal_close_epoch": "1774000800",
+        "feature_known_epoch": "1774000800",
+        "anchor_epoch": "0",
+        "requested_entry": "70575.41000000",
+        "stop": "69848.77000000",
+        "target": "72028.69000000",
+        "requested_risk_usd": "50.05",
+        "lots": "0.06000000",
+        "atr": "484.42857143",
+        "feature": "10.00000000",
+        "age": "10.00000000",
+        "random1": "21",
+        "random2": "3",
+        "random3": "29"
+      }
+    },
+    {
+      "position_id": 72,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1774054800",
+        "signal_close_epoch": "1774058400",
+        "feature_known_epoch": "1774058400",
+        "anchor_epoch": "0",
+        "requested_entry": "70455.78000000",
+        "stop": "69648.21000000",
+        "target": "72070.92000000",
+        "requested_risk_usd": "49.83",
+        "lots": "0.06000000",
+        "atr": "538.37928571",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "18",
+        "random2": "25",
+        "random3": "31"
+      }
+    },
+    {
+      "position_id": 74,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1774267200",
+        "signal_close_epoch": "1774270800",
+        "feature_known_epoch": "1774270800",
+        "anchor_epoch": "0",
+        "requested_entry": "70727.10000000",
+        "stop": "69466.81000000",
+        "target": "73247.68000000",
+        "requested_risk_usd": "49.89",
+        "lots": "0.03000000",
+        "atr": "840.19285714",
+        "feature": "5.00000000",
+        "age": "5.00000000",
+        "random1": "26",
+        "random2": "22",
+        "random3": "12"
+      }
+    },
+    {
+      "position_id": 76,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1774371600",
+        "signal_close_epoch": "1774375200",
+        "feature_known_epoch": "1774375200",
+        "anchor_epoch": "0",
+        "requested_entry": "69213.34000000",
+        "stop": "70066.90000000",
+        "target": "67506.22000000",
+        "requested_risk_usd": "49.91",
+        "lots": "0.05000000",
+        "atr": "569.03785714",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "24",
+        "random2": "29",
+        "random3": "17"
+      }
+    },
+    {
+      "position_id": 78,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1774396800",
+        "signal_close_epoch": "1774400400",
+        "feature_known_epoch": "1774400400",
+        "anchor_epoch": "0",
+        "requested_entry": "70809.47000000",
+        "stop": "69859.30000000",
+        "target": "72709.81000000",
+        "requested_risk_usd": "49.70",
+        "lots": "0.05000000",
+        "atr": "633.44928571",
+        "feature": "9.00000000",
+        "age": "9.00000000",
+        "random1": "24",
+        "random2": "29",
+        "random3": "17"
+      }
+    },
+    {
+      "position_id": 80,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1774501200",
+        "signal_close_epoch": "1774504800",
+        "feature_known_epoch": "1774504800",
+        "anchor_epoch": "0",
+        "requested_entry": "69979.94000000",
+        "stop": "70697.03000000",
+        "target": "68545.76000000",
+        "requested_risk_usd": "49.80",
+        "lots": "0.06000000",
+        "atr": "478.05857143",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "4",
+        "random2": "31",
+        "random3": "16"
+      }
+    },
+    {
+      "position_id": 82,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1774738800",
+        "signal_close_epoch": "1774742400",
+        "feature_known_epoch": "1774742400",
+        "anchor_epoch": "0",
+        "requested_entry": "66324.29000000",
+        "stop": "66802.75000000",
+        "target": "65367.37000000",
+        "requested_risk_usd": "49.90",
+        "lots": "0.10000000",
+        "atr": "318.97500000",
+        "feature": "0.00000000",
+        "age": "0.00000000",
+        "random1": "8",
+        "random2": "26",
+        "random3": "29"
+      }
+    },
+    {
+      "position_id": 84,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1774839600",
+        "signal_close_epoch": "1774843200",
+        "feature_known_epoch": "1774843200",
+        "anchor_epoch": "0",
+        "requested_entry": "67112.11000000",
+        "stop": "66265.42000000",
+        "target": "68805.49000000",
+        "requested_risk_usd": "49.66",
+        "lots": "0.05000000",
+        "atr": "564.46142857",
+        "feature": "16.00000000",
+        "age": "16.00000000",
+        "random1": "19",
+        "random2": "15",
+        "random3": "4"
+      }
+    },
+    {
+      "position_id": 86,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1774918800",
+        "signal_close_epoch": "1774922400",
+        "feature_known_epoch": "1774922400",
+        "anchor_epoch": "0",
+        "requested_entry": "67876.84000000",
+        "stop": "67023.16000000",
+        "target": "69584.20000000",
+        "requested_risk_usd": "49.79",
+        "lots": "0.05000000",
+        "atr": "569.11857143",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "7",
+        "random2": "26",
+        "random3": "2"
+      }
+    },
+    {
+      "position_id": 88,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1775095200",
+        "signal_close_epoch": "1775098800",
+        "feature_known_epoch": "1775098800",
+        "anchor_epoch": "0",
+        "requested_entry": "66852.11000000",
+        "stop": "67719.33000000",
+        "target": "65117.67000000",
+        "requested_risk_usd": "49.57",
+        "lots": "0.05000000",
+        "atr": "578.14642857",
+        "feature": "3.00000000",
+        "age": "3.00000000",
+        "random1": "5",
+        "random2": "14",
+        "random3": "11"
+      }
+    },
+    {
+      "position_id": 90,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1775257200",
+        "signal_close_epoch": "1775260800",
+        "feature_known_epoch": "1775260800",
+        "anchor_epoch": "0",
+        "requested_entry": "66954.21000000",
+        "stop": "66584.53000000",
+        "target": "67693.57000000",
+        "requested_risk_usd": "49.67",
+        "lots": "0.13000000",
+        "atr": "246.45571429",
+        "feature": "0.00000000",
+        "age": "0.00000000",
+        "random1": "4",
+        "random2": "18",
+        "random3": "31"
+      }
+    },
+    {
+      "position_id": 92,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1775368800",
+        "signal_close_epoch": "1775372400",
+        "feature_known_epoch": "1775372400",
+        "anchor_epoch": "0",
+        "requested_entry": "66793.26000000",
+        "stop": "67079.09000000",
+        "target": "66221.60000000",
+        "requested_risk_usd": "49.70",
+        "lots": "0.17000000",
+        "atr": "190.55357143",
+        "feature": "7.00000000",
+        "age": "7.00000000",
+        "random1": "20",
+        "random2": "5",
+        "random3": "14"
+      }
+    },
+    {
+      "position_id": 94,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1775538000",
+        "signal_close_epoch": "1775541600",
+        "feature_known_epoch": "1775541600",
+        "anchor_epoch": "0",
+        "requested_entry": "68657.30000000",
+        "stop": "69361.39000000",
+        "target": "67249.12000000",
+        "requested_risk_usd": "49.46",
+        "lots": "0.07000000",
+        "atr": "469.39571429",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "15",
+        "random2": "27",
+        "random3": "4"
+      }
+    },
+    {
+      "position_id": 96,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1775959200",
+        "signal_close_epoch": "1775962800",
+        "feature_known_epoch": "1775962800",
+        "anchor_epoch": "0",
+        "requested_entry": "71796.11000000",
+        "stop": "72537.32000000",
+        "target": "70313.69000000",
+        "requested_risk_usd": "49.61",
+        "lots": "0.06000000",
+        "atr": "494.13714286",
+        "feature": "3.00000000",
+        "age": "3.00000000",
+        "random1": "21",
+        "random2": "6",
+        "random3": "16"
+      }
+    },
+    {
+      "position_id": 98,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1776092400",
+        "signal_close_epoch": "1776096000",
+        "feature_known_epoch": "1776096000",
+        "anchor_epoch": "0",
+        "requested_entry": "71902.25000000",
+        "stop": "71259.99000000",
+        "target": "73186.77000000",
+        "requested_risk_usd": "49.70",
+        "lots": "0.07000000",
+        "atr": "428.17642857",
+        "feature": "8.00000000",
+        "age": "8.00000000",
+        "random1": "32",
+        "random2": "15",
+        "random3": "3"
+      }
+    },
+    {
+      "position_id": 100,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1776247200",
+        "signal_close_epoch": "1776250800",
+        "feature_known_epoch": "1776250800",
+        "anchor_epoch": "0",
+        "requested_entry": "73900.53000000",
+        "stop": "74497.17000000",
+        "target": "72707.25000000",
+        "requested_risk_usd": "50.15",
+        "lots": "0.08000000",
+        "atr": "397.76142857",
+        "feature": "11.00000000",
+        "age": "11.00000000",
+        "random1": "14",
+        "random2": "19",
+        "random3": "11"
+      }
+    },
+    {
+      "position_id": 102,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1776344400",
+        "signal_close_epoch": "1776348000",
+        "feature_known_epoch": "1776348000",
+        "anchor_epoch": "0",
+        "requested_entry": "73803.41000000",
+        "stop": "74502.23000000",
+        "target": "72405.77000000",
+        "requested_risk_usd": "49.90",
+        "lots": "0.07000000",
+        "atr": "465.88285714",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "25",
+        "random2": "28",
+        "random3": "18"
+      }
+    },
+    {
+      "position_id": 104,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1776517200",
+        "signal_close_epoch": "1776520800",
+        "feature_known_epoch": "1776520800",
+        "anchor_epoch": "0",
+        "requested_entry": "76151.58000000",
+        "stop": "76635.69000000",
+        "target": "75183.36000000",
+        "requested_risk_usd": "49.66",
+        "lots": "0.10000000",
+        "atr": "322.74071429",
+        "feature": "10.00000000",
+        "age": "10.00000000",
+        "random1": "5",
+        "random2": "19",
+        "random3": "15"
+      }
+    },
+    {
+      "position_id": 106,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1776697200",
+        "signal_close_epoch": "1776700800",
+        "feature_known_epoch": "1776700800",
+        "anchor_epoch": "0",
+        "requested_entry": "75750.22000000",
+        "stop": "74917.53000000",
+        "target": "77415.60000000",
+        "requested_risk_usd": "49.81",
+        "lots": "0.05000000",
+        "atr": "555.12928571",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "19",
+        "random2": "23",
+        "random3": "26"
+      }
+    },
+    {
+      "position_id": 108,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1776798000",
+        "signal_close_epoch": "1776801600",
+        "feature_known_epoch": "1776801600",
+        "anchor_epoch": "0",
+        "requested_entry": "75038.13000000",
+        "stop": "75990.78000000",
+        "target": "73132.83000000",
+        "requested_risk_usd": "49.95",
+        "lots": "0.05000000",
+        "atr": "635.10071429",
+        "feature": "0.00000000",
+        "age": "0.00000000",
+        "random1": "30",
+        "random2": "10",
+        "random3": "18"
+      }
+    },
+    {
+      "position_id": 110,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1776812400",
+        "signal_close_epoch": "1776816000",
+        "feature_known_epoch": "1776816000",
+        "anchor_epoch": "0",
+        "requested_entry": "76359.92000000",
+        "stop": "75391.09000000",
+        "target": "78297.58000000",
+        "requested_risk_usd": "49.77",
+        "lots": "0.05000000",
+        "atr": "645.88714286",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "30",
+        "random2": "10",
+        "random3": "18"
+      }
+    },
+    {
+      "position_id": 112,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1776938400",
+        "signal_close_epoch": "1776942000",
+        "feature_known_epoch": "1776942000",
+        "anchor_epoch": "0",
+        "requested_entry": "77437.88000000",
+        "stop": "78189.66000000",
+        "target": "75934.32000000",
+        "requested_risk_usd": "50.26",
+        "lots": "0.06000000",
+        "atr": "501.18714286",
+        "feature": "7.00000000",
+        "age": "7.00000000",
+        "random1": "5",
+        "random2": "9",
+        "random3": "25"
+      }
+    },
+    {
+      "position_id": 114,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1776985200",
+        "signal_close_epoch": "1776988800",
+        "feature_known_epoch": "1776988800",
+        "anchor_epoch": "0",
+        "requested_entry": "78282.25000000",
+        "stop": "77444.77000000",
+        "target": "79957.21000000",
+        "requested_risk_usd": "50.04",
+        "lots": "0.05000000",
+        "atr": "558.31714286",
+        "feature": "0.00000000",
+        "age": "0.00000000",
+        "random1": "14",
+        "random2": "9",
+        "random3": "21"
+      }
+    },
+    {
+      "position_id": 116,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1777179600",
+        "signal_close_epoch": "1777183200",
+        "feature_known_epoch": "1777183200",
+        "anchor_epoch": "0",
+        "requested_entry": "78013.53000000",
+        "stop": "77684.59000000",
+        "target": "78671.41000000",
+        "requested_risk_usd": "49.88",
+        "lots": "0.15000000",
+        "atr": "219.29357143",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "9",
+        "random2": "4",
+        "random3": "12"
+      }
+    },
+    {
+      "position_id": 118,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1777280400",
+        "signal_close_epoch": "1777284000",
+        "feature_known_epoch": "1777284000",
+        "anchor_epoch": "0",
+        "requested_entry": "77902.54000000",
+        "stop": "78790.07000000",
+        "target": "76127.48000000",
+        "requested_risk_usd": "49.86",
+        "lots": "0.05000000",
+        "atr": "591.68571429",
+        "feature": "30.00000000",
+        "age": "30.00000000",
+        "random1": "9",
+        "random2": "4",
+        "random3": "12"
+      }
+    },
+    {
+      "position_id": 120,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1777438800",
+        "signal_close_epoch": "1777442400",
+        "feature_known_epoch": "1777442400",
+        "anchor_epoch": "0",
+        "requested_entry": "77286.55000000",
+        "stop": "76811.19000000",
+        "target": "78237.27000000",
+        "requested_risk_usd": "50.15",
+        "lots": "0.10000000",
+        "atr": "316.90642857",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "6",
+        "random2": "22",
+        "random3": "19"
+      }
+    },
+    {
+      "position_id": 122,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1777568400",
+        "signal_close_epoch": "1777572000",
+        "feature_known_epoch": "1777572000",
+        "anchor_epoch": "0",
+        "requested_entry": "76212.23000000",
+        "stop": "75631.88000000",
+        "target": "77372.93000000",
+        "requested_risk_usd": "49.91",
+        "lots": "0.08000000",
+        "atr": "386.90285714",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "30",
+        "random2": "4",
+        "random3": "19"
+      }
+    },
+    {
+      "position_id": 124,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1778112000",
+        "signal_close_epoch": "1778115600",
+        "feature_known_epoch": "1778115600",
+        "anchor_epoch": "0",
+        "requested_entry": "81011.93000000",
+        "stop": "81710.07000000",
+        "target": "79615.65000000",
+        "requested_risk_usd": "50.03",
+        "lots": "0.07000000",
+        "atr": "465.42857143",
+        "feature": "5.00000000",
+        "age": "5.00000000",
+        "random1": "4",
+        "random2": "14",
+        "random3": "31"
+      }
+    },
+    {
+      "position_id": 126,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1778281200",
+        "signal_close_epoch": "1778284800",
+        "feature_known_epoch": "1778284800",
+        "anchor_epoch": "0",
+        "requested_entry": "80198.08000000",
+        "stop": "79605.79000000",
+        "target": "81382.66000000",
+        "requested_risk_usd": "49.78",
+        "lots": "0.08000000",
+        "atr": "394.85928571",
+        "feature": "0.00000000",
+        "age": "0.00000000",
+        "random1": "31",
+        "random2": "5",
+        "random3": "17"
+      }
+    },
+    {
+      "position_id": 128,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1778486400",
+        "signal_close_epoch": "1778490000",
+        "feature_known_epoch": "1778490000",
+        "anchor_epoch": "0",
+        "requested_entry": "80745.57000000",
+        "stop": "81583.04000000",
+        "target": "79070.63000000",
+        "requested_risk_usd": "49.79",
+        "lots": "0.05000000",
+        "atr": "558.31357143",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "25",
+        "random2": "18",
+        "random3": "8"
+      }
+    },
+    {
+      "position_id": 130,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1778569200",
+        "signal_close_epoch": "1778572800",
+        "feature_known_epoch": "1778572800",
+        "anchor_epoch": "0",
+        "requested_entry": "80836.88000000",
+        "stop": "81350.66000000",
+        "target": "79809.32000000",
+        "requested_risk_usd": "49.58",
+        "lots": "0.09000000",
+        "atr": "342.52000000",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "22",
+        "random2": "9",
+        "random3": "2"
+      }
+    },
+    {
+      "position_id": 132,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1778644800",
+        "signal_close_epoch": "1778648400",
+        "feature_known_epoch": "1778648400",
+        "anchor_epoch": "0",
+        "requested_entry": "81219.96000000",
+        "stop": "80671.37000000",
+        "target": "82317.14000000",
+        "requested_risk_usd": "49.81",
+        "lots": "0.09000000",
+        "atr": "365.73000000",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "7",
+        "random2": "21",
+        "random3": "12"
+      }
+    },
+    {
+      "position_id": 134,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1778770800",
+        "signal_close_epoch": "1778774400",
+        "feature_known_epoch": "1778774400",
+        "anchor_epoch": "0",
+        "requested_entry": "81292.30000000",
+        "stop": "80540.04000000",
+        "target": "82796.82000000",
+        "requested_risk_usd": "49.56",
+        "lots": "0.06000000",
+        "atr": "501.50357143",
+        "feature": "12.00000000",
+        "age": "12.00000000",
+        "random1": "11",
+        "random2": "6",
+        "random3": "24"
+      }
+    },
+    {
+      "position_id": 136,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1778850000",
+        "signal_close_epoch": "1778853600",
+        "feature_known_epoch": "1778853600",
+        "anchor_epoch": "0",
+        "requested_entry": "78730.81000000",
+        "stop": "79518.47000000",
+        "target": "77155.49000000",
+        "requested_risk_usd": "49.59",
+        "lots": "0.06000000",
+        "atr": "525.10357143",
+        "feature": "10.00000000",
+        "age": "10.00000000",
+        "random1": "27",
+        "random2": "6",
+        "random3": "14"
+      }
+    },
+    {
+      "position_id": 138,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1779256800",
+        "signal_close_epoch": "1779260400",
+        "feature_known_epoch": "1779260400",
+        "anchor_epoch": "0",
+        "requested_entry": "77342.60000000",
+        "stop": "76907.52000000",
+        "target": "78212.76000000",
+        "requested_risk_usd": "49.35",
+        "lots": "0.11000000",
+        "atr": "290.05500000",
+        "feature": "7.00000000",
+        "age": "7.00000000",
+        "random1": "21",
+        "random2": "32",
+        "random3": "28"
+      }
+    },
+    {
+      "position_id": 140,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1779368400",
+        "signal_close_epoch": "1779372000",
+        "feature_known_epoch": "1779372000",
+        "anchor_epoch": "0",
+        "requested_entry": "77055.74000000",
+        "stop": "77621.46000000",
+        "target": "75924.30000000",
+        "requested_risk_usd": "49.11",
+        "lots": "0.08000000",
+        "atr": "377.14428571",
+        "feature": "14.00000000",
+        "age": "14.00000000",
+        "random1": "6",
+        "random2": "28",
+        "random3": "3"
+      }
+    },
+    {
+      "position_id": 142,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1779436800",
+        "signal_close_epoch": "1779440400",
+        "feature_known_epoch": "1779440400",
+        "anchor_epoch": "0",
+        "requested_entry": "77196.79000000",
+        "stop": "77574.34000000",
+        "target": "76441.69000000",
+        "requested_risk_usd": "48.88",
+        "lots": "0.12000000",
+        "atr": "251.70285714",
+        "feature": "9.00000000",
+        "age": "9.00000000",
+        "random1": "20",
+        "random2": "32",
+        "random3": "6"
+      }
+    },
+    {
+      "position_id": 144,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1779757200",
+        "signal_close_epoch": "1779760800",
+        "feature_known_epoch": "1779760800",
+        "anchor_epoch": "0",
+        "requested_entry": "76693.62000000",
+        "stop": "77165.17000000",
+        "target": "75750.52000000",
+        "requested_risk_usd": "49.07",
+        "lots": "0.10000000",
+        "atr": "314.36785714",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "30",
+        "random2": "16",
+        "random3": "27"
+      }
+    },
+    {
+      "position_id": 146,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1780142400",
+        "signal_close_epoch": "1780146000",
+        "feature_known_epoch": "1780146000",
+        "anchor_epoch": "0",
+        "requested_entry": "73597.99000000",
+        "stop": "73316.61000000",
+        "target": "74160.75000000",
+        "requested_risk_usd": "49.13",
+        "lots": "0.17000000",
+        "atr": "187.59000000",
+        "feature": "9.00000000",
+        "age": "9.00000000",
+        "random1": "24",
+        "random2": "11",
+        "random3": "21"
+      }
+    },
+    {
+      "position_id": 148,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1780239600",
+        "signal_close_epoch": "1780243200",
+        "feature_known_epoch": "1780243200",
+        "anchor_epoch": "0",
+        "requested_entry": "73550.80000000",
+        "stop": "73849.19000000",
+        "target": "72954.02000000",
+        "requested_risk_usd": "49.36",
+        "lots": "0.16000000",
+        "atr": "198.92928571",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "4",
+        "random2": "20",
+        "random3": "8"
+      }
+    },
+    {
+      "position_id": 150,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1780801200",
+        "signal_close_epoch": "1780804800",
+        "feature_known_epoch": "1780804800",
+        "anchor_epoch": "0",
+        "requested_entry": "61668.21000000",
+        "stop": "61064.72000000",
+        "target": "62875.19000000",
+        "requested_risk_usd": "49.28",
+        "lots": "0.08000000",
+        "atr": "402.32500000",
+        "feature": "12.00000000",
+        "age": "12.00000000",
+        "random1": "10",
+        "random2": "14",
+        "random3": "28"
+      }
+    },
+    {
+      "position_id": 152,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1780995600",
+        "signal_close_epoch": "1780999200",
+        "feature_known_epoch": "1780999200",
+        "anchor_epoch": "0",
+        "requested_entry": "62690.71000000",
+        "stop": "63363.69000000",
+        "target": "61344.75000000",
+        "requested_risk_usd": "49.77",
+        "lots": "0.07000000",
+        "atr": "448.65642857",
+        "feature": "10.00000000",
+        "age": "10.00000000",
+        "random1": "26",
+        "random2": "10",
+        "random3": "4"
+      }
+    },
+    {
+      "position_id": 154,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1781146800",
+        "signal_close_epoch": "1781150400",
+        "feature_known_epoch": "1781150400",
+        "anchor_epoch": "0",
+        "requested_entry": "62606.81000000",
+        "stop": "61742.69000000",
+        "target": "64335.05000000",
+        "requested_risk_usd": "50.24",
+        "lots": "0.05000000",
+        "atr": "576.07928571",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "25",
+        "random2": "14",
+        "random3": "20"
+      }
+    },
+    {
+      "position_id": 156,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1781456400",
+        "signal_close_epoch": "1781460000",
+        "feature_known_epoch": "1781460000",
+        "anchor_epoch": "0",
+        "requested_entry": "63704.26000000",
+        "stop": "64071.89000000",
+        "target": "62969.00000000",
+        "requested_risk_usd": "50.35",
+        "lots": "0.13000000",
+        "atr": "245.08357143",
+        "feature": "10.00000000",
+        "age": "10.00000000",
+        "random1": "13",
+        "random2": "5",
+        "random3": "29"
+      }
+    },
+    {
+      "position_id": 158,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1781625600",
+        "signal_close_epoch": "1781629200",
+        "feature_known_epoch": "1781629200",
+        "anchor_epoch": "0",
+        "requested_entry": "65707.13000000",
+        "stop": "66391.45000000",
+        "target": "64338.49000000",
+        "requested_risk_usd": "50.15",
+        "lots": "0.07000000",
+        "atr": "456.21642857",
+        "feature": "5.00000000",
+        "age": "5.00000000",
+        "random1": "20",
+        "random2": "11",
+        "random3": "6"
+      }
+    },
+    {
+      "position_id": 160,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1781910000",
+        "signal_close_epoch": "1781913600",
+        "feature_known_epoch": "1781913600",
+        "anchor_epoch": "0",
+        "requested_entry": "63485.61000000",
+        "stop": "62948.46000000",
+        "target": "64559.91000000",
+        "requested_risk_usd": "50.12",
+        "lots": "0.09000000",
+        "atr": "358.10214286",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "8",
+        "random2": "2",
+        "random3": "23"
+      }
+    },
+    {
+      "position_id": 162,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1782093600",
+        "signal_close_epoch": "1782097200",
+        "feature_known_epoch": "1782097200",
+        "anchor_epoch": "0",
+        "requested_entry": "64193.00000000",
+        "stop": "63599.54000000",
+        "target": "65379.92000000",
+        "requested_risk_usd": "50.17",
+        "lots": "0.08000000",
+        "atr": "395.64214286",
+        "feature": "7.00000000",
+        "age": "7.00000000",
+        "random1": "7",
+        "random2": "27",
+        "random3": "14"
+      }
+    },
+    {
+      "position_id": 164,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1782172800",
+        "signal_close_epoch": "1782176400",
+        "feature_known_epoch": "1782176400",
+        "anchor_epoch": "0",
+        "requested_entry": "64084.03000000",
+        "stop": "64772.09000000",
+        "target": "62707.91000000",
+        "requested_risk_usd": "50.12",
+        "lots": "0.07000000",
+        "atr": "458.70428571",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "18",
+        "random2": "28",
+        "random3": "13"
+      }
+    },
+    {
+      "position_id": 166,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1782525600",
+        "signal_close_epoch": "1782529200",
+        "feature_known_epoch": "1782529200",
+        "anchor_epoch": "0",
+        "requested_entry": "60196.98000000",
+        "stop": "59335.18000000",
+        "target": "61920.58000000",
+        "requested_risk_usd": "50.61",
+        "lots": "0.05000000",
+        "atr": "574.53642857",
+        "feature": "3.00000000",
+        "age": "3.00000000",
+        "random1": "24",
+        "random2": "12",
+        "random3": "8"
+      }
+    },
+    {
+      "position_id": 168,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1782608400",
+        "signal_close_epoch": "1782612000",
+        "feature_known_epoch": "1782612000",
+        "anchor_epoch": "0",
+        "requested_entry": "60136.26000000",
+        "stop": "60584.41000000",
+        "target": "59239.96000000",
+        "requested_risk_usd": "50.64",
+        "lots": "0.11000000",
+        "atr": "298.76928571",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "31",
+        "random2": "7",
+        "random3": "25"
+      }
+    },
+    {
+      "position_id": 170,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1782727200",
+        "signal_close_epoch": "1782730800",
+        "feature_known_epoch": "1782730800",
+        "anchor_epoch": "0",
+        "requested_entry": "60007.36000000",
+        "stop": "59202.55000000",
+        "target": "61616.98000000",
+        "requested_risk_usd": "50.62",
+        "lots": "0.06000000",
+        "atr": "536.54142857",
+        "feature": "15.00000000",
+        "age": "15.00000000",
+        "random1": "28",
+        "random2": "7",
+        "random3": "32"
+      }
+    },
+    {
+      "position_id": 172,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1782792000",
+        "signal_close_epoch": "1782795600",
+        "feature_known_epoch": "1782795600",
+        "anchor_epoch": "0",
+        "requested_entry": "59390.46000000",
+        "stop": "60008.78000000",
+        "target": "58153.82000000",
+        "requested_risk_usd": "50.37",
+        "lots": "0.08000000",
+        "atr": "412.21142857",
+        "feature": "5.00000000",
+        "age": "5.00000000",
+        "random1": "17",
+        "random2": "25",
+        "random3": "3"
+      }
+    },
+    {
+      "position_id": 174,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1782918000",
+        "signal_close_epoch": "1782921600",
+        "feature_known_epoch": "1782921600",
+        "anchor_epoch": "0",
+        "requested_entry": "60094.56000000",
+        "stop": "59334.44000000",
+        "target": "61614.80000000",
+        "requested_risk_usd": "50.80",
+        "lots": "0.06000000",
+        "atr": "506.74571429",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "6",
+        "random2": "11",
+        "random3": "2"
+      }
+    },
+    {
+      "position_id": 176,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1783267200",
+        "signal_close_epoch": "1783270800",
+        "feature_known_epoch": "1783270800",
+        "anchor_epoch": "0",
+        "requested_entry": "62588.45000000",
+        "stop": "62940.42000000",
+        "target": "61884.51000000",
+        "requested_risk_usd": "50.79",
+        "lots": "0.14000000",
+        "atr": "234.64857143",
+        "feature": "13.00000000",
+        "age": "13.00000000",
+        "random1": "11",
+        "random2": "29",
+        "random3": "7"
+      }
+    },
+    {
+      "position_id": 178,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1783335600",
+        "signal_close_epoch": "1783339200",
+        "feature_known_epoch": "1783339200",
+        "anchor_epoch": "0",
+        "requested_entry": "62433.05000000",
+        "stop": "63023.33000000",
+        "target": "61252.49000000",
+        "requested_risk_usd": "50.73",
+        "lots": "0.08000000",
+        "atr": "393.52214286",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "8",
+        "random2": "17",
+        "random3": "14"
+      }
+    },
+    {
+      "position_id": 180,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1783429200",
+        "signal_close_epoch": "1783432800",
+        "feature_known_epoch": "1783432800",
+        "anchor_epoch": "0",
+        "requested_entry": "63000.72000000",
+        "stop": "63569.23000000",
+        "target": "61863.70000000",
+        "requested_risk_usd": "50.48",
+        "lots": "0.08000000",
+        "atr": "379.00428571",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "24",
+        "random2": "17",
+        "random3": "10"
+      }
+    },
+    {
+      "position_id": 182,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1783476000",
+        "signal_close_epoch": "1783479600",
+        "feature_known_epoch": "1783479600",
+        "anchor_epoch": "0",
+        "requested_entry": "62948.71000000",
+        "stop": "63758.65000000",
+        "target": "61328.83000000",
+        "requested_risk_usd": "50.25",
+        "lots": "0.06000000",
+        "atr": "539.95857143",
+        "feature": "3.00000000",
+        "age": "3.00000000",
+        "random1": "3",
+        "random2": "26",
+        "random3": "32"
+      }
+    },
+    {
+      "position_id": 184,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1783584000",
+        "signal_close_epoch": "1783587600",
+        "feature_known_epoch": "1783587600",
+        "anchor_epoch": "0",
+        "requested_entry": "62840.28000000",
+        "stop": "62280.37000000",
+        "target": "63960.10000000",
+        "requested_risk_usd": "50.50",
+        "lots": "0.09000000",
+        "atr": "373.27071429",
+        "feature": "9.00000000",
+        "age": "9.00000000",
+        "random1": "17",
+        "random2": "30",
+        "random3": "5"
+      }
+    },
+    {
+      "position_id": 186,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1783828800",
+        "signal_close_epoch": "1783832400",
+        "feature_known_epoch": "1783832400",
+        "anchor_epoch": "0",
+        "requested_entry": "63966.41000000",
+        "stop": "64355.15000000",
+        "target": "63188.93000000",
+        "requested_risk_usd": "50.42",
+        "lots": "0.12000000",
+        "atr": "259.16000000",
+        "feature": "5.00000000",
+        "age": "5.00000000",
+        "random1": "10",
+        "random2": "4",
+        "random3": "17"
+      }
+    },
+    {
+      "position_id": 188,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1784030400",
+        "signal_close_epoch": "1784034000",
+        "feature_known_epoch": "1784034000",
+        "anchor_epoch": "0",
+        "requested_entry": "63906.38000000",
+        "stop": "63392.78000000",
+        "target": "64933.58000000",
+        "requested_risk_usd": "50.40",
+        "lots": "0.09000000",
+        "atr": "342.40071429",
+        "feature": "9.00000000",
+        "age": "9.00000000",
+        "random1": "27",
+        "random2": "7",
+        "random3": "21"
+      }
+    },
+    {
+      "position_id": 190,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1784188800",
+        "signal_close_epoch": "1784192400",
+        "feature_known_epoch": "1784192400",
+        "anchor_epoch": "0",
+        "requested_entry": "64076.15000000",
+        "stop": "64552.09000000",
+        "target": "63124.27000000",
+        "requested_risk_usd": "50.66",
+        "lots": "0.10000000",
+        "atr": "317.29071429",
+        "feature": "9.00000000",
+        "age": "9.00000000",
+        "random1": "30",
+        "random2": "3",
+        "random3": "13"
+      }
+    },
+    {
+      "position_id": 192,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1784527200",
+        "signal_close_epoch": "1784530800",
+        "feature_known_epoch": "1784530800",
+        "anchor_epoch": "0",
+        "requested_entry": "63861.93000000",
+        "stop": "64405.07000000",
+        "target": "62775.65000000",
+        "requested_risk_usd": "50.42",
+        "lots": "0.09000000",
+        "atr": "362.09357143",
+        "feature": "3.00000000",
+        "age": "3.00000000",
+        "random1": "5",
+        "random2": "18",
+        "random3": "8"
+      }
+    },
+    {
+      "position_id": 194,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1784721600",
+        "signal_close_epoch": "1784725200",
+        "feature_known_epoch": "1784725200",
+        "anchor_epoch": "0",
+        "requested_entry": "65589.97000000",
+        "stop": "66023.80000000",
+        "target": "64722.31000000",
+        "requested_risk_usd": "50.17",
+        "lots": "0.11000000",
+        "atr": "289.22071429",
+        "feature": "9.00000000",
+        "age": "9.00000000",
+        "random1": "4",
+        "random2": "22",
+        "random3": "12"
+      }
+    },
+    {
+      "position_id": 196,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1785020400",
+        "signal_close_epoch": "1785024000",
+        "feature_known_epoch": "1785024000",
+        "anchor_epoch": "0",
+        "requested_entry": "64308.74000000",
+        "stop": "64135.04000000",
+        "target": "64656.14000000",
+        "requested_risk_usd": "49.93",
+        "lots": "0.28000000",
+        "atr": "115.80142857",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "18",
+        "random2": "6",
+        "random3": "26"
+      }
+    },
+    {
+      "position_id": 198,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1785304800",
+        "signal_close_epoch": "1785308400",
+        "feature_known_epoch": "1785308400",
+        "anchor_epoch": "0",
+        "requested_entry": "64348.63000000",
+        "stop": "63870.31000000",
+        "target": "65305.27000000",
+        "requested_risk_usd": "49.92",
+        "lots": "0.10000000",
+        "atr": "318.88142857",
+        "feature": "7.00000000",
+        "age": "7.00000000",
+        "random1": "27",
+        "random2": "3",
+        "random3": "12"
+      }
+    },
+    {
+      "position_id": 200,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1785398400",
+        "signal_close_epoch": "1785402000",
+        "feature_known_epoch": "1785402000",
+        "anchor_epoch": "0",
+        "requested_entry": "64209.80000000",
+        "stop": "63634.55000000",
+        "target": "65360.30000000",
+        "requested_risk_usd": "49.75",
+        "lots": "0.08000000",
+        "atr": "383.50214286",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "25",
+        "random2": "7",
+        "random3": "16"
+      }
+    },
+    {
+      "position_id": 202,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1785477600",
+        "signal_close_epoch": "1785481200",
+        "feature_known_epoch": "1785481200",
+        "anchor_epoch": "0",
+        "requested_entry": "64173.37000000",
+        "stop": "64624.75000000",
+        "target": "63270.61000000",
+        "requested_risk_usd": "49.97",
+        "lots": "0.11000000",
+        "atr": "300.92214286",
+        "feature": "7.00000000",
+        "age": "7.00000000",
+        "random1": "4",
+        "random2": "16",
+        "random3": "7"
+      }
+    },
+    {
+      "position_id": 204,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1785643200",
+        "signal_close_epoch": "1785646800",
+        "feature_known_epoch": "1785646800",
+        "anchor_epoch": "0",
+        "requested_entry": "63510.84000000",
+        "stop": "63158.86000000",
+        "target": "64214.80000000",
+        "requested_risk_usd": "50.47",
+        "lots": "0.14000000",
+        "atr": "234.65571429",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "21",
+        "random2": "29",
+        "random3": "2"
+      }
+    },
+    {
+      "position_id": 206,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1785729600",
+        "signal_close_epoch": "1785733200",
+        "feature_known_epoch": "1785733200",
+        "anchor_epoch": "0",
+        "requested_entry": "62716.49000000",
+        "stop": "63114.99000000",
+        "target": "61919.49000000",
+        "requested_risk_usd": "50.22",
+        "lots": "0.12000000",
+        "atr": "265.66571429",
+        "feature": "13.00000000",
+        "age": "13.00000000",
+        "random1": "13",
+        "random2": "29",
+        "random3": "2"
+      }
+    },
+    {
+      "position_id": 208,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1786096800",
+        "signal_close_epoch": "1786100400",
+        "feature_known_epoch": "1786100400",
+        "anchor_epoch": "0",
+        "requested_entry": "64849.32000000",
+        "stop": "64531.77000000",
+        "target": "65484.42000000",
+        "requested_risk_usd": "50.27",
+        "lots": "0.15000000",
+        "atr": "211.70000000",
+        "feature": "11.00000000",
+        "age": "11.00000000",
+        "random1": "16",
+        "random2": "26",
+        "random3": "19"
+      }
+    },
+    {
+      "position_id": 210,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1786240800",
+        "signal_close_epoch": "1786244400",
+        "feature_known_epoch": "1786244400",
+        "anchor_epoch": "0",
+        "requested_entry": "64762.72000000",
+        "stop": "64900.02000000",
+        "target": "64488.12000000",
+        "requested_risk_usd": "50.03",
+        "lots": "0.36000000",
+        "atr": "91.53642857",
+        "feature": "3.00000000",
+        "age": "3.00000000",
+        "random1": "6",
+        "random2": "17",
+        "random3": "11"
+      }
+    },
+    {
+      "position_id": 212,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1786363200",
+        "signal_close_epoch": "1786366800",
+        "feature_known_epoch": "1786366800",
+        "anchor_epoch": "0",
+        "requested_entry": "64818.25000000",
+        "stop": "65223.32000000",
+        "target": "64008.11000000",
+        "requested_risk_usd": "49.77",
+        "lots": "0.12000000",
+        "atr": "270.04428571",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "22",
+        "random2": "30",
+        "random3": "11"
+      }
+    },
+    {
+      "position_id": 214,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1786532400",
+        "signal_close_epoch": "1786536000",
+        "feature_known_epoch": "1786536000",
+        "anchor_epoch": "0",
+        "requested_entry": "64182.51000000",
+        "stop": "63909.35000000",
+        "target": "64728.83000000",
+        "requested_risk_usd": "50.26",
+        "lots": "0.18000000",
+        "atr": "182.10857143",
+        "feature": "8.00000000",
+        "age": "8.00000000",
+        "random1": "28",
+        "random2": "17",
+        "random3": "9"
+      }
+    },
+    {
+      "position_id": 216,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1786604400",
+        "signal_close_epoch": "1786608000",
+        "feature_known_epoch": "1786608000",
+        "anchor_epoch": "0",
+        "requested_entry": "63808.32000000",
+        "stop": "63506.34000000",
+        "target": "64412.28000000",
+        "requested_risk_usd": "50.01",
+        "lots": "0.16000000",
+        "atr": "201.32285714",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "31",
+        "random2": "12",
+        "random3": "26"
+      }
+    },
+    {
+      "position_id": 218,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1786820400",
+        "signal_close_epoch": "1786824000",
+        "feature_known_epoch": "1786824000",
+        "anchor_epoch": "0",
+        "requested_entry": "63050.84000000",
+        "stop": "62915.69000000",
+        "target": "63321.14000000",
+        "requested_risk_usd": "49.76",
+        "lots": "0.36000000",
+        "atr": "90.10142857",
+        "feature": "0.00000000",
+        "age": "0.00000000",
+        "random1": "9",
+        "random2": "25",
+        "random3": "21"
+      }
+    },
+    {
+      "position_id": 220,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1786870800",
+        "signal_close_epoch": "1786874400",
+        "feature_known_epoch": "1786874400",
+        "anchor_epoch": "0",
+        "requested_entry": "62926.32000000",
+        "stop": "63018.59000000",
+        "target": "62741.78000000",
+        "requested_risk_usd": "49.71",
+        "lots": "0.53000000",
+        "atr": "61.51214286",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "23",
+        "random2": "12",
+        "random3": "26"
+      }
+    },
+    {
+      "position_id": 222,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1786932000",
+        "signal_close_epoch": "1786935600",
+        "feature_known_epoch": "1786935600",
+        "anchor_epoch": "0",
+        "requested_entry": "63341.11000000",
+        "stop": "63045.28000000",
+        "target": "63932.77000000",
+        "requested_risk_usd": "49.46",
+        "lots": "0.16000000",
+        "atr": "197.21714286",
+        "feature": "7.00000000",
+        "age": "7.00000000",
+        "random1": "5",
+        "random2": "8",
+        "random3": "16"
+      }
+    },
+    {
+      "position_id": 224,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1787457600",
+        "signal_close_epoch": "1787461200",
+        "feature_known_epoch": "1787461200",
+        "anchor_epoch": "0",
+        "requested_entry": "76594.04000000",
+        "stop": "77102.69000000",
+        "target": "75576.74000000",
+        "requested_risk_usd": "49.66",
+        "lots": "0.09000000",
+        "atr": "339.10000000",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "16",
+        "random2": "13",
+        "random3": "28"
+      }
+    },
+    {
+      "position_id": 226,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1787799600",
+        "signal_close_epoch": "1787803200",
+        "feature_known_epoch": "1787803200",
+        "anchor_epoch": "0",
+        "requested_entry": "78824.40000000",
+        "stop": "78149.42000000",
+        "target": "80174.36000000",
+        "requested_risk_usd": "50.12",
+        "lots": "0.07000000",
+        "atr": "449.98714286",
+        "feature": "4.00000000",
+        "age": "4.00000000",
+        "random1": "18",
+        "random2": "26",
+        "random3": "10"
+      }
+    },
+    {
+      "position_id": 228,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1787918400",
+        "signal_close_epoch": "1787922000",
+        "feature_known_epoch": "1787922000",
+        "anchor_epoch": "0",
+        "requested_entry": "79417.47000000",
+        "stop": "80091.48000000",
+        "target": "78069.45000000",
+        "requested_risk_usd": "50.59",
+        "lots": "0.07000000",
+        "atr": "449.33714286",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "6",
+        "random2": "21",
+        "random3": "2"
+      }
+    },
+    {
+      "position_id": 230,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1788048000",
+        "signal_close_epoch": "1788051600",
+        "feature_known_epoch": "1788051600",
+        "anchor_epoch": "0",
+        "requested_entry": "78176.62000000",
+        "stop": "77853.37000000",
+        "target": "78823.12000000",
+        "requested_risk_usd": "51.06",
+        "lots": "0.15000000",
+        "atr": "215.49857143",
+        "feature": "21.00000000",
+        "age": "21.00000000",
+        "random1": "16",
+        "random2": "3",
+        "random3": "24"
+      }
+    },
+    {
+      "position_id": 232,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1788138000",
+        "signal_close_epoch": "1788141600",
+        "feature_known_epoch": "1788141600",
+        "anchor_epoch": "0",
+        "requested_entry": "77636.18000000",
+        "stop": "78482.60000000",
+        "target": "75943.34000000",
+        "requested_risk_usd": "50.97",
+        "lots": "0.06000000",
+        "atr": "564.27714286",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "22",
+        "random2": "2",
+        "random3": "5"
+      }
+    },
+    {
+      "position_id": 234,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1788253200",
+        "signal_close_epoch": "1788256800",
+        "feature_known_epoch": "1788256800",
+        "anchor_epoch": "0",
+        "requested_entry": "77884.44000000",
+        "stop": "78493.68000000",
+        "target": "76665.96000000",
+        "requested_risk_usd": "50.72",
+        "lots": "0.08000000",
+        "atr": "406.16285714",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "20",
+        "random2": "25",
+        "random3": "10"
+      }
+    },
+    {
+      "position_id": 236,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1788404400",
+        "signal_close_epoch": "1788408000",
+        "feature_known_epoch": "1788408000",
+        "anchor_epoch": "0",
+        "requested_entry": "77679.89000000",
+        "stop": "77065.81000000",
+        "target": "78908.05000000",
+        "requested_risk_usd": "50.97",
+        "lots": "0.08000000",
+        "atr": "409.38857143",
+        "feature": "8.00000000",
+        "age": "8.00000000",
+        "random1": "24",
+        "random2": "16",
+        "random3": "29"
+      }
+    },
+    {
+      "position_id": 238,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1788537600",
+        "signal_close_epoch": "1788541200",
+        "feature_known_epoch": "1788541200",
+        "anchor_epoch": "0",
+        "requested_entry": "79757.12000000",
+        "stop": "80715.36000000",
+        "target": "77840.64000000",
+        "requested_risk_usd": "50.72",
+        "lots": "0.05000000",
+        "atr": "638.82928571",
+        "feature": "9.00000000",
+        "age": "9.00000000",
+        "random1": "12",
+        "random2": "25",
+        "random3": "17"
+      }
+    },
+    {
+      "position_id": 240,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1788627600",
+        "signal_close_epoch": "1788631200",
+        "feature_known_epoch": "1788631200",
+        "anchor_epoch": "0",
+        "requested_entry": "80065.02000000",
+        "stop": "79814.90000000",
+        "target": "80565.26000000",
+        "requested_risk_usd": "50.72",
+        "lots": "0.20000000",
+        "atr": "166.75000000",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "10",
+        "random2": "25",
+        "random3": "18"
+      }
+    },
+    {
+      "position_id": 242,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1788703200",
+        "signal_close_epoch": "1788706800",
+        "feature_known_epoch": "1788706800",
+        "anchor_epoch": "0",
+        "requested_entry": "79546.72000000",
+        "stop": "79905.83000000",
+        "target": "78828.50000000",
+        "requested_risk_usd": "50.45",
+        "lots": "0.14000000",
+        "atr": "239.40500000",
+        "feature": "11.00000000",
+        "age": "11.00000000",
+        "random1": "12",
+        "random2": "7",
+        "random3": "30"
+      }
+    },
+    {
+      "position_id": 244,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1788753600",
+        "signal_close_epoch": "1788757200",
+        "feature_known_epoch": "1788757200",
+        "anchor_epoch": "0",
+        "requested_entry": "79708.00000000",
+        "stop": "80207.17000000",
+        "target": "78709.66000000",
+        "requested_risk_usd": "50.19",
+        "lots": "0.10000000",
+        "atr": "332.77928571",
+        "feature": "5.00000000",
+        "age": "5.00000000",
+        "random1": "21",
+        "random2": "7",
+        "random3": "32"
+      }
+    },
+    {
+      "position_id": 246,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1788930000",
+        "signal_close_epoch": "1788933600",
+        "feature_known_epoch": "1788933600",
+        "anchor_epoch": "0",
+        "requested_entry": "78930.15000000",
+        "stop": "78435.53000000",
+        "target": "79919.39000000",
+        "requested_risk_usd": "50.25",
+        "lots": "0.10000000",
+        "atr": "329.74428571",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "19",
+        "random2": "13",
+        "random3": "2"
+      }
+    },
+    {
+      "position_id": 248,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1789131600",
+        "signal_close_epoch": "1789135200",
+        "feature_known_epoch": "1789135200",
+        "anchor_epoch": "0",
+        "requested_entry": "79221.51000000",
+        "stop": "78387.40000000",
+        "target": "80889.73000000",
+        "requested_risk_usd": "50.34",
+        "lots": "0.06000000",
+        "atr": "556.07500000",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "2",
+        "random2": "17",
+        "random3": "21"
+      }
+    },
+    {
+      "position_id": 250,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1789354800",
+        "signal_close_epoch": "1789358400",
+        "feature_known_epoch": "1789358400",
+        "anchor_epoch": "0",
+        "requested_entry": "77562.97000000",
+        "stop": "77039.70000000",
+        "target": "78609.51000000",
+        "requested_risk_usd": "50.09",
+        "lots": "0.09000000",
+        "atr": "348.85000000",
+        "feature": "8.00000000",
+        "age": "8.00000000",
+        "random1": "14",
+        "random2": "8",
+        "random3": "3"
+      }
+    },
+    {
+      "position_id": 252,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1789452000",
+        "signal_close_epoch": "1789455600",
+        "feature_known_epoch": "1789455600",
+        "anchor_epoch": "0",
+        "requested_entry": "77261.76000000",
+        "stop": "77833.54000000",
+        "target": "76118.20000000",
+        "requested_risk_usd": "50.18",
+        "lots": "0.08000000",
+        "atr": "381.18714286",
+        "feature": "19.00000000",
+        "age": "19.00000000",
+        "random1": "24",
+        "random2": "17",
+        "random3": "13"
+      }
+    },
+    {
+      "position_id": 254,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1789610400",
+        "signal_close_epoch": "1789614000",
+        "feature_known_epoch": "1789614000",
+        "anchor_epoch": "0",
+        "requested_entry": "76310.32000000",
+        "stop": "75499.08000000",
+        "target": "77932.80000000",
+        "requested_risk_usd": "50.63",
+        "lots": "0.06000000",
+        "atr": "540.82642857",
+        "feature": "23.00000000",
+        "age": "23.00000000",
+        "random1": "28",
+        "random2": "8",
+        "random3": "15"
+      }
+    },
+    {
+      "position_id": 256,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1789880400",
+        "signal_close_epoch": "1789884000",
+        "feature_known_epoch": "1789884000",
+        "anchor_epoch": "0",
+        "requested_entry": "80462.96000000",
+        "stop": "80963.83000000",
+        "target": "79461.22000000",
+        "requested_risk_usd": "50.64",
+        "lots": "0.10000000",
+        "atr": "333.91500000",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "20",
+        "random2": "14",
+        "random3": "8"
+      }
+    },
+    {
+      "position_id": 258,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1790164800",
+        "signal_close_epoch": "1790168400",
+        "feature_known_epoch": "1790168400",
+        "anchor_epoch": "0",
+        "requested_entry": "85470.39000000",
+        "stop": "86204.59000000",
+        "target": "84001.99000000",
+        "requested_risk_usd": "50.61",
+        "lots": "0.06000000",
+        "atr": "489.46500000",
+        "feature": "13.00000000",
+        "age": "13.00000000",
+        "random1": "24",
+        "random2": "9",
+        "random3": "28"
+      }
+    },
+    {
+      "position_id": 260,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1790298000",
+        "signal_close_epoch": "1790301600",
+        "feature_known_epoch": "1790301600",
+        "anchor_epoch": "0",
+        "requested_entry": "84606.73000000",
+        "stop": "83731.25000000",
+        "target": "86357.69000000",
+        "requested_risk_usd": "51.05",
+        "lots": "0.05000000",
+        "atr": "583.65214286",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "32",
+        "random2": "22",
+        "random3": "27"
+      }
+    },
+    {
+      "position_id": 262,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1790442000",
+        "signal_close_epoch": "1790445600",
+        "feature_known_epoch": "1790445600",
+        "anchor_epoch": "0",
+        "requested_entry": "84125.44000000",
+        "stop": "83853.21000000",
+        "target": "84669.90000000",
+        "requested_risk_usd": "50.83",
+        "lots": "0.18000000",
+        "atr": "181.48571429",
+        "feature": "18.00000000",
+        "age": "18.00000000",
+        "random1": "17",
+        "random2": "27",
+        "random3": "6"
+      }
+    },
+    {
+      "position_id": 264,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1790557200",
+        "signal_close_epoch": "1790560800",
+        "feature_known_epoch": "1790560800",
+        "anchor_epoch": "0",
+        "requested_entry": "83677.09000000",
+        "stop": "84309.50000000",
+        "target": "82412.27000000",
+        "requested_risk_usd": "50.58",
+        "lots": "0.07000000",
+        "atr": "421.60785714",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "16",
+        "random2": "22",
+        "random3": "31"
+      }
+    },
+    {
+      "position_id": 266,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1790668800",
+        "signal_close_epoch": "1790672400",
+        "feature_known_epoch": "1790672400",
+        "anchor_epoch": "0",
+        "requested_entry": "83847.46000000",
+        "stop": "83175.69000000",
+        "target": "85191.00000000",
+        "requested_risk_usd": "50.93",
+        "lots": "0.07000000",
+        "atr": "447.84785714",
+        "feature": "5.00000000",
+        "age": "5.00000000",
+        "random1": "8",
+        "random2": "22",
+        "random3": "31"
+      }
+    },
+    {
+      "position_id": 268,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1790766000",
+        "signal_close_epoch": "1790769600",
+        "feature_known_epoch": "1790769600",
+        "anchor_epoch": "0",
+        "requested_entry": "83889.96000000",
+        "stop": "83351.07000000",
+        "target": "84967.74000000",
+        "requested_risk_usd": "50.70",
+        "lots": "0.09000000",
+        "atr": "359.25785714",
+        "feature": "8.00000000",
+        "age": "8.00000000",
+        "random1": "32",
+        "random2": "10",
+        "random3": "22"
+      }
+    },
+    {
+      "position_id": 270,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1790812800",
+        "signal_close_epoch": "1790816400",
+        "feature_known_epoch": "1790816400",
+        "anchor_epoch": "0",
+        "requested_entry": "83440.74000000",
+        "stop": "84355.56000000",
+        "target": "81611.10000000",
+        "requested_risk_usd": "51.18",
+        "lots": "0.05000000",
+        "atr": "609.87928571",
+        "feature": "1.00000000",
+        "age": "1.00000000",
+        "random1": "10",
+        "random2": "6",
+        "random3": "26"
+      }
+    },
+    {
+      "position_id": 272,
+      "signal": {
+        "idea": "3",
+        "side": "1",
+        "signal_start_epoch": "1791090000",
+        "signal_close_epoch": "1791093600",
+        "feature_known_epoch": "1791093600",
+        "anchor_epoch": "0",
+        "requested_entry": "84902.52000000",
+        "stop": "84698.59000000",
+        "target": "85310.38000000",
+        "requested_risk_usd": "50.95",
+        "lots": "0.24000000",
+        "atr": "135.95571429",
+        "feature": "2.00000000",
+        "age": "2.00000000",
+        "random1": "21",
+        "random2": "32",
+        "random3": "12"
+      }
+    },
+    {
+      "position_id": 274,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1791219600",
+        "signal_close_epoch": "1791223200",
+        "feature_known_epoch": "1791223200",
+        "anchor_epoch": "0",
+        "requested_entry": "85425.60000000",
+        "stop": "86185.44000000",
+        "target": "83905.92000000",
+        "requested_risk_usd": "51.43",
+        "lots": "0.06000000",
+        "atr": "506.55714286",
+        "feature": "6.00000000",
+        "age": "6.00000000",
+        "random1": "19",
+        "random2": "5",
+        "random3": "8"
+      }
+    },
+    {
+      "position_id": 276,
+      "signal": {
+        "idea": "3",
+        "side": "-1",
+        "signal_start_epoch": "1791252000",
+        "signal_close_epoch": "1791255600",
+        "feature_known_epoch": "1791255600",
+        "anchor_epoch": "0",
+        "requested_entry": "85520.18000000",
+        "stop": "86146.21000000",
+        "target": "84268.12000000",
+        "requested_risk_usd": "51.32",
+        "lots": "0.08000000",
+        "atr": "417.35357143",
+        "feature": "3.00000000",
+        "age": "3.00000000",
+        "random1": "2",
+        "random2": "23",
+        "random3": "18"
+      }
+    }
+  ],
+  "known_at_entry_verified": true,
+  "diagnostics": [
+    "GANN_STATS idea=3 bars=6744 raw_signals=138 gate_blocks=0 placed=138 rejected=0 invalid_geometry=0 undersize_or_margin=0 time_closes=70"
+  ],
+  "tester_end_liquidations": 0
+}

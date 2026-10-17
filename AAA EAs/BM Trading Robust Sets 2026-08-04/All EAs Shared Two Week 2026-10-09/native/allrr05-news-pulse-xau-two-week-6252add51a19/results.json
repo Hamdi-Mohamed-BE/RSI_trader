@@ -1,0 +1,152 @@
+{
+  "tag": "allrr05-news-pulse-xau-two-week-6252add51a19",
+  "slug": "news-pulse-xau",
+  "variant": "two-week-6252add51a19",
+  "window": [
+    "2026.09.25",
+    "2026.10.09"
+  ],
+  "inputs": {
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpUseDynamicTrailingSL": "false",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpEnableTrading": "true",
+    "InpEnableBuySide": "true",
+    "InpEnableSellSide": "true",
+    "InpRiskPercent": "0.10",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMagic": "861301",
+    "InpMaxDeviationPoints": "100",
+    "InpMarketFallbackOnCrossedLevel": "true",
+    "InpUseEconomicCalendar": "true",
+    "InpWatchNFP": "true",
+    "InpWatchCPI": "true",
+    "InpWatchFOMC": "true",
+    "InpPlacementLeadSeconds": "30",
+    "InpMaxQuoteAgeSeconds": "5",
+    "InpCalendarLookaheadDays": "8",
+    "InpCalendarRefreshSeconds": "300",
+    "InpUseXauEventSpecific": "true",
+    "InpEntryOffsetPrice": "6",
+    "InpStopLossPrice": "10",
+    "InpTrailStartR": "1.5",
+    "InpTrailDistancePrice": "15",
+    "InpForceCloseSecondsAfterEvent": "30",
+    "InpTesterServerClockMode": "0",
+    "InpTesterFromDateUTC": "20260925",
+    "InpTesterToDateUTC": "20261009",
+    "InpRR05AuditTag": "allrr05-news-pulse-xau-two-week-6252add51a19"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10015.95,
+    "net_profit": 15.95,
+    "return_pct": 0.16,
+    "profit_factor": 266.83,
+    "win_rate_pct": 100.0,
+    "max_drawdown_pct": 0.0,
+    "trades": 1,
+    "sharpe_ratio": 0.0,
+    "recovery_factor": 265.83,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 0.0,
+    "balance_dd_pct": 0.0
+  },
+  "metrics": {
+    "trades": 1,
+    "return_pct": 0.1595,
+    "net_profit": 15.95,
+    "pf": null,
+    "wins": 1,
+    "losses": 0,
+    "flat": 0,
+    "win_rate": 100.0,
+    "equity_dd_pct": 0.0,
+    "balance_dd_pct": 0.0,
+    "sharpe_daily_equity": 5.291502622129181,
+    "win_streak": 1,
+    "loss_streak": 0,
+    "avg_win": 15.95,
+    "avg_loss": null,
+    "partial_positions": 0,
+    "exit_legs": 1,
+    "commission": -0.06,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1790944201,
+      "close_epoch": 1790944230,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 0.01,
+      "open_price": 4196.494,
+      "close_price": 4212.504,
+      "net": 15.95,
+      "magic": 861301,
+      "sl": 4180.868,
+      "tp": 0.0,
+      "entry_comment": "NP|1790944200|NFP|B",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 16.01,
+      "commission": -0.06,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1790944201,
+      "deal": 2,
+      "balance": 9999.94,
+      "net": -0.06
+    },
+    {
+      "epoch": 1790944230,
+      "deal": 3,
+      "balance": 10015.95,
+      "net": 16.01
+    }
+  ],
+  "seconds": 9.37815546989441,
+  "binary_sha256": "2fb74243e9edf2c2413efa80998f940e1c8fd9dbeece13db649c09173a70d1f6",
+  "report_sha256": "4ed4a317203719bdca7c47360fca0d476b0a27471436aee3240376efcd85acd9",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [
+    "immutable-utc-calendar-binary-search-v1; timer/callbacks/trading unchanged"
+  ],
+  "no_live_changes": true,
+  "calendar_audit": {
+    "expected": 1,
+    "attempted": 1,
+    "placed": 1,
+    "boundary_violation": false,
+    "lookup_parity_verified": true
+  }
+}

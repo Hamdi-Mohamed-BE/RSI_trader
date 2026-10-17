@@ -1,0 +1,56 @@
+{
+  "generated_utc": "2026-10-16T15:54:44.333674+00:00",
+  "all_frozen_checks": {
+    "all_frozen_hashes_match": true,
+    "files": {
+      "engine.mq5": true,
+      "build_engine.py": true,
+      "config.json": true,
+      "calendar.json": true,
+      "DATA-SPLIT.json": true,
+      "SEARCH-PLAN.json": true,
+      "SELECTION.json": true,
+      "trials.json": true
+    },
+    "all_search_windows_end_before_oos": true,
+    "tester_only_source_guard": true,
+    "fixed_positive_entry_quote_policy": true,
+    "source_sha256": "14484f04b1dadcbe95b09e434081bad3ec70ca0c5dbd4d4dc0a6a92dc7ef00e7",
+    "frozen_at_utc": "2026-10-16T15:51:29.900405+00:00"
+  },
+  "baseline_exact_raw_parity": true,
+  "baseline_parity_fields": [
+    "open_epoch",
+    "close_epoch",
+    "side",
+    "volume",
+    "open_price",
+    "close_price",
+    "net_profit",
+    "initial_sl",
+    "initial_tp"
+  ],
+  "baseline_parity_trades": 33,
+  "launch_order": {
+    "frozen_at_utc": "2026-10-16T15:51:29.900405+00:00",
+    "selected_holdout_launches": [
+      {
+        "stage": "holdout-b0",
+        "available": true,
+        "owned_process_receipt": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\US500 CPI Continuation Full Pipeline 2026-10-16\\native\\holdout-b0\\owned-process.json",
+        "receipt_sha256": "e916898c8720ec5a8db47cc0e8ba9ddf9817588902f3969e322f71921b481f44",
+        "started_utc": "2026-10-16T15:51:32.571901+00:00",
+        "freeze_precedes_launch": true
+      }
+    ],
+    "freeze_precedes_selected_holdout": true,
+    "interpretation": "Source hashes plus owned-process timestamps prove ordering of this replay, not genuinely untouched historical data"
+  },
+  "all_analysed_native_rows_pass": true,
+  "total_local_checks": 4872,
+  "native_source_sha256": "14484f04b1dadcbe95b09e434081bad3ec70ca0c5dbd4d4dc0a6a92dc7ef00e7",
+  "audit_source_sha256": "7c463266cd5ab926db0be7b05c76bfaeb05349ccde17b5c9ff0c2ee59be54f66",
+  "live_changes": false,
+  "external_calls": false,
+  "scope": "Local cash/epoch/parameter/causal-source and frozen-artifact audit, not independent quote authenticity or live broker execution certification"
+}

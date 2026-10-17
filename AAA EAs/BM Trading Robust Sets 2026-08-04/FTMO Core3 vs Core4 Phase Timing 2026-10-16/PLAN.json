@@ -1,0 +1,151 @@
+{
+  "status": "PROPOSED: no portfolio outcomes computed",
+  "created_utc": "2026-10-16T18:21:27.145765+00:00",
+  "baskets": {
+    "CORE3": [
+      "nasdaq-5m-candle-momentum",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow"
+    ],
+    "CORE4": [
+      "nasdaq-5m-candle-momentum",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "xau-rsi-vwap"
+    ]
+  },
+  "history": {
+    "start_prague": "2025-10-06",
+    "end_exclusive_prague": "2026-10-06",
+    "start_utc": "2025-10-05T22:00:00+00:00",
+    "end_exclusive_utc": "2026-10-05T22:00:00+00:00",
+    "all_eligible_weekday_starts": 134,
+    "excluded_incomplete_followup_starts": 127,
+    "first_start": "2025-10-06",
+    "last_start": "2026-04-09",
+    "total_horizon_prague_civil_days": 180,
+    "holidays_not_removed": true
+  },
+  "scenarios": [
+    {
+      "cost": "recorded_exness",
+      "handover": "next_prague_midnight"
+    },
+    {
+      "cost": "recorded_exness",
+      "handover": "two_business_day_wait"
+    },
+    {
+      "cost": "fixed_cost_stress",
+      "handover": "next_prague_midnight"
+    },
+    {
+      "cost": "fixed_cost_stress",
+      "handover": "two_business_day_wait"
+    }
+  ],
+  "risk": {
+    "initial_balance": 10000,
+    "currency": "USD",
+    "fixed_guard_allocation": 50,
+    "source_requested_risk_percent": 0.5,
+    "lot_sizing": "Source request=ceil(0.5% sampled equity/unit-risk) to broker step with original min/max; guard floors min(source-request volume,50/unit-risk,volumeMax); reject below broker min.",
+    "specs": {
+      "USTEC": {
+        "contract": 1,
+        "leverage": 15,
+        "minimum": 0.05,
+        "step": 0.01,
+        "maximum": 500
+      },
+      "USDJPY": {
+        "contract": 100000,
+        "leverage": 30,
+        "minimum": 0.01,
+        "step": 0.01,
+        "maximum": 200
+      },
+      "XAUUSD": {
+        "contract": 100,
+        "leverage": 15,
+        "minimum": 0.01,
+        "step": 0.01,
+        "maximum": 200
+      }
+    }
+  },
+  "guard": {
+    "daily_prague_anchor": "day-start cash balance",
+    "persistent_daily_entry_stop_loss": 300,
+    "permanent_static_equity_floor": 9000,
+    "permanent_daily_equity_loss": 500,
+    "admission_equity_buffer": 9200,
+    "aggregate_initial_risk_cap": 225,
+    "same_symbol_initial_risk_cap": 150,
+    "daily_entry_cap": 7,
+    "daily_completed_losses_cap": 3,
+    "entry_cooldown_seconds": 3,
+    "reserve": "1.25*retained filled initial risk +5 per open position; extra negative open-swap reserve unavailable and omitted (held swap already present in sampled floating).",
+    "projected": "min(sampled equity,balance-existingReserve)-1.25*candidateRisk-5",
+    "margin": "Gross per-symbol entry notional/leverage proxy; existing+proposed margin<=0.8*projected and proposed<=sampled free margin proxy. No hedging discount.",
+    "failure": "Hard observed sampled equity breach stops phase permanently; no liquidation. Existing positions retain source exits after guard soft-stop. Soft daily/buffer admission rejection is NOT failure.",
+    "target": "Phase1 balance>=11000;Phase2>=10500;>=4 distinct Prague entry-fill days per phase; no active positions; never native end-of-test liquidation."
+  },
+  "float_model": {
+    "source": "Single-EA native5-minute equity-minus-balance divided by uniquely owned native open volume.",
+    "ownership": "Strict source.open_epoch < mark_epoch < source.close_epoch; discard all source opening/closing epoch marks, duplicates and finalization marks; fail on nonzero unowned interior marks or nonfinite fields.",
+    "event_mark": "Latest mark at or before replay event belonging to SAME source position only. Initial floating=0 until first eligible mark; no future interpolation or backfill. Mark remains until later owned mark or source exit; stale age and zero-initial durations logged.",
+    "swap": "Native owned floating contains accrued source swap. Final swap booked at strategy close then position floating removed; no future final swap used for entry reserve.",
+    "unknowns": "No complete tick path, true broker margin, currentSL/request-cooldown execution, counterfactual entries after skipped source trades, or quote-level pre-request geometry.",
+    "staleness": "Latest-owned-past-mark carried without time limit, including closed-market weekends; all mark ages and counts over900seconds reported. No future backfill or cross-position mark reuse; zero before first owned mark explicitly flagged."
+  },
+  "costs": {
+    "base": "Actual raw entry costs at entry; recorded remaining commission/fee, gross and swap at original strategy close, scaled by replay lots. No future exit fee is split into entry.",
+    "stress": "Additional per-side execution cost:USTEC1price point,USDJPY0.01JPY,XAUUSD0.10USD, converted at side entry/exit quote; double negative recorded swap at exit, positive swap unchanged. Source exits unchanged; extra swap accrual between snapshots is not reconstructed."
+  },
+  "ordering": "Prague midnight reset; source exits before unrelated entries; owned mark updates; natural-flat target checks; scheduled phase2 activation; candidate ties use current FTMO manifest relative order (RSI,USDJPY,MonthEnd,Nasdaq). An own same-second opening precedes its exit. Three-second entry wait is a market-time proxy for live wall-clock reconciliation.",
+  "phases": {
+    "primary_handover": "Next Prague civil-date midnight after Phase1 pass.",
+    "two_business_day_wait": "Advance two weekdays after Phase1 local pass date; activate at midnight of that date; rerun subsequent path, not add waiting to prior result.",
+    "phase2": "Fresh10000 balance and all phase/day/account state, no position carry-over; same overall180-day deadline.",
+    "phase2_started": "Account activation before exclusive horizon, even with no trades; first fill separate.",
+    "qualification": "Both trading phases naturally flat-pass within horizon; optional access date=Phase2pass+5weekdays is arithmetic only, excluded from qualification.",
+    "statistics": "Phase1 median among Phase1passes; Phase2 median among Phase2passes after actual activation; total median among both-phase completions. No overall50% time if fewer than half all starts complete. No independent binomial CI: overlapping cohorts are dependent.",
+    "elapsed": "Inclusive Prague civil dates plus fractional elapsed24h and distinct entry days separately.",
+    "outcomes": "failed_phase1,failed_phase2,pending_phase1,pending_phase2,phase2_not_started_wait,horizon_completed_both; soft-buffer-blocked tagged separately, not hard-failed."
+  },
+  "sensitivity": "Additionally show Jan1,2026-and-later eligible-start subgroup from SAME paired trials; not a newly selected winner.",
+  "live_changes": false,
+  "optimization": false,
+  "native_simultaneous": false,
+  "probability_label": "Historical estimated replay completion fractions, NOT calibrated future FTMO pass probabilities.",
+  "source_hashes": {
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\PLAN.json": "aaaa65e6fee222f9c38d3da43d7c9c95bb7d1eec92753af3d23561539ee1b88b",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\RUN_STATUS.json": "fd5a92f072887b965116bf54a0889989de8c8b4b82e8ab0f4eeee7cbfee59be1",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History All ORB05 2026-10-14\\RISK_ROWS.json": "8b347559fce2d1d1e2f30a58262e9542a26147af6e85cde0250894392f3885a9",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_00 Live profiles\\Packages\\FTMO\\PACKAGE.json": "48b5ec012174d0baeaf134b3c3f495b2bcfbf465101400139b84ac99da368b1a",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_00 Live profiles\\Packages\\FTMO\\package\\CalyxFTMOGuard.mqh": "0378db52f0d3bde690808e007d9fcc6fdc69da2bf16692bd38f6aa2c362dcf5f",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-nasdaq-5m-candle-momentum-long-0fba68cc8a1c\\results.json": "926692b58506aff78f99ef7f0684560a8521d1e88d38920fe281152591dcafcf",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-nasdaq-5m-candle-momentum-long-0fba68cc8a1c\\deals.csv": "979c8c59a516e2d8a9e2a1cea3fa1775677d3638892152058aea1ad843fd04e9",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-nasdaq-5m-candle-momentum-long-0fba68cc8a1c\\equity.csv": "676bda55a69abe8f0508036ad735e25def3dccc4da3f28d3e6f4461a351390cd",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-nasdaq-5m-candle-momentum-long-0fba68cc8a1c\\manifest.json": "a41e9915a945fcd3a8dbfc215fa4f027673a64cf6eb2447235a044d41c2b6669",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-usdjpy-london-open-momentum-long-3d96bd694e93\\results.json": "714d3449501770ce83d6c170d5bc3d9f0aa5a182fba58dd9f2e1d927a1a08174",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-usdjpy-london-open-momentum-long-3d96bd694e93\\deals.csv": "455451b9f5cd047180706ca2fe1ad03781f21539bc65a2686a81bcb0ff1392c8",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-usdjpy-london-open-momentum-long-3d96bd694e93\\equity.csv": "160a867e942c8808019a543381c62d1f9aa143eb6f9389315a0810d74849ba4c",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-usdjpy-london-open-momentum-long-3d96bd694e93\\manifest.json": "d988df5ef45c99ccb0592388e8ba8481d917256d24f861b9539bd45254bee565",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-month-end-flow-long-3723b01f81aa\\results.json": "f93fba626fa84fa6ac1412d7a63fbdd0ab5c9384d4df39e28e6e5a817ee97019",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-month-end-flow-long-3723b01f81aa\\deals.csv": "4e724d5b0eba26ab85802848e1bee6d7f2529a50d20d47e638a0b455b4779e00",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-month-end-flow-long-3723b01f81aa\\equity.csv": "32508a46ef462e9ad3553e57f3943d2539efb1b485ef72827e1e40c11d802273",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-us100-month-end-flow-long-3723b01f81aa\\manifest.json": "61c66a6f6e7f3cb5fc9105ebad6bd2cd632dfb710b2c0898227f50d73b1b6221",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-rsi-vwap-long-791f4e00f0f5\\results.json": "4d9dc89e89b66c58a99d17390e6ee681a20625dc8defe5d86a8c701353a3b0cc",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-rsi-vwap-long-791f4e00f0f5\\deals.csv": "78a01d9f64e71d4ed6ff68125c99a090de421c22b2322a3ef3a6f563e2dbff45",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-rsi-vwap-long-791f4e00f0f5\\equity.csv": "ad59b64786fabe54998e65708a35bf22de672e5edf38f97cbb3afba57a2572cc",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-xau-rsi-vwap-long-791f4e00f0f5\\manifest.json": "bf6586705942578f9974ee29c70d30e2cdcade1eca99a56c927858c86766a12e"
+  },
+  "candidate_priority": [
+    "xau-rsi-vwap",
+    "usdjpy-london-open-momentum",
+    "us100-month-end-flow",
+    "nasdaq-5m-candle-momentum"
+  ]
+}

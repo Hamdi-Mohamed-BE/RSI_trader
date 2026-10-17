@@ -1,0 +1,141 @@
+{
+  "tag": "allrr05-asia-breakout-two-week-094b3e2656e9",
+  "slug": "asia-breakout",
+  "variant": "two-week-094b3e2656e9",
+  "window": [
+    "2026.09.25",
+    "2026.10.09"
+  ],
+  "inputs": {
+    "InpAdaptivePortfolioControls": "false",
+    "InpUseDynamicTrailingSL": "true",
+    "InpDynamicTriggerFraction": "0.50",
+    "InpDynamicLockFraction": "0.20",
+    "InpResearchSession": "0",
+    "InpResearchBrokerUtcOffsetMinutes": "0",
+    "InpEnableTrading": "true",
+    "InpRiskPercent": "1.0",
+    "InpRewardRisk": "3",
+    "InpMagic": "290729",
+    "InpMaxSpreadPoints": "0",
+    "InpTesterServerClockMode": "1",
+    "InpUseMarkovRegimeFilter": "true",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpPivotBars": "5",
+    "InpTrendEMA": "200",
+    "InpTrendSlopeBars": "6",
+    "InpUseTrailing": "true",
+    "InpTrailStartR": "1.5",
+    "InpTrailDistanceR": "1",
+    "InpAsiaBufferPercent": "0.03",
+    "InpAMDStopBufferRange": "0.03",
+    "InpDmCFixedStopPrice": "22.5",
+    "InpUseEconomicCalendar": "true",
+    "InpNewsExpiryMinutes": "15",
+    "InpNewsStopPrice": "9",
+    "InpAllowProvisionalWeekend": "false",
+    "InpGridLevels": "3",
+    "InpGridRiskPercent": "1.0",
+    "InpWeaknessATRImpulse": "2",
+    "InpRR05AuditTag": "allrr05-asia-breakout-two-week-094b3e2656e9"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 9876.94,
+    "net_profit": -123.06,
+    "return_pct": -1.23,
+    "profit_factor": 0.0,
+    "win_rate_pct": 0.0,
+    "max_drawdown_pct": 1.37,
+    "trades": 1,
+    "sharpe_ratio": -0.54,
+    "recovery_factor": -0.9,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 1.37,
+    "balance_dd_pct": 1.23
+  },
+  "metrics": {
+    "trades": 1,
+    "return_pct": -1.2306,
+    "net_profit": -123.06,
+    "pf": 0.0,
+    "wins": 0,
+    "losses": 1,
+    "flat": 0,
+    "win_rate": 0.0,
+    "equity_dd_pct": 1.37,
+    "balance_dd_pct": 1.23,
+    "sharpe_daily_equity": -7.987877236669804,
+    "win_streak": 0,
+    "loss_streak": 1,
+    "avg_win": null,
+    "avg_loss": -123.06,
+    "partial_positions": 0,
+    "exit_legs": 1,
+    "commission": -0.17,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1791378000,
+      "close_epoch": 1791421315,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 0.03,
+      "open_price": 4087.849,
+      "close_price": 4128.813,
+      "net": -123.06,
+      "magic": 290729,
+      "sl": 4128.6,
+      "tp": 3964.512,
+      "entry_comment": "AAA Asia confirmed retest",
+      "exit_comments": [
+        "sl 4128.600"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -122.89,
+      "commission": -0.17,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1791378000,
+      "deal": 2,
+      "balance": 9999.83,
+      "net": -0.17
+    },
+    {
+      "epoch": 1791421315,
+      "deal": 3,
+      "balance": 9876.94,
+      "net": -122.89
+    }
+  ],
+  "seconds": 9.011268854141235,
+  "binary_sha256": "68d0ad4f0f96fc7b5af0ab26508471a3d3d02b31e257ceca6ebf7e9847357475",
+  "report_sha256": "db87bbc3ee3e1984428b0a7b2d37d2bb5ed3cf257a653f5bd62ba80521f82a4e",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

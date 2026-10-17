@@ -1,0 +1,91 @@
+{
+  "status": "PREFLIGHT_PASS",
+  "checked_utc": "2026-10-16T21:53:19.943128+00:00",
+  "no_portfolio_outcomes_computed_by_this_script": true,
+  "plan_sha256": "cf9a7dda2134acba218f34e15028accb2a813f03ceefb0e3e814de73bba742fe",
+  "inputs_sha256": "a0a4d61f0d8a3dda9f94ea7449221f05fec9fc0d680f16dfec6db057d81eca6d",
+  "frozen_sha256": "c38de468fa1a81a44b534310355161557e3e2830ab812125a9330c9e14e27cd2",
+  "checks": 64741,
+  "failed_checks": 0,
+  "source_trade_count": 345,
+  "owned_marks_checked": 30793,
+  "sources": [
+    {
+      "ea": "nasdaq-5m-candle-momentum",
+      "candidates": 179,
+      "owned_marks": 17197,
+      "no_owned_mark": 1,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "usdjpy-london-open-momentum",
+      "candidates": 83,
+      "owned_marks": 6319,
+      "no_owned_mark": 0,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "us100-month-end-flow",
+      "candidates": 34,
+      "owned_marks": 1407,
+      "no_owned_mark": 0,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    },
+    {
+      "ea": "xau-rsi-vwap",
+      "candidates": 49,
+      "owned_marks": 5870,
+      "no_owned_mark": 1,
+      "history_quality": "15% real ticks",
+      "tick_notes": [
+        "real ticks begin from 2026.01.01 00:00:00"
+      ],
+      "parameter_differences": {
+        "InpRiskPercent": [
+          "1.0",
+          "0.5"
+        ]
+      }
+    }
+  ],
+  "same_second_cross_ea_entries": [],
+  "same_second_ustec_pair_ties": [],
+  "limitations": [
+    "Estimated ledger replay, not a simultaneous native FTMO-server test.",
+    "First mark at opening second excluded because source observes before strategy callback.",
+    "Initial floating zero and stale owned mark carry are declared model approximations.",
+    "Only five-minute sampled equity; between-mark breaches can be missed.",
+    "Filled initial SL risk approximates requested quote geometry; current SL and extra swap reserve unavailable.",
+    "Immutable source exits omit counterfactual signals after a rejected source trade.",
+    "Source whole-history quality15% real ticks; real ticks begin2026Jan1.",
+    "Market-time3second wait/manifest order is not historical live cross-chart fill-race evidence."
+  ],
+  "guard_implementation_audit": "See INDEPENDENT-FIXTURE-TESTS.json and INDEPENDENT-VERIFICATION.json for implementation/final checks."
+}

@@ -1,0 +1,66 @@
+{
+  "manifest": {
+    "tag": "DIon-shared-control",
+    "start": "2026-08-16",
+    "end_exclusive": "2026-10-16",
+    "trading_from_epoch": 0,
+    "primary_symbol": "USTEC",
+    "period": "M5",
+    "deposit": 10000,
+    "leverage": 15,
+    "model": 4,
+    "execution_delay_ms": 150,
+    "binary_sha256": "5edb209ba3a7e5faeab2aa2014ce8f57285ec8e82de89d63bcf7392a3929087d",
+    "config_sha256": "0859933bfd6d6ecc7a3bb1ce78b262f1f9ca4e765810aab8fea09b3b3cc846f2",
+    "inputs": {
+      "InpCase": "0",
+      "InpNasdaqDI": "true",
+      "InpChallenge": "false",
+      "InpPhase": "1",
+      "InpTag": "DIon-shared-control",
+      "InpTradingFromEpoch": "0"
+    },
+    "case": {
+      "tag": "DIon-shared-control",
+      "index": 0,
+      "di": true,
+      "challenge": false,
+      "phase": 1
+    }
+  },
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10242.68,
+    "net_profit": 242.68,
+    "return_pct": 2.43,
+    "profit_factor": 1.1,
+    "win_rate_pct": 54.17,
+    "max_drawdown_pct": 12.11,
+    "trades": 48,
+    "sharpe_ratio": 0.79,
+    "recovery_factor": 0.2,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 12.11,
+    "balance_dd_pct": 9.76
+  },
+  "seconds": 119.7,
+  "warnings": {
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "market_closed": 0,
+    "not_enough_money": 0,
+    "entry_reject": 0
+  },
+  "report_sha256": "cb11450b9a9a2ddc5485c60936ee6530a0f6e7b01aed7db5db69e406b28c40ed",
+  "tick_notes": [
+    "CS\t0\t18:41:36.399\tTicks\tUSTEC : real ticks begin from 2026.01.01 00:00:00",
+    "CS\t0\t18:41:37.315\tTicks\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "DJ\t0\t18:41:39.337\tCore 01\tXAUUSD : real ticks begin from 2026.01.01 00:00:00",
+    "DM\t0\t18:41:39.337\tCore 01\tUSTEC : real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "raw_deals": 96,
+  "audit": [
+    "FTMO3_COMPLETE tag=DIon-shared-control status=-2 first=1786838400 last=1792108798 balance=10242.68 observed_daily_monitoring=primary_ticks_plus_1s_timer",
+    "FTMO3_COMPLETE tag=DIon-shared-control status=-2 first=1786838400 last=1792108798 balance=10242.68 observed_daily_monitoring=primary_ticks_plus_1s_timer"
+  ]
+}

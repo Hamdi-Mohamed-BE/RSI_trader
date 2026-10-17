@@ -1,0 +1,620 @@
+{
+  "tag": "allrr05-usdjpy-london-open-momentum-two-month-20261016",
+  "slug": "usdjpy-london-open-momentum",
+  "variant": "two-month-20261016",
+  "window": [
+    "2026.08.16",
+    "2026.10.16"
+  ],
+  "inputs": {
+    "InpUseADXFilter": "true",
+    "InpADXMinimum": "20",
+    "InpRequireDIAgreement": "true",
+    "InpADXTimeframe": "15",
+    "InpEnableTrading": "true",
+    "InpLondonOpenHour": "8.0",
+    "InpFormationMinutes": "60",
+    "InpExitLondonHour": "16.0",
+    "InpReverseSignal": "false",
+    "InpDirection": "0",
+    "InpTradeMonday": "false",
+    "InpTradeTuesday": "false",
+    "InpTradeWednesday": "true",
+    "InpTradeThursday": "true",
+    "InpTradeFriday": "true",
+    "InpMinimumSignalAtr": "0.2",
+    "InpMaximumSignalAtr": "0.0",
+    "InpMinimumVolumePctMedian": "25.0",
+    "InpVolumeLookbackDays": "20",
+    "InpMaximumSpreadAtrPct": "0.0",
+    "InpRiskPercent": "1",
+    "InpAdaptivePortfolioControls": "false",
+    "InpAtrPeriod": "14",
+    "InpStopMode": "0",
+    "InpStopAtrMultiple": "5.0",
+    "InpFormationRangeStopMultiple": "1.0",
+    "InpTargetMode": "0",
+    "InpTargetR": "1.0",
+    "InpAdaptiveBaseR": "0.5",
+    "InpAdaptiveSignalWeight": "1.0",
+    "InpAdaptiveMinimumR": "0.5",
+    "InpAdaptiveMaximumR": "3.0",
+    "InpBreakEvenAtR": "0.75",
+    "InpTrailStartAtR": "0.0",
+    "InpTrailDistanceR": "0.5",
+    "InpExitSecondsEarly": "30",
+    "InpMaxDeviationBrokerPoints": "20",
+    "InpMagic": "980908901",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpTesterServerClock": "0",
+    "InpTesterManualUTCOffsetHours": "0",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpRR05AuditTag": "allrr05-usdjpy-london-open-momentum-two-month-20261016"
+  },
+  "unsupported_set_inputs": [],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10107.41,
+    "net_profit": 107.41,
+    "return_pct": 1.07,
+    "profit_factor": 1.28,
+    "win_rate_pct": 35.71,
+    "max_drawdown_pct": 3.28,
+    "trades": 14,
+    "sharpe_ratio": 1.04,
+    "recovery_factor": 0.32,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 3.28,
+    "balance_dd_pct": 2.17
+  },
+  "metrics": {
+    "trades": 14,
+    "return_pct": 1.0741,
+    "net_profit": 107.41,
+    "pf": 1.2837855689714393,
+    "wins": 4,
+    "losses": 10,
+    "flat": 0,
+    "win_rate": 28.571428571428573,
+    "equity_dd_pct": 3.28,
+    "balance_dd_pct": 2.17,
+    "sharpe_daily_equity": 0.822970328331322,
+    "win_streak": 1,
+    "loss_streak": 4,
+    "avg_win": 121.47500000000001,
+    "avg_loss": -37.849000000000004,
+    "partial_positions": 0,
+    "exit_legs": 14,
+    "commission": -11.54,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1787126400,
+      "close_epoch": 1787151570,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 0.38,
+      "open_price": 159.17,
+      "close_price": 158.343,
+      "net": 197.52,
+      "magic": 980908901,
+      "sl": 159.591,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 198.47,
+      "commission": -0.95,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1787299200,
+      "close_epoch": 1787315967,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 0.37,
+      "open_price": 158.823,
+      "close_price": 158.823,
+      "net": -0.93,
+      "magic": 980908901,
+      "sl": 159.267,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 158.823"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 0.0,
+      "commission": -0.93,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1787904000,
+      "close_epoch": 1787925618,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 0.73,
+      "open_price": 159.502,
+      "close_price": 159.495,
+      "net": -5.03,
+      "magic": 980908901,
+      "sl": 159.279,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 159.502"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -3.2,
+      "commission": -1.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1788422400,
+      "close_epoch": 1788447570,
+      "last_deal": 9,
+      "side": "Short",
+      "volume": 0.12,
+      "open_price": 157.052,
+      "close_price": 155.45,
+      "net": 123.37,
+      "magic": 980908901,
+      "sl": 158.437,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 123.67,
+      "commission": -0.3,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1788940800,
+      "close_epoch": 1788965970,
+      "last_deal": 11,
+      "side": "Short",
+      "volume": 0.18,
+      "open_price": 153.115,
+      "close_price": 153.194,
+      "net": -9.73,
+      "magic": 980908901,
+      "sl": 154.027,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -9.28,
+      "commission": -0.45,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1789113600,
+      "close_epoch": 1789130615,
+      "last_deal": 13,
+      "side": "Long",
+      "volume": 0.28,
+      "open_price": 154.219,
+      "close_price": 153.639,
+      "net": -106.4,
+      "magic": 980908901,
+      "sl": 153.64,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 153.640"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.7,
+      "commission": -0.7,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1789718400,
+      "close_epoch": 1789743570,
+      "last_deal": 15,
+      "side": "Long",
+      "volume": 0.12,
+      "open_price": 157.495,
+      "close_price": 157.412,
+      "net": -6.63,
+      "magic": 980908901,
+      "sl": 156.152,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -6.33,
+      "commission": -0.3,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1790150401,
+      "close_epoch": 1790175570,
+      "last_deal": 17,
+      "side": "Long",
+      "volume": 0.53,
+      "open_price": 157.769,
+      "close_price": 158.19,
+      "net": 139.72,
+      "magic": 980908901,
+      "sl": 157.464,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 141.05,
+      "commission": -1.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1790236800,
+      "close_epoch": 1790249881,
+      "last_deal": 19,
+      "side": "Short",
+      "volume": 0.27,
+      "open_price": 158.213,
+      "close_price": 158.835,
+      "net": -106.41,
+      "magic": 980908901,
+      "sl": 158.834,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 158.834"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.73,
+      "commission": -0.68,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1790841600,
+      "close_epoch": 1790865126,
+      "last_deal": 21,
+      "side": "Long",
+      "volume": 0.25,
+      "open_price": 158.39,
+      "close_price": 157.72,
+      "net": -106.83,
+      "magic": 980908901,
+      "sl": 157.72,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 157.720"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.2,
+      "commission": -0.63,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1790928000,
+      "close_epoch": 1790948682,
+      "last_deal": 23,
+      "side": "Short",
+      "volume": 0.25,
+      "open_price": 157.591,
+      "close_price": 157.592,
+      "net": -0.79,
+      "magic": 980908901,
+      "sl": 158.239,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 157.591"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.16,
+      "commission": -0.63,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1791360001,
+      "close_epoch": 1791385171,
+      "last_deal": 25,
+      "side": "Short",
+      "volume": 0.38,
+      "open_price": 158.105,
+      "close_price": 158.107,
+      "net": -1.43,
+      "magic": 980908901,
+      "sl": 158.529,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.48,
+      "commission": -0.95,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1791532800,
+      "close_epoch": 1791557973,
+      "last_deal": 27,
+      "side": "Long",
+      "volume": 0.45,
+      "open_price": 158.332,
+      "close_price": 158.425,
+      "net": 25.29,
+      "magic": 980908901,
+      "sl": 157.971,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 26.42,
+      "commission": -1.13,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 28,
+      "open_epoch": 1792051200,
+      "close_epoch": 1792076371,
+      "last_deal": 29,
+      "side": "Short",
+      "volume": 0.29,
+      "open_price": 157.877,
+      "close_price": 158.06,
+      "net": -34.31,
+      "magic": 980908901,
+      "sl": 158.437,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -33.58,
+      "commission": -0.73,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1787126400,
+      "deal": 2,
+      "balance": 9999.05,
+      "net": -0.95
+    },
+    {
+      "epoch": 1787151570,
+      "deal": 3,
+      "balance": 10197.52,
+      "net": 198.47
+    },
+    {
+      "epoch": 1787299200,
+      "deal": 4,
+      "balance": 10196.59,
+      "net": -0.93
+    },
+    {
+      "epoch": 1787315967,
+      "deal": 5,
+      "balance": 10196.59,
+      "net": 0.0
+    },
+    {
+      "epoch": 1787904000,
+      "deal": 6,
+      "balance": 10194.76,
+      "net": -1.83
+    },
+    {
+      "epoch": 1787925618,
+      "deal": 7,
+      "balance": 10191.56,
+      "net": -3.2
+    },
+    {
+      "epoch": 1788422400,
+      "deal": 8,
+      "balance": 10191.26,
+      "net": -0.3
+    },
+    {
+      "epoch": 1788447570,
+      "deal": 9,
+      "balance": 10314.93,
+      "net": 123.67
+    },
+    {
+      "epoch": 1788940800,
+      "deal": 10,
+      "balance": 10314.48,
+      "net": -0.45
+    },
+    {
+      "epoch": 1788965970,
+      "deal": 11,
+      "balance": 10305.2,
+      "net": -9.28
+    },
+    {
+      "epoch": 1789113600,
+      "deal": 12,
+      "balance": 10304.5,
+      "net": -0.7
+    },
+    {
+      "epoch": 1789130615,
+      "deal": 13,
+      "balance": 10198.8,
+      "net": -105.7
+    },
+    {
+      "epoch": 1789718400,
+      "deal": 14,
+      "balance": 10198.5,
+      "net": -0.3
+    },
+    {
+      "epoch": 1789743570,
+      "deal": 15,
+      "balance": 10192.17,
+      "net": -6.33
+    },
+    {
+      "epoch": 1790150401,
+      "deal": 16,
+      "balance": 10190.84,
+      "net": -1.33
+    },
+    {
+      "epoch": 1790175570,
+      "deal": 17,
+      "balance": 10331.89,
+      "net": 141.05
+    },
+    {
+      "epoch": 1790236800,
+      "deal": 18,
+      "balance": 10331.21,
+      "net": -0.68
+    },
+    {
+      "epoch": 1790249881,
+      "deal": 19,
+      "balance": 10225.48,
+      "net": -105.73
+    },
+    {
+      "epoch": 1790841600,
+      "deal": 20,
+      "balance": 10224.85,
+      "net": -0.63
+    },
+    {
+      "epoch": 1790865126,
+      "deal": 21,
+      "balance": 10118.65,
+      "net": -106.2
+    },
+    {
+      "epoch": 1790928000,
+      "deal": 22,
+      "balance": 10118.02,
+      "net": -0.63
+    },
+    {
+      "epoch": 1790948682,
+      "deal": 23,
+      "balance": 10117.86,
+      "net": -0.16
+    },
+    {
+      "epoch": 1791360001,
+      "deal": 24,
+      "balance": 10116.91,
+      "net": -0.95
+    },
+    {
+      "epoch": 1791385171,
+      "deal": 25,
+      "balance": 10116.43,
+      "net": -0.48
+    },
+    {
+      "epoch": 1791532800,
+      "deal": 26,
+      "balance": 10115.3,
+      "net": -1.13
+    },
+    {
+      "epoch": 1791557973,
+      "deal": 27,
+      "balance": 10141.72,
+      "net": 26.42
+    },
+    {
+      "epoch": 1792051200,
+      "deal": 28,
+      "balance": 10140.99,
+      "net": -0.73
+    },
+    {
+      "epoch": 1792076371,
+      "deal": 29,
+      "balance": 10107.41,
+      "net": -33.58
+    }
+  ],
+  "seconds": 12.794593334197998,
+  "binary_sha256": "6a7425a20ac86087d97e1b99792032cccad932a070f23c9b4b028e6d72ea550a",
+  "report_sha256": "7843aa2001bebe650354ba88b1428b7f891fec53f26b309ea1e2a3bb98773834",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true,
+  "boundary_liquidation_positions": [],
+  "ranking_includes_boundary_liquidations": true,
+  "current_active_input_verification": true
+}

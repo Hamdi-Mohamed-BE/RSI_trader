@@ -1,0 +1,126 @@
+{
+  "folds": [
+    {
+      "train_start": "2020-01-01",
+      "train_end": "2022-01-01",
+      "test_start": "2022-01-01",
+      "test_end": "2023-01-01",
+      "selected": {
+        "hold_minutes": 5,
+        "target_r": 0.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "baseline_metrics": {
+        "trades": 8,
+        "net": 77.29,
+        "return_pct": 0.7729,
+        "pf": 79.86734693877551,
+        "win_rate_pct": 87.5,
+        "equity_dd": 0.1621014385509374,
+        "balance_dd": 0.0105358472262343,
+        "mt5_sharpe": 16.44408851504264,
+        "daily_closed_balance_sharpe": 1.8303700413573274,
+        "max_win_streak": 4,
+        "max_loss_streak": 1,
+        "average_trade": 9.66125,
+        "yearly": [
+          {
+            "year": 2022,
+            "trades": 8,
+            "net": 77.29,
+            "pf": 79.86734693877551
+          }
+        ]
+      },
+      "selected_metrics": {
+        "trades": 8,
+        "net": 18.650000000000002,
+        "return_pct": 0.18650000000000003,
+        "pf": 4.113522537562605,
+        "win_rate_pct": 62.5,
+        "equity_dd": 0.1249292782540278,
+        "balance_dd": 0.0392368287057684,
+        "mt5_sharpe": 9.583347600868494,
+        "daily_closed_balance_sharpe": 1.2627545011886991,
+        "max_win_streak": 2,
+        "max_loss_streak": 2,
+        "average_trade": 2.3312500000000003,
+        "yearly": [
+          {
+            "year": 2022,
+            "trades": 8,
+            "net": 18.65,
+            "pf": 4.113522537562604
+          }
+        ]
+      },
+      "train_unique_config_count": 9,
+      "baseline_stage": "wf-test-0-b0",
+      "selected_stage": "wf-test-0-b0"
+    },
+    {
+      "train_start": "2020-01-01",
+      "train_end": "2023-01-01",
+      "test_start": "2023-01-01",
+      "test_end": "2023-10-16",
+      "selected": {
+        "hold_minutes": 30,
+        "target_r": 0.5,
+        "entry_window_minutes": 5,
+        "impulse_mult": 1.0,
+        "close_fraction": 0.25
+      },
+      "baseline_metrics": {
+        "trades": 5,
+        "net": -19.36,
+        "return_pct": -0.1936,
+        "pf": 0.4504683508373545,
+        "win_rate_pct": 20.0,
+        "equity_dd": 0.3442794494724115,
+        "balance_dd": 0.2727834099724927,
+        "mt5_sharpe": -3.204040750764266,
+        "daily_closed_balance_sharpe": -0.7099201258695286,
+        "max_win_streak": 1,
+        "max_loss_streak": 2,
+        "average_trade": -3.872,
+        "yearly": [
+          {
+            "year": 2023,
+            "trades": 5,
+            "net": -19.36,
+            "pf": 0.4504683508373545
+          }
+        ]
+      },
+      "selected_metrics": {
+        "trades": 5,
+        "net": -17.42,
+        "return_pct": -0.17420000000000002,
+        "pf": 0.45391849529780565,
+        "win_rate_pct": 60.0,
+        "equity_dd": 0.3175433726301506,
+        "balance_dd": 0.2550931194801081,
+        "mt5_sharpe": -2.089861808485575,
+        "daily_closed_balance_sharpe": -0.6716922090698998,
+        "max_win_streak": 2,
+        "max_loss_streak": 1,
+        "average_trade": -3.4840000000000004,
+        "yearly": [
+          {
+            "year": 2023,
+            "trades": 5,
+            "net": -17.42,
+            "pf": 0.45391849529780565
+          }
+        ]
+      },
+      "train_unique_config_count": 9,
+      "baseline_stage": "wf-test-1-b0",
+      "selected_stage": "wf-test-1-b0"
+    }
+  ],
+  "selection_used_for_final": false,
+  "scope": "Retrospective anchored selection; each fold chooses only from its earlier training data"
+}

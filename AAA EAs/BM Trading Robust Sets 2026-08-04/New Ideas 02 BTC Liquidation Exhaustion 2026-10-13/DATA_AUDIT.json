@@ -1,0 +1,94 @@
+{
+  "status": "AWAITING_HISTORICAL_LIQUIDATION_DATA",
+  "backtest_executed": false,
+  "period": {
+    "start": "2025-10-13",
+    "end_exclusive": "2026-10-13"
+  },
+  "risk": {
+    "initial_balance_usd": 10000,
+    "risk_per_trade_percent": 0.5,
+    "maximum_nominal_daily_risk_percent": 2,
+    "maximum_new_entries_per_utc_day": 4,
+    "target_rr": 1.5
+  },
+  "checked_at_utc": "2026-10-13 20:14:57 UTC",
+  "price_history": {
+    "status": "existing_local_Exness_BTCUSD_M1_archive_available",
+    "path": "../New Ideas 01 Price Event Clock Raw 2026-10-13/BTCUSD-M1.npz",
+    "notes": "Archived source has M1 gaps; must be quality checked before execution. No liquidation or exchange OI fields exist in these broker prices."
+  },
+  "open_interest": {
+    "status": "historical_sample_accessible_full_year_coverage_not_yet_verified",
+    "exchange": "Bybit",
+    "symbol": "BTCUSDT",
+    "category": "linear",
+    "interval": "5min",
+    "sample_start": "2025-10-13T00:00:00Z",
+    "sample_end": "2025-10-13T00:30:00Z",
+    "rows": 7,
+    "http_status": 200,
+    "api_retCode": 0,
+    "documentation": "https://bybit-exchange.github.io/docs/v5/market/open-interest"
+  },
+  "liquidation_sources": [
+    {
+      "provider": "Binance public archive",
+      "status": "No liquidationSnapshot prefix found in checked USD-M daily/monthly listings; date files returned 404",
+      "listing_daily": "https://s3-ap-northeast-1.amazonaws.com/data.binance.vision?list-type=2&prefix=data/futures/um/daily/&delimiter=%2F&max-keys=40",
+      "listing_monthly": "https://s3-ap-northeast-1.amazonaws.com/data.binance.vision?list-type=2&prefix=data/futures/um/monthly/&delimiter=%2F&max-keys=40"
+    },
+    {
+      "provider": "CoinGlass",
+      "status": "API key required, none configured",
+      "http_status": 200,
+      "api_code": "401",
+      "api_message": "API key missing.",
+      "endpoint": "https://open-api-v4.coinglass.com/api/futures/liquidation/history",
+      "documentation": "https://docs.coinglass.com/reference/liquidation-history",
+      "minimum_documented_plan_for_5m": "Standard; entitlement/history still needs verification"
+    },
+    {
+      "provider": "Tardis Bybit archive",
+      "status": "Requested non-free sample date rejected without credentials",
+      "http_status": 401,
+      "requested": "https://datasets.tardis.dev/v1/bybit/liquidations/2025/10/13/BTCUSDT.csv.gz",
+      "documentation": "https://docs.tardis.dev/downloadable-csv-files/overview.md",
+      "free_sample_policy": "Only first day of each month is freely downloadable, not a continuous year"
+    },
+    {
+      "provider": "BitMEX",
+      "status": "Endpoint documents active liquidation orders; requested historical day returned empty array, not validated as a historical archive",
+      "http_status": 200,
+      "documentation": "https://docs.bitmex.com/api-explorer/get-liquidation"
+    },
+    {
+      "provider": "Bybit native",
+      "status": "All-liquidation WebSocket is live; no full-year liquidation REST archive identified",
+      "documentation": "https://bybit-exchange.github.io/docs/v5/websocket/public/all-liquidation"
+    }
+  ],
+  "plugin_discovery": {
+    "exact_CoinGlass_search_results": 0,
+    "broad_search": "No relevant liquidation archive connection returned"
+  },
+  "configured_credentials": {
+    "COINGLASS_API_KEY": false,
+    "CG_API_KEY": false,
+    "TARDIS_API_KEY": false
+  },
+  "results": {
+    "trades": null,
+    "win_rate_pct": null,
+    "profit_factor": null,
+    "return_pct": null,
+    "drawdown_pct": null,
+    "sharpe": null
+  },
+  "notes": [
+    "Unavailable is not zero trades or a flat return.",
+    "No proxy substitution, no partial-year results labelled as annual.",
+    "No data subscription purchased; no plugins installed; no live account/BAT/website changes."
+  ],
+  "required_next_input": "Authorized access to full-year timestamped BTC long/short liquidation history, preferably from Bybit, with prior 7-day warm-up. A provider export or securely configured API access can unblock the test."
+}

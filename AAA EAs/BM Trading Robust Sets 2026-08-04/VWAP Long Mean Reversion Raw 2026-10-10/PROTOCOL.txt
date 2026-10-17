@@ -1,0 +1,60 @@
+VWAP LONG MEAN REVERSION - RAW RECONSTRUCTION - 10 OCTOBER 2026
+
+Request: try the quoted Nasdaq VWAP discount idea on US30, US100, UK100,
+gold, ETH, BTC and major USD FX pairs. User then specified fixed 1:1 RR.
+
+The quote's "280R" is ambiguous. A matching secondary repost transcribes
+"2 ATR" and the same 720/+149R and +89.8R/PF1.57 claims. It explicitly says
+those creator-reported results are unverified. The original source code,
+timeframe, sessions, ATR period, stops and full trade-frequency rules were
+not supplied. This is NOT an exact replication of that study.
+
+Before any native strategy outcomes, freeze one labelled parameter set:
+M5 closes, UTC daily HLC3/tick-volume VWAP, >=2 ATR14 discount, long market
+entry on next tick. SL 1 signal ATR, TP 1 initial requested stop distance.
+15 closed positive-volume session bars minimum; one position; one attempt
+per discount excursion, rearm inside the band/new day. Entries through
+23:50 UTC; close first available tick from 23:55 or next UTC day. No filters,
+management, opposite-side trades, optimisation or parameter selection.
+
+Each isolated window begins with USD10,000 and 1% current closed-balance
+nominal initial stop risk, floored to broker lot step. No rounded-up risk.
+Under-minimum lots, insufficient margin, invalid stops are skipped. Native
+bid/ask, commission, swap, 150ms delay. Costs/gaps can exceed nominal risk.
+
+3Y: 2023-10-10 to 2026-10-10, end exclusive.
+1Y: 2025-10-10 to 2026-10-10, end exclusive.
+13 independent asset accounts x 2 runs = 26. No shared-portfolio claim.
+No out-of-sample claim; raw retrospective diagnostic only.
+
+Scope: US30, USTEC (US100), UK100, XAUUSD, ETHUSD, BTCUSD, EURUSD, GBPUSD,
+USDJPY, USDCHF, USDCAD, AUDUSD and NZDUSD, Exness research feed.
+CFD tick-volume weighting is not NQ futures / exchange-volume weighting.
+Older Model4 data may use generated ticks; show native quality per case.
+
+Safety: isolated portable tester, empty chart profile, ExpertsEnabled=0,
+AllowLiveTrading=0, independent local tester port3010, no live terminal API.
+Research EA refuses execution outside MQL_TESTER. Shared tester lease.
+Only owned processes may be timed out. No BAT, website or live-EA edits.
+
+Verification: compile 0 errors/0 warnings; native report inputs/dates/source
+fingerprints; complete-position ledger reconciles to native cash; signal
+timestamps, >=2ATR discount, quoted price levels, lot size, USD risk budget,
+fill price and initial risk all audited. The first compilation had one
+unchecked OrderCalcProfit warning; repaired before testing, initial plan
+preserved as a pre-compile record. No strategy thresholds changed.
+
+FX audit correction: exported ATR/VWAP/close numbers have 8 decimals.
+Bounded numerical export error is propagated in the ratio consistency
+check; early failed checks are revalidated from the same native trades,
+not retested or retuned. Actual >=2ATR signal condition remains unchanged.
+
+Report Sharpe uses daily sampled equity, all UTC calendar days including
+no-trade days, sqrt365 and zero risk-free rate. DD is native floating equity.
+Streaks/WR/PF use net whole positions in close order. Net R normalises each
+trade by its recorded native initial fill-to-stop USD risk. Cash PF is not
+equal to risk-normalised PF when balance, costs and lot size vary.
+
+Severe losing accounts can stop placing minimum-size orders. Longer runs
+may contain fewer trades than fresh shorter-window accounts. Disclose this
+and actual filled-trade dates; do not mistake it for fewer opportunities.

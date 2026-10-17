@@ -1,0 +1,1703 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Three Gann pipeline raw-gate results</title><style>body{background:#071713;color:#eafff3;font:16px system-ui;max-width:1450px;margin:30px auto;padding:0 20px}h1,h2{color:#75f1c9}p{line-height:1.65}aside{border:1px solid #927839;color:#ffdfa0;border-radius:12px;padding:20px}.scroll{overflow-x:auto}table{border-collapse:collapse;min-width:1100px;width:100%;font-size:14px}td,th{padding:12px;text-align:right;border-bottom:1px solid #294338;white-space:nowrap}td:first-child,th:first-child{text-align:left}pre{background:#10281e;white-space:pre-wrap;overflow-wrap:anywhere;padding:18px;border-radius:10px;font-size:13px}section{margin-top:45px}a{color:#75f1c9}details{margin:14px 0}</style><main><h1>Three Gann-inspired ideas: pipeline gate results</h1><p>Native Exness CFDs · through 8 October 2026 · independent $10,000 accounts · 1% nominal current closed-balance stop risk, floored broker lots · 150 ms delay.</p><aside>All three fail at least one saved raw-gate requirement. Optimisation is NOT completed or promoted. The saved pipeline stops failed raw candidates; exploratory continuation needs the user choice. Twenty native raw/control runs plus three final trade-parity confirmations are complete. Raw Monte Carlo is additional risk diagnostics, not an optimised-finalist validation.</aside><h2>Decision summary</h2><div class="scroll"><table><tr><th>Idea</th><th>3Y PF</th><th>3Y return</th><th>3Y trades</th><th>5Y PF</th><th>5Y return</th><th>5Y trades</th><th>Raw gate</th></tr><tr><td>Gold eighth-range rejection</td><td>1.12</td><td>41.14%</td><td>639</td><td>1.02</td><td>11.69%</td><td>1090</td><td>FAIL</td></tr><tr><td>US100 time-cycle gate</td><td>1.45</td><td>23.92%</td><td>117</td><td>1.23</td><td>19.90%</td><td>186</td><td>FAIL</td></tr><tr><td>BTC weekly quartile rejection</td><td>1.01</td><td>0.92%</td><td>411</td><td>0.97</td><td>-3.20%</td><td>659</td><td>FAIL</td></tr></table></div><p>Gold misses PF 1.15; BTC misses PF 1.15 and loses over five years; US100 passes profit/PF checks but loses the comparator test to a fixed seeded random clock with equal eligible-bar exposure. One stronger placebo does not prove there is no edge, but it does not support a special 8/16/32 clock advantage. No control is hidden to manufacture a pass.</p><h2>All requested raw windows and recent diagnostics</h2><div class="scroll"><table><thead><tr><th>Version / window</th><th>Dates (end exclusive)</th><th>Trades</th><th>/month</th><th>/market day</th><th>Return</th><th>PF</th><th>Win rate</th><th>Equity DD</th><th>Sharpe</th><th>W/L streak</th></tr></thead><tbody><tr><td>Gold eighth-range rejection · 5y</td><td>2021-10-09 → 2026-10-09</td><td>1090</td><td>18.17</td><td>0.84</td><td>11.69%</td><td>1.02</td><td>47.5%</td><td>38.04%</td><td>0.21</td><td>9/8</td></tr><tr><td>Gold eighth-range rejection · 3y</td><td>2023-10-09 → 2026-10-09</td><td>639</td><td>17.75</td><td>0.82</td><td>41.14%</td><td>1.12</td><td>49.6%</td><td>18.57%</td><td>0.76</td><td>9/7</td></tr><tr><td>Gold eighth-range rejection · 1y</td><td>2025-10-09 → 2026-10-09</td><td>214</td><td>17.85</td><td>0.82</td><td>21.51%</td><td>1.20</td><td>50.9%</td><td>9.84%</td><td>1.23</td><td>6/6</td></tr><tr><td>Gold eighth-range rejection · 6m</td><td>2026-04-09 → 2026-10-09</td><td>107</td><td>17.80</td><td>0.82</td><td>18.46%</td><td>1.38</td><td>56.1%</td><td>8.44%</td><td>2.12</td><td>6/4</td></tr><tr><td>Gold eighth-range rejection ·3m slice</td><td>2026-07-09 → 2026-10-09</td><td>58</td><td>19.19</td><td>0.88</td><td>5.88%</td><td>1.23</td><td>53.4%</td><td>6.32%</td><td>—</td><td>6/3</td></tr><tr><td>Gold eighth-range rejection ·2y raw slice</td><td>2024-10-09 → 2026-10-09</td><td>422</td><td>17.60</td><td>0.81</td><td>33.09%</td><td>1.15</td><td>50.0%</td><td>15.86%</td><td>—</td><td>9/6</td></tr><tr><td>US100 time-cycle gate · 5y</td><td>2021-10-09 → 2026-10-09</td><td>186</td><td>3.10</td><td>0.14</td><td>19.90%</td><td>1.23</td><td>45.7%</td><td>20.97%</td><td>0.52</td><td>9/7</td></tr><tr><td>US100 time-cycle gate · 3y</td><td>2023-10-09 → 2026-10-09</td><td>117</td><td>3.25</td><td>0.15</td><td>23.92%</td><td>1.45</td><td>47.0%</td><td>12.10%</td><td>0.94</td><td>9/7</td></tr><tr><td>US100 time-cycle gate · 1y</td><td>2025-10-09 → 2026-10-09</td><td>35</td><td>2.92</td><td>0.13</td><td>19.68%</td><td>2.56</td><td>60.0%</td><td>6.11%</td><td>2.25</td><td>9/7</td></tr><tr><td>US100 time-cycle gate · 6m</td><td>2026-04-09 → 2026-10-09</td><td>14</td><td>2.33</td><td>0.11</td><td>-0.07%</td><td>0.99</td><td>35.7%</td><td>6.12%</td><td>0.01</td><td>3/7</td></tr><tr><td>US100 time-cycle gate ·3m slice</td><td>2026-07-09 → 2026-10-09</td><td>8</td><td>2.65</td><td>0.12</td><td>-5.49%</td><td>0.01</td><td>12.5%</td><td>5.95%</td><td>—</td><td>1/6</td></tr><tr><td>US100 time-cycle gate ·2y raw slice</td><td>2024-10-09 → 2026-10-09</td><td>80</td><td>3.34</td><td>0.15</td><td>35.61%</td><td>2.07</td><td>57.5%</td><td>6.54%</td><td>—</td><td>9/7</td></tr><tr><td>BTC weekly quartile rejection · 5y</td><td>2021-10-09 → 2026-10-09</td><td>659</td><td>10.98</td><td>0.36</td><td>-3.20%</td><td>0.97</td><td>47.8%</td><td>18.99%</td><td>-0.10</td><td>7/9</td></tr><tr><td>BTC weekly quartile rejection · 3y</td><td>2023-10-09 → 2026-10-09</td><td>411</td><td>11.41</td><td>0.38</td><td>0.92%</td><td>1.01</td><td>49.1%</td><td>11.95%</td><td>0.09</td><td>6/9</td></tr><tr><td>BTC weekly quartile rejection · 1y</td><td>2025-10-09 → 2026-10-09</td><td>130</td><td>10.84</td><td>0.36</td><td>12.95%</td><td>1.71</td><td>63.1%</td><td>2.94%</td><td>2.43</td><td>6/3</td></tr><tr><td>BTC weekly quartile rejection · 6m</td><td>2026-04-09 → 2026-10-09</td><td>65</td><td>10.81</td><td>0.36</td><td>6.03%</td><td>1.72</td><td>64.6%</td><td>1.84%</td><td>2.38</td><td>5/3</td></tr><tr><td>BTC weekly quartile rejection ·3m slice</td><td>2026-07-09 → 2026-10-09</td><td>36</td><td>11.91</td><td>0.39</td><td>6.41%</td><td>2.84</td><td>66.7%</td><td>1.30%</td><td>—</td><td>5/3</td></tr><tr><td>BTC weekly quartile rejection ·2y raw slice</td><td>2024-10-09 → 2026-10-09</td><td>293</td><td>12.22</td><td>0.40</td><td>6.30%</td><td>1.14</td><td>51.9%</td><td>9.90%</td><td>—</td><td>6/9</td></tr></tbody></table></div><p>5Y: 2021-10-09 → 2026-10-09; 3Y: 2023-10-09 → 2026-10-09; 1Y: 2025-10-09 → 2026-10-09; 6M: 2026-04-09 → 2026-10-09. The 3M/2Y rows are descriptive slices of continuous three-year runs with inherited balance; their DD is sampled equity, not a separate native tick maximum. They are not optimised or untouched OOS results. A new $10,000 deposit is used for each independent native raw window, so returns do not simply scale the earlier 0.5% study.</p><p>Native real-tick labels: 5Y 15%, 3Y 25%, 1Y 76%, 6M 100%. Pre-2026 data use generated ticks from broker M1 history. The real-tick model does not make missing history real. Net whole-position costs, trades/month, market-day frequency and win/loss streaks are reported; weekends count for BTC. Sharpe uses 252 weekday equity returns for gold/US100 and 365 calendar-day equity returns for BTC.</p><section><h2>Gold eighth-range rejection — STOPPED AT RAW GATE</h2><p>Failed checks:</p><pre>{
+  &quot;3y&quot;: [
+    &quot;pf_at_least_1_15&quot;
+  ],
+  &quot;5y&quot;: [
+    &quot;pf_at_least_1_15&quot;
+  ]
+}</pre><h3>Controls at identical1% risk</h3><div class="scroll"><table><thead><tr><th>Version / window</th><th>Dates (end exclusive)</th><th>Trades</th><th>/month</th><th>/market day</th><th>Return</th><th>PF</th><th>Win rate</th><th>Equity DD</th><th>Sharpe</th><th>W/L streak</th></tr></thead><tbody><tr><td>Signal control 5y</td><td>2021-10-09 → 2026-10-09</td><td>1075</td><td>17.92</td><td>0.82</td><td>-21.33%</td><td>0.92</td><td>60.5%</td><td>35.81%</td><td>-0.42</td><td>18/7</td></tr><tr><td>Signal control 3y</td><td>2023-10-09 → 2026-10-09</td><td>643</td><td>17.86</td><td>0.82</td><td>12.66%</td><td>1.07</td><td>63.3%</td><td>14.94%</td><td>0.44</td><td>18/6</td></tr></tbody></table></div><h3>Raw native3Y/5Y MonteCarlo,10,000paths</h3><pre>{
+  &quot;3y&quot;: {
+    &quot;probability_profit_pct&quot;: 88.38000000000001,
+    &quot;return_p05_pct&quot;: -11.649857811072048,
+    &quot;return_p50_pct&quot;: 40.71138756366334,
+    &quot;return_p95_pct&quot;: 125.79412957539446,
+    &quot;max_drawdown_p50_pct&quot;: 19.49132823300929,
+    &quot;max_drawdown_p95_pct&quot;: 33.86639056991881,
+    &quot;closed_pnl_total_breach_pct&quot;: 36.36,
+    &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+    &quot;paths&quot;: 10000,
+    &quot;block_length&quot;: 5,
+    &quot;profit_factor_p05&quot;: 0.9577635927955788,
+    &quot;profit_factor_p50&quot;: 1.1176996406897186,
+    &quot;profit_factor_p95&quot;: 1.2997920838420889,
+    &quot;scope&quot;: &quot;calendar-day closing balance bootstrap; trade-block PF separately; not native equity/rule pass probability&quot;,
+    &quot;missed_trade_stress&quot;: {
+      &quot;0.1&quot;: {
+        &quot;probability_profit_pct&quot;: 86.9,
+        &quot;return_p05_pct&quot;: -13.458376139234668,
+        &quot;return_p50_pct&quot;: 36.36169586891556,
+        &quot;return_p95_pct&quot;: 117.55444780252499,
+        &quot;max_drawdown_p50_pct&quot;: 18.90792494961888,
+        &quot;max_drawdown_p95_pct&quot;: 33.20545549762994,
+        &quot;closed_pnl_total_breach_pct&quot;: 36.19,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      },
+      &quot;0.2&quot;: {
+        &quot;probability_profit_pct&quot;: 85.77,
+        &quot;return_p05_pct&quot;: -13.261334066134845,
+        &quot;return_p50_pct&quot;: 31.090672838541742,
+        &quot;return_p95_pct&quot;: 103.29718407461404,
+        &quot;max_drawdown_p50_pct&quot;: 18.248192869495185,
+        &quot;max_drawdown_p95_pct&quot;: 32.22466090896516,
+        &quot;closed_pnl_total_breach_pct&quot;: 35.77,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      }
+    },
+    &quot;reshuffle&quot;: {
+      &quot;probability_profit_pct&quot;: 100.0,
+      &quot;return_p05_pct&quot;: 41.1424999999995,
+      &quot;return_p50_pct&quot;: 41.14249999999979,
+      &quot;return_p95_pct&quot;: 41.142500000000084,
+      &quot;max_drawdown_p50_pct&quot;: 18.9638151586959,
+      &quot;max_drawdown_p95_pct&quot;: 28.09002621631977,
+      &quot;closed_pnl_total_breach_pct&quot;: 28.549999999999997,
+      &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+      &quot;max_win_streak_p50&quot;: 8.0,
+      &quot;max_loss_streak_p50&quot;: 8.0,
+      &quot;max_loss_streak_p95&quot;: 12.0
+    },
+    &quot;reshuffle_note&quot;: &quot;Compounded normalized closing-trade returns; preserves the observed sign/count sample, not changing regimes.&quot;
+  },
+  &quot;5y&quot;: {
+    &quot;probability_profit_pct&quot;: 60.56,
+    &quot;return_p05_pct&quot;: -38.973813941249134,
+    &quot;return_p50_pct&quot;: 10.9896976365785,
+    &quot;return_p95_pct&quot;: 106.23839337555358,
+    &quot;max_drawdown_p50_pct&quot;: 31.203550158631288,
+    &quot;max_drawdown_p95_pct&quot;: 51.623765491651255,
+    &quot;closed_pnl_total_breach_pct&quot;: 69.81,
+    &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+    &quot;paths&quot;: 10000,
+    &quot;block_length&quot;: 5,
+    &quot;profit_factor_p05&quot;: 0.9112371468016386,
+    &quot;profit_factor_p50&quot;: 1.023687059907884,
+    &quot;profit_factor_p95&quot;: 1.1516293779293032,
+    &quot;scope&quot;: &quot;calendar-day closing balance bootstrap; trade-block PF separately; not native equity/rule pass probability&quot;,
+    &quot;missed_trade_stress&quot;: {
+      &quot;0.1&quot;: {
+        &quot;probability_profit_pct&quot;: 61.19,
+        &quot;return_p05_pct&quot;: -38.94910404594701,
+        &quot;return_p50_pct&quot;: 10.208734738834158,
+        &quot;return_p95_pct&quot;: 97.60151424684693,
+        &quot;max_drawdown_p50_pct&quot;: 30.425215989813346,
+        &quot;max_drawdown_p95_pct&quot;: 50.41596172382983,
+        &quot;closed_pnl_total_breach_pct&quot;: 69.04,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      },
+      &quot;0.2&quot;: {
+        &quot;probability_profit_pct&quot;: 60.6,
+        &quot;return_p05_pct&quot;: -36.915125518302446,
+        &quot;return_p50_pct&quot;: 9.269332861888046,
+        &quot;return_p95_pct&quot;: 90.3994341634792,
+        &quot;max_drawdown_p50_pct&quot;: 28.85562593369668,
+        &quot;max_drawdown_p95_pct&quot;: 48.63583550237405,
+        &quot;closed_pnl_total_breach_pct&quot;: 67.94,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      }
+    },
+    &quot;reshuffle&quot;: {
+      &quot;probability_profit_pct&quot;: 100.0,
+      &quot;return_p05_pct&quot;: 11.68619999999978,
+      &quot;return_p50_pct&quot;: 11.686200000000092,
+      &quot;return_p95_pct&quot;: 11.68620000000038,
+      &quot;max_drawdown_p50_pct&quot;: 30.14524592368442,
+      &quot;max_drawdown_p95_pct&quot;: 42.36833898061873,
+      &quot;closed_pnl_total_breach_pct&quot;: 69.23,
+      &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+      &quot;max_win_streak_p50&quot;: 8.0,
+      &quot;max_loss_streak_p50&quot;: 10.0,
+      &quot;max_loss_streak_p95&quot;: 14.0
+    },
+    &quot;reshuffle_note&quot;: &quot;Compounded normalized closing-trade returns; preserves the observed sign/count sample, not changing regimes.&quot;
+  },
+  &quot;prop_proxy&quot;: {
+    &quot;paths&quot;: 10000,
+    &quot;horizon_calendar_days&quot;: 365,
+    &quot;closed_pnl_phase1_pass_pct&quot;: 68.4,
+    &quot;closed_pnl_phase2_pass_given_phase1_pct&quot;: 76.2280701754386,
+    &quot;closed_pnl_two_phase_pass_pct&quot;: 52.14,
+    &quot;closed_pnl_breach_pct&quot;: 37.18,
+    &quot;unfinished_pct&quot;: 10.68,
+    &quot;median_calendar_days_to_pass&quot;: 155.0,
+    &quot;median_calendar_days_to_funded&quot;: 160.0,
+    &quot;phase1_median_days&quot;: 97.0,
+    &quot;engine&quot;: &quot;Existing app.prop_sim.engine, closed ledger mode, 5-calendar-day blocks&quot;,
+    &quot;handover_days&quot;: [
+      2,
+      5
+    ],
+    &quot;rules_snapshot&quot;: {
+      &quot;status&quot;: &quot;official&quot;,
+      &quot;checked&quot;: &quot;2026-09-29&quot;,
+      &quot;sources&quot;: [
+        &quot;https://ftmo.com/en/trading-objectives/&quot;
+      ],
+      &quot;notes&quot;: &quot;Targets, loss limits and minimum days read from FTMO&#x27;s official Trading Objectives page. Standard FTMO Accounts restrict news trading and weekend holding; Swing lifts both.&quot;
+    },
+    &quot;scope&quot;: &quot;Exploratory daily closing-position-PnL proxy: 10%/5% targets, 4 active days each, 5% daily / 10% static loss. Within-day closing-PnL minimum retained; floating equity, exact CE(S)T resets, entry-commission timing and installed FTMO guards are not replayed. Cached rule snapshot, not a forecast or current-account validation.&quot;
+  },
+  &quot;deflated_sharpe&quot;: {
+    &quot;annualized_sharpe&quot;: 0.775704007392839,
+    &quot;probabilistic_sharpe_pct&quot;: 91.42549702075968,
+    &quot;deflated_sharpe_pct&quot;: 18.376246812527548,
+    &quot;multiple_test_benchmark_sharpe&quot;: 1.2868826156615532,
+    &quot;daily_skewness&quot;: 0.878523785745319,
+    &quot;daily_kurtosis&quot;: 3.5681925842038815
+  }
+}</pre><h3>Measured extra-cost stress on exact3Y raw reproduction</h3><pre>{
+  &quot;status&quot;: &quot;measured&quot;,
+  &quot;mean_roundtrip_spread_cash&quot;: 4.387843505477191,
+  &quot;mean_adverse_entry_slippage_cash&quot;: 0.1668075117370357,
+  &quot;mean_commission_cash&quot;: 1.0732550860719874,
+  &quot;scenarios&quot;: [
+    {
+      &quot;extra_cost_multiple&quot;: 1,
+      &quot;mean_extra_cash&quot;: 5.6279061032862145,
+      &quot;net_profit&quot;: 517.9280000001099,
+      &quot;return_pct&quot;: 5.179280000001099,
+      &quot;pf&quot;: 1.0141519542617417,
+      &quot;win_rate&quot;: 48.35680751173709
+    },
+    {
+      &quot;extra_cost_multiple&quot;: 2,
+      &quot;mean_extra_cash&quot;: 11.255812206572429,
+      &quot;net_profit&quot;: -3078.303999999782,
+      &quot;return_pct&quot;: -30.78303999999782,
+      &quot;pf&quot;: 0.9205578630554931,
+      &quot;win_rate&quot;: 46.322378716744915
+    }
+  ],
+  &quot;scope&quot;: &quot;Algebraic extra1x/2x recorded transaction-event quote spread + commissions + adverse requested-versus-filled entry slippage, above native costs. Quotes observed at transaction callbacks, not a claim of exchange orderbook fills. No invented spreads. Different exits/gap paths not replayed.&quot;
+}</pre></section><section><h2>US100 time-cycle gate — STOPPED AT RAW GATE</h2><p>Failed checks:</p><pre>{
+  &quot;3y&quot;: [
+    &quot;better_pf_than_seeded_clock&quot;,
+    &quot;better_mean_R_than_seeded_clock&quot;
+  ],
+  &quot;5y&quot;: [
+    &quot;better_pf_than_seeded_clock&quot;,
+    &quot;better_mean_R_than_seeded_clock&quot;
+  ]
+}</pre><h3>Controls at identical1% risk</h3><div class="scroll"><table><thead><tr><th>Version / window</th><th>Dates (end exclusive)</th><th>Trades</th><th>/month</th><th>/market day</th><th>Return</th><th>PF</th><th>Win rate</th><th>Equity DD</th><th>Sharpe</th><th>W/L streak</th></tr></thead><tbody><tr><td>Signal control 5y</td><td>2021-10-09 → 2026-10-09</td><td>585</td><td>9.75</td><td>0.45</td><td>39.12%</td><td>1.14</td><td>46.3%</td><td>22.39%</td><td>0.61</td><td>7/8</td></tr><tr><td>Seeded random clock 5y</td><td>2021-10-09 → 2026-10-09</td><td>186</td><td>3.10</td><td>—</td><td>30.92%</td><td>1.37</td><td>48.9%</td><td>9.44%</td><td>0.78</td><td>5/6</td></tr><tr><td>Signal control 3y</td><td>2023-10-09 → 2026-10-09</td><td>347</td><td>9.64</td><td>0.44</td><td>24.46%</td><td>1.16</td><td>45.5%</td><td>20.22%</td><td>0.66</td><td>6/7</td></tr><tr><td>Seeded random clock 3y</td><td>2023-10-09 → 2026-10-09</td><td>107</td><td>2.97</td><td>—</td><td>32.45%</td><td>1.70</td><td>53.3%</td><td>8.42%</td><td>1.30</td><td>5/6</td></tr></tbody></table></div><h3>Raw native3Y/5Y MonteCarlo,10,000paths</h3><pre>{
+  &quot;3y&quot;: {
+    &quot;probability_profit_pct&quot;: 95.32000000000001,
+    &quot;return_p05_pct&quot;: 0.5771582920087076,
+    &quot;return_p50_pct&quot;: 24.026919589975215,
+    &quot;return_p95_pct&quot;: 53.45988434559172,
+    &quot;max_drawdown_p50_pct&quot;: 7.48794746397291,
+    &quot;max_drawdown_p95_pct&quot;: 13.944503179802364,
+    &quot;closed_pnl_total_breach_pct&quot;: 4.51,
+    &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+    &quot;paths&quot;: 10000,
+    &quot;block_length&quot;: 5,
+    &quot;profit_factor_p05&quot;: 0.9498443674382154,
+    &quot;profit_factor_p50&quot;: 1.4495182525699513,
+    &quot;profit_factor_p95&quot;: 2.181445431847193,
+    &quot;scope&quot;: &quot;calendar-day closing balance bootstrap; trade-block PF separately; not native equity/rule pass probability&quot;,
+    &quot;missed_trade_stress&quot;: {
+      &quot;0.1&quot;: {
+        &quot;probability_profit_pct&quot;: 91.42,
+        &quot;return_p05_pct&quot;: -3.988839566325055,
+        &quot;return_p50_pct&quot;: 20.96002728891877,
+        &quot;return_p95_pct&quot;: 54.30411805630796,
+        &quot;max_drawdown_p50_pct&quot;: 8.34083003971745,
+        &quot;max_drawdown_p95_pct&quot;: 15.872994057967704,
+        &quot;closed_pnl_total_breach_pct&quot;: 8.200000000000001,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      },
+      &quot;0.2&quot;: {
+        &quot;probability_profit_pct&quot;: 89.87,
+        &quot;return_p05_pct&quot;: -4.4844854088748125,
+        &quot;return_p50_pct&quot;: 18.191373567619486,
+        &quot;return_p95_pct&quot;: 48.665445642029326,
+        &quot;max_drawdown_p50_pct&quot;: 7.890139427897308,
+        &quot;max_drawdown_p95_pct&quot;: 15.18584825000725,
+        &quot;closed_pnl_total_breach_pct&quot;: 7.59,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      }
+    },
+    &quot;reshuffle&quot;: {
+      &quot;probability_profit_pct&quot;: 100.0,
+      &quot;return_p05_pct&quot;: 23.920299999999738,
+      &quot;return_p50_pct&quot;: 23.92029999999985,
+      &quot;return_p95_pct&quot;: 23.920299999999983,
+      &quot;max_drawdown_p50_pct&quot;: 7.742248083316605,
+      &quot;max_drawdown_p95_pct&quot;: 12.11513445699151,
+      &quot;closed_pnl_total_breach_pct&quot;: 1.31,
+      &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+      &quot;max_win_streak_p50&quot;: 5.0,
+      &quot;max_loss_streak_p50&quot;: 6.0,
+      &quot;max_loss_streak_p95&quot;: 10.0
+    },
+    &quot;reshuffle_note&quot;: &quot;Compounded normalized closing-trade returns; preserves the observed sign/count sample, not changing regimes.&quot;
+  },
+  &quot;5y&quot;: {
+    &quot;probability_profit_pct&quot;: 87.35000000000001,
+    &quot;return_p05_pct&quot;: -7.221912499252585,
+    &quot;return_p50_pct&quot;: 20.029265390182438,
+    &quot;return_p95_pct&quot;: 56.63480039998343,
+    &quot;max_drawdown_p50_pct&quot;: 10.928163394838226,
+    &quot;max_drawdown_p95_pct&quot;: 20.402537134549398,
+    &quot;closed_pnl_total_breach_pct&quot;: 16.61,
+    &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+    &quot;paths&quot;: 10000,
+    &quot;block_length&quot;: 5,
+    &quot;profit_factor_p05&quot;: 0.8859188028733647,
+    &quot;profit_factor_p50&quot;: 1.2238655948286512,
+    &quot;profit_factor_p95&quot;: 1.6900199338148651,
+    &quot;scope&quot;: &quot;calendar-day closing balance bootstrap; trade-block PF separately; not native equity/rule pass probability&quot;,
+    &quot;missed_trade_stress&quot;: {
+      &quot;0.1&quot;: {
+        &quot;probability_profit_pct&quot;: 82.58,
+        &quot;return_p05_pct&quot;: -11.377677283422011,
+        &quot;return_p50_pct&quot;: 17.439341007765982,
+        &quot;return_p95_pct&quot;: 58.448703867915064,
+        &quot;max_drawdown_p50_pct&quot;: 11.825558116448931,
+        &quot;max_drawdown_p95_pct&quot;: 22.548023889714806,
+        &quot;closed_pnl_total_breach_pct&quot;: 22.37,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      },
+      &quot;0.2&quot;: {
+        &quot;probability_profit_pct&quot;: 81.34,
+        &quot;return_p05_pct&quot;: -11.693255276884125,
+        &quot;return_p50_pct&quot;: 15.805951187268452,
+        &quot;return_p95_pct&quot;: 52.35703417328006,
+        &quot;max_drawdown_p50_pct&quot;: 11.150663984207632,
+        &quot;max_drawdown_p95_pct&quot;: 21.49231970707958,
+        &quot;closed_pnl_total_breach_pct&quot;: 20.28,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      }
+    },
+    &quot;reshuffle&quot;: {
+      &quot;probability_profit_pct&quot;: 100.0,
+      &quot;return_p05_pct&quot;: 19.902299999999904,
+      &quot;return_p50_pct&quot;: 19.90230000000004,
+      &quot;return_p95_pct&quot;: 19.902300000000196,
+      &quot;max_drawdown_p50_pct&quot;: 11.108589568699866,
+      &quot;max_drawdown_p95_pct&quot;: 17.120964330839758,
+      &quot;closed_pnl_total_breach_pct&quot;: 8.35,
+      &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+      &quot;max_win_streak_p50&quot;: 6.0,
+      &quot;max_loss_streak_p50&quot;: 7.0,
+      &quot;max_loss_streak_p95&quot;: 11.0
+    },
+    &quot;reshuffle_note&quot;: &quot;Compounded normalized closing-trade returns; preserves the observed sign/count sample, not changing regimes.&quot;
+  },
+  &quot;prop_proxy&quot;: {
+    &quot;paths&quot;: 10000,
+    &quot;horizon_calendar_days&quot;: 365,
+    &quot;closed_pnl_phase1_pass_pct&quot;: 47.78,
+    &quot;closed_pnl_phase2_pass_given_phase1_pct&quot;: 40.728338216827126,
+    &quot;closed_pnl_two_phase_pass_pct&quot;: 19.46,
+    &quot;closed_pnl_breach_pct&quot;: 2.04,
+    &quot;unfinished_pct&quot;: 78.5,
+    &quot;median_calendar_days_to_pass&quot;: 277.0,
+    &quot;median_calendar_days_to_funded&quot;: 282.0,
+    &quot;phase1_median_days&quot;: 214.5,
+    &quot;engine&quot;: &quot;Existing app.prop_sim.engine, closed ledger mode, 5-calendar-day blocks&quot;,
+    &quot;handover_days&quot;: [
+      2,
+      5
+    ],
+    &quot;rules_snapshot&quot;: {
+      &quot;status&quot;: &quot;official&quot;,
+      &quot;checked&quot;: &quot;2026-09-29&quot;,
+      &quot;sources&quot;: [
+        &quot;https://ftmo.com/en/trading-objectives/&quot;
+      ],
+      &quot;notes&quot;: &quot;Targets, loss limits and minimum days read from FTMO&#x27;s official Trading Objectives page. Standard FTMO Accounts restrict news trading and weekend holding; Swing lifts both.&quot;
+    },
+    &quot;scope&quot;: &quot;Exploratory daily closing-position-PnL proxy: 10%/5% targets, 4 active days each, 5% daily / 10% static loss. Within-day closing-PnL minimum retained; floating equity, exact CE(S)T resets, entry-commission timing and installed FTMO guards are not replayed. Cached rule snapshot, not a forecast or current-account validation.&quot;
+  },
+  &quot;deflated_sharpe&quot;: {
+    &quot;annualized_sharpe&quot;: 0.9563357182865055,
+    &quot;probabilistic_sharpe_pct&quot;: 96.14586043282169,
+    &quot;deflated_sharpe_pct&quot;: 30.82975629980057,
+    &quot;multiple_test_benchmark_sharpe&quot;: 1.2271814688159328,
+    &quot;daily_skewness&quot;: 2.6548640722947674,
+    &quot;daily_kurtosis&quot;: 18.22110578583423
+  }
+}</pre><h3>Measured extra-cost stress on exact3Y raw reproduction</h3><pre>{
+  &quot;status&quot;: &quot;measured&quot;,
+  &quot;mean_roundtrip_spread_cash&quot;: 4.620239316239284,
+  &quot;mean_adverse_entry_slippage_cash&quot;: 0.12987179487177686,
+  &quot;mean_commission_cash&quot;: 0.8087179487179488,
+  &quot;scenarios&quot;: [
+    {
+      &quot;extra_cost_multiple&quot;: 1,
+      &quot;mean_extra_cash&quot;: 5.558829059829009,
+      &quot;net_profit&quot;: 1741.7570000000055,
+      &quot;return_pct&quot;: 17.417570000000055,
+      &quot;pf&quot;: 1.306641847159754,
+      &quot;win_rate&quot;: 47.008547008547005
+    },
+    {
+      &quot;extra_cost_multiple&quot;: 2,
+      &quot;mean_extra_cash&quot;: 11.117658119658017,
+      &quot;net_profit&quot;: 1091.3740000000123,
+      &quot;return_pct&quot;: 10.913740000000123,
+      &quot;pf&quot;: 1.1790339815379651,
+      &quot;win_rate&quot;: 47.008547008547005
+    }
+  ],
+  &quot;scope&quot;: &quot;Algebraic extra1x/2x recorded transaction-event quote spread + commissions + adverse requested-versus-filled entry slippage, above native costs. Quotes observed at transaction callbacks, not a claim of exchange orderbook fills. No invented spreads. Different exits/gap paths not replayed.&quot;
+}</pre></section><section><h2>BTC weekly quartile rejection — STOPPED AT RAW GATE</h2><p>Failed checks:</p><pre>{
+  &quot;3y&quot;: [
+    &quot;pf_at_least_1_15&quot;,
+    &quot;better_pf_than_control&quot;,
+    &quot;better_mean_net_R_than_control&quot;
+  ],
+  &quot;5y&quot;: [
+    &quot;positive&quot;,
+    &quot;pf_at_least_1_15&quot;,
+    &quot;better_pf_than_control&quot;,
+    &quot;better_mean_net_R_than_control&quot;
+  ]
+}</pre><h3>Controls at identical1% risk</h3><div class="scroll"><table><thead><tr><th>Version / window</th><th>Dates (end exclusive)</th><th>Trades</th><th>/month</th><th>/market day</th><th>Return</th><th>PF</th><th>Win rate</th><th>Equity DD</th><th>Sharpe</th><th>W/L streak</th></tr></thead><tbody><tr><td>Signal control 5y</td><td>2021-10-09 → 2026-10-09</td><td>628</td><td>10.47</td><td>0.34</td><td>-1.30%</td><td>0.99</td><td>47.5%</td><td>19.82%</td><td>0.01</td><td>8/7</td></tr><tr><td>Signal control 3y</td><td>2023-10-09 → 2026-10-09</td><td>386</td><td>10.72</td><td>0.35</td><td>8.87%</td><td>1.08</td><td>50.0%</td><td>12.91%</td><td>0.35</td><td>8/7</td></tr></tbody></table></div><h3>Raw native3Y/5Y MonteCarlo,10,000paths</h3><pre>{
+  &quot;3y&quot;: {
+    &quot;probability_profit_pct&quot;: 53.839999999999996,
+    &quot;return_p05_pct&quot;: -12.763768232060418,
+    &quot;return_p50_pct&quot;: 0.8702931936643288,
+    &quot;return_p95_pct&quot;: 16.83069230325869,
+    &quot;max_drawdown_p50_pct&quot;: 8.95593487394925,
+    &quot;max_drawdown_p95_pct&quot;: 17.08906558129874,
+    &quot;closed_pnl_total_breach_pct&quot;: 20.16,
+    &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+    &quot;paths&quot;: 10000,
+    &quot;block_length&quot;: 5,
+    &quot;profit_factor_p05&quot;: 0.8186654699803413,
+    &quot;profit_factor_p50&quot;: 1.0159292071812676,
+    &quot;profit_factor_p95&quot;: 1.2606765481717639,
+    &quot;scope&quot;: &quot;calendar-day closing balance bootstrap; trade-block PF separately; not native equity/rule pass probability&quot;,
+    &quot;missed_trade_stress&quot;: {
+      &quot;0.1&quot;: {
+        &quot;probability_profit_pct&quot;: 54.39000000000001,
+        &quot;return_p05_pct&quot;: -12.473388889108834,
+        &quot;return_p50_pct&quot;: 0.9523479184897932,
+        &quot;return_p95_pct&quot;: 16.009173558041297,
+        &quot;max_drawdown_p50_pct&quot;: 8.511375423222084,
+        &quot;max_drawdown_p95_pct&quot;: 16.367420062963667,
+        &quot;closed_pnl_total_breach_pct&quot;: 18.060000000000002,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      },
+      &quot;0.2&quot;: {
+        &quot;probability_profit_pct&quot;: 53.769999999999996,
+        &quot;return_p05_pct&quot;: -11.901720304712136,
+        &quot;return_p50_pct&quot;: 0.7833352780856284,
+        &quot;return_p95_pct&quot;: 15.203963130766297,
+        &quot;max_drawdown_p50_pct&quot;: 8.067398266166764,
+        &quot;max_drawdown_p95_pct&quot;: 15.697866938120526,
+        &quot;closed_pnl_total_breach_pct&quot;: 15.690000000000001,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      }
+    },
+    &quot;reshuffle&quot;: {
+      &quot;probability_profit_pct&quot;: 100.0,
+      &quot;return_p05_pct&quot;: 0.9238999999996889,
+      &quot;return_p50_pct&quot;: 0.9238999999998665,
+      &quot;return_p95_pct&quot;: 0.9239000000000441,
+      &quot;max_drawdown_p50_pct&quot;: 8.60298646852014,
+      &quot;max_drawdown_p95_pct&quot;: 12.844995068386318,
+      &quot;closed_pnl_total_breach_pct&quot;: 3.82,
+      &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+      &quot;max_win_streak_p50&quot;: 7.0,
+      &quot;max_loss_streak_p50&quot;: 8.0,
+      &quot;max_loss_streak_p95&quot;: 12.0
+    },
+    &quot;reshuffle_note&quot;: &quot;Compounded normalized closing-trade returns; preserves the observed sign/count sample, not changing regimes.&quot;
+  },
+  &quot;5y&quot;: {
+    &quot;probability_profit_pct&quot;: 38.22,
+    &quot;return_p05_pct&quot;: -20.370201065625146,
+    &quot;return_p50_pct&quot;: -3.5011064848339766,
+    &quot;return_p95_pct&quot;: 17.205037139785095,
+    &quot;max_drawdown_p50_pct&quot;: 13.49588027561786,
+    &quot;max_drawdown_p95_pct&quot;: 24.584669342242822,
+    &quot;closed_pnl_total_breach_pct&quot;: 45.839999999999996,
+    &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+    &quot;paths&quot;: 10000,
+    &quot;block_length&quot;: 5,
+    &quot;profit_factor_p05&quot;: 0.8204037722363964,
+    &quot;profit_factor_p50&quot;: 0.9720169275324324,
+    &quot;profit_factor_p95&quot;: 1.15219552832688,
+    &quot;scope&quot;: &quot;calendar-day closing balance bootstrap; trade-block PF separately; not native equity/rule pass probability&quot;,
+    &quot;missed_trade_stress&quot;: {
+      &quot;0.1&quot;: {
+        &quot;probability_profit_pct&quot;: 39.67,
+        &quot;return_p05_pct&quot;: -18.985185277854704,
+        &quot;return_p50_pct&quot;: -2.867561636110827,
+        &quot;return_p95_pct&quot;: 16.803437399089216,
+        &quot;max_drawdown_p50_pct&quot;: 12.675185703060476,
+        &quot;max_drawdown_p95_pct&quot;: 23.18562614311418,
+        &quot;closed_pnl_total_breach_pct&quot;: 41.99,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      },
+      &quot;0.2&quot;: {
+        &quot;probability_profit_pct&quot;: 39.629999999999995,
+        &quot;return_p05_pct&quot;: -17.775908313259126,
+        &quot;return_p50_pct&quot;: -2.630716925098459,
+        &quot;return_p95_pct&quot;: 15.624391062773379,
+        &quot;max_drawdown_p50_pct&quot;: 11.92107970020334,
+        &quot;max_drawdown_p95_pct&quot;: 22.085541158860796,
+        &quot;closed_pnl_total_breach_pct&quot;: 38.29,
+        &quot;closed_pnl_daily_breach_pct&quot;: 0.0
+      }
+    },
+    &quot;reshuffle&quot;: {
+      &quot;probability_profit_pct&quot;: 0.0,
+      &quot;return_p05_pct&quot;: -3.199300000000016,
+      &quot;return_p50_pct&quot;: -3.1992999999998273,
+      &quot;return_p95_pct&quot;: -3.1992999999996385,
+      &quot;max_drawdown_p50_pct&quot;: 12.865932372769601,
+      &quot;max_drawdown_p95_pct&quot;: 18.481789662623253,
+      &quot;closed_pnl_total_breach_pct&quot;: 30.45,
+      &quot;closed_pnl_daily_breach_pct&quot;: 0.0,
+      &quot;max_win_streak_p50&quot;: 8.0,
+      &quot;max_loss_streak_p50&quot;: 9.0,
+      &quot;max_loss_streak_p95&quot;: 13.0
+    },
+    &quot;reshuffle_note&quot;: &quot;Compounded normalized closing-trade returns; preserves the observed sign/count sample, not changing regimes.&quot;
+  },
+  &quot;prop_proxy&quot;: {
+    &quot;paths&quot;: 10000,
+    &quot;horizon_calendar_days&quot;: 365,
+    &quot;closed_pnl_phase1_pass_pct&quot;: 6.329999999999999,
+    &quot;closed_pnl_phase2_pass_given_phase1_pct&quot;: 7.109004739336493,
+    &quot;closed_pnl_two_phase_pass_pct&quot;: 0.44999999999999996,
+    &quot;closed_pnl_breach_pct&quot;: 3.05,
+    &quot;unfinished_pct&quot;: 96.5,
+    &quot;median_calendar_days_to_pass&quot;: 313.0,
+    &quot;median_calendar_days_to_funded&quot;: 318.0,
+    &quot;phase1_median_days&quot;: 276.0,
+    &quot;engine&quot;: &quot;Existing app.prop_sim.engine, closed ledger mode, 5-calendar-day blocks&quot;,
+    &quot;handover_days&quot;: [
+      2,
+      5
+    ],
+    &quot;rules_snapshot&quot;: {
+      &quot;status&quot;: &quot;official&quot;,
+      &quot;checked&quot;: &quot;2026-09-29&quot;,
+      &quot;sources&quot;: [
+        &quot;https://ftmo.com/en/trading-objectives/&quot;
+      ],
+      &quot;notes&quot;: &quot;Targets, loss limits and minimum days read from FTMO&#x27;s official Trading Objectives page. Standard FTMO Accounts restrict news trading and weekend holding; Swing lifts both.&quot;
+    },
+    &quot;scope&quot;: &quot;Exploratory daily closing-position-PnL proxy: 10%/5% targets, 4 active days each, 5% daily / 10% static loss. Within-day closing-PnL minimum retained; floating equity, exact CE(S)T resets, entry-commission timing and installed FTMO guards are not replayed. Cached rule snapshot, not a forecast or current-account validation.&quot;
+  },
+  &quot;deflated_sharpe&quot;: {
+    &quot;annualized_sharpe&quot;: 0.08529349994686546,
+    &quot;probabilistic_sharpe_pct&quot;: 55.869738234363616,
+    &quot;deflated_sharpe_pct&quot;: 1.696580810911924,
+    &quot;multiple_test_benchmark_sharpe&quot;: 1.3103271140212966,
+    &quot;daily_skewness&quot;: -0.19072078637399337,
+    &quot;daily_kurtosis&quot;: 7.498876886670944
+  }
+}</pre><h3>Measured extra-cost stress on exact3Y raw reproduction</h3><pre>{
+  &quot;status&quot;: &quot;measured&quot;,
+  &quot;mean_roundtrip_spread_cash&quot;: 1.1525817518248314,
+  &quot;mean_adverse_entry_slippage_cash&quot;: 0.028183454987828795,
+  &quot;mean_commission_cash&quot;: 0.2313138686131387,
+  &quot;scenarios&quot;: [
+    {
+      &quot;extra_cost_multiple&quot;: 1,
+      &quot;mean_extra_cash&quot;: 1.4120790754257988,
+      &quot;net_profit&quot;: -488.0145000000035,
+      &quot;return_pct&quot;: -4.880145000000035,
+      &quot;pf&quot;: 0.9292216398522307,
+      &quot;win_rate&quot;: 46.95863746958637
+    },
+    {
+      &quot;extra_cost_multiple&quot;: 2,
+      &quot;mean_extra_cash&quot;: 2.8241581508515976,
+      &quot;net_profit&quot;: -1068.3790000000065,
+      &quot;return_pct&quot;: -10.683790000000066,
+      &quot;pf&quot;: 0.8521427611567343,
+      &quot;win_rate&quot;: 46.47201946472019
+    }
+  ],
+  &quot;scope&quot;: &quot;Algebraic extra1x/2x recorded transaction-event quote spread + commissions + adverse requested-versus-filled entry slippage, above native costs. Quotes observed at transaction callbacks, not a claim of exchange orderbook fills. No invented spreads. Different exits/gap paths not replayed.&quot;
+}</pre></section><h2>Mandatory chronology and next research steps</h2><p>Development: 2021-10-09 → 2023-10-09; older validation: 2023-10-09 → 2024-10-09; final two-year retrospective validation: 2024-10-09 → 2026-10-09. The final two years were already inspected in raw research; never call them untouched. The staged search plan is prepared but has not run. If exploration is approved, choose one stable finalist before that final window; do not choose using the last year, six months or three months.</p><details><summary>Prepared staged search scope and exclusions</summary><pre>{
+  &quot;fields&quot;: [
+    &quot;tf&quot;,
+    &quot;reference&quot;,
+    &quot;fraction&quot;,
+    &quot;buffer&quot;,
+    &quot;entry&quot;,
+    &quot;stop&quot;,
+    &quot;stop_scale&quot;,
+    &quot;management&quot;,
+    &quot;trigger&quot;,
+    &quot;trail&quot;,
+    &quot;exit&quot;,
+    &quot;rr&quot;,
+    &quot;session&quot;,
+    &quot;direction&quot;,
+    &quot;filter&quot;,
+    &quot;threshold&quot;,
+    &quot;daily_cap&quot;,
+    &quot;hold&quot;,
+    &quot;flat&quot;,
+    &quot;dow&quot;,
+    &quot;width&quot;,
+    &quot;ema_fast&quot;,
+    &quot;ema_slow&quot;
+  ],
+  &quot;baseline&quot;: {
+    &quot;gold&quot;: {
+      &quot;tf&quot;: 15,
+      &quot;reference&quot;: 16408,
+      &quot;fraction&quot;: 0.125,
+      &quot;buffer&quot;: 0.1,
+      &quot;entry&quot;: 0,
+      &quot;stop&quot;: 0,
+      &quot;stop_scale&quot;: 1.5,
+      &quot;management&quot;: 0,
+      &quot;trigger&quot;: 1,
+      &quot;trail&quot;: 1,
+      &quot;exit&quot;: 0,
+      &quot;rr&quot;: 2,
+      &quot;session&quot;: 0,
+      &quot;direction&quot;: 0,
+      &quot;filter&quot;: 0,
+      &quot;threshold&quot;: 20,
+      &quot;daily_cap&quot;: 1,
+      &quot;hold&quot;: 480,
+      &quot;flat&quot;: 1,
+      &quot;dow&quot;: 0,
+      &quot;width&quot;: 1,
+      &quot;ema_fast&quot;: 12,
+      &quot;ema_slow&quot;: 26
+    },
+    &quot;us100&quot;: {
+      &quot;tf&quot;: 60,
+      &quot;reference&quot;: 16408,
+      &quot;fraction&quot;: 0.125,
+      &quot;buffer&quot;: 0.1,
+      &quot;entry&quot;: 0,
+      &quot;stop&quot;: 0,
+      &quot;stop_scale&quot;: 1.5,
+      &quot;management&quot;: 0,
+      &quot;trigger&quot;: 1,
+      &quot;trail&quot;: 1,
+      &quot;exit&quot;: 1,
+      &quot;rr&quot;: 2,
+      &quot;session&quot;: 0,
+      &quot;direction&quot;: 0,
+      &quot;filter&quot;: 0,
+      &quot;threshold&quot;: 20,
+      &quot;daily_cap&quot;: 1,
+      &quot;hold&quot;: 480,
+      &quot;flat&quot;: 1,
+      &quot;dow&quot;: 0,
+      &quot;width&quot;: 1,
+      &quot;ema_fast&quot;: 12,
+      &quot;ema_slow&quot;: 26
+    },
+    &quot;btc&quot;: {
+      &quot;tf&quot;: 15,
+      &quot;reference&quot;: 32769,
+      &quot;fraction&quot;: 0.25,
+      &quot;buffer&quot;: 0.1,
+      &quot;entry&quot;: 0,
+      &quot;stop&quot;: 0,
+      &quot;stop_scale&quot;: 1.5,
+      &quot;management&quot;: 0,
+      &quot;trigger&quot;: 1,
+      &quot;trail&quot;: 1,
+      &quot;exit&quot;: 0,
+      &quot;rr&quot;: 2,
+      &quot;session&quot;: 0,
+      &quot;direction&quot;: 0,
+      &quot;filter&quot;: 0,
+      &quot;threshold&quot;: 20,
+      &quot;daily_cap&quot;: 1,
+      &quot;hold&quot;: 480,
+      &quot;flat&quot;: 1,
+      &quot;dow&quot;: 0,
+      &quot;width&quot;: 1,
+      &quot;ema_fast&quot;: 12,
+      &quot;ema_slow&quot;: 26
+    }
+  },
+  &quot;stages&quot;: {
+    &quot;gold&quot;: {
+      &quot;timeframe&quot;: [
+        {
+          &quot;tf&quot;: 1
+        },
+        {
+          &quot;tf&quot;: 3
+        },
+        {
+          &quot;tf&quot;: 5
+        },
+        {
+          &quot;tf&quot;: 15
+        },
+        {
+          &quot;tf&quot;: 30
+        },
+        {
+          &quot;tf&quot;: 60
+        },
+        {
+          &quot;tf&quot;: 240
+        }
+      ],
+      &quot;entry&quot;: [
+        {
+          &quot;entry&quot;: 0
+        },
+        {
+          &quot;entry&quot;: 1
+        },
+        {
+          &quot;entry&quot;: 2
+        },
+        {
+          &quot;entry&quot;: 3
+        }
+      ],
+      &quot;stop&quot;: [
+        {
+          &quot;stop&quot;: 0
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 0.5
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 0.75
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 1
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 1.5
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 2
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 3
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 4
+        },
+        {
+          &quot;stop&quot;: 2
+        },
+        {
+          &quot;stop&quot;: 3
+        },
+        {
+          &quot;stop&quot;: 4
+        },
+        {
+          &quot;stop&quot;: 5
+        }
+      ],
+      &quot;management&quot;: [
+        {
+          &quot;management&quot;: 0
+        },
+        {
+          &quot;management&quot;: 1,
+          &quot;trigger&quot;: 0.5
+        },
+        {
+          &quot;management&quot;: 1,
+          &quot;trigger&quot;: 1
+        },
+        {
+          &quot;management&quot;: 1,
+          &quot;trigger&quot;: 1.5
+        },
+        {
+          &quot;management&quot;: 2,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 3,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 4,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 5,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 6,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 7,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        }
+      ],
+      &quot;exit&quot;: [
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 0.5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 0.75
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 1
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 1.25
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 1.5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 2
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 2.5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 3
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 4
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 6
+        },
+        {
+          &quot;exit&quot;: 2,
+          &quot;management&quot;: 2
+        },
+        {
+          &quot;exit&quot;: 3
+        },
+        {
+          &quot;exit&quot;: 0
+        }
+      ],
+      &quot;session&quot;: [
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 1,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 2,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 3,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 4,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 5,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 1
+        },
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 2
+        },
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 3
+        }
+      ],
+      &quot;direction&quot;: [
+        {
+          &quot;direction&quot;: 0
+        },
+        {
+          &quot;direction&quot;: 1
+        },
+        {
+          &quot;direction&quot;: -1
+        }
+      ],
+      &quot;filters&quot;: [
+        {
+          &quot;filter&quot;: 0
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 15
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 25
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 30
+        },
+        {
+          &quot;filter&quot;: 2,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 3,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 4,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 5,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 6,
+          &quot;threshold&quot;: 20
+        }
+      ],
+      &quot;holding&quot;: [
+        {
+          &quot;daily_cap&quot;: 1
+        },
+        {
+          &quot;daily_cap&quot;: 2
+        },
+        {
+          &quot;daily_cap&quot;: 3
+        },
+        {
+          &quot;hold&quot;: 60
+        },
+        {
+          &quot;hold&quot;: 240
+        },
+        {
+          &quot;hold&quot;: 480
+        },
+        {
+          &quot;hold&quot;: 1440
+        },
+        {
+          &quot;flat&quot;: 0
+        },
+        {
+          &quot;flat&quot;: 1
+        }
+      ],
+      &quot;source&quot;: [
+        {
+          &quot;fraction&quot;: 0.1
+        },
+        {
+          &quot;fraction&quot;: 0.125
+        },
+        {
+          &quot;fraction&quot;: 0.16666666666666666
+        },
+        {
+          &quot;buffer&quot;: 0.05
+        },
+        {
+          &quot;buffer&quot;: 0.1
+        },
+        {
+          &quot;buffer&quot;: 0.2
+        },
+        {
+          &quot;reference&quot;: 16408
+        },
+        {
+          &quot;reference&quot;: 32769
+        }
+      ]
+    },
+    &quot;us100&quot;: {
+      &quot;timeframe&quot;: [
+        {
+          &quot;tf&quot;: 1
+        },
+        {
+          &quot;tf&quot;: 3
+        },
+        {
+          &quot;tf&quot;: 5
+        },
+        {
+          &quot;tf&quot;: 15
+        },
+        {
+          &quot;tf&quot;: 30
+        },
+        {
+          &quot;tf&quot;: 60
+        },
+        {
+          &quot;tf&quot;: 240
+        }
+      ],
+      &quot;entry&quot;: [
+        {
+          &quot;entry&quot;: 0
+        },
+        {
+          &quot;entry&quot;: 1
+        },
+        {
+          &quot;entry&quot;: 2
+        },
+        {
+          &quot;entry&quot;: 3
+        }
+      ],
+      &quot;stop&quot;: [
+        {
+          &quot;stop&quot;: 0
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 0.5
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 0.75
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 1
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 1.5
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 2
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 3
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 4
+        },
+        {
+          &quot;stop&quot;: 2
+        },
+        {
+          &quot;stop&quot;: 3
+        },
+        {
+          &quot;stop&quot;: 4
+        },
+        {
+          &quot;stop&quot;: 5
+        }
+      ],
+      &quot;management&quot;: [
+        {
+          &quot;management&quot;: 0
+        },
+        {
+          &quot;management&quot;: 1,
+          &quot;trigger&quot;: 0.5
+        },
+        {
+          &quot;management&quot;: 1,
+          &quot;trigger&quot;: 1
+        },
+        {
+          &quot;management&quot;: 1,
+          &quot;trigger&quot;: 1.5
+        },
+        {
+          &quot;management&quot;: 2,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 3,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 4,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 5,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 6,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 7,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        }
+      ],
+      &quot;exit&quot;: [
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 0.5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 0.75
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 1
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 1.25
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 1.5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 2
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 2.5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 3
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 4
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 6
+        },
+        {
+          &quot;exit&quot;: 2,
+          &quot;management&quot;: 2
+        },
+        {
+          &quot;exit&quot;: 3
+        }
+      ],
+      &quot;session&quot;: [
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 1,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 2,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 3,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 4,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 5,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 1
+        },
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 2
+        },
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 3
+        }
+      ],
+      &quot;direction&quot;: [
+        {
+          &quot;direction&quot;: 0
+        },
+        {
+          &quot;direction&quot;: 1
+        },
+        {
+          &quot;direction&quot;: -1
+        }
+      ],
+      &quot;filters&quot;: [
+        {
+          &quot;filter&quot;: 0
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 15
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 25
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 30
+        },
+        {
+          &quot;filter&quot;: 2,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 3,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 4,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 5,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 6,
+          &quot;threshold&quot;: 20
+        }
+      ],
+      &quot;holding&quot;: [
+        {
+          &quot;daily_cap&quot;: 1
+        },
+        {
+          &quot;daily_cap&quot;: 2
+        },
+        {
+          &quot;daily_cap&quot;: 3
+        },
+        {
+          &quot;hold&quot;: 60
+        },
+        {
+          &quot;hold&quot;: 240
+        },
+        {
+          &quot;hold&quot;: 480
+        },
+        {
+          &quot;hold&quot;: 1440
+        },
+        {
+          &quot;flat&quot;: 0
+        },
+        {
+          &quot;flat&quot;: 1
+        }
+      ],
+      &quot;source&quot;: [
+        {
+          &quot;width&quot;: 0
+        },
+        {
+          &quot;width&quot;: 1
+        },
+        {
+          &quot;width&quot;: 2
+        },
+        {
+          &quot;ema_fast&quot;: 10,
+          &quot;ema_slow&quot;: 24
+        },
+        {
+          &quot;ema_fast&quot;: 12,
+          &quot;ema_slow&quot;: 26
+        },
+        {
+          &quot;ema_fast&quot;: 16,
+          &quot;ema_slow&quot;: 32
+        }
+      ]
+    },
+    &quot;btc&quot;: {
+      &quot;timeframe&quot;: [
+        {
+          &quot;tf&quot;: 1
+        },
+        {
+          &quot;tf&quot;: 3
+        },
+        {
+          &quot;tf&quot;: 5
+        },
+        {
+          &quot;tf&quot;: 15
+        },
+        {
+          &quot;tf&quot;: 30
+        },
+        {
+          &quot;tf&quot;: 60
+        },
+        {
+          &quot;tf&quot;: 240
+        }
+      ],
+      &quot;entry&quot;: [
+        {
+          &quot;entry&quot;: 0
+        },
+        {
+          &quot;entry&quot;: 1
+        },
+        {
+          &quot;entry&quot;: 2
+        },
+        {
+          &quot;entry&quot;: 3
+        }
+      ],
+      &quot;stop&quot;: [
+        {
+          &quot;stop&quot;: 0
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 0.5
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 0.75
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 1
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 1.5
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 2
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 3
+        },
+        {
+          &quot;stop&quot;: 1,
+          &quot;stop_scale&quot;: 4
+        },
+        {
+          &quot;stop&quot;: 2
+        },
+        {
+          &quot;stop&quot;: 3
+        },
+        {
+          &quot;stop&quot;: 4
+        },
+        {
+          &quot;stop&quot;: 5
+        }
+      ],
+      &quot;management&quot;: [
+        {
+          &quot;management&quot;: 0
+        },
+        {
+          &quot;management&quot;: 1,
+          &quot;trigger&quot;: 0.5
+        },
+        {
+          &quot;management&quot;: 1,
+          &quot;trigger&quot;: 1
+        },
+        {
+          &quot;management&quot;: 1,
+          &quot;trigger&quot;: 1.5
+        },
+        {
+          &quot;management&quot;: 2,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 3,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 4,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 5,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 6,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        },
+        {
+          &quot;management&quot;: 7,
+          &quot;trigger&quot;: 1,
+          &quot;trail&quot;: 1
+        }
+      ],
+      &quot;exit&quot;: [
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 0.5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 0.75
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 1
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 1.25
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 1.5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 2
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 2.5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 3
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 4
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 5
+        },
+        {
+          &quot;exit&quot;: 1,
+          &quot;rr&quot;: 6
+        },
+        {
+          &quot;exit&quot;: 2,
+          &quot;management&quot;: 2
+        },
+        {
+          &quot;exit&quot;: 3
+        },
+        {
+          &quot;exit&quot;: 0
+        }
+      ],
+      &quot;session&quot;: [
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 1,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 2,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 3,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 4,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 5,
+          &quot;dow&quot;: 0
+        },
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 1
+        },
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 2
+        },
+        {
+          &quot;session&quot;: 0,
+          &quot;dow&quot;: 3
+        }
+      ],
+      &quot;direction&quot;: [
+        {
+          &quot;direction&quot;: 0
+        },
+        {
+          &quot;direction&quot;: 1
+        },
+        {
+          &quot;direction&quot;: -1
+        }
+      ],
+      &quot;filters&quot;: [
+        {
+          &quot;filter&quot;: 0
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 15
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 25
+        },
+        {
+          &quot;filter&quot;: 1,
+          &quot;threshold&quot;: 30
+        },
+        {
+          &quot;filter&quot;: 2,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 3,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 4,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 5,
+          &quot;threshold&quot;: 20
+        },
+        {
+          &quot;filter&quot;: 6,
+          &quot;threshold&quot;: 20
+        }
+      ],
+      &quot;holding&quot;: [
+        {
+          &quot;daily_cap&quot;: 1
+        },
+        {
+          &quot;daily_cap&quot;: 2
+        },
+        {
+          &quot;daily_cap&quot;: 3
+        },
+        {
+          &quot;hold&quot;: 60
+        },
+        {
+          &quot;hold&quot;: 240
+        },
+        {
+          &quot;hold&quot;: 480
+        },
+        {
+          &quot;hold&quot;: 1440
+        },
+        {
+          &quot;flat&quot;: 0
+        },
+        {
+          &quot;flat&quot;: 1
+        }
+      ],
+      &quot;source&quot;: [
+        {
+          &quot;fraction&quot;: 0.2
+        },
+        {
+          &quot;fraction&quot;: 0.25
+        },
+        {
+          &quot;fraction&quot;: 0.3333333333333333
+        },
+        {
+          &quot;buffer&quot;: 0.05
+        },
+        {
+          &quot;buffer&quot;: 0.1
+        },
+        {
+          &quot;buffer&quot;: 0.2
+        },
+        {
+          &quot;reference&quot;: 16408
+        },
+        {
+          &quot;reference&quot;: 32769
+        }
+      ]
+    }
+  },
+  &quot;procedure&quot;: &quot;Top 3 at each staged development search; joint stop/target/source neighbourhood; pre-OOS validation chooses one, frozen before final two years. Minimum30 development and30 validation whole positions; no relaxed sample gate.&quot;,
+  &quot;risk&quot;: &quot;1% current closed balance; floor broker volume step, never minimum-lot oversizing. Risk reduced .5% post-freeze diagnostic only.&quot;,
+  &quot;code_labels&quot;: {
+    &quot;entry&quot;: {
+      &quot;0&quot;: &quot;next tick after close (baseline)&quot;,
+      &quot;1&quot;: &quot;one further completed confirming candle&quot;,
+      &quot;2&quot;: &quot;conditional market after 0.25ATR retrace within two bars&quot;,
+      &quot;3&quot;: &quot;conditional market after signal high/low breakout within two bars&quot;
+    },
+    &quot;stop&quot;: {
+      &quot;0&quot;: &quot;original reference-range/signal extreme; cycle original1.5ATR&quot;,
+      &quot;1&quot;: &quot;ATR multiple&quot;,
+      &quot;2&quot;: &quot;signal wick plus buffer&quot;,
+      &quot;3&quot;: &quot;0.2% of requested price&quot;,
+      &quot;4&quot;: &quot;fixed price distance (Gold10/US10050/BTC500)&quot;,
+      &quot;5&quot;: &quot;last confirmed H4 swing plus buffer&quot;
+    },
+    &quot;management&quot;: {
+      &quot;0&quot;: &quot;none&quot;,
+      &quot;1&quot;: &quot;BE at trigger R&quot;,
+      &quot;2&quot;: &quot;post-entry peak ATR trail&quot;,
+      &quot;3&quot;: &quot;post-entry peak0.1% price trail&quot;,
+      &quot;4&quot;: &quot;completed EMA12 trail&quot;,
+      &quot;5&quot;: &quot;last3 completed signal-bar swing trail&quot;,
+      &quot;6&quot;: &quot;step lock50% favourable movement after1R&quot;,
+      &quot;7&quot;: &quot;50% partial at1R then ATR trail&quot;
+    },
+    &quot;exit&quot;: {
+      &quot;0&quot;: &quot;prior-reference midpoint&quot;,
+      &quot;1&quot;: &quot;fixed R&quot;,
+      &quot;2&quot;: &quot;no TP plus ATR trail&quot;,
+      &quot;3&quot;: &quot;time/day-flat only&quot;
+    },
+    &quot;session&quot;: {
+      &quot;0&quot;: &quot;all until20:30UTC&quot;,
+      &quot;1&quot;: &quot;Asia00-08UTC&quot;,
+      &quot;2&quot;: &quot;London07-16UTC&quot;,
+      &quot;3&quot;: &quot;NewYork09:30-16ET&quot;,
+      &quot;4&quot;: &quot;London-NewYork overlap10-12ET&quot;,
+      &quot;5&quot;: &quot;NewYork open09:30-10:30ET&quot;
+    },
+    &quot;filter&quot;: {
+      &quot;0&quot;: &quot;none&quot;,
+      &quot;1&quot;: &quot;ADX minimum&quot;,
+      &quot;2&quot;: &quot;directional DI&quot;,
+      &quot;3&quot;: &quot;ADX20 and DI&quot;,
+      &quot;4&quot;: &quot;H4EMA50 aligned slope&quot;,
+      &quot;5&quot;: &quot;ATR14/ATR50 in0.8-2.0&quot;,
+      &quot;6&quot;: &quot;spread &lt;=0.1signalATR&quot;
+    }
+  },
+  &quot;omitted&quot;: {
+    &quot;D1&quot;: &quot;Signal closes at midnight; same-day intraday semantics would no longer represent raw entry; H4 still tested and subject to minimum counts.&quot;,
+    &quot;resting pending orders&quot;: &quot;Conditional market quote triggers are tested and distinctly labelled; no claim of resting limit fill priority.&quot;,
+    &quot;news blackout&quot;: &quot;No predeclared complete point-in-time event feed for all assets; not fabricated.&quot;,
+    &quot;pyramiding&quot;: &quot;Excluded to preserve original one-position cash-risk and causal signal accounting; daily caps1/2/3 are tested.&quot;,
+    &quot;ATR percentile&quot;: &quot;ATR short/long regime is tested instead; not mislabeled a fitted percentile.&quot;,
+    &quot;risk optimisation&quot;: &quot;Risk does not select edge. Standardised1%, post-freeze0.5% diagnostic.&quot;,
+    &quot;extra Gann clock centres&quot;: &quot;Keep8/16/32clock hypothesis; only width and EMA parameters tested; seeded equal-exposure control retained.&quot;
+  },
+  &quot;prior_exposure&quot;: &quot;42 raw Gann/control configurations and recent charts already inspected; these count toward selection-risk disclosure.&quot;,
+  &quot;frozen_before_search&quot;: true
+}</pre></details><h2>Verification</h2><pre>{
+  &quot;gold&quot;: {
+    &quot;exact&quot;: true,
+    &quot;raw_count&quot;: 639,
+    &quot;parameterised_count&quot;: 639,
+    &quot;first_differences&quot;: [],
+    &quot;comparator&quot;: &quot;C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gann Three Ideas Raw 2026-10-09\\Pipeline 2026-10-09\\native\\allrr05-gp-fresh-original-gold-parity-raw\\results.json&quot;,
+    &quot;original_dated_cash_difference&quot;: -0.09000000000014552,
+    &quot;cost_drift_note&quot;: &quot;Fresh original-source replay distinguishes broker swap snapshot drift from a source-rule change; initial dated reports remain immutable.&quot;
+  },
+  &quot;us100&quot;: {
+    &quot;exact&quot;: true,
+    &quot;raw_count&quot;: 117,
+    &quot;parameterised_count&quot;: 117,
+    &quot;first_differences&quot;: [],
+    &quot;comparator&quot;: &quot;C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gann Three Ideas Raw 2026-10-09\\Pipeline 2026-10-09\\native\\allrr05-gp-fresh-original-us100-parity-raw\\results.json&quot;,
+    &quot;original_dated_cash_difference&quot;: 0.10999999999967258,
+    &quot;cost_drift_note&quot;: &quot;Fresh original-source replay distinguishes broker swap snapshot drift from a source-rule change; initial dated reports remain immutable.&quot;
+  },
+  &quot;btc&quot;: {
+    &quot;exact&quot;: true,
+    &quot;raw_count&quot;: 411,
+    &quot;parameterised_count&quot;: 411,
+    &quot;first_differences&quot;: [],
+    &quot;comparator&quot;: &quot;C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Gann Three Ideas Raw 2026-10-09\\Pipeline 2026-10-09\\native\\allrr05-gp-fresh-original-btc-parity-raw\\results.json&quot;,
+    &quot;original_dated_cash_difference&quot;: -0.04000000000000625,
+    &quot;cost_drift_note&quot;: &quot;Fresh original-source replay distinguishes broker swap snapshot drift from a source-rule change; initial dated reports remain immutable.&quot;
+  }
+}</pre><p>A one-tick target-rounding mismatch was detected in the first US100 research-copy parity test. The copy was corrected to calculate fixed R after stop rounding. All three now reproduce fresh original-source three-year trades exactly. A gold swap charge changed by $0.09 between broker snapshots; the same drift occurs in the untouched original source. Initial dated reports remain unchanged and preliminary audit records are preserved.</p><p>Prop simulations use the existing FTMO 2-Step closed-PnL engine: <a href="https://ftmo.com/en/2-step-challenge/">official objectives</a>, checked 9 October 2026. They do not replay floating equity, exact CE(S)T resets or installed guards and are not forecast pass odds. Native equity DD and closed-cash Monte Carlo DD are different measures. Extra-cost stress uses recorded transaction quotes, fees and entry slippage in the exact three-year reproductions, not invented five-year spreads. No live EAs, BATs, website or Git changes.</p><p>Trade downloads: <a href="gold-raw-5y-trades.csv">Gold eighth-range rejection</a>, <a href="us100-raw-5y-trades.csv">US100 time-cycle gate</a>, <a href="btc-raw-5y-trades.csv">BTC weekly quartile rejection</a></p></main></html>
