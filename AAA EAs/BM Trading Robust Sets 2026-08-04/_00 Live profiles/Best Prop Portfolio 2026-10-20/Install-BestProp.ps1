@@ -120,6 +120,7 @@ foreach($symbol in $aliasMap.Keys){
     $resolved[$symbol]=$match.name
 }
 $ProfileName='Calyx-BestProp9-'+$login+'-'+(Get-Date -Format 'yyyyMMdd-HHmmss')
+$ExpertFolderName=$ProfileName
 $portfolio=@()
 foreach($entry in $manifest.entries){
     $inputs=Get-PropReadyPresetInputs $entry

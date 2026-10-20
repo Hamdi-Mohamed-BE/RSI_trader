@@ -333,6 +333,10 @@ of what is currently attached to a live terminal.
   Retest (`Best Prop Portfolio Retest 2026-10-20/`): OOS DI OFF pass 87–90%, funded<=90 61–69%, med 64–71 d; DI ON
   96–97%. MC DI OFF 43–56% pass, DI ON 50–64%. Continuous OOS DI OFF +171% (stress: stalled −7.7%), DI ON +161–184%.
   DI ON better in every test; owner chose OFF default (switchable at install).
+  Owner's first real run (VPS clone, Funded phase) FAILED after the typed confirmation: `$ExpertFolderName` unset under
+  StrictMode. MT5 had already been closed; partial Experts/Charts/Tester folders left; no state file, common.ini or restart.
+  Fixed (one line, matches PropReady); real installer statements sandbox-tested end to end on a fake data folder + BAT
+  -ValidateOnly PASS. Re-run creates a new timestamped profile; the partial folders can be deleted by the owner.
 
 ## Main locations
 
