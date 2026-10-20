@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "validated_rows": 2439,
+  "counts": {
+    "xau-rsi-vwap": 259,
+    "lta-volume-profile": 1153,
+    "gold-overnight-value-area": 1027
+  },
+  "native_positions_reconciled": 2439,
+  "native_deals_reconciled": 4878,
+  "initial_stop_normalizations_checked": 2439,
+  "source_file_count": 34,
+  "exclusions": [],
+  "all_rows_unique": true,
+  "no_within_ea_overlaps": true,
+  "no_partials": true,
+  "finite_positive_initial_stop_risk": true,
+  "opening_stop_direction_valid": true,
+  "native_deals_and_position_costs_reconciled": true,
+  "current_production_closure_hashes_match_frozen_source_plan": true,
+  "no_filter_outcomes_evaluated": true,
+  "no_live_changes": true,
+  "source_flags_preserved": true,
+  "known_invalid_stop_log_hits": 12,
+  "unique_invalid_stop_rejections": 2,
+  "source_warnings": [
+    {
+      "key": "gold-overnight-value-area",
+      "journal_path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Portfolio Long History 2026-10-08\\native\\allrr05-gold-overnight-value-area-long-fa8fe807169e\\journal.txt.gz",
+      "journal_sha256": "412e376a63194901de9744272ad472a4b2d8053967167897deab69ca40f0ede7",
+      "invalid_stop_log_hits": 12,
+      "unique_failed_buy_attempts": 2,
+      "event_details": [
+        {
+          "native_timestamp": "2026.02.10 14:35:00",
+          "side": "Long",
+          "volume": 0.02,
+          "symbol": "XAUUSD",
+          "sl": 5016.271,
+          "tp": 5075.234,
+          "duplicated_failed_market_lines": 2
+        },
+        {
+          "native_timestamp": "2026.04.13 13:50:00",
+          "side": "Long",
+          "volume": 0.04,
+          "symbol": "XAUUSD",
+          "sl": 4708.668,
+          "tp": 4740.099,
+          "duplicated_failed_market_lines": 2
+        }
+      ],
+      "interpretation": "Each actual rejected attempt appears in six journal lines across duplicate Core/terminal views and trade/EA messages. These are preserved source rejections, not 12 different admitted trades; the screen includes filled positions only.",
+      "no_assumed_rejected_fills": true
+    }
+  ],
+  "publisher_close_ordering_adjustments": [
+    {
+      "key": "gold-overnight-value-area",
+      "position_id": 1956,
+      "native_open_epoch": 1783604700,
+      "native_close_epoch": 1783604700,
+      "published_close_epoch": 1783604700.001,
+      "convention": "max(native close, native open + 0.001): ordering epsilon, not measured milliseconds"
+    }
+  ]
+}

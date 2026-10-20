@@ -1,5 +1,11 @@
 # Calyx EA pipeline — canonical definition
 
+Amended **2026-10-20 (user: "do them all", AI Trading Library review)**, added without changing earlier verdicts:
+- **Best-day falsifier** in stage 4 and stage 6: `Calyx Research Pipeline/robustness.py` `dependence()`.
+- **Bear review** before stage 5 and stage 7 decisions: the `/bear-review` project skill, run in a fresh session or subagent.
+- **Kill switch and go-live checklist** in stage 9: `_Ops Monitor/` (kill_switch.py, go_live.py).
+- **Weekly live debrief** and **monthly EA review** while EAs run on demo: `_Ops Monitor/` (fetch_live.py, debrief_backtest.py, live_debrief.py).
+
 Amended **2026-10-06 (user): final out-of-sample (OOS) is always the last TWO calendar years**
 ending at the frozen study end-exclusive date (normally through yesterday, UTC). All development and finalist
 selection must finish before that two-year window. Never shorten it to 6/12 months because data or trades are scarce.
@@ -40,6 +46,8 @@ switches** and must pass **parity** (switches off = production, trade for trade)
 ## Stage 4 — Raw gate
 Positive and PF ≥ 1.15 on 3y and 5y, ≥ 30 trades, better than the control. **FAIL → stop** (no optimizing a loser).
 PASS or near-miss with a clear reason → report and ask the user whether to run stage 5.
+**Added 2026-10-20 — best-day falsifier.** Every report shows the 3y/5y totals without the best day, without the best trade, without the 5 best days, and without the worst day. A positive total that turns ≤ 0 without the single best day or best trade **fails** the gate (`robustness.dependence()`); the 5-best-days and worst-day figures are diagnostics.
+Before asking about stage 5, run a **Bear review** of the test design (`/bear-review`, fresh context) and put its unanswered points in the report.
 
 ---
 
@@ -125,3 +133,14 @@ restarts/redeploys the site.
 ## Stage 9 — Go live (user)
 The user runs the BAT on MT5. Claude never attaches EAs, replaces SETs, restarts MT5 or trades. Update `CLAUDE.md` /
 handoff with date, artifacts and limitations; push to GitHub only when asked.
+
+**Added 2026-10-20 — before and after go-live:**
+- **Kill-switch thresholds**: `_Ops Monitor/kill_switch.py`, from a day-block bootstrap of the frozen evidence. Written down before live trading.
+  - WATCH = 95th percentile of the 3-month drawdown or losing streak.
+  - KILL = the higher of the 99th percentile and the worst value seen in history.
+- **Weekly debrief** on the demo: `fetch_live.py` (read-only), `debrief_backtest.py` (same week, isolated tester), `live_debrief.py`.
+  - Execution is compared with the backtest, never the result.
+  - The output is one proposed change per week; the owner decides.
+- **Monthly EA review**: `go_live.py monthly` gives each EA KEEP, ENFORCE, QUESTION, WATCH, KILL or OFF-ROSTER.
+- **Step-up checklist**: `go_live.py checklist`, six questions (mechanical, followed, logged, bounded, allowed, owned). All six must be YES before an EA moves from demo to real money or a funded account.
+- **News EAs**: `_Ops Monitor/event_sheet.py` produces the official NFP/CPI/FOMC sheet with a count check and timezone lines, plus a live entry-timing audit.

@@ -4,10 +4,10 @@
   "source_sha256": "56ce1ef3a1cb235c55bf14bca667d6e13bc3d19319a0ec6f8b86b5ef77eeedc3",
   "entries": {
     "gold-overnight-value-area": {
-      "strategy": "Overnight value-area breakout \u2014 raw",
+      "strategy": "Overnight value-area breakout — raw",
       "tagline": "The approved raw gold model: overnight value, a completed M5 breakout and the overnight extreme as target.",
       "description": "Builds a 64-bin, 70% tick-volume profile from 18:00 to 09:30 New York. The first completed M5 close outside value selects direction. A valid trade targets the overnight high or low, with its stop beyond the opposite value-area edge. This is the raw model, not the optimized candidate.",
-      "session": "09:35\u201316:00 America/New_York, DST-aware",
+      "session": "09:35–16:00 America/New_York, DST-aware",
       "logic_audit": "Raw source and native MT5 evidence",
       "logic_audit_note": "Research reports are preserved separately. Production adds restart protection, automatic live broker-time conversion and the existing optional Adaptive governor; no optimized entry or exit filters.",
       "logic": [
@@ -355,7 +355,7 @@
         "InpMaximumEMADistanceATR": "0.0",
         "InpRelativeVolumePeriod": "0",
         "InpMinimumRelativeVolume": "0.0",
-        "InpRequireDIAgreement": "true",
+        "InpRequireDIAgreement": "false",
         "InpDIPeriod": "14",
         "InpATRPeriod": "14",
         "InpStopMode": "2",
@@ -404,5 +404,6 @@
         "ClientExpectedSymbol": ""
       }
     }
-  }
+  },
+  "inputs_basis": "CURRENT CLIENT PACKAGE INPUTS, not historical benchmark inputs"
 }

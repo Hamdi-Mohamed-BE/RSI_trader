@@ -1,0 +1,118 @@
+{
+ "generated_utc": "2026-10-20T15:11:50.904914+00:00",
+ "provider": "FXMacroData MCP (public tier)",
+ "past_window": [
+  "2026-09-12",
+  "2026-10-16"
+ ],
+ "past_event_count": 2,
+ "past_calendar_sha256": "5184dd5b23b18a400452af433cb925960c7d31c021846b7e296839848e73d648",
+ "upcoming_window": [
+  "2026-10-20",
+  "2026-11-03"
+ ],
+ "upcoming_rows_returned": 1,
+ "upcoming_events_listed": 1,
+ "upcoming_unreadable": 0,
+ "upcoming_quality": {
+  "is_official": true,
+  "is_proxy": false,
+  "is_fallback": false,
+  "is_stale": false,
+  "has_announcement_datetime": true,
+  "point_in_time_safe": true,
+  "unverified_vintage_count": 0,
+  "unknown_publication_time_count": 0,
+  "latest_available_date": "2026-11-03",
+  "source_name": "Official release calendars",
+  "source_type": "official",
+  "is_derived": false,
+  "row_count": 13,
+  "announcement_datetime_count": 13,
+  "missing_announcement_datetime_count": 0,
+  "has_assumed_release_times": false,
+  "assumed_release_time_count": 0,
+  "bounded_release_time_count": 0,
+  "unbounded_release_time_count": 0,
+  "quality_scope": "scheduled_releases"
+ },
+ "upcoming_receipt": {
+  "source": "FXMacroData MCP",
+  "tool": "release_calendar",
+  "endpoint": "https://mcp.fxmacrodata.com",
+  "fetched_at_utc": "2026-10-20T15:11:50.793317+00:00",
+  "http_status": 200,
+  "sha256": "5a338dd445baa90f49686f866a879c75a3ef3b8729bbf70250c2f887db5d0554",
+  "authenticated": false
+ },
+ "events": [
+  {
+   "kind": "FOMC",
+   "epoch": 1789581600,
+   "utc_time": "2026-09-16T18:00:00+00:00",
+   "source": "Federal Reserve",
+   "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "release_date_confirmed": true,
+   "calendar_point_in_time_safe": true,
+   "actual_value": null,
+   "actual_point_in_time_safe": null
+  },
+  {
+   "kind": "NFP",
+   "epoch": 1790944200,
+   "utc_time": "2026-10-02T12:30:00+00:00",
+   "source": "Bureau of Labor Statistics news release schedule",
+   "source_url": "https://www.bls.gov/schedule/news_release/empsit.htm",
+   "release_date_confirmed": true,
+   "calendar_point_in_time_safe": true,
+   "actual_value": null,
+   "actual_point_in_time_safe": null
+  },
+  {
+   "kind": "FOMC",
+   "epoch": 1793210400,
+   "confirmed": true,
+   "source": "Federal Reserve",
+   "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+  }
+ ],
+ "live_entry_timing": [
+  {
+   "ea": "news-pulse-btc",
+   "symbol": "BTCUSD",
+   "side": "Buy",
+   "comment": "NP|1790944200|NFP|B",
+   "entry_utc": "2026-10-02T12:29:30+00:00",
+   "nearest_event": "NFP 2026-10-02 12:30 UTC",
+   "offset_s": -29.7
+  },
+  {
+   "ea": "news-pulse-eurusd",
+   "symbol": "EURUSD",
+   "side": "Buy",
+   "comment": "NP|1790944200|NFP|B",
+   "entry_utc": "2026-10-02T12:29:36+00:00",
+   "nearest_event": "NFP 2026-10-02 12:30 UTC",
+   "offset_s": -23.0
+  },
+  {
+   "ea": "gold-news-v9-direction",
+   "symbol": "XAUUSD",
+   "side": "Sell",
+   "comment": "AI news NFP sell 56.2%",
+   "entry_utc": "2026-10-02T12:29:55+00:00",
+   "nearest_event": "NFP 2026-10-02 12:30 UTC",
+   "offset_s": -4.3
+  },
+  {
+   "ea": "news-pulse-xag",
+   "symbol": "XAGUSD",
+   "side": "Buy",
+   "comment": "NP|1790944200|NFP|B",
+   "entry_utc": "2026-10-02T12:30:01+00:00",
+   "nearest_event": "NFP 2026-10-02 12:30 UTC",
+   "offset_s": 1.6
+  }
+ ],
+ "tester_extension": null
+}

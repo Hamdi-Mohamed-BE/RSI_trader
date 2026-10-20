@@ -26,6 +26,20 @@
     "minimum_profitable_chronological_thirds": 2,
     "require_recent_half_pf_above_1": true
   },
+  "best_day_dependence": {
+    "added": "2026-10-20",
+    "module": "robustness.dependence",
+    "fail_if_positive_total_turns_non_positive_without_best_day": true,
+    "fail_if_positive_total_turns_non_positive_without_best_trade": true,
+    "diagnostic_only": ["without_top5_days", "without_worst_day"],
+    "applies_to": ["raw gate 3y/5y", "stage 6 frozen candidate"]
+  },
+  "live_monitoring": {
+    "added": "2026-10-20",
+    "kill_switch": "WATCH = p95 of the 63-trading-day day-block-bootstrap drawdown/losing streak; KILL = max(p99, worst 63-day window in evidence)",
+    "go_live_requires_all_six_yes": true,
+    "weekly_debrief_one_change_only": true
+  },
   "risk": {
     "default_daily_loss_limit_pct": 5.0,
     "default_total_loss_limit_pct": 10.0,

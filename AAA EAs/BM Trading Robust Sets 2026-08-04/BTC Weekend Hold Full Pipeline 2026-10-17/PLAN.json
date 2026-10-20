@@ -1,0 +1,125 @@
+{
+  "version": "BTC-WEEKEND-FULL-PIPELINE-20261017",
+  "frozen_before_search": true,
+  "purpose": "Research-only full applicable-parameter pipeline for the user's Friday-to-Sunday Bitcoin long idea; not deployment approval",
+  "hypothesis": "A long Bitcoin position during the conventional FX weekend has an economically robust edge after realistic implementation costs",
+  "canonical_policy": "../PIPELINE.md and ../../Calyx Research Pipeline/pipeline-policy.json",
+  "authorization": {
+    "continue_after_raw_gate_failure": true,
+    "source": "Direct user response on 2026-10-17: Continue exploratory optimisation; research-only",
+    "live_changes": false,
+    "website_or_bat_changes": false,
+    "push_authorized_for_this_new_pipeline": false
+  },
+  "data": {
+    "requested_start": "2018-01-01",
+    "end_exclusive": "2026-10-17",
+    "preferred_single_broker": "Exness-MT5Trial16 BTCUSD",
+    "export_timeframes": ["M1", "M5", "H1", "D1"],
+    "export_fields": ["time", "open", "high", "low", "close", "tick_volume", "spread"],
+    "missing_coverage": "Fail freshness/coverage gate; never silently shift the study end or splice another broker",
+    "missing_spreads": "Never replace zero/missing historic spreads with an invented price; gross selection and observed-cost proxies must be distinguished",
+    "earlier_archive_status": "The prior Trial15 M1 and Trial16 M5 panels were separate descriptions; neither alone provides a fresh complete two-year holdout",
+    "native_engine_requirement": "Separate Model 1 screen and Model 4 confirmation with 150 ms delay; disclose real-versus-generated tick coverage"
+  },
+  "date_split": {
+    "development_requested": {"start": "2018-01-01", "end_exclusive": "2023-10-17"},
+    "validation": {"start": "2023-10-17", "end_exclusive": "2024-10-17"},
+    "oos": {"start": "2024-10-17", "end_exclusive": "2026-10-17", "calendar_years": 2},
+    "oos_status": "Retrospective temporal holdout, previously inspected in the original raw study; never claimed genuinely untouched",
+    "selection": "Only development and the older validation year; never recent 3m/6m/1y outcomes",
+    "one_final_configuration_frozen_before_oos": true,
+    "incomplete_weekend": "October 16-18, 2026 cannot complete inside the study. Administratively censor it in closed-trade evaluation; never count a tester-end forced closure as a valid weekend exit"
+  },
+  "baseline": {
+    "symbol": "BTCUSD",
+    "direction": "long only",
+    "timezone": "America/New_York",
+    "entry": "Friday 17:00 New York",
+    "exit": "Sunday 17:00 New York",
+    "dst": "Convert each local wall clock independently; do not add a fixed 48 UTC hours",
+    "stop_loss": null,
+    "take_profit": null,
+    "positions": 1,
+    "allocation": "100% current cash/entry ask, fractional reference; native broker volumes rounded down",
+    "stop_risk_percent": null,
+    "missing_endpoint": "Offline exact scheduled bar only; skip rather than forward-fill. Native first tradable tick in the scheduled minute is separately audited"
+  },
+  "raw_gate": {
+    "end_exclusive": "2024-10-17",
+    "three_year_start": "2021-10-17",
+    "five_year_start": "2019-10-17",
+    "minimum_trades_per_window": 30,
+    "minimum_profit_factor": 1.15,
+    "positive_return_required": true,
+    "better_than_control_required": true,
+    "failure_action": "Continue only explicitly labelled exploratory research; never convert failure or missing evidence into a pass"
+  },
+  "controls": [
+    "Same-duration long exposures shifted to weekday start times, using only development to compare edge",
+    "Always-long Bitcoin cash reference over identical dates, disclosed as different exposure",
+    "Joint centered/block-resampled family null preserving cross-configuration dependence"
+  ],
+  "search": {
+    "method": "Staged, top three carried forward at each applicable dimension; stable plateau rather than highest isolated return",
+    "max_unique_configurations": 1500,
+    "all_trials_counted": true,
+    "risk_not_used_to_select_edge": true,
+    "selection_basis": "Normalized one-times-notional price returns; costs and executable lot-risk overlays separately labelled",
+    "surrogate": "Causal M5 OHLC management replay is a search surrogate, not native tick evidence; ambiguous same-bar stop/target uses stop first",
+    "atr_period": 14,
+    "dimensions": {
+      "timeframe_minutes": [1, 3, 5, 15, 30, 60, 240, 1440],
+      "entry_mode": [0, 1, 2],
+      "entry_mode_meaning": ["scheduled clock market", "scheduled clock plus previous completed candle bullish", "scheduled clock plus previous completed close above its predecessor"],
+      "stop_mode": [0, 1, 2, 3],
+      "stop_mode_meaning": ["none", "ATR multiple", "percentage of entry price", "previous completed candle low minus 0.1 ATR"],
+      "stop_atr_values": [0.5, 0.75, 1, 1.5, 2, 3, 4],
+      "stop_percent_values": [0.5, 1, 1.5, 2, 3, 5],
+      "management_mode": [0, 1, 2, 3, 4, 5],
+      "management_mode_meaning": ["none", "break-even at R trigger", "ATR trailing", "percentage trailing", "chandelier", "lock 50 percent of maximum favorable profit after +1R"],
+      "break_even_trigger_R": [0.5, 1, 1.5],
+      "trailing_atr_values": [1, 2, 3, 4],
+      "trailing_percent_values": [0.5, 1, 2, 3],
+      "target_rr": [0, 0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6],
+      "target_rr_zero_meaning": "No fixed target; scheduled Sunday close remains",
+      "entry_minute_ny": [960, 1020, 1080],
+      "exit_minute_ny": [960, 1020, 1080],
+      "filter_mode": [0, 1, 2, 3, 4, 5, 6, 7],
+      "filter_mode_meaning": ["none", "EMA50 trend", "EMA200 trend", "ADX20", "ADX25", "ADX20 plus DI agreement", "causal ATR percentile band", "spread cap"],
+      "atr_percentile_windows": "Expanding or rolling past observations only, no full-sample fitted thresholds",
+      "neighbourhood": "Joint entry/exit offsets -15/0/+15 New York minutes around each development finalist, plus neighboring stop/target values"
+    },
+    "not_applicable": {
+      "limit_or_stop_entry_retest": "There is no mapped level/retest setup in the user's clock-only weekend rule; candle confirmations are the explicit applicable entry variations",
+      "other_weekdays_as_alpha": "Weekday exposures are controls, not a hunt for another strategy",
+      "short_or_other_assets": "Outside the requested Bitcoin weekend-buy hypothesis",
+      "pyramiding_reentry_partials": "One continuous weekend position; no multiple-entry grid or overlapping inventory",
+      "news_blackout": "No complete point-in-time multi-year calendar specified; do not fabricate a fitted event filter"
+    },
+    "ranking": "Development PF and return/drawdown with >=30 trades, profitable recent half, and robust joint neighbors; >=100 development trades preferred",
+    "validation_minimum_trades": 30,
+    "finalists_max": 3,
+    "if_no_valid_finalist": "Freeze the best development plateau only as a failed-validation exploratory demonstration, never select a new winner after reading OOS"
+  },
+  "robustness": {
+    "joint_block_bootstrap_paths": 10000,
+    "block_length": 5,
+    "block_sensitivity": [1, 10],
+    "same_sample_for_all_metrics": true,
+    "trade_order_reshuffle": true,
+    "random_removal_percent": [10, 20],
+    "deflated_sharpe": "Actual unique tried configurations, not a hardcoded count; crypto daily365 or weekly52 annualization labelled",
+    "family_null": "Cross-configuration dependence preserved; no independent shuffling of each strategy column",
+    "cost_stress": "Measured spread/slippage only. Current swap scenarios are sensitivities, not reconstructed historical financing",
+    "prop_firm": "FTMO closed-cash proxy only if sizing/path support it; no invented 1% stop risk for a stop-less candidate and no live pass-probability claims",
+    "portfolio_overlap": "Join available independent current-portfolio daily history only if matching coverage/settings; otherwise mark unavailable, never substitute another portfolio",
+    "promotion": "Requires all canonical statistical, coverage, execution and native equity gates. Research-only authorization does not waive any promotion gate"
+  },
+  "outputs": ["data-split.json", "DATA.json", "RAW-GATES.json", "SEARCH RESULTS.json", "DEVELOPMENT-STAGES.json", "PLATEAU.json", "SELECTION.json", "FROZEN.json", "OOS.json", "ROBUSTNESS.json", "NATIVE AUDIT.json", "Results.html"],
+  "safety": {
+    "tester": "../_Backtests/MT5-DMC-20260811 only, exclusive shared lease, ports3000/3010 clear, empty chart profile",
+    "production_EA_BAT_website": "Unchanged; requires separate explicit approval",
+    "orders_on_active_account": "Forbidden; research EA rejects non-tester execution"
+  }
+}

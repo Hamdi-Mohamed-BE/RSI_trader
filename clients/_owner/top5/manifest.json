@@ -144,7 +144,7 @@
       "slug": "nasdaq-5m-candle-momentum",
       "label": "Nasdaq 5M Candle Momentum",
       "expert": "Calyx Top5 4 Nasdaq 5M Candle Momentum.ex5",
-      "ex5_sha256": "4f69491d66c3e4dd78c0dd29a4c11f6291c622c80e8654b2506cc497aacb941f",
+      "ex5_sha256": "07dd8e274df3e31af0c16d5f61d39a8b58758a6a3e5d532d3ba5c69e9853adff",
       "symbol": "USTEC",
       "period": "M5",
       "inputs": {
@@ -162,7 +162,7 @@
         "InpMaximumEMADistanceATR": "0.0",
         "InpRelativeVolumePeriod": "0",
         "InpMinimumRelativeVolume": "0.0",
-        "InpRequireDIAgreement": "true",
+        "InpRequireDIAgreement": "false",
         "InpDIPeriod": "14",
         "InpATRPeriod": "14",
         "InpStopMode": "2",
@@ -211,7 +211,10 @@
         "ClientExpectedSymbol": ""
       },
       "original_magic": "862020",
-      "source_sha256": "ac9b7eddfc3135ecd87b746888087fa0d41003aa25b400cccade31e6b5136ffa"
+      "source_sha256": "ac9b7eddfc3135ecd87b746888087fa0d41003aa25b400cccade31e6b5136ffa",
+      "client_input_overrides": {
+        "InpRequireDIAgreement": "false"
+      }
     },
     {
       "slug": "orb-volume-profile",

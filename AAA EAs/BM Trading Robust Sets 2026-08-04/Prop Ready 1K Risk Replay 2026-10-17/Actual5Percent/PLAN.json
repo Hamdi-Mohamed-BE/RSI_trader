@@ -1,0 +1,71 @@
+{
+  "window_utc": [
+    "2026-08-17T00:00:00+00:00",
+    "2026-10-17T00:00:00+00:00"
+  ],
+  "initial_balance": 1000.0,
+  "currency": "USD",
+  "user_request": "Actual 5% base risk then compound, not the original capped5%input. No preferred loss limits given; stated research defaults used.",
+  "scenarios": [
+    {
+      "id": "requested5_current_caps",
+      "label": "5% input / current $5 ceiling",
+      "mode": "percent",
+      "value": 5.0,
+      "guard_policy": "current"
+    },
+    {
+      "id": "fixed50_old_guards",
+      "label": "True fixed $50 / old remaining guards",
+      "mode": "fixed",
+      "value": 50.0,
+      "guard_policy": "old"
+    },
+    {
+      "id": "compound5_old_guards",
+      "label": "True 5% equity / old remaining guards",
+      "mode": "percent",
+      "value": 5.0,
+      "guard_policy": "old"
+    },
+    {
+      "id": "fixed50",
+      "label": "True fixed $50",
+      "mode": "fixed",
+      "value": 50.0,
+      "guard_policy": "research_10daily_20total"
+    },
+    {
+      "id": "compound5",
+      "label": "True 5% current equity",
+      "mode": "percent",
+      "value": 5.0,
+      "guard_policy": "research_10daily_20total"
+    }
+  ],
+  "stress_scenarios": [
+    false,
+    true
+  ],
+  "actual_sizing": "Fixed50 OR5%current sampled equity; floor to brokerlotstep; reject below minimum; no initial5USDcap or originalsource volume ceiling in RESEARCH ONLY.",
+  "guards": "Aggressive research: pauseNEWentries at10%lossfromPragueday-startCASH; permanententryhalt at20%lossfrominitial1000. Soft projected/reservedrisk must also stayabove800 and within10%dayanchor.",
+  "exposure": "Totalretainedinitialrisk<=2timescurrentrequestedbudget; samesymbol<=1timesbudget. Existingrisknotreleasedbyprofitabletrail. Reserve1.25risk+negativeknownopenswap+0.50perposition. Margin80%protectedEq. 7entries/3netlosers/day;3s wait.",
+  "no_liquidation": true,
+  "default_live_profile_changed": false,
+  "new_strategy_search": false,
+  "controls": "Current5%INPUTstill$5cap; actualfixed50/5%witholdremainingportfolioadmissionguards.",
+  "compounding": "5%ofcurrentpast-onlysampledequity BEFORE entryfees; includesknownfloating, but reservedriskprojectedbalance prevents assumingunrealizedprofitfinancesfreshpositions.",
+  "costs": "BASE is sourceTrial16 recorded native spread/fills/fees/swap scaled byadmittedvolume, NOT actualTrial15Pro costs. STRESS addsone currentTrial15 snapshotspread EACHside and twice negativefinalswap; sensitivitynotexactProreproduction. Sourceexitsunchanged.",
+  "feed_caveat": "Historical native candidates are isolated ExnessTrial16; current demo lot/margin metadata are ExnessTrial15. Spot checks show DIFFERENT quotes/spreads (source USDJPY/USTEC often zero spread). Not a same-account native portfolio or exact current-demo cost test.",
+  "limitations": [
+    "Two exposed months do not establish a durable edge or an optimal live risk setting.",
+    "Only observed standalone source fills are available; rejected trades can create unobserved later signals.",
+    "Sampled equity is not tick maximum drawdown; guard slippage, request budgets, cooldown wallclock and full current-SL timeline are not reconstructed.",
+    "Recorded costs are native tester costs, not verified historical commission/financing schedules.",
+    "Snapshot spreads and margins are sensitivities/estimates, not historic realized execution or fixed future conditions.",
+    "Higher volumes are linear resizes of existing standalone fills; liquidity/commission tiers and unseen signals after rejected source trades are not reconstructed.",
+    "Five-minute sampled DD and admission stops do not guarantee the20%/10%loss limits against gaps or intrabar moves.",
+    "An end-censored position remains open; its entry fee is cash, final sampled floating is unrealized, and its artificial native liquidation is never booked.",
+    "Risk and drawdown limits are hypotheses, not a live recommendation or a pass-probability estimate."
+  ]
+}

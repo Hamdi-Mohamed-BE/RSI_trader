@@ -1,0 +1,90 @@
+{
+  "status": "PASS",
+  "checks": 175169,
+  "categories": {
+    "protocol": 3,
+    "hashes": 99,
+    "recovery": 7,
+    "package": 261,
+    "feed": 15,
+    "cash": 506,
+    "risk": 749,
+    "ownership": 173261,
+    "coverage": 144,
+    "censoring": 124
+  },
+  "cases": [
+    {
+      "slug": "gold-overnight-value-area",
+      "positions": 39,
+      "net_profit": -12.11,
+      "history_quality": "100% real ticks",
+      "equity_samples": 12366,
+      "owned_samples": 1116,
+      "discarded_post_liquidation_observations": 0,
+      "native_fill_risk_over_50_count": 11,
+      "censored": 0,
+      "nonfatal_native_order_flags": {}
+    },
+    {
+      "slug": "xau-rsi-vwap",
+      "positions": 12,
+      "net_profit": 5.8,
+      "history_quality": "100% real ticks",
+      "equity_samples": 12366,
+      "owned_samples": 725,
+      "discarded_post_liquidation_observations": 0,
+      "native_fill_risk_over_50_count": 3,
+      "censored": 0,
+      "nonfatal_native_order_flags": {}
+    },
+    {
+      "slug": "nasdaq-overnight",
+      "positions": 22,
+      "net_profit": -108.51,
+      "history_quality": "100% real ticks",
+      "equity_samples": 12336,
+      "owned_samples": 4146,
+      "discarded_post_liquidation_observations": 1,
+      "native_fill_risk_over_50_count": 1,
+      "censored": 1,
+      "nonfatal_native_order_flags": {}
+    },
+    {
+      "slug": "nasdaq-5m-candle-momentum",
+      "positions": 40,
+      "net_profit": 509.14,
+      "history_quality": "100% real ticks",
+      "equity_samples": 12336,
+      "owned_samples": 5728,
+      "discarded_post_liquidation_observations": 1,
+      "native_fill_risk_over_50_count": 2,
+      "censored": 1,
+      "nonfatal_native_order_flags": {}
+    },
+    {
+      "slug": "orb-volume-profile",
+      "positions": 11,
+      "net_profit": -167.29,
+      "history_quality": "100% real ticks",
+      "equity_samples": 12366,
+      "owned_samples": 315,
+      "discarded_post_liquidation_observations": 1,
+      "native_fill_risk_over_50_count": 1,
+      "censored": 0,
+      "nonfatal_native_order_flags": {}
+    }
+  ],
+  "native_index_sha256": "c428d001dfbaef28ff8fbb5e7e1bccccaadfd92e7e1278592fd6b1dac600527f",
+  "source_freeze_sha256": "4828e22c115502b057d5de9d6091141ffc5aafff21fbfbf023b99bc9e67bb41c",
+  "resume_freeze_sha256": "828175c02eb000a294e804e705e3de3a3875d85add7cb48bb9568f18c015d6c7",
+  "verifier_sha256": "047380345b3788907e8280a3da5efda77bd516498dfbbb91ddb216a3d8fe6398",
+  "export_v3_freeze_sha256": "cf99255aafe26461e7289a1e0a95b38ef5930b91de177e97894b139aec601eec",
+  "continuation_freeze_sha256": "f2b57fc02fdc799075ce654c8794806d6ee87afecf9d6d440fc3cff4cab3b78c",
+  "method": "Independent read-only CSV/receipt/frozen-graph/private-server-provenance audit; no trading replay imported or account access.",
+  "limitations": [
+    "Standalone native sources, not simultaneous shared-account portfolio execution.",
+    "Current client minimum-lot override can exceed selected cash risk; current historical source costs are not guaranteed current-demo/live costs.",
+    "Later shared-account signal changes after rejections and intrabar equity extremes are outside these source samples."
+  ]
+}

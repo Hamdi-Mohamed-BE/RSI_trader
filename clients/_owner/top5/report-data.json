@@ -13074,10 +13074,10 @@
     "source_sha256": "56ce1ef3a1cb235c55bf14bca667d6e13bc3d19319a0ec6f8b86b5ef77eeedc3",
     "entries": {
       "gold-overnight-value-area": {
-        "strategy": "Overnight value-area breakout \u2014 raw",
+        "strategy": "Overnight value-area breakout — raw",
         "tagline": "The approved raw gold model: overnight value, a completed M5 breakout and the overnight extreme as target.",
         "description": "Builds a 64-bin, 70% tick-volume profile from 18:00 to 09:30 New York. The first completed M5 close outside value selects direction. A valid trade targets the overnight high or low, with its stop beyond the opposite value-area edge. This is the raw model, not the optimized candidate.",
-        "session": "09:35\u201316:00 America/New_York, DST-aware",
+        "session": "09:35–16:00 America/New_York, DST-aware",
         "logic_audit": "Raw source and native MT5 evidence",
         "logic_audit_note": "Research reports are preserved separately. Production adds restart protection, automatic live broker-time conversion and the existing optional Adaptive governor; no optimized entry or exit filters.",
         "logic": [
@@ -13425,7 +13425,7 @@
           "InpMaximumEMADistanceATR": "0.0",
           "InpRelativeVolumePeriod": "0",
           "InpMinimumRelativeVolume": "0.0",
-          "InpRequireDIAgreement": "true",
+          "InpRequireDIAgreement": "false",
           "InpDIPeriod": "14",
           "InpATRPeriod": "14",
           "InpStopMode": "2",
@@ -13474,8 +13474,82 @@
           "ClientExpectedSymbol": ""
         }
       }
-    }
+    },
+    "inputs_basis": "CURRENT CLIENT PACKAGE INPUTS, not historical benchmark inputs"
   },
   "riskPolicyRevision": true,
-  "licenceEditionNote": "RISK POLICY CHANGED: delivered EAs now use the broker minimum lot when selected risk is too small, potentially exceeding your chosen risk. All performance charts and 20 benchmarks shown are historical results of the PREVIOUS skip-below-minimum builds, not backtests of these delivered binaries. Trade counts, returns and drawdown may change. Demo validation is required."
+  "licenceEditionNote": "CURRENT CLIENT BUILD: Nasdaq 5M DI agreement is OFF by default; EMA12, the 0.60%-of-price stop, ATR x6 trailing from +1R and no fixed TP are unchanged. The delivered sizing policy uses the broker minimum lot when selected risk is too small and CAN EXCEED your selected risk. Every performance chart, table, custom estimate and historical screen on this page retains the 20 EARLIER-BUILD benchmarks: Nasdaq DI ON and skip-below-minimum sizing. They are NOT backtests of the currently delivered DI-OFF/minimum-lot-override binaries. Current build fingerprints and packaged inputs are shown separately. Demo validation is required.",
+  "strategyPolicyRevision": true,
+  "benchmarkMetadata": {
+    "status": "HISTORICAL PRIOR-BUILD EVIDENCE",
+    "native_cases": 20,
+    "nasdaq_di_agreement": "ON",
+    "sizing": "Round down; skip if below broker minimum",
+    "benchmark_end_exclusive": "2026-09-30",
+    "current_binary_backtest": false,
+    "datasets_sha256": "36b1d48d28800696652b45eb0d57459f72b87ebac9f3b1db5ac6c45186d41edb",
+    "evidence_sha256": "fb2046f45f17b120c0b278e5b2530a9ca51987848992b204f12dfab1b94ca144"
+  },
+  "current_package": {
+    "revision": "CLIENT-DI-OFF-20261017",
+    "nasdaq_di_default": "OFF",
+    "risk_policy": "USD hedging only; fixed USD or current BALANCE percentage; round DOWN then use broker MINIMUM LOT if needed, which CAN EXCEED selected risk; costs and gaps excluded",
+    "manifest_sha256": "d45f55b7e3300811b2c3ebdf2fc91b60baaa8060ebeefd4b2e53bdfdc669a68a",
+    "licence": {
+      "id": "CALYX-TOP5-20260930-01",
+      "issued_utc": "2026-09-30T17:39:14+00:00",
+      "expires_utc": "2026-10-30T17:39:14+00:00",
+      "bound_login": 0,
+      "bound_server": ""
+    },
+    "bots": [
+      {
+        "slug": "gold-overnight-value-area",
+        "label": "Gold Overnight Value Area",
+        "symbol": "XAUUSD",
+        "period": "M5",
+        "expert": "Calyx Top5 1 Gold Overnight Value Area.ex5",
+        "ex5_sha256": "1c0e90d43059c690b995b117c0833cc585c5ec792b198d4869718f1cda44dad6"
+      },
+      {
+        "slug": "xau-rsi-vwap",
+        "label": "XAU RSI VWAP",
+        "symbol": "XAUUSD",
+        "period": "H1",
+        "expert": "Calyx Top5 2 XAU RSI VWAP.ex5",
+        "ex5_sha256": "59b9b404ab2f4dcb4ae957f275b99dfb4fb121f0b3ea3529cdb8455725b94b71"
+      },
+      {
+        "slug": "nasdaq-overnight",
+        "label": "Nasdaq Overnight",
+        "symbol": "USTEC",
+        "period": "M1",
+        "expert": "Calyx Top5 3 Nasdaq Overnight.ex5",
+        "ex5_sha256": "9d72a13d4588bf60d39602424e01ec8c8c3c92064c2ecb2f2e749bbd168e6a56"
+      },
+      {
+        "slug": "nasdaq-5m-candle-momentum",
+        "label": "Nasdaq 5M Candle Momentum",
+        "symbol": "USTEC",
+        "period": "M5",
+        "expert": "Calyx Top5 4 Nasdaq 5M Candle Momentum.ex5",
+        "ex5_sha256": "07dd8e274df3e31af0c16d5f61d39a8b58758a6a3e5d532d3ba5c69e9853adff"
+      },
+      {
+        "slug": "orb-volume-profile",
+        "label": "ORB Volume Profile",
+        "symbol": "XAUUSD",
+        "period": "M5",
+        "expert": "Calyx Top5 5 ORB Volume Profile.ex5",
+        "ex5_sha256": "327576834e36756b5d217c74da25342d3a911a80f85395d7c14eac5368c9bbad"
+      }
+    ],
+    "ea_details": {
+      "nasdaq-5m-candle-momentum": {
+        "tagline": "Opening momentum with EMA12; DI agreement is OFF by default in this client build.",
+        "current_rule": "After the closed 09:30–09:35 New York M5 candle, direction uses the unchanged candle/EMA12 logic without the optional DI gate. The 0.60%-of-price stop, no fixed TP and ATR x6 trailing from +1R are unchanged. DI can be enabled explicitly in EA inputs; this package defaults it OFF.",
+        "historical_rule": "The Nasdaq charts and statistics on this page used DI ON. Cached website descriptions below also describe the DI-ON reference, not this client default."
+      }
+    }
+  }
 }

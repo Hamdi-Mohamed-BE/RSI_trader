@@ -25,5 +25,8 @@ def main():
     (ROOT/'report-data.json').write_text(json.dumps(payload,indent=2),encoding='utf-8')
     template=(ROOT/'report.template.html').read_text(encoding='utf-8')
     (CLIENT/'Performance and Setup.html').write_text(template.replace('__DATA__',json.dumps(payload,separators=(',',':')).replace('<','\\u003c')),encoding='utf-8')
-    print('Copied five existing website breakdowns; cached performance datasets unchanged. No backtests run.')
+    if payload.get('strategyPolicyRevision'):
+        from sync_di_revision import main as render_preserved_revision
+        render_preserved_revision()
+    print('Copied five existing website references; historical datasets unchanged. Current-client input metadata remains separate. No backtests run.')
 if __name__=='__main__':main()

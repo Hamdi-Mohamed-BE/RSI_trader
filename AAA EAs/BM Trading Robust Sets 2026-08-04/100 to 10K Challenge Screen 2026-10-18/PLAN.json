@@ -1,0 +1,41 @@
+{
+  "status": "PREDECLARED before challenge outcomes; research only",
+  "initial_balance": 100,
+  "target_balance": 10000,
+  "research_failure_floor": 20,
+  "currency": "USD",
+  "source_window": ["2021-10-06", "2026-10-06"],
+  "development": ["2021-10-06", "2024-10-06"],
+  "evaluation": ["2024-10-06", "2026-10-06"],
+  "start_schedule": "Every Monday 00:00 UTC with a full 365-calendar-day follow-up entirely within its partition; no carry-in positions",
+  "horizon_days": 365,
+  "risk_percentages": [1, 2, 5, 10, 20, 30],
+  "sizing": "Requested initial-stop risk = current CLOSED cash balance times risk%; floor to broker lot step, cap maximum volume, SKIP below minimum; never round up to minimum",
+  "cash": "Book actual native entry fees and each partial/final exit at its recorded time, linearly resized by admitted initial lots. Risk sizing does not use future profits or final outcome. No compounding of unclosed gains. Retain observed source-end censored entries and genuine partial exits, but omit artificial test-end liquidation; do not require future completion to admit an entry.",
+  "success": "When cash first reaches target, pause new entries, let already-owned positions exit naturally; success only if flat with cash >=10000. If cash falls below target before flat, resume entries. No artificial liquidation or mark-to-market target.",
+  "failure": "Latch new-entry halt at cash <=20 (80% initial-capital loss); continue existing positions to their natural closes. This is a RESEARCH failure floor, not a reconstructed broker stopout. No reset, top-up or recovery attempt.",
+  "exposure": "Retain full original initial-stop risk and initial margin until final exit, including partially closed positions; aggregate risk <=min(2*risk%,60%)*current cash, same-symbol risk <=risk%*current cash. Simultaneous entries ordered lexically by key then native ID, never optimized.",
+  "daily_pause": "UTC day-start closed-cash anchor; latch no new entries for that day after closed cash loss >=min(2*risk%,30%)*day-start cash. Existing positions retain original exits. Gap/fees can exceed limits.",
+  "margin": "Gross sum of initial proxy margin, no hedge discount; admit only if total margin <=80% of protected cash after existing+new initial-stop reserves and new negative entry costs. Uses maximum of available current and cached per-price margin ratios (USDJPY fixed50/lot). This is conservative admission bookkeeping, NOT a historical liquidation/HMR model.",
+  "stress": "Extra one available quote-snapshot spread EACH SIDE times contract size, twice negative recorded swap, twice margin proxy. For an unquoted symbol use cached available quote spread. Native entries/exits unchanged; sensitivity, not measured execution.",
+  "universe": "All current non-news EAs with real filled initial stops in the matching five-year ledger, plus separately sourced Nasdaq5M DI-OFF alternative. Exclude two no-stop hourly profiles, four fast news EAs with special execution uncertainty, and missing V9 archive. No DI-on/off duplicate in a combo.",
+  "search": {
+    "singles": "Every eligible variant times six risk levels",
+    "shortlist": "Eight distinct EA families using their best development configuration; never both Nasdaq DI variants",
+    "combinations": "All pairs and triples from the eight shortlisted configurations' EA variants, each at six common risk levels; plus predeclared existing named baskets using eligible members only",
+    "selection": "Primary: fastest conditional median days among configurations with >=50% development target hits; tie higher hit rate, lower median closed DD, lexical config ID. If none qualify, highest hit rate then lowest mean capped completion days (non-hits=365), higher median ending cash, lexical ID; explicitly NONE QUALIFIED.",
+    "other_locked_views": "Also lock highest-development-hit-rate and fastest-single-observed-hit configuration for each of single/combo; lottery winner is explicitly retrospective, not recommendation",
+    "evaluation": "Write SELECTION.json before opening evaluation outcomes. Evaluate only locked configurations on equal full-horizon evaluation starts, both base and stress. Do not reselect from evaluation.",
+    "scope": "Finite historical search, NOT best possible among all strategies/brokers/guards. These strategy dates were previously researched, not genuinely untouched OOS. Multiple overlapping starts are dependent."
+  },
+  "metrics": ["historical target hit fraction", "research-floor fraction", "timeout fraction", "median calendar days among hits", "all-start median days only if >=50% hits", "fastest hit with exact dates", "ending cash percentiles", "closed cash DD percentiles", "minlot and margin skips", "closed trade win rate/PF/streaks on detailed representative path"],
+  "limitations": [
+    "100x capital target is extreme; high risk can lose most or all capital. No guarantee or future probability claim.",
+    "Closed-cash replay does not measure floating equity, broker stopout, intrabar liquidation, order latency or actual account execution. A modeled success can be untradeable in reality.",
+    "Immutable standalone fills do not recover counterfactual later signals after skipped entries, changed EA state or changed lot size. No native simultaneous portfolio test.",
+    "Historical source Trial16 and current demo Trial15 are different feeds; mixed/generated ticks, linear resizing and sampled costs do not reproduce real liquidity/slippage.",
+    "Full original stop reserve until final partial exit is deliberately conservative, not exact EA risk release.",
+    "Same-second exit ordering may use publisher 1ms epsilon for sorting, not measured latency. Close-first cross-position tie convention may not be executable.",
+    "No live changes, trades, installers, BAT edits or automatic push."
+  ]
+}

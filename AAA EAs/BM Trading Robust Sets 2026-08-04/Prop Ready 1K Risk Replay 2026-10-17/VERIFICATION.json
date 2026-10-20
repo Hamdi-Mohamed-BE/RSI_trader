@@ -1,0 +1,162 @@
+{
+  "status": "PASS",
+  "checks": 49930,
+  "categories": {
+    "protocol": 4,
+    "frozen_hashes": 52,
+    "sources": 1510,
+    "owned_marks": 14156,
+    "decisions": 6530,
+    "admitted_guards": 288,
+    "cash": 1020,
+    "censoring": 96,
+    "counts": 30,
+    "curve": 24148,
+    "metrics": 130,
+    "drawdowns": 70,
+    "calendar": 1850,
+    "pair_equivalence": 36,
+    "cost_pairing": 10
+  },
+  "scenarios": [
+    {
+      "scenario": "fixed_2p50",
+      "stress": false,
+      "candidates": 93,
+      "trades": 3,
+      "ending_balance": 1003.12,
+      "profit_factor": 45.57142857142857,
+      "closed_dd": 0.10000000000002274,
+      "curve_observations": 402
+    },
+    {
+      "scenario": "percent_0p25",
+      "stress": false,
+      "candidates": 93,
+      "trades": 3,
+      "ending_balance": 1003.12,
+      "profit_factor": 45.57142857142857,
+      "closed_dd": 0.10000000000002274,
+      "curve_observations": 402
+    },
+    {
+      "scenario": "fixed_5",
+      "stress": false,
+      "candidates": 93,
+      "trades": 14,
+      "ending_balance": 995.44,
+      "profit_factor": 0.7536466774716368,
+      "closed_dd": 11.0,
+      "curve_observations": 1073
+    },
+    {
+      "scenario": "percent_0p50",
+      "stress": false,
+      "candidates": 93,
+      "trades": 14,
+      "ending_balance": 995.44,
+      "profit_factor": 0.7536466774716368,
+      "closed_dd": 11.0,
+      "curve_observations": 1073
+    },
+    {
+      "scenario": "percent_1",
+      "stress": false,
+      "candidates": 93,
+      "trades": 14,
+      "ending_balance": 995.44,
+      "profit_factor": 0.7536466774716368,
+      "closed_dd": 11.0,
+      "curve_observations": 1073
+    },
+    {
+      "scenario": "fixed_2p50",
+      "stress": true,
+      "candidates": 93,
+      "trades": 3,
+      "ending_balance": 1002.68,
+      "profit_factor": 13.181818181818183,
+      "closed_dd": 0.32000000000005,
+      "curve_observations": 402
+    },
+    {
+      "scenario": "percent_0p25",
+      "stress": true,
+      "candidates": 93,
+      "trades": 3,
+      "ending_balance": 1002.68,
+      "profit_factor": 13.181818181818183,
+      "closed_dd": 0.32000000000005,
+      "curve_observations": 402
+    },
+    {
+      "scenario": "fixed_5",
+      "stress": true,
+      "candidates": 93,
+      "trades": 14,
+      "ending_balance": 992.88,
+      "profit_factor": 0.6476991588322613,
+      "closed_dd": 12.350000000000023,
+      "curve_observations": 1073
+    },
+    {
+      "scenario": "percent_0p50",
+      "stress": true,
+      "candidates": 93,
+      "trades": 14,
+      "ending_balance": 992.88,
+      "profit_factor": 0.6476991588322613,
+      "closed_dd": 12.350000000000023,
+      "curve_observations": 1073
+    },
+    {
+      "scenario": "percent_1",
+      "stress": true,
+      "candidates": 93,
+      "trades": 14,
+      "ending_balance": 992.88,
+      "profit_factor": 0.6476991588322613,
+      "closed_dd": 12.350000000000023,
+      "curve_observations": 1073
+    }
+  ],
+  "cost_pairing": [
+    {
+      "scenario": "fixed_2p50",
+      "matched_trades": 3,
+      "reduction_cash": 0.44
+    },
+    {
+      "scenario": "percent_0p25",
+      "matched_trades": 3,
+      "reduction_cash": 0.44
+    },
+    {
+      "scenario": "fixed_5",
+      "matched_trades": 14,
+      "reduction_cash": 2.56
+    },
+    {
+      "scenario": "percent_0p50",
+      "matched_trades": 14,
+      "reduction_cash": 2.56
+    },
+    {
+      "scenario": "percent_1",
+      "matched_trades": 14,
+      "reduction_cash": 2.56
+    }
+  ],
+  "verified_candidates": 93,
+  "native_eas": 9,
+  "results_sha256": "de5e87e29e37f66488bc5576009b4e4c66dca679df6ed845ed381f0b24009d70",
+  "freeze_sha256": "dff006f0d9187ac374059733dc16796d08307b55f45943ea0e674cc28f45d063",
+  "verifier_sha256": "8fbe261d3566bf4af046fb34e4005a2a5b7f8f270c1f25763fbd1ae2164a3311",
+  "method": "Independent event/cash/risk reconstruction; does not import replay.py or access an account.",
+  "limitations": [
+    "Verifies numerical implementation and frozen source evidence, not live profitability or feed quality.",
+    "Trial16 native source and Trial15 broker metadata are not the same feed; no exact current-demo execution claim.",
+    "Five-minute source marks, missing open-swap observations, immutable filled candidates and unobserved later signals remain limitations.",
+    "Only three trades at lower allocation and fourteen at upper allocation; high small-sample PF is not robust edge evidence."
+  ]
+}

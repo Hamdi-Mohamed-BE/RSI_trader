@@ -34,6 +34,16 @@ def statistics_for(trades,start,end,symbol,native=None):
     return n
 
 def main():
+    # Existing statistics describe the earlier DI-ON/skip-minimum binaries.
+    # A delivery revision must preserve them, never assert a newly rebuilt
+    # binary was the one used by those old native runs.
+    cached=ROOT/'report-data.json'
+    if cached.exists():
+        data=json.loads(cached.read_text(encoding='utf-8-sig'))
+        if data.get('riskPolicyRevision') or data.get('strategyPolicyRevision'):
+            from sync_di_revision import main as render_preserved_revision
+            render_preserved_revision()
+            return
     m=json.loads((ROOT/'manifest.json').read_text());datasets={};hashes=[]
     for mode in ('fixed','balance'):
         datasets[mode]={}

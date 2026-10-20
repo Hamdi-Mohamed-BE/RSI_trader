@@ -1,0 +1,30 @@
+{
+  "needed": true,
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "rows": 0,
+  "record_bytes": 56,
+  "first_bar_open_epoch": null,
+  "last_bar_open_epoch": null,
+  "last_bar_end_epoch": null,
+  "all_bars_end_at_or_before_case_start": true,
+  "case_start_epoch": 1514764800,
+  "incomplete_constituent_bars": 0,
+  "construction": "native exported D1",
+  "validity": "Each record carries exact M1 constituent count equality; native ring additionally requires temporal adjacency and 14-bar/EMA/ADX lookbacks.",
+  "sources": [
+    {
+      "timeframe": "M1",
+      "path": "data\\BTCUSD-M1.npz",
+      "sha256": "8bda44d8ecbe0c649378e22188daa09af8bb6f294f14d08cc62f306a2cc1a63e",
+      "rows_before_case_start": 0
+    },
+    {
+      "timeframe": "D1",
+      "path": "data\\BTCUSD-D1.npz",
+      "sha256": "d384ccfb4bfe95129cac80a3c683f12172ff6eea15c381522db72962c87fc2ad",
+      "rows_before_case_start": 0
+    }
+  ],
+  "source_DATA_sha256": "559f30352b13416305c82287bbd02bf87531e126ada6148a01d897ae5ac32ee4",
+  "scope": "Frozen same-broker historical indicator warm-up only; never prices/fills from outside the native case; no rows ending after case start are staged."
+}

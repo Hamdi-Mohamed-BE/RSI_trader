@@ -1,0 +1,90 @@
+{
+  "start_utc": "2026-08-17T00:00:00+00:00",
+  "end_exclusive_utc": "2026-10-17T00:00:00+00:00",
+  "initial_balance": 1000.0,
+  "currency": "USD",
+  "broker": "Exness Technologies Ltd",
+  "server": "Exness-MT5Trial15",
+  "account_leverage": 2000,
+  "phase": "Funded/continuous",
+  "priority": [
+    "xau-rsi-vwap",
+    "xau-orb-london-ny-overlap-m30",
+    "us100-h1-orb-13utc",
+    "usdjpy-london-open-momentum",
+    "us100-month-end-flow",
+    "nasdaq-5m-candle-momentum",
+    "us100-orb-new-york-m30",
+    "us100-selective-orb-v3",
+    "xau-orb-new-york-m30"
+  ],
+  "scenarios": [
+    {
+      "id": "fixed_2p50",
+      "label": "Fixed $2.50",
+      "mode": "fixed",
+      "value": 2.5
+    },
+    {
+      "id": "percent_0p25",
+      "label": "Dynamic 0.25%",
+      "mode": "percent",
+      "value": 0.25
+    },
+    {
+      "id": "fixed_5",
+      "label": "Fixed $5",
+      "mode": "fixed",
+      "value": 5.0
+    },
+    {
+      "id": "percent_0p50",
+      "label": "Dynamic 0.50%",
+      "mode": "percent",
+      "value": 0.5
+    },
+    {
+      "id": "percent_1",
+      "label": "Dynamic 1% (still capped)",
+      "mode": "percent",
+      "value": 1.0
+    }
+  ],
+  "sensitivities": [
+    "recorded_native_costs",
+    "one_additional_snapshot_spread_each_side_and_double_negative_swap"
+  ],
+  "source_sizing": "Six original wrapped helpers request fixed50cash; three added ORBs request0.5%currentequity; source ceiling rounds upward. Guard separately floors, rejects below minimum.",
+  "reference_risk_cap": 0.005,
+  "guard": {
+    "open_risk": 0.0225,
+    "same_symbol": 0.015,
+    "daily_reserved": 0.03,
+    "equity_buffer": 0.92,
+    "hard_equity_floor": 0.9,
+    "hard_daily_loss": 0.05,
+    "entries_per_day": 7,
+    "losing_positions_per_day": 3,
+    "per_position_slippage_reserve": 0.25,
+    "per_position_cash_reserve": 0.0005
+  },
+  "trading_day": "Europe/Prague calendar midnight including DST; first deployment anchor1000, no carry-in.",
+  "compounding": "Percentage uses current sampled equity but cannot exceed $5 or original request. No automatic reference rebasing.",
+  "model": "Estimated immutable-native-signal ledger replay, not simultaneous native or live execution.",
+  "source_server": "Exness-MT5Trial16",
+  "feed_caveat": "Historical native candidates are isolated ExnessTrial16; current demo lot/margin metadata are ExnessTrial15. Spot checks show DIFFERENT quotes/spreads (source USDJPY/USTEC often zero spread). Not a same-account native portfolio or exact current-demo cost test.",
+  "margin": "Native source fill-time OrderCalcMargin receipts at1:2000 after contract/lot/currency parity checks; gross sum no hedge discount. Current-demo snapshot margin recorded. Not verified historical live tiers/HMR.",
+  "marks": "Strict own-position past five-minute samples; zero until first owned sample, past carry, ages disclosed; no future interpolation. Missing current open-swap reserve explicitly counted.",
+  "risk_geometry": "Actual fill-time native OrderCalcProfit one-lot receipt using original entry-order SL. Pre-request bid/ask geometry and slippage boundary are not reconstructed.",
+  "costs": "BASE is sourceTrial16 recorded native spread/fills/fees/swap scaled byadmittedvolume, NOT actualTrial15Pro costs. STRESS addsone currentTrial15 snapshotspread EACHside and twice negativefinalswap; sensitivitynotexactProreproduction. Sourceexitsunchanged.",
+  "alternative_search": false,
+  "live_changes": false,
+  "rebase_reference": false,
+  "limitations": [
+    "Two exposed months do not establish a durable edge or an optimal live risk setting.",
+    "Only observed standalone source fills are available; rejected trades can create unobserved later signals.",
+    "Sampled equity is not tick maximum drawdown; guard slippage, request budgets, cooldown wallclock and full current-SL timeline are not reconstructed.",
+    "Recorded costs are native tester costs, not verified historical commission/financing schedules.",
+    "Snapshot spreads and margins are sensitivities/estimates, not historic realized execution or fixed future conditions."
+  ]
+}

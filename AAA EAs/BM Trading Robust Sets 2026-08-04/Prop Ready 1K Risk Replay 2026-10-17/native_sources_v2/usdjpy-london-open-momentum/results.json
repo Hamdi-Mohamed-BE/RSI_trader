@@ -1,0 +1,712 @@
+{
+  "tag": "pr1k-source-usdjpy-london-open-momentum",
+  "slug": "usdjpy-london-open-momentum",
+  "window": [
+    "2026-08-17",
+    "2026-10-17"
+  ],
+  "source_deposit": 10000,
+  "source_risk_percent": 0.5,
+  "standalone_source_only": true,
+  "current_prop_ready_inputs_verified": true,
+  "inputs": {
+    "InpUseADXFilter": "true",
+    "InpADXMinimum": "20",
+    "InpRequireDIAgreement": "true",
+    "InpADXTimeframe": "15",
+    "InpEnableTrading": "true",
+    "InpLondonOpenHour": "8.0",
+    "InpFormationMinutes": "60",
+    "InpExitLondonHour": "16.0",
+    "InpReverseSignal": "false",
+    "InpDirection": "0",
+    "InpTradeMonday": "false",
+    "InpTradeTuesday": "false",
+    "InpTradeWednesday": "true",
+    "InpTradeThursday": "true",
+    "InpTradeFriday": "true",
+    "InpMinimumSignalAtr": "0.2",
+    "InpMaximumSignalAtr": "0.0",
+    "InpMinimumVolumePctMedian": "25.0",
+    "InpVolumeLookbackDays": "20",
+    "InpMaximumSpreadAtrPct": "0.0",
+    "InpRiskPercent": "0.5",
+    "InpAdaptivePortfolioControls": "false",
+    "InpAtrPeriod": "14",
+    "InpStopMode": "0",
+    "InpStopAtrMultiple": "5.0",
+    "InpFormationRangeStopMultiple": "1.0",
+    "InpTargetMode": "0",
+    "InpTargetR": "1.0",
+    "InpAdaptiveBaseR": "0.5",
+    "InpAdaptiveSignalWeight": "1.0",
+    "InpAdaptiveMinimumR": "0.5",
+    "InpAdaptiveMaximumR": "3.0",
+    "InpBreakEvenAtR": "0.75",
+    "InpTrailStartAtR": "0.0",
+    "InpTrailDistanceR": "0.5",
+    "InpExitSecondsEarly": "30",
+    "InpMaxDeviationBrokerPoints": "20",
+    "InpMagic": "980908901",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpTesterServerClock": "0",
+    "InpTesterManualUTCOffsetHours": "0",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpRR05AuditTag": "pr1k-source-usdjpy-london-open-momentum"
+  },
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10048.65,
+    "net_profit": 48.65,
+    "return_pct": 0.49,
+    "profit_factor": 1.25,
+    "win_rate_pct": 33.33,
+    "max_drawdown_pct": 1.69,
+    "trades": 15,
+    "sharpe_ratio": 1.02,
+    "recovery_factor": 0.28,
+    "history_quality": "100% real ticks",
+    "equity_dd_pct": 1.69,
+    "balance_dd_pct": 1.17
+  },
+  "metrics": {
+    "trades": 15,
+    "return_pct": 0.4865,
+    "net_profit": 48.65,
+    "pf": 1.2483663467429038,
+    "wins": 4,
+    "losses": 11,
+    "flat": 0,
+    "win_rate": 26.666666666666668,
+    "equity_dd_pct": 1.69,
+    "balance_dd_pct": 1.17,
+    "sharpe_daily_equity": 0.7198143874042062,
+    "win_streak": 1,
+    "loss_streak": 4,
+    "avg_win": 61.1325,
+    "avg_loss": -17.80727272727273,
+    "partial_positions": 0,
+    "exit_legs": 15,
+    "commission": -6.27,
+    "swap": 0.0,
+    "fee": 0.0
+  },
+  "flags": {
+    "initialization": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export": 0,
+    "market_closed": 0,
+    "no_money": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1787126400,
+      "close_epoch": 1787151570,
+      "last_deal": 3,
+      "side": "Short",
+      "volume": 0.19,
+      "open_price": 159.17,
+      "close_price": 158.343,
+      "net": 98.75,
+      "magic": 980908901,
+      "sl": 159.591,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 99.23,
+      "commission": -0.48,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1787299200,
+      "close_epoch": 1787315967,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 0.19,
+      "open_price": 158.823,
+      "close_price": 158.823,
+      "net": -0.48,
+      "magic": 980908901,
+      "sl": 159.267,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 158.823"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 0.0,
+      "commission": -0.48,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1787904000,
+      "close_epoch": 1787925618,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 0.36,
+      "open_price": 159.502,
+      "close_price": 159.495,
+      "net": -2.48,
+      "magic": 980908901,
+      "sl": 159.279,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 159.502"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -1.58,
+      "commission": -0.9,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1788422400,
+      "close_epoch": 1788447570,
+      "last_deal": 9,
+      "side": "Short",
+      "volume": 0.06,
+      "open_price": 157.052,
+      "close_price": 155.45,
+      "net": 61.68,
+      "magic": 980908901,
+      "sl": 158.437,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 61.83,
+      "commission": -0.15,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1788940800,
+      "close_epoch": 1788965970,
+      "last_deal": 11,
+      "side": "Short",
+      "volume": 0.09,
+      "open_price": 153.115,
+      "close_price": 153.194,
+      "net": -4.87,
+      "magic": 980908901,
+      "sl": 154.027,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -4.64,
+      "commission": -0.23,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1789113600,
+      "close_epoch": 1789130615,
+      "last_deal": 13,
+      "side": "Long",
+      "volume": 0.14,
+      "open_price": 154.219,
+      "close_price": 153.639,
+      "net": -53.2,
+      "magic": 980908901,
+      "sl": 153.64,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 153.640"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -52.85,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1789718400,
+      "close_epoch": 1789743570,
+      "last_deal": 15,
+      "side": "Long",
+      "volume": 0.06,
+      "open_price": 157.495,
+      "close_price": 157.412,
+      "net": -3.31,
+      "magic": 980908901,
+      "sl": 156.152,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -3.16,
+      "commission": -0.15,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1790150401,
+      "close_epoch": 1790175570,
+      "last_deal": 17,
+      "side": "Long",
+      "volume": 0.27,
+      "open_price": 157.769,
+      "close_price": 158.19,
+      "net": 71.18,
+      "magic": 980908901,
+      "sl": 157.464,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 71.86,
+      "commission": -0.68,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1790236800,
+      "close_epoch": 1790249881,
+      "last_deal": 19,
+      "side": "Short",
+      "volume": 0.13,
+      "open_price": 158.213,
+      "close_price": 158.835,
+      "net": -51.24,
+      "magic": 980908901,
+      "sl": 158.834,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 158.834"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -50.91,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1790841600,
+      "close_epoch": 1790865126,
+      "last_deal": 21,
+      "side": "Long",
+      "volume": 0.12,
+      "open_price": 158.39,
+      "close_price": 157.71999999999997,
+      "net": -51.28,
+      "magic": 980908901,
+      "sl": 157.72,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 157.720"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -50.98,
+      "commission": -0.3,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1790928000,
+      "close_epoch": 1790948682,
+      "last_deal": 23,
+      "side": "Short",
+      "volume": 0.13,
+      "open_price": 157.591,
+      "close_price": 157.592,
+      "net": -0.41,
+      "magic": 980908901,
+      "sl": 158.239,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        "sl 157.591"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.08,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1791360001,
+      "close_epoch": 1791385171,
+      "last_deal": 25,
+      "side": "Short",
+      "volume": 0.19,
+      "open_price": 158.105,
+      "close_price": 158.107,
+      "net": -0.72,
+      "magic": 980908901,
+      "sl": 158.529,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.24,
+      "commission": -0.48,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1791532800,
+      "close_epoch": 1791557973,
+      "last_deal": 27,
+      "side": "Long",
+      "volume": 0.23,
+      "open_price": 158.332,
+      "close_price": 158.425,
+      "net": 12.92,
+      "magic": 980908901,
+      "sl": 157.971,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 13.5,
+      "commission": -0.58,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 28,
+      "open_epoch": 1792051200,
+      "close_epoch": 1792076371,
+      "last_deal": 29,
+      "side": "Short",
+      "volume": 0.15,
+      "open_price": 157.877,
+      "close_price": 158.06,
+      "net": -17.75,
+      "magic": 980908901,
+      "sl": 158.437,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -17.37,
+      "commission": -0.38,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    },
+    {
+      "position_id": 30,
+      "open_epoch": 1792137600,
+      "close_epoch": 1792162770,
+      "last_deal": 31,
+      "side": "Long",
+      "volume": 0.18,
+      "open_price": 158.008,
+      "close_price": 157.923,
+      "net": -10.14,
+      "magic": 980908901,
+      "sl": 157.548,
+      "tp": 0.0,
+      "entry_comment": "Pipeline London momentum",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -9.69,
+      "commission": -0.45,
+      "swap": 0.0,
+      "fee": 0.0,
+      "end_censored": false
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1787126400,
+      "deal": 2,
+      "balance": 9999.52,
+      "net": -0.48
+    },
+    {
+      "epoch": 1787151570,
+      "deal": 3,
+      "balance": 10098.75,
+      "net": 99.23
+    },
+    {
+      "epoch": 1787299200,
+      "deal": 4,
+      "balance": 10098.27,
+      "net": -0.48
+    },
+    {
+      "epoch": 1787315967,
+      "deal": 5,
+      "balance": 10098.27,
+      "net": 0.0
+    },
+    {
+      "epoch": 1787904000,
+      "deal": 6,
+      "balance": 10097.37,
+      "net": -0.9
+    },
+    {
+      "epoch": 1787925618,
+      "deal": 7,
+      "balance": 10095.79,
+      "net": -1.58
+    },
+    {
+      "epoch": 1788422400,
+      "deal": 8,
+      "balance": 10095.64,
+      "net": -0.15
+    },
+    {
+      "epoch": 1788447570,
+      "deal": 9,
+      "balance": 10157.47,
+      "net": 61.83
+    },
+    {
+      "epoch": 1788940800,
+      "deal": 10,
+      "balance": 10157.24,
+      "net": -0.23
+    },
+    {
+      "epoch": 1788965970,
+      "deal": 11,
+      "balance": 10152.6,
+      "net": -4.64
+    },
+    {
+      "epoch": 1789113600,
+      "deal": 12,
+      "balance": 10152.25,
+      "net": -0.35
+    },
+    {
+      "epoch": 1789130615,
+      "deal": 13,
+      "balance": 10099.4,
+      "net": -52.85
+    },
+    {
+      "epoch": 1789718400,
+      "deal": 14,
+      "balance": 10099.25,
+      "net": -0.15
+    },
+    {
+      "epoch": 1789743570,
+      "deal": 15,
+      "balance": 10096.09,
+      "net": -3.16
+    },
+    {
+      "epoch": 1790150401,
+      "deal": 16,
+      "balance": 10095.41,
+      "net": -0.68
+    },
+    {
+      "epoch": 1790175570,
+      "deal": 17,
+      "balance": 10167.27,
+      "net": 71.86
+    },
+    {
+      "epoch": 1790236800,
+      "deal": 18,
+      "balance": 10166.94,
+      "net": -0.33
+    },
+    {
+      "epoch": 1790249881,
+      "deal": 19,
+      "balance": 10116.03,
+      "net": -50.91
+    },
+    {
+      "epoch": 1790841600,
+      "deal": 20,
+      "balance": 10115.73,
+      "net": -0.3
+    },
+    {
+      "epoch": 1790865126,
+      "deal": 21,
+      "balance": 10064.75,
+      "net": -50.98
+    },
+    {
+      "epoch": 1790928000,
+      "deal": 22,
+      "balance": 10064.42,
+      "net": -0.33
+    },
+    {
+      "epoch": 1790948682,
+      "deal": 23,
+      "balance": 10064.34,
+      "net": -0.08
+    },
+    {
+      "epoch": 1791360001,
+      "deal": 24,
+      "balance": 10063.86,
+      "net": -0.48
+    },
+    {
+      "epoch": 1791385171,
+      "deal": 25,
+      "balance": 10063.62,
+      "net": -0.24
+    },
+    {
+      "epoch": 1791532800,
+      "deal": 26,
+      "balance": 10063.04,
+      "net": -0.58
+    },
+    {
+      "epoch": 1791557973,
+      "deal": 27,
+      "balance": 10076.54,
+      "net": 13.5
+    },
+    {
+      "epoch": 1792051200,
+      "deal": 28,
+      "balance": 10076.16,
+      "net": -0.38
+    },
+    {
+      "epoch": 1792076371,
+      "deal": 29,
+      "balance": 10058.79,
+      "net": -17.37
+    },
+    {
+      "epoch": 1792137600,
+      "deal": 30,
+      "balance": 10058.34,
+      "net": -0.45
+    },
+    {
+      "epoch": 1792162770,
+      "deal": 31,
+      "balance": 10048.65,
+      "net": -9.69
+    }
+  ],
+  "first_captured_snapshot_utc": "2026-08-17T00:00:00+00:00",
+  "last_captured_snapshot_utc": "2026-10-16T20:58:57+00:00",
+  "coverage": {
+    "symbol": "USDJPY",
+    "m1_count": "64358",
+    "m1_first": "1786924800",
+    "m1_last": "1792184280",
+    "final_simulated_epoch": "1792184337"
+  },
+  "boundary_liquidation_positions": [],
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "seconds": 11.341857671737671,
+  "binary_sha256": "d34c319ccc93790cc7ff65784051d8de66bffc0b1d669e5b7935b4a1444daabd",
+  "report_sha256": "764c688fdc2d5ae8492e976d1360b685dcbfbe06ae84a00eae5372d866d7d57b",
+  "no_live_changes": true,
+  "native_plan_sha256": "e66c97f98ce5225358e6d6f17e2a21e5e9330458c1fb67ad89dfe5ba5e812eeb",
+  "native_freeze_sha256": "b1a327cf69b8e3410cf9ca715dd41c4648b8e0cc56a7d1094779a27c329bd512",
+  "actual_source_servers": [
+    "Exness-MT5Trial16"
+  ],
+  "actual_source_server_verified": true,
+  "source_server": "Exness-MT5Trial16",
+  "current_broker_server": "Exness-MT5Trial15",
+  "source_spec_differences": {},
+  "source_contract": {
+    "symbol": "USDJPY",
+    "digits": "3",
+    "point": "0.001",
+    "tick_size": "0.001",
+    "tick_value_profit": "0.6332199869556683",
+    "tick_value_loss": "0.6332199869556683",
+    "contract_size": "100000.0",
+    "volume_min": "0.01",
+    "volume_step": "0.01",
+    "volume_max": "300.0",
+    "calc_mode": "0",
+    "profit_currency": "JPY",
+    "initial_margin_rate": "1.0",
+    "maintenance_margin_rate": "0.0",
+    "account_leverage": "2000",
+    "buy_margin_one_lot": "50.0",
+    "sell_margin_one_lot": "50.0",
+    "margin_calc_ok": "1"
+  },
+  "entry_risk_receipts": 15,
+  "unit_risk_receipts_verified": true
+}

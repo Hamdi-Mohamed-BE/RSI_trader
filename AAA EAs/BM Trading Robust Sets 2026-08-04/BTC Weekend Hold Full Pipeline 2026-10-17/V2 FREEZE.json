@@ -1,0 +1,26 @@
+{
+  "created_at_utc": "2026-10-17T02:13:43.252469+00:00",
+  "research_only": true,
+  "original_freeze_sha256": "85c76c738864706a231338a2b8feacc5f71572fc687fbc8f556b15c0fbed0da6",
+  "selected_config": {
+    "timeframe_minutes": 1440,
+    "entry_mode": 1,
+    "stop_mode": 2,
+    "stop_value": 2.0,
+    "target_rr": 1.0,
+    "management_mode": 0,
+    "management_value": 0.0,
+    "filter_mode": 0,
+    "filter_value": 0.0,
+    "entry_minute_ny": 1080,
+    "exit_minute_ny": 960
+  },
+  "no_reselection": true,
+  "reason": "Implementation-only daily-bar loader repair after failed zero-trade native attempts; original files and failed cases retained.",
+  "semantic_change": "Request next closed feature open from last_bar+feature_seconds, not last_bar+1 second. Eligible missing bars remain stale/missing; other history errors remain fatal.",
+  "locked_files": {
+    "native_v2.py": "c3f553a63a6f9dbfb9548bbb0dcf2bcbaceeffd2e014e8cd8a26daba8be869b0",
+    "EA/BtcWeekendV2.mq5": "bf6d8bf3c35012bdda6ccce84c85d69e81de2cdc57e86d77a51200f03fffb790",
+    "run_native_v2.py": "559a3fca9997a26f862f513a37f27b48845224030db647feb242fe5bf2863291"
+  }
+}

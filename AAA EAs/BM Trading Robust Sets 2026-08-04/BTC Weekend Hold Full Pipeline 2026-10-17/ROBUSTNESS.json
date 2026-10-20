@@ -1,0 +1,3980 @@
+{
+  "baseline": {
+    "status": "unavailable_incomplete_history",
+    "missing_week_ids": [
+      "2025-05-16",
+      "2025-06-20",
+      "2025-08-22",
+      "2025-12-05",
+      "2026-02-06",
+      "2026-03-06",
+      "2026-04-10",
+      "2026-05-08",
+      "2026-06-05",
+      "2026-07-10",
+      "2026-08-07",
+      "2026-09-04",
+      "2026-10-09"
+    ],
+    "observed_closed_positions": 103,
+    "reason": "Missing historical prices are not substituted with zero-return weeks or complete-window metrics.",
+    "observed_complete_weeks_only_sensitivity": {
+      "status": "complete_offline_diagnostics",
+      "allocation": "1x CURRENT cash; no stop-defined percent-risk claim",
+      "summary": {
+        "status": "complete",
+        "scheduled_weeks": 91,
+        "trades": 91,
+        "valid_no_trade_weeks": 0,
+        "authoritative_week_calendar": true,
+        "trades_with_intratrade_samples": 91,
+        "trades_closed_only": 0,
+        "return_pct": 1.022348528296746,
+        "ending_balance_usd": 10102.234852829675,
+        "net_profit_usd": 102.23485282967489,
+        "profit_factor": 1.0177723869715545,
+        "profit_factor_infinite_no_losses": false,
+        "win_rate_pct": 58.24175824175825,
+        "wins": 53,
+        "losses": 38,
+        "breakevens": 0,
+        "win_rate_wilson": {
+          "lower_pct": 47.97716618786715,
+          "upper_pct": 67.83870187923922,
+          "confidence": 0.95,
+          "caveat": "Binomial descriptive interval; serial dependence is not corrected."
+        },
+        "max_closed_dd_pct": 15.356278366876797,
+        "max_sampled_equity_dd_pct": 16.99550768924698,
+        "max_win_streak": 9,
+        "max_loss_streak": 6,
+        "weekly_return_sharpe": 0.1151473718025123,
+        "weekly_annualization": 52,
+        "cost_bases": {
+          "gross M5 surrogate; spread proxy uses the same gross exit geometry, not a quote-level re-execution": 91
+        },
+        "pnl_by_scheduled_week": [
+          {
+            "week_id": "2024-10-18",
+            "pnl_usd": 51.03200573616684,
+            "traded": true
+          },
+          {
+            "week_id": "2024-10-25",
+            "pnl_usd": 136.55649854977815,
+            "traded": true
+          },
+          {
+            "week_id": "2024-11-01",
+            "pnl_usd": -13.69484748396694,
+            "traded": true
+          },
+          {
+            "week_id": "2024-11-08",
+            "pnl_usd": 453.59316976625956,
+            "traded": true
+          },
+          {
+            "week_id": "2024-11-15",
+            "pnl_usd": -306.9551673356487,
+            "traded": true
+          },
+          {
+            "week_id": "2024-11-22",
+            "pnl_usd": -231.3833920917679,
+            "traded": true
+          },
+          {
+            "week_id": "2024-11-29",
+            "pnl_usd": 38.99410250226845,
+            "traded": true
+          },
+          {
+            "week_id": "2024-12-06",
+            "pnl_usd": -37.73604491793228,
+            "traded": true
+          },
+          {
+            "week_id": "2024-12-13",
+            "pnl_usd": 148.59202875292587,
+            "traded": true
+          },
+          {
+            "week_id": "2024-12-20",
+            "pnl_usd": -154.93311012778005,
+            "traded": true
+          },
+          {
+            "week_id": "2024-12-27",
+            "pnl_usd": -125.83894434030229,
+            "traded": true
+          },
+          {
+            "week_id": "2025-01-03",
+            "pnl_usd": 28.529128035874088,
+            "traded": true
+          },
+          {
+            "week_id": "2025-01-10",
+            "pnl_usd": -32.74341196001089,
+            "traded": true
+          },
+          {
+            "week_id": "2025-01-17",
+            "pnl_usd": -97.51725946849153,
+            "traded": true
+          },
+          {
+            "week_id": "2025-01-24",
+            "pnl_usd": -55.64534545252356,
+            "traded": true
+          },
+          {
+            "week_id": "2025-01-31",
+            "pnl_usd": -499.925380388833,
+            "traded": true
+          },
+          {
+            "week_id": "2025-02-07",
+            "pnl_usd": -81.37088398683763,
+            "traded": true
+          },
+          {
+            "week_id": "2025-02-14",
+            "pnl_usd": -28.515169302418858,
+            "traded": true
+          },
+          {
+            "week_id": "2025-02-21",
+            "pnl_usd": 49.34245330139377,
+            "traded": true
+          },
+          {
+            "week_id": "2025-02-28",
+            "pnl_usd": 1100.1287144170428,
+            "traded": true
+          },
+          {
+            "week_id": "2025-03-07",
+            "pnl_usd": -383.5956658771082,
+            "traded": true
+          },
+          {
+            "week_id": "2025-03-14",
+            "pnl_usd": -108.9519871403564,
+            "traded": true
+          },
+          {
+            "week_id": "2025-03-21",
+            "pnl_usd": 110.80079895729936,
+            "traded": true
+          },
+          {
+            "week_id": "2025-03-28",
+            "pnl_usd": -144.45042811357817,
+            "traded": true
+          },
+          {
+            "week_id": "2025-04-04",
+            "pnl_usd": -618.8693292107822,
+            "traded": true
+          },
+          {
+            "week_id": "2025-04-11",
+            "pnl_usd": -45.2945602655703,
+            "traded": true
+          },
+          {
+            "week_id": "2025-04-18",
+            "pnl_usd": 68.81831452994898,
+            "traded": true
+          },
+          {
+            "week_id": "2025-04-25",
+            "pnl_usd": -63.697800653753006,
+            "traded": true
+          },
+          {
+            "week_id": "2025-05-02",
+            "pnl_usd": -110.8443530179678,
+            "traded": true
+          },
+          {
+            "week_id": "2025-05-09",
+            "pnl_usd": 94.17238020357476,
+            "traded": true
+          },
+          {
+            "week_id": "2025-05-23",
+            "pnl_usd": -45.49812457591669,
+            "traded": true
+          },
+          {
+            "week_id": "2025-05-30",
+            "pnl_usd": 37.702069734183844,
+            "traded": true
+          },
+          {
+            "week_id": "2025-06-06",
+            "pnl_usd": 148.87745694965082,
+            "traded": true
+          },
+          {
+            "week_id": "2025-06-13",
+            "pnl_usd": -58.35296929645193,
+            "traded": true
+          },
+          {
+            "week_id": "2025-06-27",
+            "pnl_usd": 16.70970609423247,
+            "traded": true
+          },
+          {
+            "week_id": "2025-07-04",
+            "pnl_usd": 82.22142301856569,
+            "traded": true
+          },
+          {
+            "week_id": "2025-07-11",
+            "pnl_usd": 108.18204599105003,
+            "traded": true
+          },
+          {
+            "week_id": "2025-07-18",
+            "pnl_usd": 47.58076761740573,
+            "traded": true
+          },
+          {
+            "week_id": "2025-07-25",
+            "pnl_usd": 135.95331272462695,
+            "traded": true
+          },
+          {
+            "week_id": "2025-08-01",
+            "pnl_usd": 49.49259237972641,
+            "traded": true
+          },
+          {
+            "week_id": "2025-08-08",
+            "pnl_usd": 119.03340808755198,
+            "traded": true
+          },
+          {
+            "week_id": "2025-08-15",
+            "pnl_usd": 28.079540545295618,
+            "traded": true
+          },
+          {
+            "week_id": "2025-08-29",
+            "pnl_usd": 120.09134526929522,
+            "traded": true
+          },
+          {
+            "week_id": "2025-09-05",
+            "pnl_usd": -29.78876633980593,
+            "traded": true
+          },
+          {
+            "week_id": "2025-09-12",
+            "pnl_usd": -33.47429104959318,
+            "traded": true
+          },
+          {
+            "week_id": "2025-09-19",
+            "pnl_usd": -2.1848395099532754,
+            "traded": true
+          },
+          {
+            "week_id": "2025-09-26",
+            "pnl_usd": 134.14094891278305,
+            "traded": true
+          },
+          {
+            "week_id": "2025-10-03",
+            "pnl_usd": 14.295074710276019,
+            "traded": true
+          },
+          {
+            "week_id": "2025-10-10",
+            "pnl_usd": 64.0593025113139,
+            "traded": true
+          },
+          {
+            "week_id": "2025-10-17",
+            "pnl_usd": 175.26277169816547,
+            "traded": true
+          },
+          {
+            "week_id": "2025-10-24",
+            "pnl_usd": 222.69920659968037,
+            "traded": true
+          },
+          {
+            "week_id": "2025-10-31",
+            "pnl_usd": 53.7709920867396,
+            "traded": true
+          },
+          {
+            "week_id": "2025-11-07",
+            "pnl_usd": 67.42607602320055,
+            "traded": true
+          },
+          {
+            "week_id": "2025-11-14",
+            "pnl_usd": -167.9609259813207,
+            "traded": true
+          },
+          {
+            "week_id": "2025-11-21",
+            "pnl_usd": 347.8161450863502,
+            "traded": true
+          },
+          {
+            "week_id": "2025-11-28",
+            "pnl_usd": 33.54077989487439,
+            "traded": true
+          },
+          {
+            "week_id": "2025-12-12",
+            "pnl_usd": -208.07604801303995,
+            "traded": true
+          },
+          {
+            "week_id": "2025-12-19",
+            "pnl_usd": 41.63078280918812,
+            "traded": true
+          },
+          {
+            "week_id": "2025-12-26",
+            "pnl_usd": 16.425004705776445,
+            "traded": true
+          },
+          {
+            "week_id": "2026-01-02",
+            "pnl_usd": 144.85847194193272,
+            "traded": true
+          },
+          {
+            "week_id": "2026-01-09",
+            "pnl_usd": 23.52147181677484,
+            "traded": true
+          },
+          {
+            "week_id": "2026-01-16",
+            "pnl_usd": -14.365747815384776,
+            "traded": true
+          },
+          {
+            "week_id": "2026-01-23",
+            "pnl_usd": -335.27487477072896,
+            "traded": true
+          },
+          {
+            "week_id": "2026-01-30",
+            "pnl_usd": -956.684831977153,
+            "traded": true
+          },
+          {
+            "week_id": "2026-02-13",
+            "pnl_usd": -7.399086760362923,
+            "traded": true
+          },
+          {
+            "week_id": "2026-02-20",
+            "pnl_usd": -30.915166569015046,
+            "traded": true
+          },
+          {
+            "week_id": "2026-02-27",
+            "pnl_usd": 20.303501989899274,
+            "traded": true
+          },
+          {
+            "week_id": "2026-03-13",
+            "pnl_usd": 50.866565923174235,
+            "traded": true
+          },
+          {
+            "week_id": "2026-03-20",
+            "pnl_usd": -255.7784618245314,
+            "traded": true
+          },
+          {
+            "week_id": "2026-03-27",
+            "pnl_usd": 82.4452739958842,
+            "traded": true
+          },
+          {
+            "week_id": "2026-04-03",
+            "pnl_usd": 114.75737622343563,
+            "traded": true
+          },
+          {
+            "week_id": "2026-04-17",
+            "pnl_usd": -330.5221803153703,
+            "traded": true
+          },
+          {
+            "week_id": "2026-04-24",
+            "pnl_usd": 55.152506371971995,
+            "traded": true
+          },
+          {
+            "week_id": "2026-05-01",
+            "pnl_usd": 125.07649731898996,
+            "traded": true
+          },
+          {
+            "week_id": "2026-05-15",
+            "pnl_usd": -100.77897891001034,
+            "traded": true
+          },
+          {
+            "week_id": "2026-05-22",
+            "pnl_usd": 81.70489328140795,
+            "traded": true
+          },
+          {
+            "week_id": "2026-05-29",
+            "pnl_usd": 6.726493336600748,
+            "traded": true
+          },
+          {
+            "week_id": "2026-06-12",
+            "pnl_usd": 82.90999462594732,
+            "traded": true
+          },
+          {
+            "week_id": "2026-06-19",
+            "pnl_usd": 87.2933658837364,
+            "traded": true
+          },
+          {
+            "week_id": "2026-06-26",
+            "pnl_usd": -10.665820648266038,
+            "traded": true
+          },
+          {
+            "week_id": "2026-07-03",
+            "pnl_usd": -6.3494341879862874,
+            "traded": true
+          },
+          {
+            "week_id": "2026-07-17",
+            "pnl_usd": 61.902117389275205,
+            "traded": true
+          },
+          {
+            "week_id": "2026-07-24",
+            "pnl_usd": 72.12070755306839,
+            "traded": true
+          },
+          {
+            "week_id": "2026-07-31",
+            "pnl_usd": 80.68566987012369,
+            "traded": true
+          },
+          {
+            "week_id": "2026-08-14",
+            "pnl_usd": 26.736249734447735,
+            "traded": true
+          },
+          {
+            "week_id": "2026-08-21",
+            "pnl_usd": -13.31780724823482,
+            "traded": true
+          },
+          {
+            "week_id": "2026-08-28",
+            "pnl_usd": 148.24763784110186,
+            "traded": true
+          },
+          {
+            "week_id": "2026-09-11",
+            "pnl_usd": 1.3521198722492536,
+            "traded": true
+          },
+          {
+            "week_id": "2026-09-18",
+            "pnl_usd": -3.103368005862133,
+            "traded": true
+          },
+          {
+            "week_id": "2026-09-25",
+            "pnl_usd": 78.7968143462957,
+            "traded": true
+          },
+          {
+            "week_id": "2026-10-02",
+            "pnl_usd": 163.6815802455096,
+            "traded": true
+          }
+        ],
+        "dd_scope": "Provided intratrade samples plus exact modeled close; unavailable interior paths are closed-only. Not native tick-equity DD."
+      },
+      "block_bootstrap": {
+        "1": {
+          "status": "complete",
+          "method": "block_bootstrap",
+          "paths": 10000,
+          "seed": 2026101702,
+          "block_calendar_weeks": 1,
+          "distributions": {
+            "return_pct": {
+              "p05": -28.645981805142117,
+              "p50": 1.5991578707085896,
+              "p95": 43.96409836939475,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "pf": {
+              "p05": 0.5680264528614353,
+              "p50": 1.027803709637509,
+              "p95": 1.8995976321769363,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_sampled_equity_dd_pct": {
+              "p05": 11.055471672453109,
+              "p50": 20.29945160071814,
+              "p95": 37.14948099366605,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_closed_dd_pct": {
+              "p05": 8.032139133799788,
+              "p50": 17.550445633857592,
+              "p95": 35.10114267979083,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_win_streak": {
+              "p05": 4.0,
+              "p50": 7.0,
+              "p95": 12.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_loss_streak": {
+              "p05": 3.0,
+              "p50": 4.0,
+              "p95": 7.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "trades": {
+              "p05": 91.0,
+              "p50": 91.0,
+              "p95": 91.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            }
+          },
+          "probability_profit_pct": 53.04,
+          "probability_ruin_pct": 0.0,
+          "bootstrap_return_p05_positive": false,
+          "bootstrap_pf_p05_above_1": false,
+          "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+          "source_trades": 91,
+          "scheduled_weeks": 91
+        },
+        "5": {
+          "status": "complete",
+          "method": "block_bootstrap",
+          "paths": 10000,
+          "seed": 2026101706,
+          "block_calendar_weeks": 5,
+          "distributions": {
+            "return_pct": {
+              "p05": -28.978418015409357,
+              "p50": 2.457217695879965,
+              "p95": 39.866228372774074,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "pf": {
+              "p05": 0.5751907538477272,
+              "p50": 1.0442046280113069,
+              "p95": 1.880696483405134,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_sampled_equity_dd_pct": {
+              "p05": 11.108481329452184,
+              "p50": 20.81549009614548,
+              "p95": 38.04436651530116,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_closed_dd_pct": {
+              "p05": 8.119626656719348,
+              "p50": 18.12451584274105,
+              "p95": 36.076654701033206,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_win_streak": {
+              "p05": 5.0,
+              "p50": 7.0,
+              "p95": 13.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_loss_streak": {
+              "p05": 3.0,
+              "p50": 5.0,
+              "p95": 9.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "trades": {
+              "p05": 91.0,
+              "p50": 91.0,
+              "p95": 91.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            }
+          },
+          "probability_profit_pct": 54.81,
+          "probability_ruin_pct": 0.0,
+          "bootstrap_return_p05_positive": false,
+          "bootstrap_pf_p05_above_1": false,
+          "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+          "source_trades": 91,
+          "scheduled_weeks": 91
+        },
+        "10": {
+          "status": "complete",
+          "method": "block_bootstrap",
+          "paths": 10000,
+          "seed": 2026101711,
+          "block_calendar_weeks": 10,
+          "distributions": {
+            "return_pct": {
+              "p05": -27.91956500926174,
+              "p50": 2.137825121899728,
+              "p95": 39.049268652643,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "pf": {
+              "p05": 0.5998569435507696,
+              "p50": 1.0367951801794335,
+              "p95": 2.012641865739844,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_sampled_equity_dd_pct": {
+              "p05": 11.699282808787292,
+              "p50": 21.06253260738933,
+              "p95": 37.500350798499284,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_closed_dd_pct": {
+              "p05": 9.128780211888177,
+              "p50": 18.66286306574405,
+              "p95": 35.82313983893766,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_win_streak": {
+              "p05": 4.0,
+              "p50": 8.0,
+              "p95": 13.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_loss_streak": {
+              "p05": 3.0,
+              "p50": 6.0,
+              "p95": 8.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "trades": {
+              "p05": 91.0,
+              "p50": 91.0,
+              "p95": 91.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            }
+          },
+          "probability_profit_pct": 53.97,
+          "probability_ruin_pct": 0.0,
+          "bootstrap_return_p05_positive": false,
+          "bootstrap_pf_p05_above_1": false,
+          "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+          "source_trades": 91,
+          "scheduled_weeks": 91
+        }
+      },
+      "trade_order_reshuffle": {
+        "status": "complete",
+        "method": "trade_order_reshuffle",
+        "paths": 10000,
+        "seed": 2026101721,
+        "block_calendar_weeks": null,
+        "distributions": {
+          "return_pct": {
+            "p05": 1.0223485282966793,
+            "p50": 1.022348528296746,
+            "p95": 1.0223485282968348,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "pf": {
+            "p05": 1.015717250894065,
+            "p50": 1.0174051395730108,
+            "p95": 1.0193111677428632,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "max_sampled_equity_dd_pct": {
+            "p05": 14.883004593477672,
+            "p50": 20.67013564229681,
+            "p95": 28.063688695265732,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "max_closed_dd_pct": {
+            "p05": 12.366492746390545,
+            "p50": 17.991879514584753,
+            "p95": 25.492062204259746,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "max_win_streak": {
+            "p05": 5.0,
+            "p50": 7.0,
+            "p95": 11.0,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "max_loss_streak": {
+            "p05": 3.0,
+            "p50": 4.0,
+            "p95": 7.0,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "trades": {
+            "p05": 91.0,
+            "p50": 91.0,
+            "p95": 91.0,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          }
+        },
+        "probability_profit_pct": 100.0,
+        "probability_ruin_pct": 0.0,
+        "bootstrap_return_p05_positive": true,
+        "bootstrap_pf_p05_above_1": true,
+        "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+        "source_trades": 91,
+        "scheduled_weeks": 91
+      },
+      "trade_removal": {
+        "0.1": {
+          "status": "complete",
+          "method": "trade_removal",
+          "paths": 10000,
+          "seed": 2026101801,
+          "block_calendar_weeks": null,
+          "distributions": {
+            "return_pct": {
+              "p05": -9.6416841253275,
+              "p50": 0.7538787759039822,
+              "p95": 12.09488597810724,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "pf": {
+              "p05": 0.807684528582411,
+              "p50": 1.0138697435672623,
+              "p95": 1.2651588189423446,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_sampled_equity_dd_pct": {
+              "p05": 14.83876944088144,
+              "p50": 17.22158826108387,
+              "p95": 24.703634710849407,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_closed_dd_pct": {
+              "p05": 13.010614435886547,
+              "p50": 15.424914317005921,
+              "p95": 22.98914784500391,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_win_streak": {
+              "p05": 7.0,
+              "p50": 8.0,
+              "p95": 10.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_loss_streak": {
+              "p05": 5.0,
+              "p50": 6.0,
+              "p95": 8.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "trades": {
+              "p05": 77.0,
+              "p50": 82.0,
+              "p95": 86.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            }
+          },
+          "probability_profit_pct": 55.94,
+          "probability_ruin_pct": 0.0,
+          "bootstrap_return_p05_positive": false,
+          "bootstrap_pf_p05_above_1": false,
+          "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+          "source_trades": 91,
+          "scheduled_weeks": 91,
+          "independent_per_trade_removal_probability": 0.1,
+          "note": "A missed trade removes its entire path and embedded costs; subsequent cash allocation is recomputed."
+        },
+        "0.2": {
+          "status": "complete",
+          "method": "trade_removal",
+          "paths": 10000,
+          "seed": 2026101901,
+          "block_calendar_weeks": null,
+          "distributions": {
+            "return_pct": {
+              "p05": -12.707265312994387,
+              "p50": 0.6135231194958735,
+              "p95": 15.808442310654769,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "pf": {
+              "p05": 0.7269910699547114,
+              "p50": 1.0127622722028262,
+              "p95": 1.4102326029084324,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_sampled_equity_dd_pct": {
+              "p05": 13.213109542259819,
+              "p50": 17.34283947736769,
+              "p95": 25.522057013228448,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_closed_dd_pct": {
+              "p05": 11.566382914556394,
+              "p50": 15.517943785539035,
+              "p95": 23.64219297068082,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_win_streak": {
+              "p05": 6.0,
+              "p50": 8.0,
+              "p95": 11.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_loss_streak": {
+              "p05": 4.0,
+              "p50": 5.0,
+              "p95": 8.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "trades": {
+              "p05": 66.0,
+              "p50": 73.0,
+              "p95": 79.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            }
+          },
+          "probability_profit_pct": 53.14,
+          "probability_ruin_pct": 0.0,
+          "bootstrap_return_p05_positive": false,
+          "bootstrap_pf_p05_above_1": false,
+          "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+          "source_trades": 91,
+          "scheduled_weeks": 91,
+          "independent_per_trade_removal_probability": 0.2,
+          "note": "A missed trade removes its entire path and embedded costs; subsequent cash allocation is recomputed."
+        }
+      },
+      "deflated_sharpe": {
+        "status": "complete",
+        "dsr_pct": 6.000347838035519,
+        "annualized_weekly_sharpe": 0.1151473718025123,
+        "periods_per_year": 52,
+        "tested_configurations": 345,
+        "weekly_observations": 91,
+        "trial_unannualized_sr_std": 0.06099723477505743,
+        "dispersion_source": "across-searched-development-trials",
+        "benchmark_annualized_weekly_sharpe": 1.2928170135177761,
+        "caveat": "Approximation with nominal independent-trial count; correlated searches and prior undisclosed trials are not fully corrected."
+      },
+      "chronological_checks": {
+        "status": "complete",
+        "method": "Three chronological scheduled-calendar-week groups; each starts fresh cash; no fitting.",
+        "thirds": [
+          {
+            "status": "complete",
+            "scheduled_weeks": 31,
+            "trades": 31,
+            "valid_no_trade_weeks": 0,
+            "authoritative_week_calendar": true,
+            "trades_with_intratrade_samples": 31,
+            "trades_closed_only": 0,
+            "return_pct": -9.069016109590178,
+            "ending_balance_usd": 9093.098389040983,
+            "net_profit_usd": -906.9016109590136,
+            "profit_factor": 0.7154783846987831,
+            "profit_factor_infinite_no_losses": false,
+            "win_rate_pct": 35.483870967741936,
+            "wins": 11,
+            "losses": 20,
+            "breakevens": 0,
+            "win_rate_wilson": {
+              "lower_pct": 21.116659093865405,
+              "upper_pct": 53.05204593563111,
+              "confidence": 0.95,
+              "caveat": "Binomial descriptive interval; serial dependence is not corrected."
+            },
+            "max_closed_dd_pct": 14.895927127355513,
+            "max_sampled_equity_dd_pct": 16.389191180339775,
+            "max_win_streak": 2,
+            "max_loss_streak": 6,
+            "weekly_return_sharpe": -0.6313658012370621,
+            "weekly_annualization": 52,
+            "cost_bases": {
+              "gross M5 surrogate; spread proxy uses the same gross exit geometry, not a quote-level re-execution": 31
+            },
+            "pnl_by_scheduled_week": [
+              {
+                "week_id": "2024-10-18",
+                "pnl_usd": 51.03200573616684,
+                "traded": true
+              },
+              {
+                "week_id": "2024-10-25",
+                "pnl_usd": 136.55649854977815,
+                "traded": true
+              },
+              {
+                "week_id": "2024-11-01",
+                "pnl_usd": -13.69484748396694,
+                "traded": true
+              },
+              {
+                "week_id": "2024-11-08",
+                "pnl_usd": 453.59316976625956,
+                "traded": true
+              },
+              {
+                "week_id": "2024-11-15",
+                "pnl_usd": -306.9551673356487,
+                "traded": true
+              },
+              {
+                "week_id": "2024-11-22",
+                "pnl_usd": -231.3833920917679,
+                "traded": true
+              },
+              {
+                "week_id": "2024-11-29",
+                "pnl_usd": 38.99410250226845,
+                "traded": true
+              },
+              {
+                "week_id": "2024-12-06",
+                "pnl_usd": -37.73604491793228,
+                "traded": true
+              },
+              {
+                "week_id": "2024-12-13",
+                "pnl_usd": 148.59202875292587,
+                "traded": true
+              },
+              {
+                "week_id": "2024-12-20",
+                "pnl_usd": -154.93311012778005,
+                "traded": true
+              },
+              {
+                "week_id": "2024-12-27",
+                "pnl_usd": -125.83894434030229,
+                "traded": true
+              },
+              {
+                "week_id": "2025-01-03",
+                "pnl_usd": 28.529128035874088,
+                "traded": true
+              },
+              {
+                "week_id": "2025-01-10",
+                "pnl_usd": -32.74341196001089,
+                "traded": true
+              },
+              {
+                "week_id": "2025-01-17",
+                "pnl_usd": -97.51725946849153,
+                "traded": true
+              },
+              {
+                "week_id": "2025-01-24",
+                "pnl_usd": -55.64534545252356,
+                "traded": true
+              },
+              {
+                "week_id": "2025-01-31",
+                "pnl_usd": -499.925380388833,
+                "traded": true
+              },
+              {
+                "week_id": "2025-02-07",
+                "pnl_usd": -81.37088398683763,
+                "traded": true
+              },
+              {
+                "week_id": "2025-02-14",
+                "pnl_usd": -28.515169302418858,
+                "traded": true
+              },
+              {
+                "week_id": "2025-02-21",
+                "pnl_usd": 49.34245330139377,
+                "traded": true
+              },
+              {
+                "week_id": "2025-02-28",
+                "pnl_usd": 1100.1287144170428,
+                "traded": true
+              },
+              {
+                "week_id": "2025-03-07",
+                "pnl_usd": -383.5956658771082,
+                "traded": true
+              },
+              {
+                "week_id": "2025-03-14",
+                "pnl_usd": -108.9519871403564,
+                "traded": true
+              },
+              {
+                "week_id": "2025-03-21",
+                "pnl_usd": 110.80079895729936,
+                "traded": true
+              },
+              {
+                "week_id": "2025-03-28",
+                "pnl_usd": -144.45042811357817,
+                "traded": true
+              },
+              {
+                "week_id": "2025-04-04",
+                "pnl_usd": -618.8693292107822,
+                "traded": true
+              },
+              {
+                "week_id": "2025-04-11",
+                "pnl_usd": -45.2945602655703,
+                "traded": true
+              },
+              {
+                "week_id": "2025-04-18",
+                "pnl_usd": 68.81831452994898,
+                "traded": true
+              },
+              {
+                "week_id": "2025-04-25",
+                "pnl_usd": -63.697800653753006,
+                "traded": true
+              },
+              {
+                "week_id": "2025-05-02",
+                "pnl_usd": -110.8443530179678,
+                "traded": true
+              },
+              {
+                "week_id": "2025-05-09",
+                "pnl_usd": 94.17238020357476,
+                "traded": true
+              },
+              {
+                "week_id": "2025-05-23",
+                "pnl_usd": -45.49812457591669,
+                "traded": true
+              }
+            ],
+            "dd_scope": "Provided intratrade samples plus exact modeled close; unavailable interior paths are closed-only. Not native tick-equity DD."
+          },
+          {
+            "status": "complete",
+            "scheduled_weeks": 30,
+            "trades": 30,
+            "valid_no_trade_weeks": 0,
+            "authoritative_week_calendar": true,
+            "trades_with_intratrade_samples": 30,
+            "trades_closed_only": 0,
+            "return_pct": 19.064270316350406,
+            "ending_balance_usd": 11906.427031635041,
+            "net_profit_usd": 1906.4270316350387,
+            "profit_factor": 4.468190516266129,
+            "profit_factor_infinite_no_losses": false,
+            "win_rate_pct": 80.0,
+            "wins": 24,
+            "losses": 6,
+            "breakevens": 0,
+            "win_rate_wilson": {
+              "lower_pct": 62.69430358685175,
+              "upper_pct": 90.49489282271013,
+              "confidence": 0.95,
+              "caveat": "Binomial descriptive interval; serial dependence is not corrected."
+            },
+            "max_closed_dd_pct": 1.925155625523145,
+            "max_sampled_equity_dd_pct": 10.038969414401203,
+            "max_win_streak": 9,
+            "max_loss_streak": 3,
+            "weekly_return_sharpe": 4.0975428932398525,
+            "weekly_annualization": 52,
+            "cost_bases": {
+              "gross M5 surrogate; spread proxy uses the same gross exit geometry, not a quote-level re-execution": 30
+            },
+            "pnl_by_scheduled_week": [
+              {
+                "week_id": "2025-05-30",
+                "pnl_usd": 41.46229164266213,
+                "traded": true
+              },
+              {
+                "week_id": "2025-06-06",
+                "pnl_usd": 163.7257737462493,
+                "traded": true
+              },
+              {
+                "week_id": "2025-06-13",
+                "pnl_usd": -64.17281195019183,
+                "traded": true
+              },
+              {
+                "week_id": "2025-06-27",
+                "pnl_usd": 18.376251283469045,
+                "traded": true
+              },
+              {
+                "week_id": "2025-07-04",
+                "pnl_usd": 90.42178969234413,
+                "traded": true
+              },
+              {
+                "week_id": "2025-07-11",
+                "pnl_usd": 118.97159951709222,
+                "traded": true
+              },
+              {
+                "week_id": "2025-07-18",
+                "pnl_usd": 52.32624302707441,
+                "traded": true
+              },
+              {
+                "week_id": "2025-07-25",
+                "pnl_usd": 149.51263794580527,
+                "traded": true
+              },
+              {
+                "week_id": "2025-08-01",
+                "pnl_usd": 54.428743935482935,
+                "traded": true
+              },
+              {
+                "week_id": "2025-08-08",
+                "pnl_usd": 130.90522393446358,
+                "traded": true
+              },
+              {
+                "week_id": "2025-08-15",
+                "pnl_usd": 30.880057977968352,
+                "traded": true
+              },
+              {
+                "week_id": "2025-08-29",
+                "pnl_usd": 132.0686746489288,
+                "traded": true
+              },
+              {
+                "week_id": "2025-09-05",
+                "pnl_usd": -32.75975367835831,
+                "traded": true
+              },
+              {
+                "week_id": "2025-09-12",
+                "pnl_usd": -36.81285477999055,
+                "traded": true
+              },
+              {
+                "week_id": "2025-09-19",
+                "pnl_usd": -2.4027448252253025,
+                "traded": true
+              },
+              {
+                "week_id": "2025-09-26",
+                "pnl_usd": 147.51951774155435,
+                "traded": true
+              },
+              {
+                "week_id": "2025-10-03",
+                "pnl_usd": 15.720796255217547,
+                "traded": true
+              },
+              {
+                "week_id": "2025-10-10",
+                "pnl_usd": 70.44826721386659,
+                "traded": true
+              },
+              {
+                "week_id": "2025-10-17",
+                "pnl_usd": 192.7426320487112,
+                "traded": true
+              },
+              {
+                "week_id": "2025-10-24",
+                "pnl_usd": 244.91014731356893,
+                "traded": true
+              },
+              {
+                "week_id": "2025-10-31",
+                "pnl_usd": 59.133850516282195,
+                "traded": true
+              },
+              {
+                "week_id": "2025-11-07",
+                "pnl_usd": 74.15082641628794,
+                "traded": true
+              },
+              {
+                "week_id": "2025-11-14",
+                "pnl_usd": -184.71253559045118,
+                "traded": true
+              },
+              {
+                "week_id": "2025-11-21",
+                "pnl_usd": 382.5056435169983,
+                "traded": true
+              },
+              {
+                "week_id": "2025-11-28",
+                "pnl_usd": 36.88597490080805,
+                "traded": true
+              },
+              {
+                "week_id": "2025-12-12",
+                "pnl_usd": -228.828545684509,
+                "traded": true
+              },
+              {
+                "week_id": "2025-12-19",
+                "pnl_usd": 45.782835539711755,
+                "traded": true
+              },
+              {
+                "week_id": "2025-12-26",
+                "pnl_usd": 18.063155156851582,
+                "traded": true
+              },
+              {
+                "week_id": "2026-01-02",
+                "pnl_usd": 159.30595463094997,
+                "traded": true
+              },
+              {
+                "week_id": "2026-01-09",
+                "pnl_usd": 25.867389541416333,
+                "traded": true
+              }
+            ],
+            "dd_scope": "Provided intratrade samples plus exact modeled close; unavailable interior paths are closed-only. Not native tick-equity DD."
+          },
+          {
+            "status": "complete",
+            "scheduled_weeks": 30,
+            "trades": 30,
+            "valid_no_trade_weeks": 0,
+            "authoritative_week_calendar": true,
+            "trades_with_intratrade_samples": 30,
+            "trades_closed_only": 0,
+            "return_pct": -6.690875275662911,
+            "ending_balance_usd": 9330.912472433709,
+            "net_profit_usd": -669.0875275662908,
+            "profit_factor": 0.6492291731210554,
+            "profit_factor_infinite_no_losses": false,
+            "win_rate_pct": 60.0,
+            "wins": 18,
+            "losses": 12,
+            "breakevens": 0,
+            "win_rate_wilson": {
+              "lower_pct": 42.320360253322484,
+              "upper_pct": 75.40937188319813,
+              "confidence": 0.95,
+              "caveat": "Binomial descriptive interval; serial dependence is not corrected."
+            },
+            "max_closed_dd_pct": 15.356278366876818,
+            "max_sampled_equity_dd_pct": 16.855705782861488,
+            "max_win_streak": 4,
+            "max_loss_streak": 5,
+            "weekly_return_sharpe": -0.7182683488520211,
+            "weekly_annualization": 52,
+            "cost_bases": {
+              "gross M5 surrogate; spread proxy uses the same gross exit geometry, not a quote-level re-execution": 30
+            },
+            "pnl_by_scheduled_week": [
+              {
+                "week_id": "2026-01-16",
+                "pnl_usd": -13.268899151445135,
+                "traded": true
+              },
+              {
+                "week_id": "2026-01-23",
+                "pnl_usd": -309.6760822003226,
+                "traded": true
+              },
+              {
+                "week_id": "2026-01-30",
+                "pnl_usd": -883.640358883891,
+                "traded": true
+              },
+              {
+                "week_id": "2026-02-13",
+                "pnl_usd": -6.834154218613429,
+                "traded": true
+              },
+              {
+                "week_id": "2026-02-20",
+                "pnl_usd": -28.554742344500884,
+                "traded": true
+              },
+              {
+                "week_id": "2026-02-27",
+                "pnl_usd": 18.753295950011307,
+                "traded": true
+              },
+              {
+                "week_id": "2026-03-13",
+                "pnl_usd": 46.98281927879274,
+                "traded": true
+              },
+              {
+                "week_id": "2026-03-20",
+                "pnl_usd": -236.24935218665215,
+                "traded": true
+              },
+              {
+                "week_id": "2026-03-27",
+                "pnl_usd": 76.1504406330377,
+                "traded": true
+              },
+              {
+                "week_id": "2026-04-03",
+                "pnl_usd": 105.9954602824434,
+                "traded": true
+              },
+              {
+                "week_id": "2026-04-17",
+                "pnl_usd": -305.28626384654,
+                "traded": true
+              },
+              {
+                "week_id": "2026-04-24",
+                "pnl_usd": 50.94152106828769,
+                "traded": true
+              },
+              {
+                "week_id": "2026-05-01",
+                "pnl_usd": 115.52669937337498,
+                "traded": true
+              },
+              {
+                "week_id": "2026-05-15",
+                "pnl_usd": -93.08433677991073,
+                "traded": true
+              },
+              {
+                "week_id": "2026-05-22",
+                "pnl_usd": 75.46658921365392,
+                "traded": true
+              },
+              {
+                "week_id": "2026-05-29",
+                "pnl_usd": 6.2129144179072044,
+                "traded": true
+              },
+              {
+                "week_id": "2026-06-12",
+                "pnl_usd": 76.57967907249434,
+                "traded": true
+              },
+              {
+                "week_id": "2026-06-19",
+                "pnl_usd": 80.62837266717506,
+                "traded": true
+              },
+              {
+                "week_id": "2026-06-26",
+                "pnl_usd": -9.851467557970118,
+                "traded": true
+              },
+              {
+                "week_id": "2026-07-03",
+                "pnl_usd": -5.864644360448937,
+                "traded": true
+              },
+              {
+                "week_id": "2026-07-17",
+                "pnl_usd": 57.17578809364691,
+                "traded": true
+              },
+              {
+                "week_id": "2026-07-24",
+                "pnl_usd": 66.61417195613637,
+                "traded": true
+              },
+              {
+                "week_id": "2026-07-31",
+                "pnl_usd": 74.52518519968125,
+                "traded": true
+              },
+              {
+                "week_id": "2026-08-14",
+                "pnl_usd": 24.69489273884603,
+                "traded": true
+              },
+              {
+                "week_id": "2026-08-21",
+                "pnl_usd": -12.300970584069779,
+                "traded": true
+              },
+              {
+                "week_id": "2026-08-28",
+                "pnl_usd": 136.9286848991547,
+                "traded": true
+              },
+              {
+                "week_id": "2026-09-11",
+                "pnl_usd": 1.248883278204733,
+                "traded": true
+              },
+              {
+                "week_id": "2026-09-18",
+                "pnl_usd": -2.8664207132681803,
+                "traded": true
+              },
+              {
+                "week_id": "2026-09-25",
+                "pnl_usd": 72.78054692679696,
+                "traded": true
+              },
+              {
+                "week_id": "2026-10-02",
+                "pnl_usd": 151.18422021169727,
+                "traded": true
+              }
+            ],
+            "dd_scope": "Provided intratrade samples plus exact modeled close; unavailable interior paths are closed-only. Not native tick-equity DD."
+          }
+        ],
+        "profitable_thirds": 1,
+        "recent_half": {
+          "status": "complete",
+          "scheduled_weeks": 46,
+          "trades": 46,
+          "valid_no_trade_weeks": 0,
+          "authoritative_week_calendar": true,
+          "trades_with_intratrade_samples": 46,
+          "trades_closed_only": 0,
+          "return_pct": 2.4005988331789796,
+          "ending_balance_usd": 10240.059883317897,
+          "net_profit_usd": 240.05988331789834,
+          "profit_factor": 1.0969268215951702,
+          "profit_factor_infinite_no_losses": false,
+          "win_rate_pct": 67.3913043478261,
+          "wins": 31,
+          "losses": 15,
+          "breakevens": 0,
+          "win_rate_wilson": {
+            "lower_pct": 52.967732419322424,
+            "upper_pct": 79.13405669074433,
+            "confidence": 0.95,
+            "caveat": "Binomial descriptive interval; serial dependence is not corrected."
+          },
+          "max_closed_dd_pct": 15.356278366876786,
+          "max_sampled_equity_dd_pct": 16.995507689246967,
+          "max_win_streak": 7,
+          "max_loss_streak": 5,
+          "weekly_return_sharpe": 0.2668808557261494,
+          "weekly_annualization": 52,
+          "cost_bases": {
+            "gross M5 surrogate; spread proxy uses the same gross exit geometry, not a quote-level re-execution": 46
+          },
+          "pnl_by_scheduled_week": [
+            {
+              "week_id": "2025-09-19",
+              "pnl_usd": -2.214647327377639,
+              "traded": true
+            },
+            {
+              "week_id": "2025-09-26",
+              "pnl_usd": 135.9710370707955,
+              "traded": true
+            },
+            {
+              "week_id": "2025-10-03",
+              "pnl_usd": 14.490102754711494,
+              "traded": true
+            },
+            {
+              "week_id": "2025-10-10",
+              "pnl_usd": 64.93326509982008,
+              "traded": true
+            },
+            {
+              "week_id": "2025-10-17",
+              "pnl_usd": 177.6538858629668,
+              "traded": true
+            },
+            {
+              "week_id": "2025-10-24",
+              "pnl_usd": 225.7374971746324,
+              "traded": true
+            },
+            {
+              "week_id": "2025-10-31",
+              "pnl_usd": 54.504591011304406,
+              "traded": true
+            },
+            {
+              "week_id": "2025-11-07",
+              "pnl_usd": 68.34597158284456,
+              "traded": true
+            },
+            {
+              "week_id": "2025-11-14",
+              "pnl_usd": -170.2524208912536,
+              "traded": true
+            },
+            {
+              "week_id": "2025-11-21",
+              "pnl_usd": 352.5614090303374,
+              "traded": true
+            },
+            {
+              "week_id": "2025-11-28",
+              "pnl_usd": 33.99837755311087,
+              "traded": true
+            },
+            {
+              "week_id": "2025-12-12",
+              "pnl_usd": -210.9148344874243,
+              "traded": true
+            },
+            {
+              "week_id": "2025-12-19",
+              "pnl_usd": 42.19875256969293,
+              "traded": true
+            },
+            {
+              "week_id": "2025-12-26",
+              "pnl_usd": 16.649091435823983,
+              "traded": true
+            },
+            {
+              "week_id": "2026-01-02",
+              "pnl_usd": 146.8347795216642,
+              "traded": true
+            },
+            {
+              "week_id": "2026-01-09",
+              "pnl_usd": 23.842375816484065,
+              "traded": true
+            },
+            {
+              "week_id": "2026-01-16",
+              "pnl_usd": -14.56174005467497,
+              "traded": true
+            },
+            {
+              "week_id": "2026-01-23",
+              "pnl_usd": -339.84903786537024,
+              "traded": true
+            },
+            {
+              "week_id": "2026-01-30",
+              "pnl_usd": -969.7369059049274,
+              "traded": true
+            },
+            {
+              "week_id": "2026-02-13",
+              "pnl_usd": -7.50003267710197,
+              "traded": true
+            },
+            {
+              "week_id": "2026-02-20",
+              "pnl_usd": -31.336942922168184,
+              "traded": true
+            },
+            {
+              "week_id": "2026-02-27",
+              "pnl_usd": 20.580503150686166,
+              "traded": true
+            },
+            {
+              "week_id": "2026-03-13",
+              "pnl_usd": 51.5605396924763,
+              "traded": true
+            },
+            {
+              "week_id": "2026-03-20",
+              "pnl_usd": -259.2680534656645,
+              "traded": true
+            },
+            {
+              "week_id": "2026-03-27",
+              "pnl_usd": 83.57007683086384,
+              "traded": true
+            },
+            {
+              "week_id": "2026-04-03",
+              "pnl_usd": 116.32301383799904,
+              "traded": true
+            },
+            {
+              "week_id": "2026-04-17",
+              "pnl_usd": -335.03150228646274,
+              "traded": true
+            },
+            {
+              "week_id": "2026-04-24",
+              "pnl_usd": 55.90495332880451,
+              "traded": true
+            },
+            {
+              "week_id": "2026-05-01",
+              "pnl_usd": 126.7829189482121,
+              "traded": true
+            },
+            {
+              "week_id": "2026-05-15",
+              "pnl_usd": -102.15390891739915,
+              "traded": true
+            },
+            {
+              "week_id": "2026-05-22",
+              "pnl_usd": 82.819595084682,
+              "traded": true
+            },
+            {
+              "week_id": "2026-05-29",
+              "pnl_usd": 6.818263045254487,
+              "traded": true
+            },
+            {
+              "week_id": "2026-06-12",
+              "pnl_usd": 84.0411376555413,
+              "traded": true
+            },
+            {
+              "week_id": "2026-06-19",
+              "pnl_usd": 88.48431135170638,
+              "traded": true
+            },
+            {
+              "week_id": "2026-06-26",
+              "pnl_usd": -10.811334693172395,
+              "traded": true
+            },
+            {
+              "week_id": "2026-07-03",
+              "pnl_usd": -6.436059669703044,
+              "traded": true
+            },
+            {
+              "week_id": "2026-07-17",
+              "pnl_usd": 62.7466494498294,
+              "traded": true
+            },
+            {
+              "week_id": "2026-07-24",
+              "pnl_usd": 73.10465208238706,
+              "traded": true
+            },
+            {
+              "week_id": "2026-07-31",
+              "pnl_usd": 81.78646638414433,
+              "traded": true
+            },
+            {
+              "week_id": "2026-08-14",
+              "pnl_usd": 27.101013025786074,
+              "traded": true
+            },
+            {
+              "week_id": "2026-08-21",
+              "pnl_usd": -13.499502409430773,
+              "traded": true
+            },
+            {
+              "week_id": "2026-08-28",
+              "pnl_usd": 150.2701838918437,
+              "traded": true
+            },
+            {
+              "week_id": "2026-09-11",
+              "pnl_usd": 1.3705668758411653,
+              "traded": true
+            },
+            {
+              "week_id": "2026-09-18",
+              "pnl_usd": -3.1457073294133298,
+              "traded": true
+            },
+            {
+              "week_id": "2026-09-25",
+              "pnl_usd": 79.87184115945786,
+              "traded": true
+            },
+            {
+              "week_id": "2026-10-02",
+              "pnl_usd": 165.91469193973822,
+              "traded": true
+            }
+          ],
+          "dd_scope": "Provided intratrade samples plus exact modeled close; unavailable interior paths are closed-only. Not native tick-equity DD."
+        },
+        "recent_half_pf_above_1": true
+      },
+      "crypto_annualization": {
+        "weekly": 52,
+        "daily_if_separately_reported": 365
+      },
+      "cost_stress": {
+        "status": "unavailable_without_measured_extra_costs",
+        "gate": null,
+        "reason": "Unknown historical spread/slippage/financing must not be invented. Native recorded costs and assumed swap sensitivities are different evidence."
+      },
+      "prop_simulation": {
+        "status": "unavailable_not_risk_calibrated",
+        "gate": null,
+        "reason": "1x no-stop allocation is not a calibrated FTMO percent-risk policy; closed weekly outcomes cannot establish daily floating-equity phase pass probabilities."
+      },
+      "portfolio_overlap": {
+        "status": "unavailable_without_independent_joint_portfolio_simulation",
+        "gate": null
+      },
+      "promotion_complete": false,
+      "limitations": [
+        "OOS2024-10-17 to2026-10-17 was previously inspected: retrospective OOS, not untouched.",
+        "Empirical resampling is not a future success probability.",
+        "Native Model4 timing, liquidity, costs and true equity-path audit remain separate requirements."
+      ],
+      "not_complete_period_evidence": true,
+      "block_spacing_caveat": "Removing missing calendar weeks compresses spacing: five retained weekly records may span more than five calendar weeks. Not full-period evidence."
+    }
+  },
+  "selected": {
+    "status": "unavailable_incomplete_history",
+    "missing_week_ids": [
+      "2025-05-16",
+      "2025-06-20",
+      "2026-03-27",
+      "2026-07-10",
+      "2026-09-04"
+    ],
+    "observed_closed_positions": 48,
+    "reason": "Missing historical prices are not substituted with zero-return weeks or complete-window metrics.",
+    "observed_complete_weeks_only_sensitivity": {
+      "status": "complete_offline_diagnostics",
+      "allocation": "1x CURRENT cash; no stop-defined percent-risk claim",
+      "summary": {
+        "status": "complete",
+        "scheduled_weeks": 99,
+        "trades": 45,
+        "valid_no_trade_weeks": 54,
+        "authoritative_week_calendar": true,
+        "trades_with_intratrade_samples": 45,
+        "trades_closed_only": 0,
+        "return_pct": -1.6192267008192207,
+        "ending_balance_usd": 9838.077329918078,
+        "net_profit_usd": -161.9226700819206,
+        "profit_factor": 0.9359892298668121,
+        "profit_factor_infinite_no_losses": false,
+        "win_rate_pct": 60.0,
+        "wins": 27,
+        "losses": 18,
+        "breakevens": 0,
+        "win_rate_wilson": {
+          "lower_pct": 45.451854590351395,
+          "upper_pct": 72.97511343499083,
+          "confidence": 0.95,
+          "caveat": "Binomial descriptive interval; serial dependence is not corrected."
+        },
+        "max_closed_dd_pct": 8.027768207799335,
+        "max_sampled_equity_dd_pct": 8.716191713192075,
+        "max_win_streak": 5,
+        "max_loss_streak": 2,
+        "weekly_return_sharpe": -0.09575339663153323,
+        "weekly_annualization": 52,
+        "cost_bases": {
+          "gross M5 surrogate; spread proxy uses the same gross exit geometry, not a quote-level re-execution": 45
+        },
+        "pnl_by_scheduled_week": [
+          {
+            "week_id": "2024-10-18",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2024-10-25",
+            "pnl_usd": -200.00000000000017,
+            "traded": true
+          },
+          {
+            "week_id": "2024-11-01",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2024-11-08",
+            "pnl_usd": 196.00000000000017,
+            "traded": true
+          },
+          {
+            "week_id": "2024-11-15",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2024-11-22",
+            "pnl_usd": -199.9200000000002,
+            "traded": true
+          },
+          {
+            "week_id": "2024-11-29",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2024-12-06",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2024-12-13",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2024-12-20",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2024-12-27",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-01-03",
+            "pnl_usd": 2.0302700675623613,
+            "traded": true
+          },
+          {
+            "week_id": "2025-01-10",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-01-17",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-01-24",
+            "pnl_usd": 15.060369236188782,
+            "traded": true
+          },
+          {
+            "week_id": "2025-01-31",
+            "pnl_usd": -196.2634127860752,
+            "traded": true
+          },
+          {
+            "week_id": "2025-02-07",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-02-14",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-02-21",
+            "pnl_usd": 3.568719953764264,
+            "traded": true
+          },
+          {
+            "week_id": "2025-02-28",
+            "pnl_usd": 192.40951892942894,
+            "traded": true
+          },
+          {
+            "week_id": "2025-03-07",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-03-14",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-03-21",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-03-28",
+            "pnl_usd": -196.25770930801644,
+            "traded": true
+          },
+          {
+            "week_id": "2025-04-04",
+            "pnl_usd": -192.3325551218572,
+            "traded": true
+          },
+          {
+            "week_id": "2025-04-11",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-04-18",
+            "pnl_usd": 1.4105554311542634,
+            "traded": true
+          },
+          {
+            "week_id": "2025-04-25",
+            "pnl_usd": -20.754672679856082,
+            "traded": true
+          },
+          {
+            "week_id": "2025-05-02",
+            "pnl_usd": -102.92044233656496,
+            "traded": true
+          },
+          {
+            "week_id": "2025-05-09",
+            "pnl_usd": 129.01489328481074,
+            "traded": true
+          },
+          {
+            "week_id": "2025-05-23",
+            "pnl_usd": -47.41172346774589,
+            "traded": true
+          },
+          {
+            "week_id": "2025-05-30",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-06-06",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-06-13",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-06-27",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-07-04",
+            "pnl_usd": 53.32662361347541,
+            "traded": true
+          },
+          {
+            "week_id": "2025-07-11",
+            "pnl_usd": 107.48444343310983,
+            "traded": true
+          },
+          {
+            "week_id": "2025-07-18",
+            "pnl_usd": 33.876474110719876,
+            "traded": true
+          },
+          {
+            "week_id": "2025-07-25",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-08-01",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-08-08",
+            "pnl_usd": 141.93830787708558,
+            "traded": true
+          },
+          {
+            "week_id": "2025-08-15",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-08-22",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-08-29",
+            "pnl_usd": 42.94299378362887,
+            "traded": true
+          },
+          {
+            "week_id": "2025-09-05",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-09-12",
+            "pnl_usd": -21.588528184172272,
+            "traded": true
+          },
+          {
+            "week_id": "2025-09-19",
+            "pnl_usd": 2.7952519575621784,
+            "traded": true
+          },
+          {
+            "week_id": "2025-09-26",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-10-03",
+            "pnl_usd": 194.88818755588423,
+            "traded": true
+          },
+          {
+            "week_id": "2025-10-10",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-10-17",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-10-24",
+            "pnl_usd": 198.78595130700197,
+            "traded": true
+          },
+          {
+            "week_id": "2025-10-31",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-11-07",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-11-14",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-11-21",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-11-28",
+            "pnl_usd": 18.090961317347087,
+            "traded": true
+          },
+          {
+            "week_id": "2025-12-05",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-12-12",
+            "pnl_usd": -203.12348955949008,
+            "traded": true
+          },
+          {
+            "week_id": "2025-12-19",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2025-12-26",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-01-02",
+            "pnl_usd": 124.43921534818367,
+            "traded": true
+          },
+          {
+            "week_id": "2026-01-09",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-01-16",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-01-23",
+            "pnl_usd": -201.54980407526168,
+            "traded": true
+          },
+          {
+            "week_id": "2026-01-30",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-02-06",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-02-13",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-02-20",
+            "pnl_usd": -99.04945313977314,
+            "traded": true
+          },
+          {
+            "week_id": "2026-02-27",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-03-06",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-03-13",
+            "pnl_usd": 61.998929754608625,
+            "traded": true
+          },
+          {
+            "week_id": "2026-03-20",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-04-03",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-04-10",
+            "pnl_usd": -196.77779752605426,
+            "traded": true
+          },
+          {
+            "week_id": "2026-04-17",
+            "pnl_usd": -192.84224157553317,
+            "traded": true
+          },
+          {
+            "week_id": "2026-04-24",
+            "pnl_usd": 84.76557404384721,
+            "traded": true
+          },
+          {
+            "week_id": "2026-05-01",
+            "pnl_usd": 67.36387230291146,
+            "traded": true
+          },
+          {
+            "week_id": "2026-05-08",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-05-15",
+            "pnl_usd": -69.90914874892073,
+            "traded": true
+          },
+          {
+            "week_id": "2026-05-22",
+            "pnl_usd": -190.62980269597819,
+            "traded": true
+          },
+          {
+            "week_id": "2026-05-29",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-06-05",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-06-12",
+            "pnl_usd": 186.81720664205972,
+            "traded": true
+          },
+          {
+            "week_id": "2026-06-19",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-06-26",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-07-03",
+            "pnl_usd": 6.678572402915194,
+            "traded": true
+          },
+          {
+            "week_id": "2026-07-17",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-07-24",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-07-31",
+            "pnl_usd": 73.37728951842604,
+            "traded": true
+          },
+          {
+            "week_id": "2026-08-07",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-08-14",
+            "pnl_usd": 28.07582745269429,
+            "traded": true
+          },
+          {
+            "week_id": "2026-08-21",
+            "pnl_usd": -192.71618456238264,
+            "traded": true
+          },
+          {
+            "week_id": "2026-08-28",
+            "pnl_usd": 188.86186087113393,
+            "traded": true
+          },
+          {
+            "week_id": "2026-09-11",
+            "pnl_usd": 0.0,
+            "traded": false
+          },
+          {
+            "week_id": "2026-09-18",
+            "pnl_usd": -5.569062050862183,
+            "traded": true
+          },
+          {
+            "week_id": "2026-09-25",
+            "pnl_usd": 106.68337022029976,
+            "traded": true
+          },
+          {
+            "week_id": "2026-10-02",
+            "pnl_usd": 105.00811732081942,
+            "traded": true
+          },
+          {
+            "week_id": "2026-10-09",
+            "pnl_usd": 0.0,
+            "traded": false
+          }
+        ],
+        "dd_scope": "Provided intratrade samples plus exact modeled close; unavailable interior paths are closed-only. Not native tick-equity DD."
+      },
+      "block_bootstrap": {
+        "1": {
+          "status": "complete",
+          "method": "block_bootstrap",
+          "paths": 10000,
+          "seed": 2026101702,
+          "block_calendar_weeks": 1,
+          "distributions": {
+            "return_pct": {
+              "p05": -15.317052958619492,
+              "p50": -1.7934644571286351,
+              "p95": 14.216152941846616,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "pf": {
+              "p05": 0.5131419688580969,
+              "p50": 0.9311836167706229,
+              "p95": 1.7537325132243875,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_sampled_equity_dd_pct": {
+              "p05": 5.3231759864217825,
+              "p50": 10.371616170244693,
+              "p95": 19.331263676579226,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_closed_dd_pct": {
+              "p05": 4.172688917658474,
+              "p50": 9.436791684618784,
+              "p95": 18.48959637716806,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_win_streak": {
+              "p05": 4.0,
+              "p50": 6.0,
+              "p95": 10.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_loss_streak": {
+              "p05": 2.0,
+              "p50": 4.0,
+              "p95": 6.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "trades": {
+              "p05": 37.0,
+              "p50": 45.0,
+              "p95": 53.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            }
+          },
+          "probability_profit_pct": 42.870000000000005,
+          "probability_ruin_pct": 0.0,
+          "bootstrap_return_p05_positive": false,
+          "bootstrap_pf_p05_above_1": false,
+          "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+          "source_trades": 45,
+          "scheduled_weeks": 99
+        },
+        "5": {
+          "status": "complete",
+          "method": "block_bootstrap",
+          "paths": 10000,
+          "seed": 2026101706,
+          "block_calendar_weeks": 5,
+          "distributions": {
+            "return_pct": {
+              "p05": -14.283793210839645,
+              "p50": -1.5049193591435306,
+              "p95": 12.436708818124576,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "pf": {
+              "p05": 0.5508581328843047,
+              "p50": 0.9412031493466132,
+              "p95": 1.6584781291231423,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_sampled_equity_dd_pct": {
+              "p05": 5.129477075064985,
+              "p50": 9.661511609027718,
+              "p95": 18.014149106217644,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_closed_dd_pct": {
+              "p05": 4.015528989148287,
+              "p50": 8.710811938740736,
+              "p95": 17.265095205491033,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_win_streak": {
+              "p05": 3.0,
+              "p50": 5.0,
+              "p95": 10.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_loss_streak": {
+              "p05": 2.0,
+              "p50": 3.0,
+              "p95": 5.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "trades": {
+              "p05": 38.0,
+              "p50": 45.0,
+              "p95": 52.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            }
+          },
+          "probability_profit_pct": 42.49,
+          "probability_ruin_pct": 0.0,
+          "bootstrap_return_p05_positive": false,
+          "bootstrap_pf_p05_above_1": false,
+          "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+          "source_trades": 45,
+          "scheduled_weeks": 99
+        },
+        "10": {
+          "status": "complete",
+          "method": "block_bootstrap",
+          "paths": 10000,
+          "seed": 2026101711,
+          "block_calendar_weeks": 10,
+          "distributions": {
+            "return_pct": {
+              "p05": -14.040517591361345,
+              "p50": -1.71381202213432,
+              "p95": 12.722359493505596,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "pf": {
+              "p05": 0.5596062385531181,
+              "p50": 0.9345210414985464,
+              "p95": 1.678149401205688,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_sampled_equity_dd_pct": {
+              "p05": 5.173105127934033,
+              "p50": 9.5356773318615,
+              "p95": 17.474834945092006,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_closed_dd_pct": {
+              "p05": 4.17236497082788,
+              "p50": 8.682903460466129,
+              "p95": 16.72855352182231,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_win_streak": {
+              "p05": 3.0,
+              "p50": 5.0,
+              "p95": 9.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_loss_streak": {
+              "p05": 2.0,
+              "p50": 3.0,
+              "p95": 4.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "trades": {
+              "p05": 38.0,
+              "p50": 45.0,
+              "p95": 52.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            }
+          },
+          "probability_profit_pct": 42.089999999999996,
+          "probability_ruin_pct": 0.0,
+          "bootstrap_return_p05_positive": false,
+          "bootstrap_pf_p05_above_1": false,
+          "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+          "source_trades": 45,
+          "scheduled_weeks": 99
+        }
+      },
+      "trade_order_reshuffle": {
+        "status": "complete",
+        "method": "trade_order_reshuffle",
+        "paths": 10000,
+        "seed": 2026101721,
+        "block_calendar_weeks": null,
+        "distributions": {
+          "return_pct": {
+            "p05": -1.619226700819254,
+            "p50": -1.6192267008192207,
+            "p95": -1.6192267008191652,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "pf": {
+            "p05": 0.9346912208253932,
+            "p50": 0.9373715862479922,
+            "p95": 0.9400135637550497,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "max_sampled_equity_dd_pct": {
+            "p05": 7.03051230150826,
+            "p50": 10.070866793057267,
+            "p95": 14.37556760888584,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "max_closed_dd_pct": {
+            "p05": 6.025381342906233,
+            "p50": 9.098163670595383,
+            "p95": 13.447477016597386,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "max_win_streak": {
+            "p05": 4.0,
+            "p50": 6.0,
+            "p95": 9.0,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "max_loss_streak": {
+            "p05": 2.0,
+            "p50": 4.0,
+            "p95": 6.0,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          },
+          "trades": {
+            "p05": 45.0,
+            "p50": 45.0,
+            "p95": 45.0,
+            "undefined_paths": 0,
+            "infinite_paths": 0
+          }
+        },
+        "probability_profit_pct": 0.0,
+        "probability_ruin_pct": 0.0,
+        "bootstrap_return_p05_positive": false,
+        "bootstrap_pf_p05_above_1": false,
+        "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+        "source_trades": 45,
+        "scheduled_weeks": 99
+      },
+      "trade_removal": {
+        "0.1": {
+          "status": "complete",
+          "method": "trade_removal",
+          "paths": 10000,
+          "seed": 2026101801,
+          "block_calendar_weeks": null,
+          "distributions": {
+            "return_pct": {
+              "p05": -5.707955267602771,
+              "p50": -1.6192267008192207,
+              "p95": 3.0979260318358737,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "pf": {
+              "p05": 0.7612124383883629,
+              "p50": 0.931037961919684,
+              "p95": 1.154507252881919,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_sampled_equity_dd_pct": {
+              "p05": 6.853256850196016,
+              "p50": 8.716191713192051,
+              "p95": 10.475928690726096,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_closed_dd_pct": {
+              "p05": 6.150783885509514,
+              "p50": 8.027768207799312,
+              "p95": 9.969888475687993,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_win_streak": {
+              "p05": 4.0,
+              "p50": 5.0,
+              "p95": 8.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_loss_streak": {
+              "p05": 2.0,
+              "p50": 2.0,
+              "p95": 4.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "trades": {
+              "p05": 37.0,
+              "p50": 41.0,
+              "p95": 44.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            }
+          },
+          "probability_profit_pct": 28.51,
+          "probability_ruin_pct": 0.0,
+          "bootstrap_return_p05_positive": false,
+          "bootstrap_pf_p05_above_1": false,
+          "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+          "source_trades": 45,
+          "scheduled_weeks": 99,
+          "independent_per_trade_removal_probability": 0.1,
+          "note": "A missed trade removes its entire path and embedded costs; subsequent cash allocation is recomputed."
+        },
+        "0.2": {
+          "status": "complete",
+          "method": "trade_removal",
+          "paths": 10000,
+          "seed": 2026101901,
+          "block_calendar_weeks": null,
+          "distributions": {
+            "return_pct": {
+              "p05": -6.91053700217431,
+              "p50": -1.3263874258622077,
+              "p95": 5.0568862906440915,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "pf": {
+              "p05": 0.691535746743005,
+              "p50": 0.9348385259195763,
+              "p95": 1.3034285981005007,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_sampled_equity_dd_pct": {
+              "p05": 6.000779067271187,
+              "p50": 8.459020689936626,
+              "p95": 11.17368412209813,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_closed_dd_pct": {
+              "p05": 5.199999675625411,
+              "p50": 7.747718004252235,
+              "p95": 10.615625186728794,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_win_streak": {
+              "p05": 4.0,
+              "p50": 5.0,
+              "p95": 8.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "max_loss_streak": {
+              "p05": 2.0,
+              "p50": 2.0,
+              "p95": 4.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            },
+            "trades": {
+              "p05": 31.0,
+              "p50": 36.0,
+              "p95": 40.0,
+              "undefined_paths": 0,
+              "infinite_paths": 0
+            }
+          },
+          "probability_profit_pct": 35.72,
+          "probability_ruin_pct": 0.0,
+          "bootstrap_return_p05_positive": false,
+          "bootstrap_pf_p05_above_1": false,
+          "scope": "One joint weekly sequence, 1x current-cash compounding; all costs embedded in caller returns scale with notional. DD uses supplied path samples or closed-only fallback, not certified native equity.",
+          "source_trades": 45,
+          "scheduled_weeks": 99,
+          "independent_per_trade_removal_probability": 0.2,
+          "note": "A missed trade removes its entire path and embedded costs; subsequent cash allocation is recomputed."
+        }
+      },
+      "deflated_sharpe": {
+        "status": "complete",
+        "dsr_pct": 2.8043152946255923,
+        "annualized_weekly_sharpe": -0.09575339663153323,
+        "periods_per_year": 52,
+        "tested_configurations": 345,
+        "weekly_observations": 99,
+        "trial_unannualized_sr_std": 0.06099723477505743,
+        "dispersion_source": "across-searched-development-trials",
+        "benchmark_annualized_weekly_sharpe": 1.2928170135177761,
+        "caveat": "Approximation with nominal independent-trial count; correlated searches and prior undisclosed trials are not fully corrected."
+      },
+      "chronological_checks": {
+        "status": "complete",
+        "method": "Three chronological scheduled-calendar-week groups; each starts fresh cash; no fitting.",
+        "thirds": [
+          {
+            "status": "complete",
+            "scheduled_weeks": 33,
+            "trades": 15,
+            "valid_no_trade_weeks": 18,
+            "authoritative_week_calendar": true,
+            "trades_with_intratrade_samples": 15,
+            "trades_closed_only": 0,
+            "return_pct": -6.163661887972072,
+            "ending_balance_usd": 9383.633811202793,
+            "net_profit_usd": -616.3661887972066,
+            "profit_factor": 0.46674691243011485,
+            "profit_factor_infinite_no_losses": false,
+            "win_rate_pct": 46.666666666666664,
+            "wins": 7,
+            "losses": 8,
+            "breakevens": 0,
+            "win_rate_wilson": {
+              "lower_pct": 24.80953536573739,
+              "upper_pct": 69.88301997450161,
+              "confidence": 0.95,
+              "caveat": "Binomial descriptive interval; serial dependence is not corrected."
+            },
+            "max_closed_dd_pct": 6.9796935861427105,
+            "max_sampled_equity_dd_pct": 7.546640278950425,
+            "max_win_streak": 2,
+            "max_loss_streak": 2,
+            "weekly_return_sharpe": -1.3935667895604633,
+            "weekly_annualization": 52,
+            "cost_bases": {
+              "gross M5 surrogate; spread proxy uses the same gross exit geometry, not a quote-level re-execution": 15
+            },
+            "pnl_by_scheduled_week": [
+              {
+                "week_id": "2024-10-18",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2024-10-25",
+                "pnl_usd": -200.00000000000017,
+                "traded": true
+              },
+              {
+                "week_id": "2024-11-01",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2024-11-08",
+                "pnl_usd": 196.00000000000017,
+                "traded": true
+              },
+              {
+                "week_id": "2024-11-15",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2024-11-22",
+                "pnl_usd": -199.9200000000002,
+                "traded": true
+              },
+              {
+                "week_id": "2024-11-29",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2024-12-06",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2024-12-13",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2024-12-20",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2024-12-27",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-01-03",
+                "pnl_usd": 2.0302700675623613,
+                "traded": true
+              },
+              {
+                "week_id": "2025-01-10",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-01-17",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-01-24",
+                "pnl_usd": 15.060369236188782,
+                "traded": true
+              },
+              {
+                "week_id": "2025-01-31",
+                "pnl_usd": -196.2634127860752,
+                "traded": true
+              },
+              {
+                "week_id": "2025-02-07",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-02-14",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-02-21",
+                "pnl_usd": 3.568719953764264,
+                "traded": true
+              },
+              {
+                "week_id": "2025-02-28",
+                "pnl_usd": 192.40951892942894,
+                "traded": true
+              },
+              {
+                "week_id": "2025-03-07",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-03-14",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-03-21",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-03-28",
+                "pnl_usd": -196.25770930801644,
+                "traded": true
+              },
+              {
+                "week_id": "2025-04-04",
+                "pnl_usd": -192.3325551218572,
+                "traded": true
+              },
+              {
+                "week_id": "2025-04-11",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-04-18",
+                "pnl_usd": 1.4105554311542634,
+                "traded": true
+              },
+              {
+                "week_id": "2025-04-25",
+                "pnl_usd": -20.754672679856082,
+                "traded": true
+              },
+              {
+                "week_id": "2025-05-02",
+                "pnl_usd": -102.92044233656496,
+                "traded": true
+              },
+              {
+                "week_id": "2025-05-09",
+                "pnl_usd": 129.01489328481074,
+                "traded": true
+              },
+              {
+                "week_id": "2025-05-23",
+                "pnl_usd": -47.41172346774589,
+                "traded": true
+              },
+              {
+                "week_id": "2025-05-30",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-06-06",
+                "pnl_usd": 0.0,
+                "traded": false
+              }
+            ],
+            "dd_scope": "Provided intratrade samples plus exact modeled close; unavailable interior paths are closed-only. Not native tick-equity DD."
+          },
+          {
+            "status": "complete",
+            "scheduled_weeks": 33,
+            "trades": 13,
+            "valid_no_trade_weeks": 20,
+            "authoritative_week_calendar": true,
+            "trades_with_intratrade_samples": 13,
+            "trades_closed_only": 0,
+            "return_pct": 5.246438622714877,
+            "ending_balance_usd": 10524.643862271489,
+            "net_profit_usd": 524.6438622714869,
+            "profit_factor": 2.1549394369505754,
+            "profit_factor_infinite_no_losses": false,
+            "win_rate_pct": 76.92307692307693,
+            "wins": 10,
+            "losses": 3,
+            "breakevens": 0,
+            "win_rate_wilson": {
+              "lower_pct": 49.743624053272505,
+              "upper_pct": 91.82047128150144,
+              "confidence": 0.95,
+              "caveat": "Binomial descriptive interval; serial dependence is not corrected."
+            },
+            "max_closed_dd_pct": 2.7592483655564104,
+            "max_sampled_equity_dd_pct": 3.5090791624677706,
+            "max_win_streak": 5,
+            "max_loss_streak": 1,
+            "weekly_return_sharpe": 1.410135184006418,
+            "weekly_annualization": 52,
+            "cost_bases": {
+              "gross M5 surrogate; spread proxy uses the same gross exit geometry, not a quote-level re-execution": 13
+            },
+            "pnl_by_scheduled_week": [
+              {
+                "week_id": "2025-06-13",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-06-27",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-07-04",
+                "pnl_usd": 56.82939539883858,
+                "traded": true
+              },
+              {
+                "week_id": "2025-07-11",
+                "pnl_usd": 114.5445843216813,
+                "traded": true
+              },
+              {
+                "week_id": "2025-07-18",
+                "pnl_usd": 36.10165826193679,
+                "traded": true
+              },
+              {
+                "week_id": "2025-07-25",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-08-01",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-08-08",
+                "pnl_usd": 151.26155893640092,
+                "traded": true
+              },
+              {
+                "week_id": "2025-08-15",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-08-22",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-08-29",
+                "pnl_usd": 45.76371440705703,
+                "traded": true
+              },
+              {
+                "week_id": "2025-09-05",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-09-12",
+                "pnl_usd": -23.006575723786753,
+                "traded": true
+              },
+              {
+                "week_id": "2025-09-19",
+                "pnl_usd": 2.978858738312043,
+                "traded": true
+              },
+              {
+                "week_id": "2025-09-26",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-10-03",
+                "pnl_usd": 207.689463886809,
+                "traded": true
+              },
+              {
+                "week_id": "2025-10-10",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-10-17",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-10-24",
+                "pnl_usd": 211.84325316454516,
+                "traded": true
+              },
+              {
+                "week_id": "2025-10-31",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-11-07",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-11-14",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-11-21",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-11-28",
+                "pnl_usd": 19.27927035659567,
+                "traded": true
+              },
+              {
+                "week_id": "2025-12-05",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-12-12",
+                "pnl_usd": -216.4657036349692,
+                "traded": true
+              },
+              {
+                "week_id": "2025-12-19",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2025-12-26",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-01-02",
+                "pnl_usd": 132.6130344085039,
+                "traded": true
+              },
+              {
+                "week_id": "2026-01-09",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-01-16",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-01-23",
+                "pnl_usd": -214.7886502504375,
+                "traded": true
+              },
+              {
+                "week_id": "2026-01-30",
+                "pnl_usd": 0.0,
+                "traded": false
+              }
+            ],
+            "dd_scope": "Provided intratrade samples plus exact modeled close; unavailable interior paths are closed-only. Not native tick-equity DD."
+          },
+          {
+            "status": "complete",
+            "scheduled_weeks": 33,
+            "trades": 17,
+            "valid_no_trade_weeks": 16,
+            "authoritative_week_calendar": true,
+            "trades_with_intratrade_samples": 17,
+            "trades_closed_only": 0,
+            "return_pct": -0.38338698126392234,
+            "ending_balance_usd": 9961.661301873608,
+            "net_profit_usd": -38.33869812639338,
+            "profit_factor": 0.9600387103814696,
+            "profit_factor_infinite_no_losses": false,
+            "win_rate_pct": 58.82352941176471,
+            "wins": 10,
+            "losses": 7,
+            "breakevens": 0,
+            "win_rate_wilson": {
+              "lower_pct": 36.00544264299978,
+              "upper_pct": 78.38894320978518,
+              "confidence": 0.95,
+              "caveat": "Binomial descriptive interval; serial dependence is not corrected."
+            },
+            "max_closed_dd_pct": 5.418016370388412,
+            "max_sampled_equity_dd_pct": 6.303592352660317,
+            "max_win_streak": 4,
+            "max_loss_streak": 2,
+            "weekly_return_sharpe": -0.052097578544662286,
+            "weekly_annualization": 52,
+            "cost_bases": {
+              "gross M5 surrogate; spread proxy uses the same gross exit geometry, not a quote-level re-execution": 17
+            },
+            "pnl_by_scheduled_week": [
+              {
+                "week_id": "2026-02-06",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-02-13",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-02-20",
+                "pnl_usd": -100.29369268257594,
+                "traded": true
+              },
+              {
+                "week_id": "2026-02-27",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-03-06",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-03-13",
+                "pnl_usd": 62.77774798698473,
+                "traded": true
+              },
+              {
+                "week_id": "2026-03-20",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-04-03",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-04-10",
+                "pnl_usd": -199.24968110608836,
+                "traded": true
+              },
+              {
+                "week_id": "2026-04-17",
+                "pnl_usd": -195.26468748396658,
+                "traded": true
+              },
+              {
+                "week_id": "2026-04-24",
+                "pnl_usd": 85.83038233657852,
+                "traded": true
+              },
+              {
+                "week_id": "2026-05-01",
+                "pnl_usd": 68.21008387721791,
+                "traded": true
+              },
+              {
+                "week_id": "2026-05-08",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-05-15",
+                "pnl_usd": -70.78733358003075,
+                "traded": true
+              },
+              {
+                "week_id": "2026-05-22",
+                "pnl_usd": -193.0244563869615,
+                "traded": true
+              },
+              {
+                "week_id": "2026-05-29",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-06-05",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-06-12",
+                "pnl_usd": 189.16396725922334,
+                "traded": true
+              },
+              {
+                "week_id": "2026-06-19",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-06-26",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-07-03",
+                "pnl_usd": 6.762467301975895,
+                "traded": true
+              },
+              {
+                "week_id": "2026-07-17",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-07-24",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-07-31",
+                "pnl_usd": 74.29904044453849,
+                "traded": true
+              },
+              {
+                "week_id": "2026-08-07",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-08-14",
+                "pnl_usd": 28.428510416670434,
+                "traded": true
+              },
+              {
+                "week_id": "2026-08-21",
+                "pnl_usd": -195.1370469676726,
+                "traded": true
+              },
+              {
+                "week_id": "2026-08-28",
+                "pnl_usd": 191.2343060283181,
+                "traded": true
+              },
+              {
+                "week_id": "2026-09-11",
+                "pnl_usd": 0.0,
+                "traded": false
+              },
+              {
+                "week_id": "2026-09-18",
+                "pnl_usd": -5.639019501411933,
+                "traded": true
+              },
+              {
+                "week_id": "2026-09-25",
+                "pnl_usd": 108.02350551211464,
+                "traded": true
+              },
+              {
+                "week_id": "2026-10-02",
+                "pnl_usd": 106.32720841869222,
+                "traded": true
+              },
+              {
+                "week_id": "2026-10-09",
+                "pnl_usd": 0.0,
+                "traded": false
+              }
+            ],
+            "dd_scope": "Provided intratrade samples plus exact modeled close; unavailable interior paths are closed-only. Not native tick-equity DD."
+          }
+        ],
+        "profitable_thirds": 1,
+        "recent_half": {
+          "status": "complete",
+          "scheduled_weeks": 50,
+          "trades": 22,
+          "valid_no_trade_weeks": 28,
+          "authoritative_week_calendar": true,
+          "trades_with_intratrade_samples": 22,
+          "trades_closed_only": 0,
+          "return_pct": -1.0183841943205207,
+          "ending_balance_usd": 9898.161580567948,
+          "net_profit_usd": -101.83841943205032,
+          "profit_factor": 0.925142207556719,
+          "profit_factor_infinite_no_losses": false,
+          "win_rate_pct": 59.09090909090909,
+          "wins": 13,
+          "losses": 9,
+          "breakevens": 0,
+          "win_rate_wilson": {
+            "lower_pct": 38.734818476315134,
+            "upper_pct": 76.74418380352813,
+            "confidence": 0.95,
+            "caveat": "Binomial descriptive interval; serial dependence is not corrected."
+          },
+          "max_closed_dd_pct": 8.027768207799312,
+          "max_sampled_equity_dd_pct": 8.716191713192046,
+          "max_win_streak": 4,
+          "max_loss_streak": 2,
+          "weekly_return_sharpe": -0.12240374148989093,
+          "weekly_annualization": 52,
+          "cost_bases": {
+            "gross M5 surrogate; spread proxy uses the same gross exit geometry, not a quote-level re-execution": 22
+          },
+          "pnl_by_scheduled_week": [
+            {
+              "week_id": "2025-10-10",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2025-10-17",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2025-10-24",
+              "pnl_usd": 200.00000000000017,
+              "traded": true
+            },
+            {
+              "week_id": "2025-10-31",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2025-11-07",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2025-11-14",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2025-11-21",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2025-11-28",
+              "pnl_usd": 18.20144854140895,
+              "traded": true
+            },
+            {
+              "week_id": "2025-12-05",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2025-12-12",
+              "pnl_usd": -204.3640289708295,
+              "traded": true
+            },
+            {
+              "week_id": "2025-12-19",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2025-12-26",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-01-02",
+              "pnl_usd": 125.1992050041824,
+              "traded": true
+            },
+            {
+              "week_id": "2026-01-09",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-01-16",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-01-23",
+              "pnl_usd": -202.78073249149432,
+              "traded": true
+            },
+            {
+              "week_id": "2026-01-30",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-02-06",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-02-13",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-02-20",
+              "pnl_usd": -99.65437948560336,
+              "traded": true
+            },
+            {
+              "week_id": "2026-02-27",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-03-06",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-03-13",
+              "pnl_usd": 62.37757683273955,
+              "traded": true
+            },
+            {
+              "week_id": "2026-03-20",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-04-03",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-04-10",
+              "pnl_usd": -197.97958178860827,
+              "traded": true
+            },
+            {
+              "week_id": "2026-04-17",
+              "pnl_usd": -194.0199901528361,
+              "traded": true
+            },
+            {
+              "week_id": "2026-04-24",
+              "pnl_usd": 85.28326422115879,
+              "traded": true
+            },
+            {
+              "week_id": "2026-05-01",
+              "pnl_usd": 67.77528478245004,
+              "traded": true
+            },
+            {
+              "week_id": "2026-05-08",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-05-15",
+              "pnl_usd": -70.33610603694441,
+              "traded": true
+            },
+            {
+              "week_id": "2026-05-22",
+              "pnl_usd": -191.79403920911156,
+              "traded": true
+            },
+            {
+              "week_id": "2026-05-29",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-06-05",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-06-12",
+              "pnl_usd": 187.95815842493042,
+              "traded": true
+            },
+            {
+              "week_id": "2026-06-19",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-06-26",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-07-03",
+              "pnl_usd": 6.719360557427842,
+              "traded": true
+            },
+            {
+              "week_id": "2026-07-17",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-07-24",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-07-31",
+              "pnl_usd": 73.82542783931784,
+              "traded": true
+            },
+            {
+              "week_id": "2026-08-07",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-08-14",
+              "pnl_usd": 28.24729541307921,
+              "traded": true
+            },
+            {
+              "week_id": "2026-08-21",
+              "pnl_usd": -193.89316326962663,
+              "traded": true
+            },
+            {
+              "week_id": "2026-08-28",
+              "pnl_usd": 190.015300004233,
+              "traded": true
+            },
+            {
+              "week_id": "2026-09-11",
+              "pnl_usd": 0.0,
+              "traded": false
+            },
+            {
+              "week_id": "2026-09-18",
+              "pnl_usd": -5.603074074647675,
+              "traded": true
+            },
+            {
+              "week_id": "2026-09-25",
+              "pnl_usd": 107.33491931282381,
+              "traded": true
+            },
+            {
+              "week_id": "2026-10-02",
+              "pnl_usd": 105.6494351138996,
+              "traded": true
+            },
+            {
+              "week_id": "2026-10-09",
+              "pnl_usd": 0.0,
+              "traded": false
+            }
+          ],
+          "dd_scope": "Provided intratrade samples plus exact modeled close; unavailable interior paths are closed-only. Not native tick-equity DD."
+        },
+        "recent_half_pf_above_1": false
+      },
+      "crypto_annualization": {
+        "weekly": 52,
+        "daily_if_separately_reported": 365
+      },
+      "cost_stress": {
+        "status": "unavailable_without_measured_extra_costs",
+        "gate": null,
+        "reason": "Unknown historical spread/slippage/financing must not be invented. Native recorded costs and assumed swap sensitivities are different evidence."
+      },
+      "prop_simulation": {
+        "status": "unavailable_not_risk_calibrated",
+        "gate": null,
+        "reason": "1x no-stop allocation is not a calibrated FTMO percent-risk policy; closed weekly outcomes cannot establish daily floating-equity phase pass probabilities."
+      },
+      "portfolio_overlap": {
+        "status": "unavailable_without_independent_joint_portfolio_simulation",
+        "gate": null
+      },
+      "promotion_complete": false,
+      "limitations": [
+        "OOS2024-10-17 to2026-10-17 was previously inspected: retrospective OOS, not untouched.",
+        "Empirical resampling is not a future success probability.",
+        "Native Model4 timing, liquidity, costs and true equity-path audit remain separate requirements."
+      ],
+      "not_complete_period_evidence": true,
+      "block_spacing_caveat": "Removing missing calendar weeks compresses spacing: five retained weekly records may span more than five calendar weeks. Not full-period evidence."
+    }
+  },
+  "family_null_development": {
+    "status": "unavailable_incomplete_matrix",
+    "paths": 0,
+    "reason": "No zero-imputation of missing configurations/weeks.",
+    "missing_week_ids": [
+      "2018-01-05",
+      "2018-01-12",
+      "2018-01-19",
+      "2018-01-26",
+      "2018-02-02",
+      "2018-02-09",
+      "2018-02-16",
+      "2018-02-23",
+      "2018-03-02",
+      "2018-03-09",
+      "2018-03-16",
+      "2018-03-23",
+      "2018-03-30",
+      "2018-04-06",
+      "2018-04-13",
+      "2018-04-20",
+      "2018-04-27",
+      "2018-05-04",
+      "2018-05-11",
+      "2018-05-18",
+      "2018-05-25",
+      "2018-06-01",
+      "2018-06-08",
+      "2018-06-15",
+      "2018-06-22",
+      "2018-06-29",
+      "2018-07-06",
+      "2018-07-13",
+      "2018-07-20",
+      "2018-07-27",
+      "2018-08-03",
+      "2018-08-10",
+      "2018-08-17",
+      "2018-08-24",
+      "2018-08-31",
+      "2018-09-07",
+      "2018-09-14",
+      "2018-09-21",
+      "2018-09-28",
+      "2018-10-05",
+      "2018-10-12",
+      "2018-10-19",
+      "2018-10-26",
+      "2018-11-02",
+      "2018-11-09",
+      "2018-11-16",
+      "2018-11-23",
+      "2018-11-30",
+      "2018-12-07",
+      "2018-12-14",
+      "2018-12-21",
+      "2018-12-28",
+      "2019-01-04",
+      "2019-01-11",
+      "2019-01-18",
+      "2019-01-25",
+      "2019-02-01",
+      "2019-02-08",
+      "2019-02-15",
+      "2019-02-22",
+      "2019-03-01",
+      "2019-03-08",
+      "2019-03-15",
+      "2019-03-22",
+      "2019-03-29",
+      "2019-04-05",
+      "2019-04-12",
+      "2019-04-19",
+      "2019-04-26",
+      "2019-05-03",
+      "2019-05-10",
+      "2019-05-17",
+      "2019-05-24",
+      "2019-05-31",
+      "2019-06-07",
+      "2019-06-14",
+      "2019-06-21",
+      "2019-06-28",
+      "2019-07-05",
+      "2019-07-12",
+      "2019-07-19",
+      "2019-07-26",
+      "2019-08-02",
+      "2019-08-09",
+      "2019-08-16",
+      "2019-08-23",
+      "2019-08-30",
+      "2019-09-06",
+      "2019-09-13",
+      "2019-09-20",
+      "2019-09-27",
+      "2019-10-04",
+      "2019-10-11",
+      "2019-10-18",
+      "2019-10-25",
+      "2019-11-01",
+      "2019-11-08",
+      "2019-11-15",
+      "2019-11-22",
+      "2019-11-29",
+      "2019-12-06",
+      "2019-12-13",
+      "2019-12-20",
+      "2019-12-27",
+      "2020-01-03",
+      "2020-01-10",
+      "2020-01-17",
+      "2020-01-24",
+      "2020-01-31",
+      "2020-02-07",
+      "2020-02-14",
+      "2020-02-21",
+      "2020-02-28",
+      "2020-03-06",
+      "2020-03-13",
+      "2020-03-20",
+      "2020-03-27",
+      "2020-04-03",
+      "2020-04-10",
+      "2020-04-17",
+      "2020-04-24",
+      "2020-05-01",
+      "2020-05-08",
+      "2020-05-15",
+      "2020-05-22",
+      "2020-05-29",
+      "2020-06-05",
+      "2020-06-12",
+      "2020-06-19",
+      "2020-06-26",
+      "2020-07-03",
+      "2020-07-10",
+      "2020-07-17",
+      "2020-07-24",
+      "2020-07-31",
+      "2020-08-07",
+      "2020-08-14",
+      "2020-08-21",
+      "2020-08-28",
+      "2020-09-04",
+      "2020-09-11",
+      "2020-09-18",
+      "2020-09-25",
+      "2020-10-02",
+      "2020-10-09",
+      "2020-10-16",
+      "2020-10-23",
+      "2020-10-30",
+      "2020-11-06",
+      "2020-11-13",
+      "2020-11-20",
+      "2020-11-27",
+      "2020-12-04",
+      "2020-12-11",
+      "2020-12-18",
+      "2020-12-25",
+      "2021-01-01",
+      "2021-01-08",
+      "2021-01-15",
+      "2021-01-22",
+      "2021-01-29",
+      "2021-02-05",
+      "2021-02-12",
+      "2021-02-19",
+      "2021-02-26",
+      "2021-03-05",
+      "2021-03-12",
+      "2021-03-19",
+      "2021-03-26",
+      "2021-04-02",
+      "2021-04-09",
+      "2021-04-16",
+      "2021-04-23",
+      "2021-04-30",
+      "2021-05-07",
+      "2021-05-14",
+      "2021-05-21",
+      "2021-05-28",
+      "2021-06-04",
+      "2021-06-11",
+      "2021-06-18",
+      "2021-06-25",
+      "2021-07-02",
+      "2021-07-09",
+      "2021-07-16",
+      "2021-07-23",
+      "2021-07-30",
+      "2021-08-06",
+      "2021-08-13",
+      "2021-08-20",
+      "2021-08-27",
+      "2021-09-03",
+      "2021-09-10",
+      "2021-09-17",
+      "2021-09-24",
+      "2021-10-01",
+      "2021-10-08",
+      "2021-10-15",
+      "2021-10-22",
+      "2021-10-29",
+      "2021-11-05",
+      "2021-11-12",
+      "2021-11-19",
+      "2021-11-26",
+      "2021-12-03",
+      "2021-12-10",
+      "2021-12-17",
+      "2021-12-24",
+      "2021-12-31",
+      "2022-01-07",
+      "2022-01-14",
+      "2022-01-21",
+      "2022-01-28",
+      "2022-02-04",
+      "2022-02-11",
+      "2022-02-18",
+      "2022-02-25",
+      "2022-03-04",
+      "2022-03-11",
+      "2022-03-18",
+      "2022-03-25",
+      "2022-04-01",
+      "2022-04-08",
+      "2022-04-15",
+      "2022-04-22",
+      "2022-04-29",
+      "2022-05-06",
+      "2022-05-13",
+      "2022-05-20",
+      "2022-05-27",
+      "2022-06-03",
+      "2022-06-10",
+      "2022-06-17",
+      "2022-06-24",
+      "2022-07-01",
+      "2022-07-08",
+      "2022-07-15",
+      "2022-07-22",
+      "2022-07-29",
+      "2022-08-05",
+      "2022-08-12",
+      "2022-08-19",
+      "2022-08-26",
+      "2022-09-02",
+      "2022-09-09",
+      "2022-09-16",
+      "2022-09-23",
+      "2022-09-30",
+      "2022-10-07",
+      "2022-10-14",
+      "2022-10-21",
+      "2022-10-28",
+      "2022-11-04",
+      "2022-11-11",
+      "2022-11-18",
+      "2022-11-25",
+      "2022-12-02",
+      "2022-12-09",
+      "2022-12-16",
+      "2022-12-23",
+      "2022-12-30",
+      "2023-01-06",
+      "2023-01-13",
+      "2023-01-20",
+      "2023-01-27",
+      "2023-02-03",
+      "2023-02-10",
+      "2023-02-17",
+      "2023-02-24",
+      "2023-03-03",
+      "2023-03-10",
+      "2023-03-17",
+      "2023-03-24",
+      "2023-03-31",
+      "2023-04-07",
+      "2023-04-14",
+      "2023-04-21",
+      "2023-04-28",
+      "2023-05-05",
+      "2023-05-12",
+      "2023-05-19",
+      "2023-05-26",
+      "2023-06-02",
+      "2023-06-09",
+      "2023-06-16",
+      "2023-06-23",
+      "2023-06-30",
+      "2023-07-07",
+      "2023-07-14",
+      "2023-07-21",
+      "2023-07-28",
+      "2023-08-04",
+      "2023-08-11",
+      "2023-08-18",
+      "2023-08-25",
+      "2023-09-01",
+      "2023-09-08",
+      "2023-09-15",
+      "2023-09-22",
+      "2023-09-29",
+      "2023-10-06",
+      "2023-10-13"
+    ]
+  },
+  "actual_unique_configurations": 345
+}

@@ -266,6 +266,74 @@ of what is currently attached to a live terminal.
   `clients/_owner/top5/renew.py --days N`; licence-only fingerprint check + historical
   evidence notice, no claim of a fresh backtest. See owner README/VERIFICATION.json.
 
+- 2026-10-18: BTCUSD weekend value-area limits RAW study COMPLETE and REJECTED (user idea:
+  Friday UTC volume profile, 128 rows / 80% VA from M1 tick volume; weekend buy limit VAL /
+  sell limit VAH, TP opposite edge, SL = width/3 i.e. 1:3; no OCO). 12 native Model-4 runs
+  (6m/1y/3y/5y to 2026-10-13 excl.), 150ms, $10k, 1% rounded UP. WVA (close Mon 00:00 UTC)
+  5y -39.54% PF0.76 n296 eqDD46.64%; 3y -25.28% PF0.74. WVAH (hold to TP/SL) 5y -33.52%
+  PF0.81 eqDD48.07%; 3y -11.95% PF0.90; only recent windows positive (1y +3.75% PF1.09,
+  6m +12.99% PF1.72 n27). Both beat price-range 10/90 control (5y -48.89% PF0.57) but FAIL
+  the raw gate; every year 2022-2025 lost. Loss is pre-cost: 65% stops, 11.5% TPs. Long side
+  ~flat/positive, shorts carry the loss — post hoc, not a valid filter. Tick volume is not
+  exchange volume; TradingView's VA algorithm is unpublished; levels not checked against TV.
+  Older ticks generated (real from 2026-01-01). No optimisation without explicit exploratory
+  override. Nothing installed/deployed/pushed. See `AAA EAs/BM Trading Robust Sets 2026-08-04/
+  BTC Weekend Value Area Raw 2026-10-18/REPORT.md`.
+
+- 2026-10-19: FTSE 100 (Exness UK100 CFD, H1) Monday-dip / stretch-below-mean RAW study, user window
+  2020-2023 only, COMPLETE and REJECTED (pasted social clip: R1 Monday RSI<40 2.5ATR, R2 close<=SMA40-
+  1.5ATR & RSI<35 2ATR, both 2R + 24h exit; clip's "third rule" undisclosed). 14 native Model-4 runs,
+  150ms, $10k, 0.75% rounded UP; ALL generated ticks (real UK100 ticks from 2026-01-02). R1 -1.02% PF0.97
+  n104 (2.2/month; +7% in 2020, then 3 losing years; gross +$197 vs -$299 commission+swap) but beats
+  Tue-Fri control PF0.65. R2 -46.02% PF0.77 n597 eqDD53.6% = random-long controls (PF0.65-0.77).
+  BOTH -46.75% PF0.80 n701 (175/yr, win 38.8% vs clip 50.8%/+312.9%/DD12%). All 7 declared threshold/
+  session sensitivities lose (-28% to -55%), 0/4 positive years each. Per-rule split inside BOTH is
+  unreliable (FIFO pairing of overlapping longs); use standalone R1/R2. 2024-2026 deliberately NOT run.
+  No optimisation. Nothing installed/deployed/pushed. See `AAA EAs/BM Trading Robust Sets 2026-08-04/
+  FTSE Monday Dip Raw 2026-10-19/REPORT.md`.
+
+- 2026-10-20: AI Trading Library review (`ai trader/Amyr/ai-trading-library-full.md`, educational chat-team manual) →
+  owner "do them all". Built, all read-only / research-only (no SET/BAT/guard/live change, MT5 not started/restarted):
+  (1) `Calyx Research Pipeline/robustness.py` (+5 tests; 24 pipeline tests pass): best-day/best-trade dependence
+  falsifier + day-block bootstrap; PIPELINE.md stage 4/9 and pipeline-policy.json amended; `_Ops Monitor/
+  dependence_audit.py` over all 37 EAs: only US100 Selective ORB V3 1y FAILS (+$175 = one $198 trade); 21 EA-windows
+  flip without their 5 best days (diagnostic). (2) `_Ops Monitor/` weekly debrief: fetch_live.py (read-only, refuses
+  unless normal MT5 already running), debrief_backtest.py (32 non-news EAs, frozen EX5/SET, isolated tester, all
+  audited), live_debrief.py. Week 2026-10-12→19: 30 demo positions vs 101 backtest; 19 matched; 53 live-phase misses
+  (46 = US30/US100 hourly not running); 10 manual/mobile closes (6 at Mon 10-12 17:35); 3 Way Gold (paused) still
+  trades. MT5 API terminal trade_allowed read False while EAs opened trades — not reliable; use EA entries.
+  (3) `FTMO Dial Study 2026-10-20/` (Prop Ready 9, Faster-Screen engine subclass, FLAT50 parity 536/536): FLAT100
+  ranked 1st (134/134 both phases, 0 breaches, median 67–71 d vs 99.5–119 d at $50; worst eq DD $653/$1000, day
+  $271/$500); library dial ≈ FLAT100; FLAT200 7–14 stuck, DD $984. Not deployed: Prop Ready cap 0.5% unchanged.
+  Fresh-context Bear review: ATTACKS UNANSWERED → NOT DECISION-READY (same-year selection, no split; only 15–17
+  distinct pass dates; tested guard/hashes ≠ PropReady package and EA request must also rise; $300 reserve blocks
+  1,463–1,740 entries at $100, median trades 124→81). Needs older-history replay + bootstrap + hashed $100 build.
+- 2026-10-20 (later): FTMO follow-ups, all research-only, nothing deployed. `FTMO Prop Ready Older History 2026-10-20/`
+  (parity PASS vs Faster inputs): 2021-10→2025-10 starts, PR9 $50 passes both ≤180 d in only 31–43% (median ~115 d),
+  $100 47–58% (median ~65 d), 0 breaches but 12–59% stall at the $9,200 buffer; 2023 starts ~2%; bootstrap 5y:
+  $50 35–52%, $100 50–64%. The 2025-26 year (100%) was the best regime. `FTMO Fastest Funded Search` (72 configs,
+  dev/val/OOS): none ≥70% in dev (best 64%), val 6–28%, OOS 71–97%. `FTMO Risk Approach Search` (168 risk configs,
+  parity 14): best dev funded≤90 47%; choice PR9 $150/$150 latch450 buf9100 OOS 68% (val 22%). `FTMO Law Of Large
+  Numbers Test`: claim "PF>0.95 + many bets" REJECTED (theory EV<0 at PF 0.95; LLN_PF095 17 EAs $50 all-history 55%).
+  Owner then lowered target to 65%: post-hoc all-history ranking `FTMO Best Portfolio Summary 2026-10-20/README.md`:
+  PR9 $100 standard guard 70% pass ≤180 d (58/28/97%), median ~82 d to funded, ~46% done ≤90 d; nothing reaches 65%
+  funded ≤90 d (best ~51%). $100 not deployed (needs EA request + guard caps in a hashed PropReady build).
+  Prop Ready on FTMO Swing (Faster Screen 2026-10-16): 134/134 passed, median 99.5 d (stress 116), ~107 d funded.
+  (4) kill_switch.py (34 EAs; hourly/V9 none: no SL / no evidence) and go_live.py checklist (0/37 ready) + monthly
+  (2026-10: 7 KEEP, 8 ENFORCE, 3 Way Gold OFF-ROSTER). (5) event_sheet.py: FXMacroData fail-closed (latest verified
+  2026-10-16); NFP 10-02 demo fills BTC −29.7 s, EURUSD −23.0 s, V9 −4.3 s, XAG +1.6 s vs 12:30:00 UTC; no CPI listed
+  12 Sep–3 Nov (check broker calendar); FOMC 10-28 in the EU/US DST-gap week; research-copy tester calendar extended to
+  2026-10-16 (production include untouched). (6) `/bear-review` project skill (`ai trader/.claude/skills/`).
+  See `_Ops Monitor/README.md`. Await owner decisions (re-wire demo, $100 FTMO cap, hourly bots).
+
+- 2026-10-20: BUILT `_00 Live profiles/Best Prop Portfolio 2026-10-20/` (owner request): PR9 nine EAs, guard 1%/4.5%/3%
+  (daily 3%, 92% buffer, 90%/5% latch unchanged), InpRiskPercent 1.0, Nasdaq DI OFF default, phase Challenge default,
+  any hedging account; `Install Best Prop Portfolio.bat` + Install-BestProp.ps1 (flat, Algo OFF, typed confirm, new
+  profile, Algo stays OFF). 9 EX5 0 errors/0 warnings; -ValidateOnly PASS; PropReady unchanged. NOT run on any terminal.
+  Retest (`Best Prop Portfolio Retest 2026-10-20/`): OOS DI OFF pass 87–90%, funded<=90 61–69%, med 64–71 d; DI ON
+  96–97%. MC DI OFF 43–56% pass, DI ON 50–64%. Continuous OOS DI OFF +171% (stress: stalled −7.7%), DI ON +161–184%.
+  DI ON better in every test; owner chose OFF default (switchable at install).
+
 ## Main locations
 
 - Active portfolio: `AAA EAs/BM Trading Robust Sets 2026-08-04`

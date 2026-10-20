@@ -1,0 +1,36 @@
+{
+  "status": "PREDECLARED 2026-10-20 before any outcome of this study was computed. Research only: no live, MT5, BAT, SET, package or guard change.",
+  "request": "Owner 2026-10-20: 'yes run both' after the Bear review of FTMO Dial Study 2026-10-20 (older-history replay + block bootstrap of FLAT50 vs FLAT100).",
+  "basket": "CORE4_PLUS_FIVE_ORBS_05R (= Packages/PropReady nine EAs)",
+  "policies": {"FLAT50": "current Prop Ready / FTMO guard sizing", "FLAT100": "the dial study's ranked-first reference"},
+  "engine": "FTMO Faster Portfolio Screen 2026-10-16 core_engine.py via the FTMO Dial Study 2026-10-20 DialTrial subclass, both hash-frozen; FTMO 2-step Swing rules (+10% / +5%, >=4 entry days per phase, static 9000 floor, 500 daily loss), same guard, costs, marks and scenarios.",
+  "data": {
+    "builder": "prepare.py = the Faster Screen prepare.py generalised to a date window and the nine Prop Ready EAs (same native 5-year source runs, same stop-risk reference rows, same mark-ownership rules).",
+    "parity_gate": "Rebuilding 2025-10-06..2026-10-06 must reproduce the Faster Screen INPUTS candidates for all nine EAs exactly, or the study stops.",
+    "older_window": ["2021-10-07", "2025-10-06"],
+    "bootstrap_pool_5y": ["2021-10-07", "2026-10-06"],
+    "bootstrap_pool_older": ["2021-10-07", "2025-10-06"],
+    "coverage_note": "Start moved from 2021-10-06 to 2021-10-07 before any outcome: native curves begin 2021-10-06 00:00 UTC, two hours after the Prague-midnight start."
+  },
+  "part_a_older_replay": {
+    "starts": "every Prague weekday with a full 180-day follow-up inside the older window (no start reaches the 2025-10-06 selection year)",
+    "scenarios": "all four (recorded_exness / fixed_cost_stress x next_prague_midnight / two_business_day_wait)",
+    "label": "Retrospective, PREVIOUSLY INSPECTED history: the nine EAs were developed and their settings chosen on overlapping years. This is not an untouched out-of-sample test; it is the older history that the basket SELECTION (2025-10-06..2026-10-06) did not use.",
+    "survival_rule_for_FLAT100": "In every scenario: zero hard FTMO breaches, >=95% of starts complete both phases within 180 days, worst sampled equity drawdown < $900 and worst daily sampled loss < $450 (>=10% buffer to FTMO's limits)."
+  },
+  "part_b_bootstrap": {
+    "method": "Joint 4-week block bootstrap of the frozen nine-EA candidate stream: 7 blocks of 28 days (Monday-aligned source blocks, sampled with replacement) are concatenated into one synthetic 196-day calendar, cut at the 180-day horizon. Each sampled block carries all candidates opened inside it with their own exits, costs and floating marks, shifted by whole days (UTC). FLAT50 and FLAT100 run on IDENTICAL paths (paired).",
+    "paths": 2000,
+    "seed": 20261020,
+    "pools": ["5y (2021-10-07..2026-10-06)", "older 4y only (2021-10-07..2025-10-06, excludes the selection year)"],
+    "scenarios": "recorded_exness and fixed_cost_stress, next_prague_midnight handover",
+    "metrics": "P(hard breach), P(both phases <= 60/90/120/180 days), median days to both and to funded (+5 business days), P(unfinished at 180 days), p95/p99 sampled equity drawdown, p95/p99 worst daily loss, median trades / month",
+    "acceptance_rule_for_FLAT100": "P(hard breach) <= 5% (pipeline-policy maximum_closed_pnl_total_breach_probability_pct) in BOTH pools and BOTH cost scenarios; the report also states whether it is <= 1%.",
+    "known_limits": "Cross-block dependence is weakened; trades can run past their block end; whole-day UTC shifts can move Prague local time by one hour across DST; signals are the historical ones re-ordered, not new market paths."
+  },
+  "tested_configurations_in_this_study": 2,
+  "prior_configurations_seen_on_overlapping_history": "12 baskets (Faster Screen) + 6 sizing policies (Dial Study) + earlier risk studies; disclosed in the report.",
+  "trade_frequency_columns_required": true,
+  "live_changes": false,
+  "optimization": false
+}

@@ -1,0 +1,31 @@
+{
+  "total": 5,
+  "complete": {
+    "gold-overnight-value-area": {
+      "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\gold-overnight-value-area\\results.json",
+      "sha256": "4866b88d8375296a1dc5ba170115fb48693e0a6d9d3204858a8468038641d7f2",
+      "trades": 39,
+      "history_quality": "100% real ticks",
+      "seconds": 78.45083618164062
+    },
+    "xau-rsi-vwap": {
+      "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\xau-rsi-vwap\\results.json",
+      "sha256": "4a1f25319fc4801d99249579d6fdbba5f815c137b0928986cf3965ac1ff9d609",
+      "trades": 12,
+      "history_quality": "100% real ticks",
+      "seconds": 14.495471715927124
+    }
+  },
+  "failed": {
+    "nasdaq-overnight": {
+      "error": "[Errno 2] No such file or directory: 'C:\\\\Users\\\\hama101\\\\Desktop\\\\geek\\\\ai trader\\\\AAA EAs\\\\BM Trading Robust Sets 2026-08-04\\\\Top5 vs Prop Ready 2026-10-17\\\\native\\\\nasdaq-overnight\\\\results.json'",
+      "trace": "Traceback (most recent call last):\n  File \"C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\export_v3.py::unchanged_case_order_new_status\", line 15, in run\n    import os\n    \n  File \"C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\native_run.py\", line 48, in sha\n    return hashlib.sha256(Path(path).read_bytes()).hexdigest()\n                          ~~~~~~~~~~~~~~~~~~~~~^^\n  File \"C:\\Program Files\\Python313\\Lib\\pathlib\\_abc.py\", line 625, in read_bytes\n    with self.open(mode='rb') as f:\n         ~~~~~~~~~^^^^^^^^^^^\n  File \"C:\\Program Files\\Python313\\Lib\\pathlib\\_local.py\", line 537, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'C:\\\\Users\\\\hama101\\\\Desktop\\\\geek\\\\ai trader\\\\AAA EAs\\\\BM Trading Robust Sets 2026-08-04\\\\Top5 vs Prop Ready 2026-10-17\\\\native\\\\nasdaq-overnight\\\\results.json'\n"
+    }
+  },
+  "window": [
+    "2026-08-17",
+    "2026-10-17"
+  ],
+  "live_changes": false,
+  "export_v3_plan_sha256": "ad481249adfc6764485e979454f072e34ff75e6477523ce014d8095d95f66612"
+}

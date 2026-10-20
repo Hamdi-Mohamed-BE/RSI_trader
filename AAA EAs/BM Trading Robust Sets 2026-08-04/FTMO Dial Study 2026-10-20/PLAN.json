@@ -1,0 +1,30 @@
+{
+  "status": "PREDECLARED 2026-10-20 before any dial outcome was computed. Research only: no live, MT5, BAT, SET or guard change.",
+  "request": "Owner 2026-10-20: 'do them all' (item 3 of the AI Trading Library review): size by room to the FTMO floor ('the dial').",
+  "question": "On the Prop Ready nine-EA basket, can sizing by room to the static FTMO floor shorten time-to-funded versus flat $50 without the stuck/failed paths seen at flat $200?",
+  "source_study": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\FTMO Faster Portfolio Screen 2026-10-16",
+  "basket": "CORE4_PLUS_FIVE_ORBS_05R",
+  "basket_note": "Identical nine-EA roster to Packages/PropReady (Nasdaq5M DI on, USDJPY ADX20 DI on, Month End, RSI VWAP 0.5R, five ORBs 0.5R).",
+  "history": "Reused unchanged from the source study: 134 Prague weekday starts 2025-10-06..2026-04-09, 180-day follow-up each, same candidates, owned five-minute marks, costs and scenarios.",
+  "scenarios": "All four source scenarios: recorded_exness / fixed_cost_stress x next_prague_midnight / two_business_day_wait.",
+  "room_definition": "r = (sampled equity at the entry decision - 9000) / 1000, i.e. share of the FTMO 10% static loss allowance still available. Phase 2 restarts at 10000, so r restarts at 1.0.",
+  "sizing": "cap c from the policy band at entry; source request = ceil(equity*(c/10000)/unit_risk) to step within broker min/max; guarded lots = floor(min(request, c/unit_risk, max)); reject below minimum. For c=50 this is byte-for-byte the source engine.",
+  "scaled_caps": "aggregate open initial risk <= 225*(c/50); same-symbol <= 150*(c/50) (c = cap of the candidate entry). Unchanged account-level guards for every policy: hard fail at equity<=9000 or day-start balance-500; daily latch at -300; projected daily reserve <=300; projected equity buffer >=9200; 7 entries / 3 losing closes per Prague day; margin proxy; 3s reconciliation; target 11000/10500 after 4 entry days, flat.",
+  "policies": {
+    "FLAT50":     {"bands": [[-1e9, 50]],  "note": "current Prop Ready / FTMO guard; must reproduce the source study's trial records exactly"},
+    "FLAT100":    {"bands": [[-1e9, 100]], "note": "reference: double risk everywhere"},
+    "FLAT200":    {"bands": [[-1e9, 200]], "note": "reference: the 2026-10-08 faster-but-stuck level"},
+    "DIAL_LIB":   {"bands": [[0.5, 100], [0.25, 50], [-1e9, 25]], "note": "library bands: normal $100 above 50% room, half 25-50%, minimum below 25%"},
+    "DIAL_GAIN":  {"bands": [[1.25, 150], [1.0, 100], [0.5, 50], [-1e9, 25]], "note": "risk more only when in profit (house money)"},
+    "DIAL_START": {"bands": [[0.9, 150], [0.7, 100], [0.5, 50], [-1e9, 25]], "note": "aggressive while near the start, step down quickly on drawdown"}
+  },
+  "tested_configurations": 6,
+  "selection": {
+    "eligibility": "In EVERY scenario: zero hard FTMO failures AND both phases completed within the 180-day horizon in >=95% of all starts (>=128/134) AND >=95% of Jan-2026+ starts (>=68/71).",
+    "rank_order": ["worst-scenario median days to both phases (ascending)", "worst-scenario share completing both within 90 days (descending)", "smaller maximum cap"],
+    "no_eligible_result": "Report that no dial meets the criteria; do not add, tune or relax policies after seeing outcomes.",
+    "label": "Retrospective historical replay on the same year used to choose the basket; overlapping starts; not a pass probability."
+  },
+  "live_changes": false,
+  "optimization": false
+}

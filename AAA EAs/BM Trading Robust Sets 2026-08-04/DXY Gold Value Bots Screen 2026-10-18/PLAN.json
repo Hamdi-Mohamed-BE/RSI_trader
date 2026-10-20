@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "status": "PREDECLARED research-only historical closed-trade screening; no results inspected",
+  "created_utc": "2026-10-18T00:37:10Z",
+  "scope": [
+    "xau-rsi-vwap",
+    "lta-volume-profile",
+    "gold-overnight-value-area"
+  ],
+  "labels": {
+    "xau-rsi-vwap": "RSI VWAP Gold H1",
+    "lta-volume-profile": "LTA Volume Profile M15 (current original rules)",
+    "gold-overnight-value-area": "Gold Overnight Value Area M5"
+  },
+  "periods": [
+    {
+      "id": "5y",
+      "start": "2021-10-06",
+      "end_exclusive": "2026-10-06"
+    },
+    {
+      "id": "3y",
+      "start": "2023-10-06",
+      "end_exclusive": "2026-10-06"
+    },
+    {
+      "id": "2y",
+      "start": "2024-10-06",
+      "end_exclusive": "2026-10-06"
+    },
+    {
+      "id": "1y",
+      "start": "2025-10-06",
+      "end_exclusive": "2026-10-06",
+      "primary": true
+    },
+    {
+      "id": "6m",
+      "start": "2026-04-06",
+      "end_exclusive": "2026-10-06"
+    },
+    {
+      "id": "3m",
+      "start": "2026-07-06",
+      "end_exclusive": "2026-10-06",
+      "primary": true
+    }
+  ],
+  "source_ledger": "../Portfolio Long History All ORB05 2026-10-14/RISK_ROWS.json",
+  "source_collection": "full-eas",
+  "rules": {
+    "timeframe_seconds": 3600,
+    "source_bar_timestamps": "UTC H1 bar OPEN times; close becomes usable only at open+3600 <= source entry",
+    "maximum_closed_bar_age_seconds": 3600,
+    "signal_clock_hours": 3,
+    "require_four_consecutive_hourly_closes": true,
+    "volatility_returns": 120,
+    "volatility_ddof": 1,
+    "volatility_history_max_calendar_days": 10,
+    "lookback_age_anchor": "entry timestamp for both volatility and correlation; return endpoints must be >= entry minus 10 days",
+    "volatility_end": "before the signal 3-hour block (return endpoint <= signal-start close)",
+    "threshold_sigma_multiplier": 1,
+    "threshold": "sqrt(3) * sampleSD(previous 120 valid one-hour DXY log returns)",
+    "primary": "Veto long only if 3-hour DXY log return >= threshold; veto short only if <= -threshold",
+    "secondary": "Apply primary veto only if rolling paired XAUUSD/DXY hourly log-return correlation <= -0.25",
+    "correlation_observations": 120,
+    "correlation_minimum": 100,
+    "correlation_max_calendar_days": 10,
+    "correlation_maximum_endpoint_age_seconds": 3600,
+    "missing_or_stale_policy": "PASS original trade unchanged; report missingness and common-valid comparison; never zero-fill or forward-fill prices",
+    "threshold_search": false,
+    "secondary_selection": "One predeclared diagnostic; not select whichever wins or claim untouched out-of-sample"
+  },
+  "metrics": {
+    "initial_reference_balance": 10000,
+    "fixed_initial_stop_risk": 100,
+    "risk_model": "Unlimited fractional-lot fixed $100 initial-stop risk per native position; no compounding, margin, lot minimum or portfolio guards; linear cost scaling, not a tradable-account simulation",
+    "profit_model": "NetR=(unit_gross+unit_comm+unit_swap)/unit_risk at original natural close; netR*100 dollars; closed-position curve books entire net at close including source entry costs",
+    "return_model": "Closed-position net dollars / initial $10000 reference; exclude open/unclosed positions and native forced final liquidations",
+    "period_membership": "source entry >= UTC period start AND natural close < UTC end-exclusive; no pre-window carried position or final forced close; both boundaries apply before filtering",
+    "close_tie_order": "close epoch, open epoch, EA key, numeric position_id",
+    "drawdown": "Closed-position chronological net curve only, NOT floating equity or daily prop loss",
+    "streaks": "Chronological close ordering; zero result breaks win and loss streak",
+    "zero_classification_tolerance_cash": 1e-10,
+    "sharpe": "UTC daily closed-position returns on current closed reference balance, all calendar days, sqrt(365); unavailable if nonpositive balance"
+  },
+  "stress": {
+    "extra_xau_price_cost_each_side": 0.1,
+    "contract_size": 100,
+    "extra_per_lot_roundtrip": 20,
+    "double_negative_recorded_swap": true,
+    "native_exits_unchanged": true,
+    "no_execution_claim": true
+  },
+  "data": {
+    "dxy_source": "Broker DXY CFD H1, Exness-MT5Trial15; not official ICE spot/futures",
+    "gold_correlation_source": "Broker XAUUSD H1, Exness-MT5Trial15",
+    "native_gold_source": "Frozen historical single-EA sources from Exness-MT5Trial16; 15% real ticks globally, real ticks begin January2026",
+    "cross_feed": true,
+    "current_native_presets": true
+  },
+  "limitations": [
+    "Entry-veto subset screening cannot recover later/counterfactual entries made possible by skipped trades; native on/off reruns required before adoption.",
+    "Not a new full EA backtest, a prop-phase simulation, or a proven probability of success.",
+    "Existing strategies/dates already researched. No claim of genuinely untouched last-two-year OOS.",
+    "LTA is the current original M15 Concepts EA, not the separate M5 VWAP/developing-POC reconstruction. Its two-consecutive-loss daily pause means a trade-veto subset cannot recover later signals that would be unblocked by changed daily state.",
+    "RSI VWAP native source is long-only; no evidence about short-side filtering for this EA.",
+    "Gold Overnight source preserves 12 invalid-stop log hits representing two unique rejected buy attempts on 2026-02-10 and 2026-04-13. The screen contains admitted fills only, not rejected or counterfactual orders.",
+    "Feature timing aligns bar completion to the historical filled entry timestamp, not the earlier order request or actual arrival time of cross-feed quotes. Exact-hour confirmation is an idealized screen boundary, not guaranteed executable latency.",
+    "Overnight position 1956 has the original publisher's 1ms close-order epsilon for a native same-second open/close. INPUTS preserves that value; the unchanged analysis engine uses integer-second close ordering and displays, not measured millisecond execution precision.",
+    "No live bots, account settings, charts, installers or BAT changes; no automatic push."
+  ],
+  "continuation_of": "../DXY Gold Conflict Filter Screen 2026-10-17",
+  "methodology_policy": "Reuse the previous frozen engine, hourly bars, primary/secondary filter and risk normalization unchanged. No threshold optimization or native EA changes. Next group chosen by value/mean-reversion strategy role, before computing this batch."
+}

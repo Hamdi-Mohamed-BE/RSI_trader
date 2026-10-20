@@ -1,0 +1,27 @@
+{
+  "status": "PREDECLARED 2026-10-20 before any outcome of this search was computed. Research only: no live, MT5, BAT, SET, package or guard change.",
+  "request": "Owner 2026-10-20: 'from all EAs we have find me the best risk management and trading approach that can get me funded within 3 months with pass rate of 70%+ for both phases if possible' (FTMO 2-step Swing $10k).",
+  "context": "FTMO Fastest Funded Search 2026-10-20 development stage: no basket x cap (50/75/100/150, standard guard) reached a 70% average pass rate within 180 days on 2021-10..2023-10 starts (best 63.9%). This search varies the RISK-MANAGEMENT levers instead.",
+  "target": "P(funded within 90 days) >= 70%, where funded = both phases passed + 5 business days review illustration (engine access_5bd_illustration), averaged over recorded and stress costs.",
+  "data_and_engine": "Same frozen INPUTS-5y.json and eligibility as FTMO Fastest Funded Search 2026-10-20 (16 EAs, 3 Way Gold excluded), same core engine; new subclass RiskTrial parameterises the guard. With (cap1 = cap2 = c, latch 300, buffer 9200) it must reproduce the Fastest Search development results for the same basket/cap exactly (parity check, else stop).",
+  "levers": {
+    "basket": ["CORE4_PLUS_EMA3", "CORE4_PLUS_H1_ORB_05R", "CORE4_PLUS_FIVE_ORBS_05R", "CORE4", "ALL12", "CORE4_PLUS_GOLD_VA_H1_ORB", "FTMO_ALL"],
+    "basket_note": "the six best development baskets of the Fastest Search at any cap, plus every eligible EA (FTMO_ALL); chosen from development results only",
+    "phase1_cap_usd": [100, 150, 200],
+    "phase2_cap": ["same as phase 1", "half of phase 1 (phase 2 needs only +5%)"],
+    "daily_latch_and_reserve_usd": [300, 450],
+    "entry_equity_buffer_usd": [9200, 9100],
+    "fixed": "hard FTMO failure at equity <= 9000 or day loss >= 500 (unchanged); aggregate 225*(c/50), same-symbol 150*(c/50); 7 entries / 3 losing closes per day; margin proxy; 3s reconciliation; targets 11000 / 10500 after 4 entry days, flat."
+  },
+  "configurations": "7 baskets x 3 caps x 2 phase-2 rules x 2 latches x 2 buffers = 168, all counted",
+  "data_split": "development starts 2021-10-07 .. horizon <= 2023-10-06; validation 2023-10-06 .. 2024-10-06; OOS 2024-10-06 .. 2026-10-06 (previously inspected, retrospective).",
+  "selection": {
+    "development_eligibility": "avg P(funded <= 90 d) >= 70% AND breach share <= 5% in both cost scenarios (pipeline-policy maximum breach probability)",
+    "rank": "avg P(funded <= 90 d) desc, then breach share asc, then avg median days to funded asc, then lower cap",
+    "finalists": 5,
+    "no_eligible_result": "If none reaches 70%, finalists = top 5 by avg P(funded <= 90 d) among configurations with breach share <= 5%, reported as NOT meeting the target. No thresholds relaxed or levers added after outcomes.",
+    "validation_and_oos": "finalists run once on validation and once on OOS; choice = best validation finalist meeting the target, else highest validation P(funded <= 90 d)."
+  },
+  "live_changes": false,
+  "optimization": "risk-lever menu with chronological dev / validation / OOS split; EA signal logic unchanged"
+}

@@ -1,0 +1,133 @@
+{
+  "window_utc": [
+    "2026-08-17T00:00:00+00:00",
+    "2026-10-17T00:00:00+00:00"
+  ],
+  "initial_balance": 1000.0,
+  "currency": "USD",
+  "portfolios": {
+    "top5": [
+      "gold-overnight-value-area",
+      "xau-rsi-vwap",
+      "nasdaq-overnight",
+      "nasdaq-5m-candle-momentum",
+      "orb-volume-profile"
+    ],
+    "prop_ready": [
+      "xau-rsi-vwap",
+      "xau-orb-london-ny-overlap-m30",
+      "us100-h1-orb-13utc",
+      "usdjpy-london-open-momentum",
+      "us100-month-end-flow",
+      "nasdaq-5m-candle-momentum",
+      "us100-orb-new-york-m30",
+      "us100-selective-orb-v3",
+      "xau-orb-new-york-m30"
+    ]
+  },
+  "scenarios": [
+    {
+      "portfolio": "top5",
+      "view": "as_packaged",
+      "id": "fixed50",
+      "label": "Fixed $50",
+      "mode": "fixed",
+      "value": 50.0,
+      "guard_policy": "client"
+    },
+    {
+      "portfolio": "top5",
+      "view": "as_packaged",
+      "id": "compound5",
+      "label": "5% current balance",
+      "mode": "balance",
+      "value": 5.0,
+      "guard_policy": "client"
+    },
+    {
+      "portfolio": "prop_ready",
+      "view": "as_packaged",
+      "id": "fixed50",
+      "label": "Fixed $50",
+      "mode": "fixed",
+      "value": 50.0,
+      "guard_policy": "current"
+    },
+    {
+      "portfolio": "prop_ready",
+      "view": "as_packaged",
+      "id": "compound5",
+      "label": "5% current equity",
+      "mode": "percent",
+      "value": 5.0,
+      "guard_policy": "current"
+    },
+    {
+      "portfolio": "top5",
+      "view": "common_research",
+      "id": "fixed50",
+      "label": "Fixed $50",
+      "mode": "fixed",
+      "value": 50.0,
+      "guard_policy": "research_10daily_20total"
+    },
+    {
+      "portfolio": "top5",
+      "view": "common_research",
+      "id": "compound5",
+      "label": "5% current equity",
+      "mode": "percent",
+      "value": 5.0,
+      "guard_policy": "research_10daily_20total"
+    },
+    {
+      "portfolio": "prop_ready",
+      "view": "common_research",
+      "id": "fixed50",
+      "label": "Fixed $50",
+      "mode": "fixed",
+      "value": 50.0,
+      "guard_policy": "research_10daily_20total"
+    },
+    {
+      "portfolio": "prop_ready",
+      "view": "common_research",
+      "id": "compound5",
+      "label": "5% current equity",
+      "mode": "percent",
+      "value": 5.0,
+      "guard_policy": "research_10daily_20total"
+    }
+  ],
+  "cost_sensitivities": [
+    false,
+    true
+  ],
+  "model": "Immutable standalone native source-signal replay; not a simultaneous same-demo native portfolio backtest.",
+  "di_settings": "Top5 Nasdaq DI OFF; Prop Ready Nasdaq and USDJPY DI ON, otherwise each package retains its own selected rules.",
+  "as_packaged": "Top5 fixedUSD or currentBALANCE%, floor then MINIMUM LOT OVERRIDE, no shared loss/risk guards. PropReady fixedUSD/currentEQUITY% input constrained by existing source ceilings, $5 reference cap, shared/daily/reserve guards on1000.",
+  "common_research": "Research-only truefixed50/5%currentEQUITY, STRICT minimum-lot skip for BOTH, same10%Praguedaily-loss pause /20%INITIAL floor and projectedbuffer,2Baggregate/1Bsymbol,125%risk+.50+negativeknownswap reserve,80%margin,7entries/3losers,3swait. Neither live package is changed to these rules.",
+  "research_guards": "Totalretainedinitialrisk<=2timescurrentrequestedbudget; samesymbol<=1timesbudget. Existingrisknotreleasedbyprofitabletrail. Reserve1.25risk+negativeknownopenswap+0.50perposition. Margin80%protectedEq. 7entries/3netlosers/day;3s wait.",
+  "source_account": "Exness-MT5Trial16 cached historical source. Current Trial15 USD demo contract/margin metadata reused read-only.",
+  "costs": "BASE is sourceTrial16 recorded native spread/fills/fees/swap scaled byadmittedvolume, NOT actualTrial15Pro costs. STRESS addsone currentTrial15 snapshotspread EACHside and twice negativefinalswap; sensitivitynotexactProreproduction. Sourceexitsunchanged.",
+  "feed_caveat": "Historical native candidates are isolated ExnessTrial16; current demo lot/margin metadata are ExnessTrial15. Spot checks show DIFFERENT quotes/spreads (source USDJPY/USTEC often zero spread). Not a same-account native portfolio or exact current-demo cost test.",
+  "expiry": "Top5 historical tester bypasses licence dates by its existing tester design; licence is NOT renewed or disabled in delivery.",
+  "margin": "Sum native source fill-time margin receipts; as-packaged Top5 admission checks estimated free margin only, no invented80%guard. Historical tiers, hedge discounts and broker liquidation path are not reconstructed.",
+  "limitations": [
+    "Two exposed months do not establish a durable edge or an optimal live risk setting.",
+    "Only observed standalone source fills are available; rejected trades can create unobserved later signals.",
+    "Sampled equity is not tick maximum drawdown; guard slippage, request budgets, cooldown wallclock and full current-SL timeline are not reconstructed.",
+    "Recorded costs are native tester costs, not verified historical commission/financing schedules.",
+    "Snapshot spreads and margins are sensitivities/estimates, not historic realized execution or fixed future conditions.",
+    "Higher volumes are linear resizes of existing standalone fills; liquidity/commission tiers and unseen signals after rejected source trades are not reconstructed.",
+    "Five-minute sampled DD and admission stops do not guarantee the20%/10%loss limits against gaps or intrabar moves.",
+    "An end-censored position remains open; its entry fee is cash, final sampled floating is unrealized, and its artificial native liquidation is never booked.",
+    "Risk and drawdown limits are hypotheses, not a live recommendation or a pass-probability estimate.",
+    "As-packaged returns are NOT equal-risk rankings: Top5 and PropReady have materially different caps, rounding and percent bases.",
+    "If sampled capital exhaustion occurs, post-exhaustion history is not an executable account path. Margin level proxies are disclosed; broker stopout is not silently simulated.",
+    "Only current delivered Top5 Nasdaq has default DI changed; no PropReady or global production EA modification."
+  ],
+  "live_changes": false,
+  "local_package_default_change_only": true,
+  "optimization": false
+}

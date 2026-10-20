@@ -1,0 +1,16 @@
+{
+  "status": "Implementation corrections before first real-price search",
+  "real_price_search_not_started": true,
+  "corrections": [
+    "MetaEditor success exit1 accepted only together with fresh EX5 and zero errors/warnings. No compiler diagnostics waived.",
+    "Native HTM datetime inputs can be Unix seconds; exact UTC epoch equivalence is checked against requested date values.",
+    "The no-order source exporter completed requested CopyRates coverage despite a shifted simulated tester start. Recovery requires owned receipts, exact source/binary/input hashes and independent coverage checks. This exception never applies to trading EAs.",
+    "Spread-cap signal uses the previous completed M5 bar spread/close in both engines, never a future aggregate from the entry bar. Entry-bar spread appears only as an explicitly labelled execution-cost proxy.",
+    "Partial signal/management bars and missing intrahold M5 bars disqualify complete price evidence. Descriptive metrics can remain exploratory, but missing weeks are not zero-imputed for bootstrap or family tests.",
+    "Numeric configuration identity normalizes int/float values and inactive fields before trial counting.",
+    "If a full family matrix contains missing weeks, authoritative family evidence is unavailable. An additional, explicitly conditional common-complete-week null removes entire missing calendar rows jointly, before resampling all configuration columns together."
+  ],
+  "date_boundaries_changed": false,
+  "hypothesis_changed": false,
+  "oos_selection_permitted": false
+}

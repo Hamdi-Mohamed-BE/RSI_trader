@@ -1,0 +1,26 @@
+{
+  "status": "PREDECLARED 2026-10-20 before any Part B outcome was computed. Research only: no live, MT5, BAT, SET, package or guard change.",
+  "request": "Owner 2026-10-20: test the pasted claim ('PF > 0.95 + a large number of uncorrelated bets is enough to profit from prop firms') with our EAs, build the best portfolio of EAs / settings, show median pass rate and pass days in tables.",
+  "part_a_theory": "theory.py: i.i.d. 1:1 bets under FTMO 2-step Swing $10k rules, PF 0.90-1.20, risk 0.25-2%, 3 or 10 bets/day, 20,000 paths, plus a 40-trading-day funded-payout illustration (fee ~USD 170 assumed). Pure maths, no market data.",
+  "part_b_universe": {
+    "ftmo_package_eas": "the 16 FTMO-package EAs of FTMO Fastest Funded Search 2026-10-20 (ftmo mapping, FTMO-compiled native runs)",
+    "extra_normal_eas": ["lta-volume-profile", "orb-volume-profile", "orb-volume-profile-volume-confirmed", "asia-breakout", "dmc-fresh-reaction-xau", "xau-weakness", "sell-nasdaq-15min", "xau-elliott-wave-1-2-3", "xau-slow-trend", "xau-regime-switch"],
+    "extra_source": "Portfolio Long History All ORB05 2026-10-14 'full-eas' native 5-year runs (normal builds; signals as deployed in the normal BATs), same mark-ownership and stop-risk rules; an EA failing the model assertions is excluded before outcomes",
+    "excluded": "news EAs (FTMO straddle permission unclear; FTMO launcher runs News OFF), hourly profiles (no stop loss, risk undefined), 3 Way Gold (overlapping modules), Gold News V9 (no evidence), BTC/ETH/XAG/EURUSD/US30 EAs (FTMO contract specs not modelled; not invented)"
+  },
+  "pf_measure": "per-EA profit factor in R = sum(net R > 0) / |sum(net R < 0)| with net R = (unit_gross + unit_commission + unit_swap) / unit_risk, measured ONLY on trades opened in the development window (2021-10-07 .. 2023-10-06)",
+  "baskets": {
+    "LLN_PF095": "every universe EA with development PF > 0.95 (the claim's rule)",
+    "LLN_ALL": "every universe EA (maximum number of bets)",
+    "EDGE_PF110": "every universe EA with development PF > 1.10 (an edge-filtered contrast)",
+    "references": "PR9 (Prop Ready) results are taken from FTMO Fastest Funded Search 2026-10-20, not re-selected"
+  },
+  "risk_caps_usd": [25, 50, 100, 150],
+  "guard": "standard modelled FTMO guard (DialTrial: aggregate 225*(c/50), same-symbol 150*(c/50), $300 daily latch/reserve, $9,200 buffer, 7 entries / 3 losers per day); candidate tie order = FTMO package order then extras alphabetically",
+  "scenarios": ["recorded_exness / next_prague_midnight", "fixed_cost_stress / next_prague_midnight"],
+  "windows": "development 2021-10-07..2023-10-06, validation 2023-10-06..2024-10-06, OOS 2024-10-06..2026-10-06 (all previously inspected, retrospective); every configuration is reported in every window (no selection is made from validation or OOS)",
+  "metrics": "pass rate (both phases <= 180 d, no breach), funded <= 90 d, median days to funded, breaches, buffer stalls, worst equity DD, worst day, trades / month / weekday, number of EAs and bets",
+  "claim_test": "The claim is supported only if LLN_PF095 at small caps ($25/$50) has a pass rate >= 70% AND beats EDGE_PF110 and PR9 in development and validation. Otherwise it is rejected for our EAs.",
+  "tested_configurations": "3 baskets x 4 caps = 12 (plus Part A theory grid of 40 cells)",
+  "live_changes": false
+}

@@ -1,0 +1,34 @@
+{
+  "status": "PREDECLARED 2026-10-20 before any outcome of this search was computed. Research only: no live, MT5, BAT, SET, package or guard change.",
+  "request": "Owner 2026-10-20: 'find me the best portfolio to get funded fastest with avg pass rate of 70%+' (FTMO 2-step Swing $10k).",
+  "definitions": {
+    "pass": "Both FTMO phases completed (+10% then +5%, >=4 entry days each, flat) within the 180-day analysis horizon without a hard breach. FTMO has no time limit, but accounts stalled near the guard's $9,200 entry buffer cannot trade, so unfinished at 180 days is treated as not passed.",
+    "avg_pass_rate": "Mean of the pass shares in the two cost scenarios (recorded Exness costs and fixed cost stress), next-Prague-midnight phase handover.",
+    "speed": "Median days from challenge start to funded-account access (both phases + 5 business days review illustration), averaged over the two cost scenarios, among passing starts."
+  },
+  "engine": "FTMO Faster Portfolio Screen 2026-10-16 core engine via the FTMO Dial Study 2026-10-20 DialTrial (per-entry cap c; aggregate 225*(c/50), same-symbol 150*(c/50); unchanged $300 daily latch/reserve, $9,200 buffer, 7 entries / 3 losers per day, margin proxy, static 9000 floor, 500 daily loss). Every basket shares ONE observation clock: the event stream of all eligible EAs (non-member events only sample equity).",
+  "data": "Native 5-year candidate streams 2021-10-07..2026-10-06 rebuilt by the parity-checked prepare.py of FTMO Prop Ready Older History 2026-10-20, extended to every FTMO-package EA that satisfies its no-partial / non-overlapping assertions. 3 Way Gold is excluded (overlapping module lifecycles are unsupported by the model). Any EA failing the assertions is excluded and listed before outcomes.",
+  "menu": {
+    "baskets": "The 12 Faster Screen baskets + ALL12 (CORE4 + Gold VA + EMA3 + Trend + 5 ORBs) + FTMO_ALL (every eligible FTMO-package EA) + PR9_PLUS_GOLDVA + PR9_PLUS_DMC (+ DMC Current XAU, DMC Fresh Reaction US100) + PR9_PLUS_NASDAQ_OVERNIGHT + ORBS5 (the five 0.5R ORBs only). PR9 = Prop Ready nine = CORE4_PLUS_FIVE_ORBS_05R.",
+    "risk_caps_usd": [50, 75, 100, 150],
+    "scenarios": ["recorded_exness / next_prague_midnight", "fixed_cost_stress / next_prague_midnight"]
+  },
+  "data_split": {
+    "rule": "PIPELINE 5.1 (2026-10-06): final OOS = last two calendar years to the frozen end; validation = prior 12 months; development before. Frozen end-exclusive = 2026-10-06 (last native data).",
+    "development_starts": "Prague weekdays 2021-10-07 .. with 180-day horizon <= 2023-10-06",
+    "validation_starts": "2023-10-06 .. with horizon <= 2024-10-06",
+    "oos_starts": "2024-10-06 .. with horizon <= 2026-10-06",
+    "label": "All three windows were previously inspected by earlier studies (EA development, the Faster Screen year, the dial study). The OOS is a RETROSPECTIVE check, not untouched data."
+  },
+  "selection": {
+    "development_eligibility": "zero hard breaches in both scenarios AND avg_pass_rate >= 70%",
+    "development_rank": "avg median days to funded (ascending), then avg_pass_rate (descending), then fewer EAs, then lower cap",
+    "finalists": 5,
+    "validation_choice": "fastest finalist with validation avg_pass_rate >= 70% and zero breaches; if none, the finalist with the highest validation avg_pass_rate, reported as FAILING the 70% requirement",
+    "oos": "the chosen configuration and all finalists evaluated ONCE on OOS; no re-selection on OOS",
+    "no_eligible_result": "If no configuration reaches 70% in development, report the development frontier (pass rate vs speed) for every configuration, take the top 5 by avg_pass_rate as finalists for transparency, and state plainly that the 70% target is not met. Do not relax thresholds, add baskets or tune sizes after seeing outcomes."
+  },
+  "tested_configurations": "18 baskets x 4 caps = 72 (all counted)",
+  "live_changes": false,
+  "optimization": "menu screen with chronological dev/validation/OOS split; no parameter tuning of EA logic"
+}

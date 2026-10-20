@@ -1,0 +1,1005 @@
+{
+  "cases": [
+    {
+      "tag": "selected-oos-m1-v2",
+      "status": "RECORDED",
+      "scope": "Same frozen candidate; versioned daily-loader correction, no reselection",
+      "candidate": {
+        "timeframe_minutes": 1440,
+        "entry_mode": 1,
+        "stop_mode": 2,
+        "stop_value": 2.0,
+        "target_rr": 1.0,
+        "management_mode": 0,
+        "management_value": 0.0,
+        "filter_mode": 0,
+        "filter_value": 0.0,
+        "entry_minute_ny": 1080,
+        "exit_minute_ny": 960
+      },
+      "start": "2024-10-17",
+      "end_exclusive": "2026-10-17",
+      "model": 1,
+      "metrics": {
+        "trades": 48,
+        "wins": 25,
+        "losses": 23,
+        "win_rate_pct": 52.083333333333336,
+        "profit_factor": 0.9049690890003498,
+        "no_loss_trades": false,
+        "net_profit": -244.41,
+        "return_pct": -2.4441,
+        "initial_balance": 10000,
+        "final_balance": 9755.59,
+        "max_win_streak": 5,
+        "max_loss_streak": 5,
+        "closed_position_dd": {
+          "cash": 868.7899999999972,
+          "pct": 8.533369216852002
+        },
+        "actual_cash_posting_dd": {
+          "cash": 869.4000000000033,
+          "pct": 8.539360716779862
+        },
+        "sampled_m1_equity_dd": {
+          "cash": 949.0400000000009,
+          "pct": 9.258773269126277,
+          "snapshots": 1048943,
+          "first_snapshot_epoch": 1729123200,
+          "last_snapshot_epoch": 1792195199,
+          "scope": "First tick per M1 plus entry/scheduled-exit/final snapshots, not every native tick"
+        },
+        "native_report": {
+          "initial_balance": 10000.0,
+          "final_balance": 9755.59,
+          "net_profit": -244.41,
+          "return_pct": -2.44,
+          "profit_factor": 0.91,
+          "win_rate_pct": 52.08,
+          "max_drawdown_pct": 9.39,
+          "trades": 48,
+          "sharpe_ratio": -0.45,
+          "recovery_factor": -0.25,
+          "history_quality": "100%"
+        }
+      },
+      "statistics": {
+        "entry_requests": "48",
+        "entry_fills": "48",
+        "failed_entries": "0",
+        "close_requests": "30",
+        "failed_closes": "0",
+        "management_requests": "0",
+        "failed_management": "0",
+        "last_quote_epoch": "1792195199",
+        "balance": "9755.59",
+        "equity": "9755.59",
+        "open_position_at_on_tester": "0",
+        "feature_bars": "3175",
+        "valid_atr_ratios": "644"
+      },
+      "native": {
+        "manifest": {
+          "tag": "selected-oos-m1-v2",
+          "ea": "BtcWeekendV2",
+          "symbol": "BTCUSD",
+          "server": "Exness-MT5Trial16",
+          "start": "2024-10-17",
+          "end_exclusive": "2026-10-17",
+          "model": 1,
+          "execution_delay_ms": 150,
+          "deposit_usd": 10000,
+          "leverage": 15,
+          "inputs": {
+            "InpFrom": "2024.10.17 00:00:00",
+            "InpTo": "2026.10.17 00:00:00",
+            "InpHistoryFrom": "2018.01.01 00:00:00",
+            "InpTag": "selected-oos-m1-v2",
+            "InpTimeframeMinutes": 1440,
+            "InpEntryMode": 1,
+            "InpStopMode": 2,
+            "InpStopValue": 2.0,
+            "InpTargetRR": 1.0,
+            "InpManagementMode": 0,
+            "InpManagementValue": 0.0,
+            "InpFilterMode": 0,
+            "InpFilterValue": 0.0,
+            "InpEntryMinuteNY": 1080,
+            "InpExitMinuteNY": 960,
+            "InpSizingMode": 0,
+            "InpRiskPercent": 1,
+            "InpNotionalMultiple": 1,
+            "InpWarmFile": "feature-prefix.bin",
+            "InpWarmRows": 2446,
+            "InpWarmSHA256": "ed9a0222ac43106af921872a9b933bc152007e36a3e4b2cf4c942ab4dd6b5d47"
+          },
+          "build": {
+            "source_sha256": "bf6d8bf3c35012bdda6ccce84c85d69e81de2cdc57e86d77a51200f03fffb790",
+            "binary_sha256": "90e513d14f732dc62e8cf2db19b3324854d1e0139f5551577cef67243b476746",
+            "compiler": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MetaEditor64.exe",
+            "compiled_utc": "2026-10-17T02:13:36.167682+00:00",
+            "status": "0 errors, 0 warnings"
+          },
+          "tester": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811",
+          "agent_port": 3010,
+          "empty_profile": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MQL5\\Profiles\\Charts\\Calyx Research Empty",
+          "no_live_account_api": true
+        },
+        "seconds": 15.362136363983154,
+        "report_sha256": "b7d0f74de69ecd97b5bfabec4e484d26b235a44ebc01ad7984b14fce9801b372",
+        "tick_notes": [],
+        "tester_start_shift_notes": [],
+        "native_warnings": {
+          "invalid_stops": 0,
+          "invalid_volume": 0,
+          "market_closed": 0,
+          "not_enough_money": 0
+        }
+      },
+      "results_path": "native/selected-oos-m1-v2/results.json",
+      "implementation_receipt": "V2 FREEZE.json"
+    },
+    {
+      "tag": "selected-6m-m4-v2",
+      "status": "RECORDED",
+      "scope": "Same frozen candidate; versioned daily-loader correction, no reselection",
+      "candidate": {
+        "timeframe_minutes": 1440,
+        "entry_mode": 1,
+        "stop_mode": 2,
+        "stop_value": 2.0,
+        "target_rr": 1.0,
+        "management_mode": 0,
+        "management_value": 0.0,
+        "filter_mode": 0,
+        "filter_value": 0.0,
+        "entry_minute_ny": 1080,
+        "exit_minute_ny": 960
+      },
+      "start": "2026-04-17",
+      "end_exclusive": "2026-10-17",
+      "model": 4,
+      "metrics": {
+        "trades": 16,
+        "wins": 10,
+        "losses": 6,
+        "win_rate_pct": 62.5,
+        "profit_factor": 1.1978282594752623,
+        "no_loss_trades": false,
+        "net_profit": 132.63000000000005,
+        "return_pct": 1.3263000000000005,
+        "initial_balance": 10000,
+        "final_balance": 10132.63,
+        "max_win_streak": 3,
+        "max_loss_streak": 2,
+        "closed_position_dd": {
+          "cash": 325.4500000000007,
+          "pct": 3.2545000000000073
+        },
+        "actual_cash_posting_dd": {
+          "cash": 326.1100000000006,
+          "pct": 3.2611000000000057
+        },
+        "sampled_m1_equity_dd": {
+          "cash": 345.39999999999964,
+          "pct": 3.451214869600229,
+          "snapshots": 263454,
+          "first_snapshot_epoch": 1776384001,
+          "last_snapshot_epoch": 1792195198,
+          "scope": "First tick per M1 plus entry/scheduled-exit/final snapshots, not every native tick"
+        },
+        "native_report": {
+          "initial_balance": 10000.0,
+          "final_balance": 10132.63,
+          "net_profit": 132.63,
+          "return_pct": 1.33,
+          "profit_factor": 1.2,
+          "win_rate_pct": 62.5,
+          "max_drawdown_pct": 3.45,
+          "trades": 16,
+          "sharpe_ratio": 0.42,
+          "recovery_factor": 0.38,
+          "history_quality": "100% real ticks"
+        }
+      },
+      "statistics": {
+        "entry_requests": "16",
+        "entry_fills": "16",
+        "failed_entries": "0",
+        "close_requests": "11",
+        "failed_closes": "0",
+        "management_requests": "0",
+        "failed_management": "0",
+        "last_quote_epoch": "1792195198",
+        "balance": "10132.63",
+        "equity": "10132.63",
+        "open_position_at_on_tester": "0",
+        "feature_bars": "3175",
+        "valid_atr_ratios": "644"
+      },
+      "native": {
+        "manifest": {
+          "tag": "selected-6m-m4-v2",
+          "ea": "BtcWeekendV2",
+          "symbol": "BTCUSD",
+          "server": "Exness-MT5Trial16",
+          "start": "2026-04-17",
+          "end_exclusive": "2026-10-17",
+          "model": 4,
+          "execution_delay_ms": 150,
+          "deposit_usd": 10000,
+          "leverage": 15,
+          "inputs": {
+            "InpFrom": "2026.04.17 00:00:00",
+            "InpTo": "2026.10.17 00:00:00",
+            "InpHistoryFrom": "2018.01.01 00:00:00",
+            "InpTag": "selected-6m-m4-v2",
+            "InpTimeframeMinutes": 1440,
+            "InpEntryMode": 1,
+            "InpStopMode": 2,
+            "InpStopValue": 2.0,
+            "InpTargetRR": 1.0,
+            "InpManagementMode": 0,
+            "InpManagementValue": 0.0,
+            "InpFilterMode": 0,
+            "InpFilterValue": 0.0,
+            "InpEntryMinuteNY": 1080,
+            "InpExitMinuteNY": 960,
+            "InpSizingMode": 0,
+            "InpRiskPercent": 1,
+            "InpNotionalMultiple": 1,
+            "InpWarmFile": "feature-prefix.bin",
+            "InpWarmRows": 2993,
+            "InpWarmSHA256": "4d439b3ec231dc1be1657184fad805f1e6a36679853331d31e5e1874db7dada5"
+          },
+          "build": {
+            "source_sha256": "bf6d8bf3c35012bdda6ccce84c85d69e81de2cdc57e86d77a51200f03fffb790",
+            "binary_sha256": "90e513d14f732dc62e8cf2db19b3324854d1e0139f5551577cef67243b476746",
+            "compiler": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MetaEditor64.exe",
+            "compiled_utc": "2026-10-17T02:13:36.167682+00:00",
+            "status": "0 errors, 0 warnings"
+          },
+          "tester": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811",
+          "agent_port": 3010,
+          "empty_profile": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MQL5\\Profiles\\Charts\\Calyx Research Empty",
+          "no_live_account_api": true
+        },
+        "seconds": 17.53358030319214,
+        "report_sha256": "1dc98a8209f85b1afb6009e7b11df35f603bf186d7719a27fdbd86d97c68a994",
+        "tick_notes": [
+          "CS\t0\t03:14:27.138\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+          "LK\t0\t03:14:31.129\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+        ],
+        "tester_start_shift_notes": [],
+        "native_warnings": {
+          "invalid_stops": 0,
+          "invalid_volume": 0,
+          "market_closed": 0,
+          "not_enough_money": 0
+        }
+      },
+      "results_path": "native/selected-6m-m4-v2/results.json",
+      "implementation_receipt": "V2 FREEZE.json"
+    },
+    {
+      "tag": "selected-1y-m4-v2",
+      "status": "RECORDED",
+      "scope": "Same frozen candidate; versioned daily-loader correction, no reselection",
+      "candidate": {
+        "timeframe_minutes": 1440,
+        "entry_mode": 1,
+        "stop_mode": 2,
+        "stop_value": 2.0,
+        "target_rr": 1.0,
+        "management_mode": 0,
+        "management_value": 0.0,
+        "filter_mode": 0,
+        "filter_value": 0.0,
+        "entry_minute_ny": 1080,
+        "exit_minute_ny": 960
+      },
+      "start": "2025-10-17",
+      "end_exclusive": "2026-10-17",
+      "model": 4,
+      "metrics": {
+        "trades": 24,
+        "wins": 14,
+        "losses": 10,
+        "win_rate_pct": 58.333333333333336,
+        "profit_factor": 0.8278798420118129,
+        "no_loss_trades": false,
+        "net_profit": -237.5,
+        "return_pct": -2.375,
+        "initial_balance": 10000,
+        "final_balance": 9762.5,
+        "max_win_streak": 3,
+        "max_loss_streak": 2,
+        "closed_position_dd": {
+          "cash": 867.0800000000017,
+          "pct": 8.514047864761888
+        },
+        "actual_cash_posting_dd": {
+          "cash": 867.6899999999987,
+          "pct": 8.52003758796791
+        },
+        "sampled_m1_equity_dd": {
+          "cash": 947.2300000000014,
+          "pct": 9.238393124481272,
+          "snapshots": 525446,
+          "first_snapshot_epoch": 1760659200,
+          "last_snapshot_epoch": 1792195198,
+          "scope": "First tick per M1 plus entry/scheduled-exit/final snapshots, not every native tick"
+        },
+        "native_report": {
+          "initial_balance": 10000.0,
+          "final_balance": 9762.5,
+          "net_profit": -237.5,
+          "return_pct": -2.38,
+          "profit_factor": 0.83,
+          "win_rate_pct": 58.33,
+          "max_drawdown_pct": 9.28,
+          "trades": 24,
+          "sharpe_ratio": -0.8,
+          "recovery_factor": -0.25,
+          "history_quality": "79% real ticks"
+        }
+      },
+      "statistics": {
+        "entry_requests": "24",
+        "entry_fills": "24",
+        "failed_entries": "0",
+        "close_requests": "15",
+        "failed_closes": "0",
+        "management_requests": "0",
+        "failed_management": "0",
+        "last_quote_epoch": "1792195198",
+        "balance": "9762.5",
+        "equity": "9762.5",
+        "open_position_at_on_tester": "0",
+        "feature_bars": "3175",
+        "valid_atr_ratios": "644"
+      },
+      "native": {
+        "manifest": {
+          "tag": "selected-1y-m4-v2",
+          "ea": "BtcWeekendV2",
+          "symbol": "BTCUSD",
+          "server": "Exness-MT5Trial16",
+          "start": "2025-10-17",
+          "end_exclusive": "2026-10-17",
+          "model": 4,
+          "execution_delay_ms": 150,
+          "deposit_usd": 10000,
+          "leverage": 15,
+          "inputs": {
+            "InpFrom": "2025.10.17 00:00:00",
+            "InpTo": "2026.10.17 00:00:00",
+            "InpHistoryFrom": "2018.01.01 00:00:00",
+            "InpTag": "selected-1y-m4-v2",
+            "InpTimeframeMinutes": 1440,
+            "InpEntryMode": 1,
+            "InpStopMode": 2,
+            "InpStopValue": 2.0,
+            "InpTargetRR": 1.0,
+            "InpManagementMode": 0,
+            "InpManagementValue": 0.0,
+            "InpFilterMode": 0,
+            "InpFilterValue": 0.0,
+            "InpEntryMinuteNY": 1080,
+            "InpExitMinuteNY": 960,
+            "InpSizingMode": 0,
+            "InpRiskPercent": 1,
+            "InpNotionalMultiple": 1,
+            "InpWarmFile": "feature-prefix.bin",
+            "InpWarmRows": 2811,
+            "InpWarmSHA256": "ccf859d5d54dd0772abfa8da6308e0c39415d00461c606f9d197e51d6149b4e8"
+          },
+          "build": {
+            "source_sha256": "bf6d8bf3c35012bdda6ccce84c85d69e81de2cdc57e86d77a51200f03fffb790",
+            "binary_sha256": "90e513d14f732dc62e8cf2db19b3324854d1e0139f5551577cef67243b476746",
+            "compiler": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MetaEditor64.exe",
+            "compiled_utc": "2026-10-17T02:13:36.167682+00:00",
+            "status": "0 errors, 0 warnings"
+          },
+          "tester": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811",
+          "agent_port": 3010,
+          "empty_profile": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MQL5\\Profiles\\Charts\\Calyx Research Empty",
+          "no_live_account_api": true
+        },
+        "seconds": 22.889714002609253,
+        "report_sha256": "a2434e4f5a30cf5559a9e2f91e80c1975015565b9535c12be6ee1dbc71e458df",
+        "tick_notes": [
+          "CS\t0\t03:14:53.242\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+          "NP\t0\t03:14:56.368\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+        ],
+        "tester_start_shift_notes": [],
+        "native_warnings": {
+          "invalid_stops": 0,
+          "invalid_volume": 0,
+          "market_closed": 0,
+          "not_enough_money": 0
+        }
+      },
+      "results_path": "native/selected-1y-m4-v2/results.json",
+      "implementation_receipt": "V2 FREEZE.json"
+    },
+    {
+      "tag": "selected-oos-m4-v2",
+      "status": "RECORDED",
+      "scope": "Same frozen candidate; versioned daily-loader correction, no reselection",
+      "candidate": {
+        "timeframe_minutes": 1440,
+        "entry_mode": 1,
+        "stop_mode": 2,
+        "stop_value": 2.0,
+        "target_rr": 1.0,
+        "management_mode": 0,
+        "management_value": 0.0,
+        "filter_mode": 0,
+        "filter_value": 0.0,
+        "entry_minute_ny": 1080,
+        "exit_minute_ny": 960
+      },
+      "start": "2024-10-17",
+      "end_exclusive": "2026-10-17",
+      "model": 4,
+      "metrics": {
+        "trades": 48,
+        "wins": 25,
+        "losses": 23,
+        "win_rate_pct": 52.083333333333336,
+        "profit_factor": 0.9064572982604941,
+        "no_loss_trades": false,
+        "net_profit": -240.43000000000004,
+        "return_pct": -2.4043,
+        "initial_balance": 10000,
+        "final_balance": 9759.57,
+        "max_win_streak": 5,
+        "max_loss_streak": 5,
+        "closed_position_dd": {
+          "cash": 867.0800000000017,
+          "pct": 8.516498087648014
+        },
+        "actual_cash_posting_dd": {
+          "cash": 867.6899999999987,
+          "pct": 8.522489534611887
+        },
+        "sampled_m1_equity_dd": {
+          "cash": 947.2299999999996,
+          "pct": 9.241033885969717,
+          "snapshots": 1048943,
+          "first_snapshot_epoch": 1729123200,
+          "last_snapshot_epoch": 1792195198,
+          "scope": "First tick per M1 plus entry/scheduled-exit/final snapshots, not every native tick"
+        },
+        "native_report": {
+          "initial_balance": 10000.0,
+          "final_balance": 9759.57,
+          "net_profit": -240.43,
+          "return_pct": -2.4,
+          "profit_factor": 0.91,
+          "win_rate_pct": 52.08,
+          "max_drawdown_pct": 9.28,
+          "trades": 48,
+          "sharpe_ratio": -0.44,
+          "recovery_factor": -0.25,
+          "history_quality": "39% real ticks"
+        }
+      },
+      "statistics": {
+        "entry_requests": "48",
+        "entry_fills": "48",
+        "failed_entries": "0",
+        "close_requests": "30",
+        "failed_closes": "0",
+        "management_requests": "0",
+        "failed_management": "0",
+        "last_quote_epoch": "1792195198",
+        "balance": "9759.57",
+        "equity": "9759.57",
+        "open_position_at_on_tester": "0",
+        "feature_bars": "3175",
+        "valid_atr_ratios": "644"
+      },
+      "native": {
+        "manifest": {
+          "tag": "selected-oos-m4-v2",
+          "ea": "BtcWeekendV2",
+          "symbol": "BTCUSD",
+          "server": "Exness-MT5Trial16",
+          "start": "2024-10-17",
+          "end_exclusive": "2026-10-17",
+          "model": 4,
+          "execution_delay_ms": 150,
+          "deposit_usd": 10000,
+          "leverage": 15,
+          "inputs": {
+            "InpFrom": "2024.10.17 00:00:00",
+            "InpTo": "2026.10.17 00:00:00",
+            "InpHistoryFrom": "2018.01.01 00:00:00",
+            "InpTag": "selected-oos-m4-v2",
+            "InpTimeframeMinutes": 1440,
+            "InpEntryMode": 1,
+            "InpStopMode": 2,
+            "InpStopValue": 2.0,
+            "InpTargetRR": 1.0,
+            "InpManagementMode": 0,
+            "InpManagementValue": 0.0,
+            "InpFilterMode": 0,
+            "InpFilterValue": 0.0,
+            "InpEntryMinuteNY": 1080,
+            "InpExitMinuteNY": 960,
+            "InpSizingMode": 0,
+            "InpRiskPercent": 1,
+            "InpNotionalMultiple": 1,
+            "InpWarmFile": "feature-prefix.bin",
+            "InpWarmRows": 2446,
+            "InpWarmSHA256": "ed9a0222ac43106af921872a9b933bc152007e36a3e4b2cf4c942ab4dd6b5d47"
+          },
+          "build": {
+            "source_sha256": "bf6d8bf3c35012bdda6ccce84c85d69e81de2cdc57e86d77a51200f03fffb790",
+            "binary_sha256": "90e513d14f732dc62e8cf2db19b3324854d1e0139f5551577cef67243b476746",
+            "compiler": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MetaEditor64.exe",
+            "compiled_utc": "2026-10-17T02:13:36.167682+00:00",
+            "status": "0 errors, 0 warnings"
+          },
+          "tester": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811",
+          "agent_port": 3010,
+          "empty_profile": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MQL5\\Profiles\\Charts\\Calyx Research Empty",
+          "no_live_account_api": true
+        },
+        "seconds": 64.1051230430603,
+        "report_sha256": "fded9e4741ccd7cb35c1bb9f799e33c3dc0719e5cddaea57d0190ef000474cda",
+        "tick_notes": [
+          "CS\t0\t03:15:30.115\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+          "DH\t0\t03:15:34.129\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+        ],
+        "tester_start_shift_notes": [],
+        "native_warnings": {
+          "invalid_stops": 0,
+          "invalid_volume": 0,
+          "market_closed": 0,
+          "not_enough_money": 0
+        }
+      },
+      "results_path": "native/selected-oos-m4-v2/results.json",
+      "implementation_receipt": "V2 FREEZE.json"
+    },
+    {
+      "tag": "selected-3y-m4-v2",
+      "status": "RECORDED",
+      "scope": "Same frozen candidate; versioned daily-loader correction, no reselection",
+      "candidate": {
+        "timeframe_minutes": 1440,
+        "entry_mode": 1,
+        "stop_mode": 2,
+        "stop_value": 2.0,
+        "target_rr": 1.0,
+        "management_mode": 0,
+        "management_value": 0.0,
+        "filter_mode": 0,
+        "filter_value": 0.0,
+        "entry_minute_ny": 1080,
+        "exit_minute_ny": 960
+      },
+      "start": "2023-10-17",
+      "end_exclusive": "2026-10-17",
+      "model": 4,
+      "metrics": {
+        "trades": 66,
+        "wins": 35,
+        "losses": 31,
+        "win_rate_pct": 53.03030303030303,
+        "profit_factor": 1.003892592018464,
+        "no_loss_trades": false,
+        "net_profit": 13.560000000000073,
+        "return_pct": 0.13560000000000075,
+        "initial_balance": 10000,
+        "final_balance": 10013.56,
+        "max_win_streak": 5,
+        "max_loss_streak": 5,
+        "closed_position_dd": {
+          "cash": 1017.8000000000011,
+          "pct": 9.71605965954653
+        },
+        "actual_cash_posting_dd": {
+          "cash": 1018.1899999999987,
+          "pct": 9.719782653520987
+        },
+        "sampled_m1_equity_dd": {
+          "cash": 1076.5300000000007,
+          "pct": 10.2492502499167,
+          "snapshots": 1575601,
+          "first_snapshot_epoch": 1697500800,
+          "last_snapshot_epoch": 1792195198,
+          "scope": "First tick per M1 plus entry/scheduled-exit/final snapshots, not every native tick"
+        },
+        "native_report": {
+          "initial_balance": 10000.0,
+          "final_balance": 10013.56,
+          "net_profit": 13.56,
+          "return_pct": 0.14,
+          "profit_factor": 1.0,
+          "win_rate_pct": 53.03,
+          "max_drawdown_pct": 10.34,
+          "trades": 66,
+          "sharpe_ratio": 0.02,
+          "recovery_factor": 0.01,
+          "history_quality": "26% real ticks"
+        }
+      },
+      "statistics": {
+        "entry_requests": "66",
+        "entry_fills": "66",
+        "failed_entries": "0",
+        "close_requests": "40",
+        "failed_closes": "0",
+        "management_requests": "0",
+        "failed_management": "0",
+        "last_quote_epoch": "1792195198",
+        "balance": "10013.56",
+        "equity": "10013.56",
+        "open_position_at_on_tester": "0",
+        "feature_bars": "3175",
+        "valid_atr_ratios": "644"
+      },
+      "native": {
+        "manifest": {
+          "tag": "selected-3y-m4-v2",
+          "ea": "BtcWeekendV2",
+          "symbol": "BTCUSD",
+          "server": "Exness-MT5Trial16",
+          "start": "2023-10-17",
+          "end_exclusive": "2026-10-17",
+          "model": 4,
+          "execution_delay_ms": 150,
+          "deposit_usd": 10000,
+          "leverage": 15,
+          "inputs": {
+            "InpFrom": "2023.10.17 00:00:00",
+            "InpTo": "2026.10.17 00:00:00",
+            "InpHistoryFrom": "2018.01.01 00:00:00",
+            "InpTag": "selected-3y-m4-v2",
+            "InpTimeframeMinutes": 1440,
+            "InpEntryMode": 1,
+            "InpStopMode": 2,
+            "InpStopValue": 2.0,
+            "InpTargetRR": 1.0,
+            "InpManagementMode": 0,
+            "InpManagementValue": 0.0,
+            "InpFilterMode": 0,
+            "InpFilterValue": 0.0,
+            "InpEntryMinuteNY": 1080,
+            "InpExitMinuteNY": 960,
+            "InpSizingMode": 0,
+            "InpRiskPercent": 1,
+            "InpNotionalMultiple": 1,
+            "InpWarmFile": "feature-prefix.bin",
+            "InpWarmRows": 2080,
+            "InpWarmSHA256": "494ad1cd0e4c8ba655fda51e3c80132d6404b0acb6cfa51c5261c64d7df09e0d"
+          },
+          "build": {
+            "source_sha256": "bf6d8bf3c35012bdda6ccce84c85d69e81de2cdc57e86d77a51200f03fffb790",
+            "binary_sha256": "90e513d14f732dc62e8cf2db19b3324854d1e0139f5551577cef67243b476746",
+            "compiler": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MetaEditor64.exe",
+            "compiled_utc": "2026-10-17T02:13:36.167682+00:00",
+            "status": "0 errors, 0 warnings"
+          },
+          "tester": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811",
+          "agent_port": 3010,
+          "empty_profile": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MQL5\\Profiles\\Charts\\Calyx Research Empty",
+          "no_live_account_api": true
+        },
+        "seconds": 87.67010235786438,
+        "report_sha256": "96218fe846dd226642de8bc249acbb7381e1666714467557b29019519b40d51c",
+        "tick_notes": [
+          "CS\t0\t03:16:57.799\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+          "MP\t0\t03:16:59.153\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+        ],
+        "tester_start_shift_notes": [],
+        "native_warnings": {
+          "invalid_stops": 0,
+          "invalid_volume": 0,
+          "market_closed": 0,
+          "not_enough_money": 0
+        }
+      },
+      "results_path": "native/selected-3y-m4-v2/results.json",
+      "implementation_receipt": "V2 FREEZE.json"
+    },
+    {
+      "tag": "selected-5y-m4-v2",
+      "status": "RECORDED",
+      "scope": "Same frozen candidate; versioned daily-loader correction, no reselection",
+      "candidate": {
+        "timeframe_minutes": 1440,
+        "entry_mode": 1,
+        "stop_mode": 2,
+        "stop_value": 2.0,
+        "target_rr": 1.0,
+        "management_mode": 0,
+        "management_value": 0.0,
+        "filter_mode": 0,
+        "filter_value": 0.0,
+        "entry_minute_ny": 1080,
+        "exit_minute_ny": 960
+      },
+      "start": "2021-10-17",
+      "end_exclusive": "2026-10-17",
+      "model": 4,
+      "metrics": {
+        "trades": 106,
+        "wins": 56,
+        "losses": 50,
+        "win_rate_pct": 52.83018867924528,
+        "profit_factor": 1.0511341083523593,
+        "no_loss_trades": false,
+        "net_profit": 322.0600000000001,
+        "return_pct": 3.220600000000001,
+        "initial_balance": 10000,
+        "final_balance": 10322.06,
+        "max_win_streak": 5,
+        "max_loss_streak": 5,
+        "closed_position_dd": {
+          "cash": 1087.3799999999992,
+          "pct": 9.990197042207832
+        },
+        "actual_cash_posting_dd": {
+          "cash": 1087.770000000004,
+          "pct": 9.99378012893603
+        },
+        "sampled_m1_equity_dd": {
+          "cash": 1151.0599999999995,
+          "pct": 10.546569703144652,
+          "snapshots": 2625992,
+          "first_snapshot_epoch": 1634428800,
+          "last_snapshot_epoch": 1792195198,
+          "scope": "First tick per M1 plus entry/scheduled-exit/final snapshots, not every native tick"
+        },
+        "native_report": {
+          "initial_balance": 10000.0,
+          "final_balance": 10322.06,
+          "net_profit": 322.06,
+          "return_pct": 3.22,
+          "profit_factor": 1.05,
+          "win_rate_pct": 52.83,
+          "max_drawdown_pct": 10.64,
+          "trades": 106,
+          "sharpe_ratio": 0.24,
+          "recovery_factor": 0.28,
+          "history_quality": "15% real ticks"
+        }
+      },
+      "statistics": {
+        "entry_requests": "106",
+        "entry_fills": "106",
+        "failed_entries": "0",
+        "close_requests": "56",
+        "failed_closes": "0",
+        "management_requests": "0",
+        "failed_management": "0",
+        "last_quote_epoch": "1792195198",
+        "balance": "10322.06",
+        "equity": "10322.06",
+        "open_position_at_on_tester": "0",
+        "feature_bars": "3175",
+        "valid_atr_ratios": "644"
+      },
+      "native": {
+        "manifest": {
+          "tag": "selected-5y-m4-v2",
+          "ea": "BtcWeekendV2",
+          "symbol": "BTCUSD",
+          "server": "Exness-MT5Trial16",
+          "start": "2021-10-17",
+          "end_exclusive": "2026-10-17",
+          "model": 4,
+          "execution_delay_ms": 150,
+          "deposit_usd": 10000,
+          "leverage": 15,
+          "inputs": {
+            "InpFrom": "2021.10.17 00:00:00",
+            "InpTo": "2026.10.17 00:00:00",
+            "InpHistoryFrom": "2018.01.01 00:00:00",
+            "InpTag": "selected-5y-m4-v2",
+            "InpTimeframeMinutes": 1440,
+            "InpEntryMode": 1,
+            "InpStopMode": 2,
+            "InpStopValue": 2.0,
+            "InpTargetRR": 1.0,
+            "InpManagementMode": 0,
+            "InpManagementValue": 0.0,
+            "InpFilterMode": 0,
+            "InpFilterValue": 0.0,
+            "InpEntryMinuteNY": 1080,
+            "InpExitMinuteNY": 960,
+            "InpSizingMode": 0,
+            "InpRiskPercent": 1,
+            "InpNotionalMultiple": 1,
+            "InpWarmFile": "feature-prefix.bin",
+            "InpWarmRows": 1350,
+            "InpWarmSHA256": "b9cc85af82f4605ee1a1d19d5a8a681aa409c8ad9c1de47b4a97dbbc24bfb24f"
+          },
+          "build": {
+            "source_sha256": "bf6d8bf3c35012bdda6ccce84c85d69e81de2cdc57e86d77a51200f03fffb790",
+            "binary_sha256": "90e513d14f732dc62e8cf2db19b3324854d1e0139f5551577cef67243b476746",
+            "compiler": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MetaEditor64.exe",
+            "compiled_utc": "2026-10-17T02:13:36.167682+00:00",
+            "status": "0 errors, 0 warnings"
+          },
+          "tester": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811",
+          "agent_port": 3010,
+          "empty_profile": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MQL5\\Profiles\\Charts\\Calyx Research Empty",
+          "no_live_account_api": true
+        },
+        "seconds": 115.32512617111206,
+        "report_sha256": "afa8ff9fe9d666c9171c97b4236b2272f94f93c88ac3cab447e97982e03372b1",
+        "tick_notes": [
+          "CS\t0\t03:18:47.428\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00",
+          "EP\t0\t03:18:50.754\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00"
+        ],
+        "tester_start_shift_notes": [],
+        "native_warnings": {
+          "invalid_stops": 0,
+          "invalid_volume": 0,
+          "market_closed": 0,
+          "not_enough_money": 0
+        }
+      },
+      "results_path": "native/selected-5y-m4-v2/results.json",
+      "implementation_receipt": "V2 FREEZE.json"
+    },
+    {
+      "tag": "selected-older-validation-m4-v2",
+      "status": "RECORDED",
+      "scope": "Same frozen candidate; versioned daily-loader correction, no reselection",
+      "candidate": {
+        "timeframe_minutes": 1440,
+        "entry_mode": 1,
+        "stop_mode": 2,
+        "stop_value": 2.0,
+        "target_rr": 1.0,
+        "management_mode": 0,
+        "management_value": 0.0,
+        "filter_mode": 0,
+        "filter_value": 0.0,
+        "entry_minute_ny": 1080,
+        "exit_minute_ny": 960
+      },
+      "start": "2023-10-17",
+      "end_exclusive": "2024-10-17",
+      "model": 4,
+      "metrics": {
+        "trades": 18,
+        "wins": 10,
+        "losses": 8,
+        "win_rate_pct": 55.55555555555556,
+        "profit_factor": 1.2373720328495894,
+        "no_loss_trades": false,
+        "net_profit": 211.00000000000006,
+        "return_pct": 2.1100000000000003,
+        "initial_balance": 10000,
+        "final_balance": 10211.0,
+        "max_win_streak": 5,
+        "max_loss_streak": 3,
+        "closed_position_dd": {
+          "cash": 372.22999999999774,
+          "pct": 3.658165050337461
+        },
+        "actual_cash_posting_dd": {
+          "cash": 372.8899999999994,
+          "pct": 3.6646513328327703
+        },
+        "sampled_m1_equity_dd": {
+          "cash": 456.1100000000006,
+          "pct": 4.4366861265886115,
+          "snapshots": 526659,
+          "first_snapshot_epoch": 1697500800,
+          "last_snapshot_epoch": 1729123199,
+          "scope": "First tick per M1 plus entry/scheduled-exit/final snapshots, not every native tick"
+        },
+        "native_report": {
+          "initial_balance": 10000.0,
+          "final_balance": 10211.0,
+          "net_profit": 211.0,
+          "return_pct": 2.11,
+          "profit_factor": 1.24,
+          "win_rate_pct": 55.56,
+          "max_drawdown_pct": 4.57,
+          "trades": 18,
+          "sharpe_ratio": 0.61,
+          "recovery_factor": 0.45,
+          "history_quality": "0% real ticks"
+        }
+      },
+      "statistics": {
+        "entry_requests": "18",
+        "entry_fills": "18",
+        "failed_entries": "0",
+        "close_requests": "10",
+        "failed_closes": "0",
+        "management_requests": "0",
+        "failed_management": "0",
+        "last_quote_epoch": "1729123199",
+        "balance": "10211.0",
+        "equity": "10211.0",
+        "open_position_at_on_tester": "0",
+        "feature_bars": "2445",
+        "valid_atr_ratios": "434"
+      },
+      "native": {
+        "manifest": {
+          "tag": "selected-older-validation-m4-v2",
+          "ea": "BtcWeekendV2",
+          "symbol": "BTCUSD",
+          "server": "Exness-MT5Trial16",
+          "start": "2023-10-17",
+          "end_exclusive": "2024-10-17",
+          "model": 4,
+          "execution_delay_ms": 150,
+          "deposit_usd": 10000,
+          "leverage": 15,
+          "inputs": {
+            "InpFrom": "2023.10.17 00:00:00",
+            "InpTo": "2024.10.17 00:00:00",
+            "InpHistoryFrom": "2018.01.01 00:00:00",
+            "InpTag": "selected-older-validation-m4-v2",
+            "InpTimeframeMinutes": 1440,
+            "InpEntryMode": 1,
+            "InpStopMode": 2,
+            "InpStopValue": 2.0,
+            "InpTargetRR": 1.0,
+            "InpManagementMode": 0,
+            "InpManagementValue": 0.0,
+            "InpFilterMode": 0,
+            "InpFilterValue": 0.0,
+            "InpEntryMinuteNY": 1080,
+            "InpExitMinuteNY": 960,
+            "InpSizingMode": 0,
+            "InpRiskPercent": 1,
+            "InpNotionalMultiple": 1,
+            "InpWarmFile": "feature-prefix.bin",
+            "InpWarmRows": 2080,
+            "InpWarmSHA256": "494ad1cd0e4c8ba655fda51e3c80132d6404b0acb6cfa51c5261c64d7df09e0d"
+          },
+          "build": {
+            "source_sha256": "bf6d8bf3c35012bdda6ccce84c85d69e81de2cdc57e86d77a51200f03fffb790",
+            "binary_sha256": "90e513d14f732dc62e8cf2db19b3324854d1e0139f5551577cef67243b476746",
+            "compiler": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MetaEditor64.exe",
+            "compiled_utc": "2026-10-17T02:13:36.167682+00:00",
+            "status": "0 errors, 0 warnings"
+          },
+          "tester": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811",
+          "agent_port": 3010,
+          "empty_profile": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\_Backtests\\MT5-DMC-20260811\\MQL5\\Profiles\\Charts\\Calyx Research Empty",
+          "no_live_account_api": true
+        },
+        "seconds": 28.505903720855713,
+        "report_sha256": "7f1836874d8ac6aa087fb1d0fa12400ac5fcebba174122c87eb51d2dc1d03c85",
+        "tick_notes": [
+          "CS\t0\t03:20:53.108\tTicks\tBTCUSD : real ticks begin from 2026.01.01 00:00:00, every tick generation used",
+          "LR\t0\t03:20:56.634\tCore 01\tBTCUSD : real ticks begin from 2026.01.01 00:00:00, every tick generation used"
+        ],
+        "tester_start_shift_notes": [],
+        "native_warnings": {
+          "invalid_stops": 0,
+          "invalid_volume": 0,
+          "market_closed": 0,
+          "not_enough_money": 0
+        }
+      },
+      "results_path": "native/selected-older-validation-m4-v2/results.json",
+      "implementation_receipt": "V2 FREEZE.json"
+    },
+    {
+      "tag": "selected-development-m4-v2",
+      "status": "FAILED_NOT_REPLACED",
+      "start": "2018-01-01",
+      "end_exclusive": "2023-10-17",
+      "model": 4,
+      "error": "RuntimeError: Native history/runtime/margin failure; inspect private journal",
+      "implementation_receipt": "V2 FREEZE.json"
+    }
+  ],
+  "implementation": "V2 daily loader only"
+}

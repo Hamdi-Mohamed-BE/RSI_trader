@@ -1,0 +1,94 @@
+{
+  "status": "PASS",
+  "source_window_utc": [
+    "2021-10-06",
+    "2026-10-06"
+  ],
+  "current_active_eas": 37,
+  "eligible_current_eas": 30,
+  "alternatives": 1,
+  "excluded_eas": {
+    "us30-hourly-profiles": "No actual stop; historical maximum loss is not a bounded future trade risk.",
+    "us100-hourly-profiles": "No actual stop; historical maximum loss is not a bounded future trade risk.",
+    "gold-news-v9-direction": "No timestamped historical pre-release forecast archive.",
+    "news-pulse-btc": "Excluded specialised news pending-order/event execution model from this bounded-risk non-news screen.",
+    "news-pulse-eurusd": "Excluded specialised news pending-order/event execution model from this bounded-risk non-news screen.",
+    "news-pulse-xag": "Excluded specialised news pending-order/event execution model from this bounded-risk non-news screen.",
+    "news-pulse-xau": "Excluded specialised news pending-order/event execution model from this bounded-risk non-news screen."
+  },
+  "counts": {
+    "positions": 10579,
+    "natural_positions": 10573,
+    "end_censored_positions": 6,
+    "deals": 21335,
+    "partial_positions": 177
+  },
+  "current_parameter_role_configurations": 76,
+  "native_receipts_hash_checked": 40,
+  "production_files_hash_checked": 128,
+  "candidate_count": 10579,
+  "cashflows_reconciled": true,
+  "initial_stop_open_deal_verified": true,
+  "partial_exit_flows_preserved": true,
+  "artificial_liquidation_cash_excluded": true,
+  "source_end_censored_entries_retained": true,
+  "publisher_ordering_epsilon": [
+    {
+      "key": "gold-overnight-value-area",
+      "position_id": 1956,
+      "native_close_epoch": 1783604700.0,
+      "ordering_close_epoch": 1783604700.001,
+      "adjustment_seconds": 0.001
+    }
+  ],
+  "source_warnings": [
+    {
+      "key": "gold-overnight-value-area",
+      "native_flags": {
+        "invalid_stops": 12
+      },
+      "note": "Source tester diagnostics are preserved, not silently repaired or treated as filled trades."
+    },
+    {
+      "key": "nasdaq-5m-candle-momentum",
+      "native_flags": {
+        "invalid_stops": 642
+      },
+      "note": "Source tester diagnostics are preserved, not silently repaired or treated as filled trades."
+    },
+    {
+      "key": "xau-elliott-wave-1-2-3",
+      "native_flags": {
+        "invalid_stops": 4
+      },
+      "note": "Source tester diagnostics are preserved, not silently repaired or treated as filled trades."
+    },
+    {
+      "key": "nasdaq-5m-candle-momentum-no-di",
+      "native_flags": {
+        "invalid_stops": 798
+      },
+      "note": "Source tester diagnostics are preserved, not silently repaired or treated as filled trades."
+    }
+  ],
+  "source_file_count": 211,
+  "limitations": [
+    "Historical signal-ledger replay is not a simultaneous native or live execution; only original standalone signals exist.",
+    "Current strategies and past data were previously researched. A later chronological split is a selection check, not genuinely untouched out-of-sample evidence.",
+    "Native tests report 15% real ticks; real ticks begin January 2026. Earlier generated/mixed tick execution may alter tight-stop results.",
+    "Entry sizing uses closed cash, not floating equity. No tick/intraday equity drawdown or liquidation path is available in this input model.",
+    "Source actual fills/spread/commission/fees/swap are retained. Resized fills assume linear execution; liquidity and broker fee tiers are not reconstructed.",
+    "Broker snapshot is Trial15; historical standalone test source is Trial16. Contract/lot parity is checked, quote and historical cost parity are not established.",
+    "Margin is a conservative current/cached snapshot estimate, not historical HMR, tiers, repricing, netting, liquidation, or a guarantee of broker acceptance.",
+    "ETH has no current quote/margin receipt; its cached Trial15 price-scaled margin ratio is used. BTC current margin ratio is lower than cached; larger cached ratio is retained.",
+    "ETH spread stress uses the latest positive-spread cached Trial15 M1 bar from September 2026; this is a stale bar-spread proxy, not a live bid/ask receipt.",
+    "USDJPY initial risk uses original SL-price currency conversion, consistent with the published ledger, not an exact historical fill-time OrderCalcProfit receipt.",
+    "Six source-end censored entries are retained with known genuine deal cashflows and initial risk; their artificial final liquidations are omitted. Closed-cash simulation must retain their remaining exposure through the boundary.",
+    "Source same-second exits use the publisher ordering epsilon of 1ms; this is an ordering convention, not measured millisecond precision.",
+    "Nasdaq overnight source has no entries before June 2023; this is shorter observed coverage, not proof of no earlier signals.",
+    "Four News Pulse EAs and Gold News V9 are excluded; this is not a claim that all 37 EAs were validly tested.",
+    "No production EA, BAT, preset, active terminal, website, or account is changed by this preparation."
+  ],
+  "live_changes": false,
+  "outcomes_evaluated": false
+}

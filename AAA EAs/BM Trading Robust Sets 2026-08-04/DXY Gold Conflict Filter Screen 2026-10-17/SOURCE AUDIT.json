@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "validated_rows": 830,
+  "counts": {
+    "ema3": 207,
+    "orb-volume-profile": 304,
+    "orb-volume-profile-volume-confirmed": 119,
+    "xau-orb-new-york-m30": 79,
+    "xau-orb-london-ny-overlap-m30": 121
+  },
+  "native_positions_reconciled": 830,
+  "native_deals_reconciled": 1660,
+  "initial_stop_normalizations_checked": 830,
+  "source_file_count": 42,
+  "exclusions": [
+    {
+      "key": "ema3",
+      "position_id": 416,
+      "open_epoch": 1789099200,
+      "native_close_epoch": 1791244798,
+      "reason": "Native forced final liquidation; not a natural closed trade"
+    }
+  ],
+  "all_rows_unique": true,
+  "no_within_ea_overlaps": true,
+  "no_partials": true,
+  "finite_positive_initial_stop_risk": true,
+  "opening_stop_direction_valid": true,
+  "native_deals_and_position_costs_reconciled": true,
+  "current_production_closure_hashes_match_frozen_source_plan": true,
+  "no_filter_outcomes_evaluated": true,
+  "no_live_changes": true
+}

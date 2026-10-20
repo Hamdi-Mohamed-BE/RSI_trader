@@ -1,0 +1,31 @@
+{
+  "total": 5,
+  "complete": {
+    "gold-overnight-value-area": {
+      "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\gold-overnight-value-area\\results.json",
+      "sha256": "4866b88d8375296a1dc5ba170115fb48693e0a6d9d3204858a8468038641d7f2",
+      "trades": 39,
+      "history_quality": "100% real ticks",
+      "seconds": 78.45083618164062
+    },
+    "xau-rsi-vwap": {
+      "path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\xau-rsi-vwap\\results.json",
+      "sha256": "4a1f25319fc4801d99249579d6fdbba5f815c137b0928986cf3965ac1ff9d609",
+      "trades": 12,
+      "history_quality": "100% real ticks",
+      "seconds": 14.495471715927124
+    }
+  },
+  "failed": {
+    "nasdaq-overnight": {
+      "error": "('Missing/unsupported position', 44)",
+      "trace": "Traceback (most recent call last):\n  File \"C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\resume.py::unchanged_case_protocol_new_status\", line 13, in run\n    import json\n    \n  File \"C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\native_run.py\", line 278, in run_case\n    trades, ledger = n.trades_from_deals(n.export_rows(out/'deals.csv'))\n                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB and Range Breakout RR05 Comparison 2026-10-08\\run.py\", line 142, in trades_from_deals\n    assert len(opened)==1 and len(closed)>=1,('Missing/unsupported position',pid)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ('Missing/unsupported position', 44)\n"
+    }
+  },
+  "window": [
+    "2026-08-17",
+    "2026-10-17"
+  ],
+  "live_changes": false,
+  "recovery_plan_sha256": "f71edc06edcd461c391a7506d55b6f5f77fe5ba0adb4a3949eb7189e26f57da1"
+}

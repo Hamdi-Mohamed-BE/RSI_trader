@@ -26,6 +26,7 @@ foreach($mode in @(0,1)) {
     if(([regex]::Matches($all,"ClientRiskMode=$mode")).Count -ne 5){throw 'Wrong risk mode'}
     if(([regex]::Matches($all,'(?m)^grid=1\r?$')).Count -ne 5){throw 'Chart ID replacement corrupted settings'}
     if(([regex]::Matches($all,'ClientExpectedSymbol=US100.a')).Count -ne 2){throw 'Wrong Nasdaq symbols'}
+    if(([regex]::Matches($all,'(?m)^InpRequireDIAgreement=false\r?$')).Count -ne 1 -or $all -match '(?m)^InpRequireDIAgreement=true\r?$'){throw 'Nasdaq 5M must install with DI OFF in both sizing modes'}
     # Renewal replaces the five client charts in a new clone, never duplicates them.
     $second=Write-Profile $fixture ('Client-'+$mode) ('Renew-'+$mode) 123456 'Demo-Test' $symbols $mode $risk
     if(@(Get-ChildItem -LiteralPath $second -Filter '*.chr').Count -ne 6){throw 'Renewal duplicated charts'}

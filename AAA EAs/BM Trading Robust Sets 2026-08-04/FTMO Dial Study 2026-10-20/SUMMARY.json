@@ -1,0 +1,1492 @@
+{
+ "plan_sha256": "d9e6401761a855cda366aceb4b31ecb5257d7d47511aec5760b4f4fd785b18e5",
+ "engine_source_sha256": "83c09daf588cc46206e32eb2950e5c09977ef352065e143feb4e39141a1bf63c",
+ "flat50_parity_trials": 536,
+ "seconds": 65.5,
+ "selection": [
+  {
+   "policy": "FLAT100",
+   "eligible": true,
+   "worst_median_days_both": 71.0,
+   "worst_within_90": 0.6493,
+   "max_cap": 100
+  },
+  {
+   "policy": "DIAL_LIB",
+   "eligible": true,
+   "worst_median_days_both": 72.5,
+   "worst_within_90": 0.6343,
+   "max_cap": 100
+  },
+  {
+   "policy": "DIAL_START",
+   "eligible": true,
+   "worst_median_days_both": 81.5,
+   "worst_within_90": 0.597,
+   "max_cap": 150
+  },
+  {
+   "policy": "FLAT50",
+   "eligible": true,
+   "worst_median_days_both": 119.0,
+   "worst_within_90": 0.1119,
+   "max_cap": 50
+  },
+  {
+   "policy": "FLAT200",
+   "eligible": false,
+   "worst_median_days_both": 56,
+   "worst_within_90": 0.8134,
+   "max_cap": 200
+  },
+  {
+   "policy": "DIAL_GAIN",
+   "eligible": false,
+   "worst_median_days_both": 102.5,
+   "worst_within_90": 0.3358,
+   "max_cap": 150
+  }
+ ],
+ "best_eligible": "FLAT100",
+ "summary": [
+  {
+   "policy": "FLAT50",
+   "cost": "recorded_exness",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 99.5,
+    "p25_days_both": 87,
+    "p75_days_both": 115,
+    "median_days_funded_plus5bd": 106.5,
+    "both_within": {
+     "60": 0.0,
+     "90": 0.3284,
+     "120": 0.8433,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.5149,
+    "phase1_median": 59.5,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 314.96,
+    "worst_daily_sampled_loss": 139.4,
+    "max_initial_open_risk": 148.73,
+    "median_trades": 124.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 94,
+    "p25_days_both": 84,
+    "p75_days_both": 106,
+    "median_days_funded_plus5bd": 101,
+    "both_within": {
+     "60": 0.0,
+     "90": 0.3944,
+     "120": 0.9718,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.493,
+    "phase1_median": 61,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 310.49,
+    "worst_daily_sampled_loss": 139.4,
+    "max_initial_open_risk": 148.73,
+    "median_trades": 119
+   }
+  },
+  {
+   "policy": "FLAT50",
+   "cost": "recorded_exness",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 100.5,
+    "p25_days_both": 89,
+    "p75_days_both": 116,
+    "median_days_funded_plus5bd": 107.5,
+    "both_within": {
+     "60": 0.0,
+     "90": 0.2761,
+     "120": 0.8284,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.5149,
+    "phase1_median": 59.5,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 314.96,
+    "worst_daily_sampled_loss": 139.4,
+    "max_initial_open_risk": 148.73,
+    "median_trades": 123.5
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 95,
+    "p25_days_both": 85,
+    "p75_days_both": 107,
+    "median_days_funded_plus5bd": 102,
+    "both_within": {
+     "60": 0.0,
+     "90": 0.3662,
+     "120": 0.9577,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.493,
+    "phase1_median": 61,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 310.49,
+    "worst_daily_sampled_loss": 139.4,
+    "max_initial_open_risk": 148.73,
+    "median_trades": 119
+   }
+  },
+  {
+   "policy": "FLAT50",
+   "cost": "fixed_cost_stress",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 116.0,
+    "p25_days_both": 99,
+    "p75_days_both": 129,
+    "median_days_funded_plus5bd": 123.0,
+    "both_within": {
+     "60": 0.0,
+     "90": 0.1343,
+     "120": 0.5672,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.4104,
+    "phase1_median": 65.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 353.32,
+    "worst_daily_sampled_loss": 146.8,
+    "max_initial_open_risk": 148.73,
+    "median_trades": 142.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 106,
+    "p25_days_both": 95,
+    "p75_days_both": 123,
+    "median_days_funded_plus5bd": 113,
+    "both_within": {
+     "60": 0.0,
+     "90": 0.1972,
+     "120": 0.7324,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.3662,
+    "phase1_median": 66,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 353.32,
+    "worst_daily_sampled_loss": 146.8,
+    "max_initial_open_risk": 148.73,
+    "median_trades": 136
+   }
+  },
+  {
+   "policy": "FLAT50",
+   "cost": "fixed_cost_stress",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 119.0,
+    "p25_days_both": 104,
+    "p75_days_both": 129,
+    "median_days_funded_plus5bd": 126.0,
+    "both_within": {
+     "60": 0.0,
+     "90": 0.1119,
+     "120": 0.5448,
+     "150": 0.9925
+    },
+    "phase1_within_60": 0.4104,
+    "phase1_median": 65.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 353.32,
+    "worst_daily_sampled_loss": 146.8,
+    "max_initial_open_risk": 148.73,
+    "median_trades": 140.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 110,
+    "p25_days_both": 96,
+    "p75_days_both": 123,
+    "median_days_funded_plus5bd": 117,
+    "both_within": {
+     "60": 0.0,
+     "90": 0.1972,
+     "120": 0.7042,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.3662,
+    "phase1_median": 66,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 353.32,
+    "worst_daily_sampled_loss": 146.8,
+    "max_initial_open_risk": 148.73,
+    "median_trades": 137
+   }
+  },
+  {
+   "policy": "FLAT100",
+   "cost": "recorded_exness",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 67.0,
+    "p25_days_both": 45,
+    "p75_days_both": 93,
+    "median_days_funded_plus5bd": 74.0,
+    "both_within": {
+     "60": 0.3507,
+     "90": 0.7313,
+     "120": 0.9851,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.7761,
+    "phase1_median": 44.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 7,
+    "worst_sampled_equity_dd": 633.85,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 298.83,
+    "median_trades": 81.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 69,
+    "p25_days_both": 62,
+    "p75_days_both": 84,
+    "median_days_funded_plus5bd": 76,
+    "both_within": {
+     "60": 0.1831,
+     "90": 0.8028,
+     "120": 1.0,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.8028,
+    "phase1_median": 49,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 2,
+    "worst_sampled_equity_dd": 590.11,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 298.83,
+    "median_trades": 83
+   }
+  },
+  {
+   "policy": "FLAT100",
+   "cost": "recorded_exness",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 70.0,
+    "p25_days_both": 56,
+    "p75_days_both": 94,
+    "median_days_funded_plus5bd": 77.0,
+    "both_within": {
+     "60": 0.2985,
+     "90": 0.7239,
+     "120": 0.9851,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.7761,
+    "phase1_median": 44.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 6,
+    "worst_sampled_equity_dd": 633.85,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 298.83,
+    "median_trades": 81.5
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 71,
+    "p25_days_both": 64,
+    "p75_days_both": 84,
+    "median_days_funded_plus5bd": 78,
+    "both_within": {
+     "60": 0.1408,
+     "90": 0.8028,
+     "120": 1.0,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.8028,
+    "phase1_median": 49,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 2,
+    "worst_sampled_equity_dd": 590.11,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 298.83,
+    "median_trades": 82
+   }
+  },
+  {
+   "policy": "FLAT100",
+   "cost": "fixed_cost_stress",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 70.0,
+    "p25_days_both": 57,
+    "p75_days_both": 107,
+    "median_days_funded_plus5bd": 77.0,
+    "both_within": {
+     "60": 0.291,
+     "90": 0.6493,
+     "120": 0.8881,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.6567,
+    "phase1_median": 50.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 4,
+    "worst_sampled_equity_dd": 652.96,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 199.93,
+    "median_trades": 84.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 72,
+    "p25_days_both": 64,
+    "p75_days_both": 91,
+    "median_days_funded_plus5bd": 79,
+    "both_within": {
+     "60": 0.1268,
+     "90": 0.7465,
+     "120": 1.0,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.6761,
+    "phase1_median": 53,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 3,
+    "worst_sampled_equity_dd": 622.61,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 199.43,
+    "median_trades": 86
+   }
+  },
+  {
+   "policy": "FLAT100",
+   "cost": "fixed_cost_stress",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 71.0,
+    "p25_days_both": 61,
+    "p75_days_both": 107,
+    "median_days_funded_plus5bd": 78.0,
+    "both_within": {
+     "60": 0.2313,
+     "90": 0.6716,
+     "120": 0.8881,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.6567,
+    "phase1_median": 50.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 3,
+    "worst_sampled_equity_dd": 652.96,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 199.93,
+    "median_trades": 83.5
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 71,
+    "p25_days_both": 64,
+    "p75_days_both": 91,
+    "median_days_funded_plus5bd": 78,
+    "both_within": {
+     "60": 0.1127,
+     "90": 0.7465,
+     "120": 1.0,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.6761,
+    "phase1_median": 53,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 3,
+    "worst_sampled_equity_dd": 622.61,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 199.43,
+    "median_trades": 84
+   }
+  },
+  {
+   "policy": "FLAT200",
+   "cost": "recorded_exness",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 127,
+     "pending_phase1": 6,
+     "pending_phase2": 1
+    },
+    "both_completed": 127,
+    "both_completion_share": 0.9478,
+    "median_days_both": 49,
+    "p25_days_both": 36,
+    "p75_days_both": 59,
+    "median_days_funded_plus5bd": 56,
+    "both_within": {
+     "60": 0.7239,
+     "90": 0.8881,
+     "120": 0.9478,
+     "150": 0.9478
+    },
+    "phase1_within_60": 0.9478,
+    "phase1_median": 24.5,
+    "hard_failures": 0,
+    "pending_at_horizon": 7,
+    "soft_buffer_blocked_trials": 64,
+    "worst_sampled_equity_dd": 943.13,
+    "worst_daily_sampled_loss": 226.22,
+    "max_initial_open_risk": 398.86,
+    "median_trades": 33.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 66,
+     "pending_phase1": 5
+    },
+    "both_completed": 66,
+    "both_completion_share": 0.9296,
+    "median_days_both": 51.5,
+    "p25_days_both": 29,
+    "p75_days_both": 64,
+    "median_days_funded_plus5bd": 58.5,
+    "both_within": {
+     "60": 0.6479,
+     "90": 0.9014,
+     "120": 0.9296,
+     "150": 0.9296
+    },
+    "phase1_within_60": 0.9155,
+    "phase1_median": 22.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 5,
+    "soft_buffer_blocked_trials": 37,
+    "worst_sampled_equity_dd": 893.46,
+    "worst_daily_sampled_loss": 211.51,
+    "max_initial_open_risk": 398.86,
+    "median_trades": 37
+   }
+  },
+  {
+   "policy": "FLAT200",
+   "cost": "recorded_exness",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 127,
+     "pending_phase2": 1,
+     "pending_phase1": 6
+    },
+    "both_completed": 127,
+    "both_completion_share": 0.9478,
+    "median_days_both": 50,
+    "p25_days_both": 38,
+    "p75_days_both": 65,
+    "median_days_funded_plus5bd": 57,
+    "both_within": {
+     "60": 0.6343,
+     "90": 0.8657,
+     "120": 0.9478,
+     "150": 0.9478
+    },
+    "phase1_within_60": 0.9478,
+    "phase1_median": 24.5,
+    "hard_failures": 0,
+    "pending_at_horizon": 7,
+    "soft_buffer_blocked_trials": 86,
+    "worst_sampled_equity_dd": 943.13,
+    "worst_daily_sampled_loss": 226.22,
+    "max_initial_open_risk": 398.86,
+    "median_trades": 34.5
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 66,
+     "pending_phase1": 5
+    },
+    "both_completed": 66,
+    "both_completion_share": 0.9296,
+    "median_days_both": 50.5,
+    "p25_days_both": 29,
+    "p75_days_both": 66,
+    "median_days_funded_plus5bd": 57.5,
+    "both_within": {
+     "60": 0.5634,
+     "90": 0.9014,
+     "120": 0.9296,
+     "150": 0.9296
+    },
+    "phase1_within_60": 0.9155,
+    "phase1_median": 22.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 5,
+    "soft_buffer_blocked_trials": 39,
+    "worst_sampled_equity_dd": 893.46,
+    "worst_daily_sampled_loss": 211.51,
+    "max_initial_open_risk": 398.86,
+    "median_trades": 34
+   }
+  },
+  {
+   "policy": "FLAT200",
+   "cost": "fixed_cost_stress",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 120,
+     "pending_phase1": 9,
+     "pending_phase2": 5
+    },
+    "both_completed": 120,
+    "both_completion_share": 0.8955,
+    "median_days_both": 51.0,
+    "p25_days_both": 38,
+    "p75_days_both": 66,
+    "median_days_funded_plus5bd": 58.0,
+    "both_within": {
+     "60": 0.6045,
+     "90": 0.8134,
+     "120": 0.8955,
+     "150": 0.8955
+    },
+    "phase1_within_60": 0.8881,
+    "phase1_median": 28,
+    "hard_failures": 0,
+    "pending_at_horizon": 14,
+    "soft_buffer_blocked_trials": 77,
+    "worst_sampled_equity_dd": 984.42,
+    "worst_daily_sampled_loss": 254.3,
+    "max_initial_open_risk": 398.86,
+    "median_trades": 33.5
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 64,
+     "pending_phase1": 6,
+     "pending_phase2": 1
+    },
+    "both_completed": 64,
+    "both_completion_share": 0.9014,
+    "median_days_both": 56.0,
+    "p25_days_both": 31,
+    "p75_days_both": 69,
+    "median_days_funded_plus5bd": 63.0,
+    "both_within": {
+     "60": 0.5211,
+     "90": 0.8451,
+     "120": 0.9014,
+     "150": 0.9014
+    },
+    "phase1_within_60": 0.831,
+    "phase1_median": 24,
+    "hard_failures": 0,
+    "pending_at_horizon": 7,
+    "soft_buffer_blocked_trials": 38,
+    "worst_sampled_equity_dd": 984.42,
+    "worst_daily_sampled_loss": 223.44,
+    "max_initial_open_risk": 398.86,
+    "median_trades": 37
+   }
+  },
+  {
+   "policy": "FLAT200",
+   "cost": "fixed_cost_stress",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 123,
+     "pending_phase1": 9,
+     "pending_phase2": 2
+    },
+    "both_completed": 123,
+    "both_completion_share": 0.9179,
+    "median_days_both": 56,
+    "p25_days_both": 41,
+    "p75_days_both": 68,
+    "median_days_funded_plus5bd": 63,
+    "both_within": {
+     "60": 0.5522,
+     "90": 0.8358,
+     "120": 0.9179,
+     "150": 0.9179
+    },
+    "phase1_within_60": 0.8881,
+    "phase1_median": 28,
+    "hard_failures": 0,
+    "pending_at_horizon": 11,
+    "soft_buffer_blocked_trials": 87,
+    "worst_sampled_equity_dd": 984.42,
+    "worst_daily_sampled_loss": 254.3,
+    "max_initial_open_risk": 398.86,
+    "median_trades": 36.5
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 65,
+     "pending_phase1": 6
+    },
+    "both_completed": 65,
+    "both_completion_share": 0.9155,
+    "median_days_both": 54,
+    "p25_days_both": 30,
+    "p75_days_both": 68,
+    "median_days_funded_plus5bd": 61,
+    "both_within": {
+     "60": 0.5352,
+     "90": 0.8592,
+     "120": 0.9155,
+     "150": 0.9155
+    },
+    "phase1_within_60": 0.831,
+    "phase1_median": 24,
+    "hard_failures": 0,
+    "pending_at_horizon": 6,
+    "soft_buffer_blocked_trials": 40,
+    "worst_sampled_equity_dd": 984.42,
+    "worst_daily_sampled_loss": 223.44,
+    "max_initial_open_risk": 398.86,
+    "median_trades": 34
+   }
+  },
+  {
+   "policy": "DIAL_LIB",
+   "cost": "recorded_exness",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 67.0,
+    "p25_days_both": 45,
+    "p75_days_both": 94,
+    "median_days_funded_plus5bd": 74.0,
+    "both_within": {
+     "60": 0.3507,
+     "90": 0.7239,
+     "120": 0.9851,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.7761,
+    "phase1_median": 44.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 5,
+    "worst_sampled_equity_dd": 633.85,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 298.83,
+    "median_trades": 81.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 69,
+    "p25_days_both": 62,
+    "p75_days_both": 84,
+    "median_days_funded_plus5bd": 76,
+    "both_within": {
+     "60": 0.1831,
+     "90": 0.8028,
+     "120": 1.0,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.8028,
+    "phase1_median": 49,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 1,
+    "worst_sampled_equity_dd": 590.11,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 298.83,
+    "median_trades": 83
+   }
+  },
+  {
+   "policy": "DIAL_LIB",
+   "cost": "recorded_exness",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 70.0,
+    "p25_days_both": 56,
+    "p75_days_both": 97,
+    "median_days_funded_plus5bd": 77.0,
+    "both_within": {
+     "60": 0.2985,
+     "90": 0.709,
+     "120": 0.9701,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.7761,
+    "phase1_median": 44.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 1,
+    "worst_sampled_equity_dd": 633.85,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 298.83,
+    "median_trades": 81.5
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 71,
+    "p25_days_both": 64,
+    "p75_days_both": 84,
+    "median_days_funded_plus5bd": 78,
+    "both_within": {
+     "60": 0.1408,
+     "90": 0.8028,
+     "120": 1.0,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.8028,
+    "phase1_median": 49,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 1,
+    "worst_sampled_equity_dd": 590.11,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 298.83,
+    "median_trades": 82
+   }
+  },
+  {
+   "policy": "DIAL_LIB",
+   "cost": "fixed_cost_stress",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 71.5,
+    "p25_days_both": 57,
+    "p75_days_both": 108,
+    "median_days_funded_plus5bd": 78.5,
+    "both_within": {
+     "60": 0.291,
+     "90": 0.6343,
+     "120": 0.8657,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.6567,
+    "phase1_median": 50.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 3,
+    "worst_sampled_equity_dd": 652.96,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 199.93,
+    "median_trades": 86.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 74,
+    "p25_days_both": 64,
+    "p75_days_both": 91,
+    "median_days_funded_plus5bd": 81,
+    "both_within": {
+     "60": 0.1268,
+     "90": 0.7183,
+     "120": 0.9718,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.6761,
+    "phase1_median": 53,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 2,
+    "worst_sampled_equity_dd": 622.61,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 199.43,
+    "median_trades": 90
+   }
+  },
+  {
+   "policy": "DIAL_LIB",
+   "cost": "fixed_cost_stress",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 72.5,
+    "p25_days_both": 61,
+    "p75_days_both": 111,
+    "median_days_funded_plus5bd": 79.5,
+    "both_within": {
+     "60": 0.2313,
+     "90": 0.6418,
+     "120": 0.8433,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.6567,
+    "phase1_median": 50.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 2,
+    "worst_sampled_equity_dd": 652.96,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 199.93,
+    "median_trades": 84.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 74,
+    "p25_days_both": 64,
+    "p75_days_both": 94,
+    "median_days_funded_plus5bd": 81,
+    "both_within": {
+     "60": 0.1127,
+     "90": 0.6901,
+     "120": 0.9155,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.6761,
+    "phase1_median": 53,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 2,
+    "worst_sampled_equity_dd": 622.61,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 199.43,
+    "median_trades": 86
+   }
+  },
+  {
+   "policy": "DIAL_GAIN",
+   "cost": "recorded_exness",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 132,
+     "pending_phase2": 2
+    },
+    "both_completed": 132,
+    "both_completion_share": 0.9851,
+    "median_days_both": 76.0,
+    "p25_days_both": 54,
+    "p75_days_both": 112,
+    "median_days_funded_plus5bd": 83.0,
+    "both_within": {
+     "60": 0.3358,
+     "90": 0.6119,
+     "120": 0.7985,
+     "150": 0.9254
+    },
+    "phase1_within_60": 0.6269,
+    "phase1_median": 46.5,
+    "hard_failures": 0,
+    "pending_at_horizon": 2,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 933.37,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 299.07,
+    "median_trades": 79.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 69,
+     "pending_phase2": 2
+    },
+    "both_completed": 69,
+    "both_completion_share": 0.9718,
+    "median_days_both": 85,
+    "p25_days_both": 61,
+    "p75_days_both": 111,
+    "median_days_funded_plus5bd": 92,
+    "both_within": {
+     "60": 0.2394,
+     "90": 0.5634,
+     "120": 0.8169,
+     "150": 0.8732
+    },
+    "phase1_within_60": 0.4648,
+    "phase1_median": 64,
+    "hard_failures": 0,
+    "pending_at_horizon": 2,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 933.37,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 299.07,
+    "median_trades": 93
+   }
+  },
+  {
+   "policy": "DIAL_GAIN",
+   "cost": "recorded_exness",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 130,
+     "pending_phase2": 4
+    },
+    "both_completed": 130,
+    "both_completion_share": 0.9701,
+    "median_days_both": 78.0,
+    "p25_days_both": 62,
+    "p75_days_both": 108,
+    "median_days_funded_plus5bd": 85.0,
+    "both_within": {
+     "60": 0.2313,
+     "90": 0.5597,
+     "120": 0.8358,
+     "150": 0.9104
+    },
+    "phase1_within_60": 0.6269,
+    "phase1_median": 46.5,
+    "hard_failures": 0,
+    "pending_at_horizon": 4,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 933.37,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 299.07,
+    "median_trades": 79.5
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 67,
+     "pending_phase2": 4
+    },
+    "both_completed": 67,
+    "both_completion_share": 0.9437,
+    "median_days_both": 83,
+    "p25_days_both": 62,
+    "p75_days_both": 109,
+    "median_days_funded_plus5bd": 90,
+    "both_within": {
+     "60": 0.2113,
+     "90": 0.5211,
+     "120": 0.8169,
+     "150": 0.831
+    },
+    "phase1_within_60": 0.4648,
+    "phase1_median": 64,
+    "hard_failures": 0,
+    "pending_at_horizon": 4,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 933.37,
+    "worst_daily_sampled_loss": 256.56,
+    "max_initial_open_risk": 299.07,
+    "median_trades": 86
+   }
+  },
+  {
+   "policy": "DIAL_GAIN",
+   "cost": "fixed_cost_stress",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 110,
+     "pending_phase1": 1,
+     "pending_phase2": 23
+    },
+    "both_completed": 110,
+    "both_completion_share": 0.8209,
+    "median_days_both": 97.5,
+    "p25_days_both": 70,
+    "p75_days_both": 144,
+    "median_days_funded_plus5bd": 104.5,
+    "both_within": {
+     "60": 0.1269,
+     "90": 0.3806,
+     "120": 0.5149,
+     "150": 0.6567
+    },
+    "phase1_within_60": 0.5075,
+    "phase1_median": 58,
+    "hard_failures": 0,
+    "pending_at_horizon": 24,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 945.11,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 299.07,
+    "median_trades": 127.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "pending_phase2": 18,
+     "horizon_completed_both": 53
+    },
+    "both_completed": 53,
+    "both_completion_share": 0.7465,
+    "median_days_both": 106,
+    "p25_days_both": 75,
+    "p75_days_both": 151,
+    "median_days_funded_plus5bd": 113,
+    "both_within": {
+     "60": 0.0704,
+     "90": 0.2817,
+     "120": 0.4648,
+     "150": 0.5493
+    },
+    "phase1_within_60": 0.3239,
+    "phase1_median": 84,
+    "hard_failures": 0,
+    "pending_at_horizon": 18,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 945.11,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 299.07,
+    "median_trades": 128
+   }
+  },
+  {
+   "policy": "DIAL_GAIN",
+   "cost": "fixed_cost_stress",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 110,
+     "pending_phase1": 1,
+     "pending_phase2": 23
+    },
+    "both_completed": 110,
+    "both_completion_share": 0.8209,
+    "median_days_both": 102.5,
+    "p25_days_both": 70,
+    "p75_days_both": 144,
+    "median_days_funded_plus5bd": 109.5,
+    "both_within": {
+     "60": 0.1194,
+     "90": 0.3358,
+     "120": 0.5149,
+     "150": 0.6567
+    },
+    "phase1_within_60": 0.5075,
+    "phase1_median": 58,
+    "hard_failures": 0,
+    "pending_at_horizon": 24,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 945.11,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 299.07,
+    "median_trades": 126.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "pending_phase2": 18,
+     "horizon_completed_both": 53
+    },
+    "both_completed": 53,
+    "both_completion_share": 0.7465,
+    "median_days_both": 109,
+    "p25_days_both": 71,
+    "p75_days_both": 151,
+    "median_days_funded_plus5bd": 116,
+    "both_within": {
+     "60": 0.0704,
+     "90": 0.2817,
+     "120": 0.4648,
+     "150": 0.5493
+    },
+    "phase1_within_60": 0.3239,
+    "phase1_median": 84,
+    "hard_failures": 0,
+    "pending_at_horizon": 18,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 945.11,
+    "worst_daily_sampled_loss": 270.93,
+    "max_initial_open_risk": 299.07,
+    "median_trades": 134
+   }
+  },
+  {
+   "policy": "DIAL_START",
+   "cost": "recorded_exness",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 76.5,
+    "p25_days_both": 54,
+    "p75_days_both": 100,
+    "median_days_funded_plus5bd": 83.5,
+    "both_within": {
+     "60": 0.3358,
+     "90": 0.6716,
+     "120": 0.903,
+     "150": 0.9925
+    },
+    "phase1_within_60": 0.8284,
+    "phase1_median": 36.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 908.07,
+    "worst_daily_sampled_loss": 259.05,
+    "max_initial_open_risk": 299.35,
+    "median_trades": 59.5
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 76,
+    "p25_days_both": 52,
+    "p75_days_both": 98,
+    "median_days_funded_plus5bd": 83,
+    "both_within": {
+     "60": 0.3521,
+     "90": 0.7183,
+     "120": 0.9155,
+     "150": 0.9859
+    },
+    "phase1_within_60": 0.7606,
+    "phase1_median": 34,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 908.07,
+    "worst_daily_sampled_loss": 259.05,
+    "max_initial_open_risk": 299.35,
+    "median_trades": 68
+   }
+  },
+  {
+   "policy": "DIAL_START",
+   "cost": "recorded_exness",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 76.5,
+    "p25_days_both": 58,
+    "p75_days_both": 99,
+    "median_days_funded_plus5bd": 83.5,
+    "both_within": {
+     "60": 0.291,
+     "90": 0.6716,
+     "120": 0.9328,
+     "150": 0.9925
+    },
+    "phase1_within_60": 0.8284,
+    "phase1_median": 36.0,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 908.07,
+    "worst_daily_sampled_loss": 259.05,
+    "max_initial_open_risk": 299.35,
+    "median_trades": 61.5
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 76,
+    "p25_days_both": 52,
+    "p75_days_both": 97,
+    "median_days_funded_plus5bd": 83,
+    "both_within": {
+     "60": 0.338,
+     "90": 0.7183,
+     "120": 0.9718,
+     "150": 0.9859
+    },
+    "phase1_within_60": 0.7606,
+    "phase1_median": 34,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 908.07,
+    "worst_daily_sampled_loss": 259.05,
+    "max_initial_open_risk": 299.35,
+    "median_trades": 67
+   }
+  },
+  {
+   "policy": "DIAL_START",
+   "cost": "fixed_cost_stress",
+   "handover": "next_prague_midnight",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 81.5,
+    "p25_days_both": 57,
+    "p75_days_both": 106,
+    "median_days_funded_plus5bd": 88.5,
+    "both_within": {
+     "60": 0.2836,
+     "90": 0.597,
+     "120": 0.903,
+     "150": 0.9925
+    },
+    "phase1_within_60": 0.7388,
+    "phase1_median": 39.5,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 937.1,
+    "worst_daily_sampled_loss": 266.88,
+    "max_initial_open_risk": 299.07,
+    "median_trades": 71.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 74,
+    "p25_days_both": 52,
+    "p75_days_both": 91,
+    "median_days_funded_plus5bd": 81,
+    "both_within": {
+     "60": 0.3803,
+     "90": 0.7324,
+     "120": 0.9859,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.6761,
+    "phase1_median": 36,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 937.1,
+    "worst_daily_sampled_loss": 266.88,
+    "max_initial_open_risk": 299.07,
+    "median_trades": 67
+   }
+  },
+  {
+   "policy": "DIAL_START",
+   "cost": "fixed_cost_stress",
+   "handover": "two_business_day_wait",
+   "all_starts": {
+    "starts": 134,
+    "outcomes": {
+     "horizon_completed_both": 134
+    },
+    "both_completed": 134,
+    "both_completion_share": 1.0,
+    "median_days_both": 81.5,
+    "p25_days_both": 59,
+    "p75_days_both": 107,
+    "median_days_funded_plus5bd": 88.5,
+    "both_within": {
+     "60": 0.2687,
+     "90": 0.597,
+     "120": 0.8881,
+     "150": 0.9925
+    },
+    "phase1_within_60": 0.7388,
+    "phase1_median": 39.5,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 937.1,
+    "worst_daily_sampled_loss": 266.88,
+    "max_initial_open_risk": 299.35,
+    "median_trades": 69.0
+   },
+   "jan2026_plus": {
+    "starts": 71,
+    "outcomes": {
+     "horizon_completed_both": 71
+    },
+    "both_completed": 71,
+    "both_completion_share": 1.0,
+    "median_days_both": 76,
+    "p25_days_both": 52,
+    "p75_days_both": 91,
+    "median_days_funded_plus5bd": 83,
+    "both_within": {
+     "60": 0.3803,
+     "90": 0.7324,
+     "120": 1.0,
+     "150": 1.0
+    },
+    "phase1_within_60": 0.6761,
+    "phase1_median": 36,
+    "hard_failures": 0,
+    "pending_at_horizon": 0,
+    "soft_buffer_blocked_trials": 0,
+    "worst_sampled_equity_dd": 937.1,
+    "worst_daily_sampled_loss": 266.88,
+    "max_initial_open_risk": 299.35,
+    "median_trades": 64
+   }
+  }
+ ]
+}

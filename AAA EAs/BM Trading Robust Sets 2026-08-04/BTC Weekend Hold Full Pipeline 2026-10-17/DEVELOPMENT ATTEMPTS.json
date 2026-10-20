@@ -1,0 +1,22 @@
+{
+  "performance_repair": {
+    "new_search_sha256": "21956bfce0efdfe5a089d4b4aa2f570182afe495e5186d016ea1ca69abcaf418",
+    "search_fixtures_passed": 49,
+    "whole_panel_legacy_equivalence_fixtures": 6,
+    "method_or_candidate_space_changed": false,
+    "completed_second_attempt_unique_configurations": 345,
+    "selection_lock_written_before_any_oos_evaluation": true
+  },
+  "attempts": [
+    {
+      "started_utc": "2026-10-17T01:49:17Z",
+      "status": "STOPPED_OWN_OFFLINE_PROCESS_FOR_DATA_ACCESS_PERFORMANCE_REPAIR",
+      "search_sha256": "7bdcc95ce7bdfdc96b0b9f22e4eb888767505d139a15cd38b3ad93e15113b0c5",
+      "reason": "Profiler found repeated scalar np.searchsorted calls on structured-array strided timestamp views; each can copy the entire timestamp series. Cache identical contiguous timestamps once. No strategy or outcome change.",
+      "selection_persisted": false,
+      "oos_read": false,
+      "results_inspected": "Only preregistered raw baseline/control gates, no optimisation rankings or finalist outcomes",
+      "restart_policy": "Rerun the EXACT same configuration family and deterministic gates; duplicate configurations across attempts count once, not as a new independent search. Preserve original frozen plan/date/source hashes."
+    }
+  ]
+}

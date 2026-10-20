@@ -9,6 +9,17 @@ EVIDENCE=BASE/'Recent EA Shortlist 2026-09-30'
 TESTER=BASE/'_Backtests/MT5-DMC-20260811'
 CLIENT=REPO/'clients/top 5'
 SLUGS=['gold-overnight-value-area','xau-rsi-vwap','nasdaq-overnight','nasdaq-5m-candle-momentum','orb-volume-profile']
+# Client-only defaults. Do not modify the shared production source or the
+# historical selection/evidence: other portfolios deliberately retain DI ON.
+CLIENT_INPUT_OVERRIDES={'nasdaq-5m-candle-momentum':{'InpRequireDIAgreement':'false'}}
+
+def client_source_defaults(text,slug):
+    for name,value in CLIENT_INPUT_OVERRIDES.get(slug,{}).items():
+        assert value in ('true','false')
+        pattern=r'(\binput\s+bool\s+'+re.escape(name)+r'\s*=\s*)(?:true|false)(\s*;)'
+        text,count=re.subn(pattern,lambda m:m[1]+value+m[2],text)
+        assert count==1,('Missing or ambiguous client input',slug,name,count)
+    return text
 def read(p):
     raw=p.read_bytes();return raw.decode('utf-16' if raw.startswith((b'\xff\xfe',b'\xfe\xff')) else 'utf-8-sig').replace('\r\n','\n')
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -22,6 +33,7 @@ def body(text,name,replacement):
     return text[:start]+'\n'+replacement+'\n'+text[i-1:]
 def build(days=30,bound_login=0,bound_server='',test_expiry=None,only_slug=None):
     assert 1<=days<=3660
+    assert not only_slug or not (bound_login or bound_server),'Selective build cannot change licence binding'
     assert not any(c in bound_server for c in '\r\n"\\')
     now=datetime.now(timezone.utc).replace(microsecond=0)
     terms_path=ROOT/'licence.json'
@@ -36,6 +48,17 @@ def build(days=30,bound_login=0,bound_server='',test_expiry=None,only_slug=None)
     else:
         terms={'id':'CALYX-TOP5-20260930-01','issued_utc':now.isoformat(),'expires_utc':(now+timedelta(days=days)).isoformat(),'bound_login':bound_login,'bound_server':bound_server}
         ROOT.mkdir(parents=True,exist_ok=True);terms_path.write_text(json.dumps(terms,indent=2))
+    assert only_slug is None or only_slug in SLUGS,'Unknown selected strategy'
+    prior=None
+    if only_slug and not test_expiry:
+        # A narrowly scoped default change must not silently replace the four
+        # unrelated licensed binaries, renew the licence or alter their inputs.
+        prior=json.loads((ROOT/'manifest.json').read_text())
+        assert prior['licence']==terms,'Selective production build cannot change licence'
+        assert [r['slug'] for r in prior['entries']]==SLUGS
+        for old in prior['entries']:
+            assert sha(CLIENT/old['expert'])==old['ex5_sha256'],'Published package changed before build'
+        assert sha(ROOT/'ClientGuard.mqh')==prior['guard_sha256'],'Selective build cannot change risk/licence guard'
     out=ROOT/('build-expiry-test' if test_expiry else 'build');out.mkdir(parents=True,exist_ok=True)
     CLIENT.mkdir(parents=True,exist_ok=True)
     shutil.copy2(ROOT/'ClientGuard.mqh',out/'ClientGuard.mqh')
@@ -45,10 +68,10 @@ def build(days=30,bound_login=0,bound_server='',test_expiry=None,only_slug=None)
     trade=re.sub(r'#include\s+"([^"]+)"',lambda m:'#include <Trade/'+m[1]+'>',trade)
     (out/'ClientTrade.mqh').write_text(trade,encoding='utf-8')
     rows={r['slug']:r for r in json.loads((EVIDENCE/'selection.json').read_text())}
-    artifacts=[];hashes={}
+    artifacts=[];hashes=dict(prior['source_hashes']) if prior else {}
     for ix,slug in enumerate(SLUGS):
         if only_slug and slug!=only_slug:
-            assert test_expiry,'Partial production builds are not allowed'
+            if prior:artifacts.append(next(r for r in prior['entries'] if r['slug']==slug))
             continue
         row=rows[slug];source=Path(row['expert']).with_suffix('.mq5')
         assert sha(Path(row['expert']))==row['ex5_sha256'] and sha(source)==row['source_sha256']
@@ -60,6 +83,7 @@ def build(days=30,bound_login=0,bound_server='',test_expiry=None,only_slug=None)
             cache[path]=name;hashes[str(path.relative_to(REPO))]=sha(path)
             text=read(path)
             if path==source.resolve():
+                text=client_source_defaults(text,slug)
                 if slug=='gold-overnight-value-area':
                     old='double desired=(InpRiskMode==1?InpFixedRiskMoney:equity*InpRiskPercent/100)*multiplier;'
                     assert old in text;text=text.replace(old,'double desired=ClientRiskCash();')
@@ -105,27 +129,32 @@ void OnTimer(){{ClientPulse();{'ClientStrategyTimer();' if has_timer else ''}}}
         assert log.exists();report=read(log)
         assert re.search(r'\b0 errors, 0 warnings\b',report),report[-3000:]
         ex=mq.with_suffix('.ex5');assert ex.exists() and ex.stat().st_mtime>=began-2
-        inputs=row['inputs']|{'ClientRiskMode':'0','ClientRiskValue':'50','ClientExpectedLogin':'0','ClientExpectedServer':'','ClientExpectedSymbol':''}
+        inputs=row['inputs']|{'ClientRiskMode':'0','ClientRiskValue':'50','ClientExpectedLogin':'0','ClientExpectedServer':'','ClientExpectedSymbol':''}|CLIENT_INPUT_OVERRIDES.get(slug,{})
         # Stable dedicated client magic, never the owner's production identity.
         original_magic=inputs['InpMagic'];inputs['InpMagic']=str(93095001+ix)
         artifacts.append({'slug':slug,'label':row['label'],'expert':ex.name,'ex5_sha256':sha(ex),'symbol':row['symbol'],
-          'period':row['period'],'inputs':inputs,'original_magic':original_magic,'source_sha256':row['source_sha256']})
+          'period':row['period'],'inputs':inputs,'original_magic':original_magic,'source_sha256':row['source_sha256'],
+          **({'client_input_overrides':CLIENT_INPUT_OVERRIDES[slug]} if slug in CLIENT_INPUT_OVERRIDES else {})})
         print('Compiled '+slug,flush=True)
     manifest={'licence':terms,'entries':artifacts,'source_hashes':hashes,'guard_sha256':sha(ROOT/'ClientGuard.mqh'),
       'risk_policy':'USD hedging only; fixed USD or current BALANCE percentage; round DOWN then use broker MINIMUM LOT if needed, which CAN EXCEED selected risk; costs and gaps excluded',
       'expiry_policy':'earlier of UTC and broker clock deadline; backward clock blocks entries; keep managing own positions; tester bypass unless test build'}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2))
     if not test_expiry:
-        # Publish only after ALL five compile cleanly; failed compilation leaves delivery untouched.
-        for entry in artifacts:shutil.copy2(out/entry['expert'],CLIENT/entry['expert'])
+        # Publish only after every requested compilation succeeds. A selective
+        # build retains the verified, previously published unrelated binaries.
+        for entry in artifacts:
+            if only_slug and entry['slug']!=only_slug:continue
+            shutil.copy2(out/entry['expert'],CLIENT/entry['expert'])
         (ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2))
     return manifest
 if __name__=='__main__':
-    ap=argparse.ArgumentParser();ap.add_argument('--days',type=int,default=30);ap.add_argument('--login',type=int,default=0);ap.add_argument('--server',default='');ap.add_argument('--test-expiry');ap.add_argument('--renew-days',type=int)
+    ap=argparse.ArgumentParser();ap.add_argument('--days',type=int,default=30);ap.add_argument('--login',type=int,default=0);ap.add_argument('--server',default='');ap.add_argument('--test-expiry');ap.add_argument('--renew-days',type=int);ap.add_argument('--only-slug',choices=SLUGS)
     a=ap.parse_args()
+    assert not a.only_slug or not (a.renew_days or a.login or a.server),'Selective build cannot renew or bind licence'
     if a.renew_days:
         assert 1<=a.renew_days<=3660
         p=ROOT/'licence.json';d=json.loads(p.read_text());d['expires_utc']=(datetime.now(timezone.utc)+timedelta(days=a.renew_days)).replace(microsecond=0).isoformat()
         if a.login:d['bound_login']=a.login;d['bound_server']=a.server
         p.write_text(json.dumps(d,indent=2))
-    build(a.days,a.login,a.server,a.test_expiry)
+    build(a.days,a.login,a.server,a.test_expiry,a.only_slug)

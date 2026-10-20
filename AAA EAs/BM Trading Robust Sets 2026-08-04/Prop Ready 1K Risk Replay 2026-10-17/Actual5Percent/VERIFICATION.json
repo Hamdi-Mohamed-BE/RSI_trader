@@ -1,0 +1,483 @@
+{
+  "status": "PASS",
+  "checks": 327141,
+  "categories": {
+    "frozen_hashes": 52,
+    "protocol": 3,
+    "sources": 1510,
+    "owned_marks": 14156,
+    "captured_marks": 237477,
+    "supplement_freeze": 58,
+    "decisions": 10798,
+    "admitted_guards": 718,
+    "causality": 12682,
+    "censoring": 156,
+    "cash": 2696,
+    "counts": 30,
+    "latches": 26,
+    "curve": 43918,
+    "metrics": 160,
+    "drawdowns": 70,
+    "calendar": 2600,
+    "cost_paths": 31
+  },
+  "verified_candidates": 93,
+  "native_source_eas": 9,
+  "scenarios": [
+    {
+      "scenario": "requested5_current_caps",
+      "stress": false,
+      "closed_positions": 14,
+      "ending_cash": 995.44,
+      "ending_sampled_equity": 995.44,
+      "cash_profit": -4.56,
+      "sampled_equity_dd_pct": 1.5407126714400146,
+      "profit_factor": 0.7536466774716368,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 0,
+      "candidates": 93,
+      "observations": 1073
+    },
+    {
+      "scenario": "fixed50_old_guards",
+      "stress": false,
+      "closed_positions": 0,
+      "ending_cash": 1000.0,
+      "ending_sampled_equity": 1000.0,
+      "cash_profit": 0.0,
+      "sampled_equity_dd_pct": 0.0,
+      "profit_factor": null,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 0,
+      "candidates": 93,
+      "observations": 155
+    },
+    {
+      "scenario": "compound5_old_guards",
+      "stress": false,
+      "closed_positions": 0,
+      "ending_cash": 1000.0,
+      "ending_sampled_equity": 1000.0,
+      "cash_profit": 0.0,
+      "sampled_equity_dd_pct": 0.0,
+      "profit_factor": null,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 0,
+      "candidates": 93,
+      "observations": 155
+    },
+    {
+      "scenario": "fixed50",
+      "stress": false,
+      "closed_positions": 18,
+      "ending_cash": 828.55,
+      "ending_sampled_equity": 828.55,
+      "cash_profit": -171.45,
+      "sampled_equity_dd_pct": 22.098539004144342,
+      "profit_factor": 0.5996216897856241,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 0,
+      "candidates": 93,
+      "observations": 2331
+    },
+    {
+      "scenario": "compound5",
+      "stress": false,
+      "closed_positions": 21,
+      "ending_cash": 818.11,
+      "ending_sampled_equity": 818.11,
+      "cash_profit": -181.89,
+      "sampled_equity_dd_pct": 23.132559718600174,
+      "profit_factor": 0.5833180610281316,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 0,
+      "candidates": 93,
+      "observations": 2511
+    },
+    {
+      "scenario": "requested5_current_caps",
+      "stress": true,
+      "closed_positions": 14,
+      "ending_cash": 992.88,
+      "ending_sampled_equity": 992.88,
+      "cash_profit": -7.12,
+      "sampled_equity_dd_pct": 1.7012194883068146,
+      "profit_factor": 0.6476991588322613,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 0,
+      "candidates": 93,
+      "observations": 1073
+    },
+    {
+      "scenario": "fixed50_old_guards",
+      "stress": true,
+      "closed_positions": 0,
+      "ending_cash": 1000.0,
+      "ending_sampled_equity": 1000.0,
+      "cash_profit": 0.0,
+      "sampled_equity_dd_pct": 0.0,
+      "profit_factor": null,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 0,
+      "candidates": 93,
+      "observations": 155
+    },
+    {
+      "scenario": "compound5_old_guards",
+      "stress": true,
+      "closed_positions": 0,
+      "ending_cash": 1000.0,
+      "ending_sampled_equity": 1000.0,
+      "cash_profit": 0.0,
+      "sampled_equity_dd_pct": 0.0,
+      "profit_factor": null,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 0,
+      "candidates": 93,
+      "observations": 155
+    },
+    {
+      "scenario": "fixed50",
+      "stress": true,
+      "closed_positions": 52,
+      "ending_cash": 875.38,
+      "ending_sampled_equity": 875.38,
+      "cash_profit": -124.62,
+      "sampled_equity_dd_pct": 21.96235205078292,
+      "profit_factor": 0.871986358360127,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 0,
+      "candidates": 93,
+      "observations": 4680
+    },
+    {
+      "scenario": "compound5",
+      "stress": true,
+      "closed_positions": 19,
+      "ending_cash": 815.54,
+      "ending_sampled_equity": 815.54,
+      "cash_profit": -184.46,
+      "sampled_equity_dd_pct": 22.618009967438265,
+      "profit_factor": 0.562880636981919,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 0,
+      "candidates": 93,
+      "observations": 2348
+    }
+  ],
+  "cost_path_diagnostics": [
+    {
+      "scenario": "fixed50",
+      "first_admission_divergence_utc": "2026-09-11T08:00:00+00:00",
+      "first_admission_divergence": {
+        "recorded": {
+          "id": "usdjpy-london-open-momentum|12",
+          "ea": "usdjpy-london-open-momentum",
+          "epoch": 1789113600,
+          "equity": 877.95,
+          "budget": 50.0,
+          "source_volume_ceiling": null,
+          "volume": 0.13,
+          "stop_risk": 49.1335,
+          "minimum_lot_risk": 3.7795,
+          "reason": "opened",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 5.596389316020274,
+          "balance_before_entry": 877.95,
+          "projected_protected_cash": 816.033125,
+          "Prague_day_anchor": 877.95,
+          "existing_initial_risk": 0
+        },
+        "stress": {
+          "id": "usdjpy-london-open-momentum|12",
+          "ea": "usdjpy-london-open-momentum",
+          "epoch": 1789113600,
+          "equity": 852.58,
+          "budget": 50.0,
+          "source_volume_ceiling": null,
+          "volume": 0.13,
+          "stop_risk": 49.1335,
+          "minimum_lot_risk": 3.7795,
+          "reason": "equity_buffer",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 5.76291960871707,
+          "balance_before_entry": 852.58,
+          "projected_protected_cash": 790.663125,
+          "Prague_day_anchor": 852.58,
+          "existing_initial_risk": 0
+        }
+      },
+      "matching_equal_volume_positions": 17,
+      "cost_checks": [
+        {
+          "id": "xau-rsi-vwap|2",
+          "lots": 0.01,
+          "recorded_net": 16.94,
+          "stressed_net": 16.57,
+          "extra_loss": 0.37
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|2",
+          "lots": 0.28,
+          "recorded_net": -49.73,
+          "stressed_net": -50.17,
+          "extra_loss": 0.44
+        },
+        {
+          "id": "usdjpy-london-open-momentum|4",
+          "lots": 0.17,
+          "recorded_net": -0.43,
+          "stressed_net": -2.99,
+          "extra_loss": 2.56
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "lots": 0.28,
+          "recorded_net": 35.82,
+          "stressed_net": 35.39,
+          "extra_loss": 0.43
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|6",
+          "lots": 0.28,
+          "recorded_net": -49.52,
+          "stressed_net": -49.96,
+          "extra_loss": 0.44
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|8",
+          "lots": 0.28,
+          "recorded_net": 85.79,
+          "stressed_net": 83.42,
+          "extra_loss": 2.37
+        },
+        {
+          "id": "xau-orb-london-ny-overlap-m30|2",
+          "lots": 0.04,
+          "recorded_net": 23.8,
+          "stressed_net": 22.34,
+          "extra_loss": 1.46
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|10",
+          "lots": 0.28,
+          "recorded_net": -49.28,
+          "stressed_net": -49.71,
+          "extra_loss": 0.43
+        },
+        {
+          "id": "xau-rsi-vwap|6",
+          "lots": 0.03,
+          "recorded_net": -39.88,
+          "stressed_net": -40.98,
+          "extra_loss": 1.1
+        },
+        {
+          "id": "xau-rsi-vwap|8",
+          "lots": 0.01,
+          "recorded_net": -26.29,
+          "stressed_net": -26.66,
+          "extra_loss": 0.37
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|14",
+          "lots": 0.28,
+          "recorded_net": -52.07,
+          "stressed_net": -54.44,
+          "extra_loss": 2.37
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|18",
+          "lots": 0.28,
+          "recorded_net": 5.88,
+          "stressed_net": 3.51,
+          "extra_loss": 2.37
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|20",
+          "lots": 0.28,
+          "recorded_net": 71.22,
+          "stressed_net": 70.78,
+          "extra_loss": 0.44
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|22",
+          "lots": 0.28,
+          "recorded_net": -57.89,
+          "stressed_net": -66.05,
+          "extra_loss": 8.16
+        },
+        {
+          "id": "xau-rsi-vwap|12",
+          "lots": 0.01,
+          "recorded_net": 17.32,
+          "stressed_net": 16.96,
+          "extra_loss": 0.36
+        },
+        {
+          "id": "usdjpy-london-open-momentum|10",
+          "lots": 0.08,
+          "recorded_net": -4.32,
+          "stressed_net": -5.58,
+          "extra_loss": 1.26
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|26",
+          "lots": 0.28,
+          "recorded_net": -49.41,
+          "stressed_net": -49.85,
+          "extra_loss": 0.44
+        }
+      ],
+      "all_equal_volume_stress_trades_no_better": true,
+      "explanation": "Higher costs alter the cash/equity path and therefore reserved-risk admission. Aggregate outcomes across different admitted trades are not a same-trade execution-cost comparison.",
+      "specific_explanation": "11 September USDJPY London #12: recorded path admits $49.1335 planned risk at equity $877.95, with $816.033125 projected protected cash. Stress has equity $852.58 and projected $790.663125, so rejects below the $800 floor. The admitted recorded trade loses $49.40 and leaves $828.55. Stress later admits a smaller-lot gold overlap position with $38.052 risk and wins $19.21, then a subsequent Nasdaq trade wins $90.11. Different future admitted trades explain the higher stressed ending cash; adding cost did not improve any identical-volume closed position."
+    },
+    {
+      "scenario": "compound5",
+      "first_admission_divergence_utc": "2026-08-27T15:00:00+00:00",
+      "first_admission_divergence": {
+        "recorded": {
+          "id": "xau-orb-london-ny-overlap-m30|2",
+          "ea": "xau-orb-london-ny-overlap-m30",
+          "epoch": 1787842800,
+          "equity": 994.76,
+          "budget": 49.738,
+          "source_volume_ceiling": null,
+          "volume": 0.04,
+          "stop_risk": 48.636,
+          "minimum_lot_risk": 12.159,
+          "reason": "opened",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 4.889219510233624,
+          "balance_before_entry": 1034.34,
+          "projected_protected_cash": 909.006,
+          "Prague_day_anchor": 951.63,
+          "existing_initial_risk": 50.831199999999995
+        },
+        "stress": {
+          "id": "xau-orb-london-ny-overlap-m30|2",
+          "ea": "xau-orb-london-ny-overlap-m30",
+          "epoch": 1787842800,
+          "equity": 988.02,
+          "budget": 49.401,
+          "source_volume_ceiling": null,
+          "volume": 0.04,
+          "stop_risk": 48.636,
+          "minimum_lot_risk": 12.159,
+          "reason": "aggregate_risk",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 4.922572417562398,
+          "balance_before_entry": 1027.6,
+          "projected_protected_cash": 902.266,
+          "Prague_day_anchor": 947.19,
+          "existing_initial_risk": 50.831199999999995
+        }
+      },
+      "matching_equal_volume_positions": 11,
+      "cost_checks": [
+        {
+          "id": "xau-rsi-vwap|2",
+          "lots": 0.01,
+          "recorded_net": 16.94,
+          "stressed_net": 16.57,
+          "extra_loss": 0.37
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|2",
+          "lots": 0.28,
+          "recorded_net": -49.73,
+          "stressed_net": -50.17,
+          "extra_loss": 0.44
+        },
+        {
+          "id": "usdjpy-london-open-momentum|4",
+          "lots": 0.17,
+          "recorded_net": -0.43,
+          "stressed_net": -2.99,
+          "extra_loss": 2.56
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "lots": 0.27,
+          "recorded_net": 34.54,
+          "stressed_net": 34.12,
+          "extra_loss": 0.42
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|6",
+          "lots": 0.28,
+          "recorded_net": -49.52,
+          "stressed_net": -49.96,
+          "extra_loss": 0.44
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|8",
+          "lots": 0.27,
+          "recorded_net": 82.72,
+          "stressed_net": 80.44,
+          "extra_loss": 2.28
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|10",
+          "lots": 0.29,
+          "recorded_net": -51.04,
+          "stressed_net": -51.5,
+          "extra_loss": 0.46
+        },
+        {
+          "id": "xau-rsi-vwap|6",
+          "lots": 0.03,
+          "recorded_net": -39.88,
+          "stressed_net": -40.98,
+          "extra_loss": 1.1
+        },
+        {
+          "id": "xau-rsi-vwap|8",
+          "lots": 0.01,
+          "recorded_net": -26.29,
+          "stressed_net": -26.66,
+          "extra_loss": 0.37
+        },
+        {
+          "id": "xau-rsi-vwap|12",
+          "lots": 0.01,
+          "recorded_net": 17.32,
+          "stressed_net": 16.96,
+          "extra_loss": 0.36
+        },
+        {
+          "id": "usdjpy-london-open-momentum|10",
+          "lots": 0.07,
+          "recorded_net": -3.79,
+          "stressed_net": -4.89,
+          "extra_loss": 1.1
+        }
+      ],
+      "all_equal_volume_stress_trades_no_better": true,
+      "explanation": "Higher costs alter the cash/equity path and therefore reserved-risk admission. Aggregate outcomes across different admitted trades are not a same-trade execution-cost comparison."
+    }
+  ],
+  "result_sha256": "ed255f3b40d3e0a8b3b9d4dbaad8f218aad1671dbe6cdb1acfcf83b55cbaa9e5",
+  "freeze_sha256": "fbc0eb9c25176195b8a6367bdaa41cc800ce06c32d43c71611b1df2b9dbba6a8",
+  "verifier_sha256": "7dcbb3ee52411af60d3a04ffef0fb8378507bf5a1a1b36930a6faa8c736c8bde",
+  "method": "Independent separate event ledger and sizing/guard reconstruction, without importing run.py or replay.py or accessing an account. Independently validates native receipts through the original read-only verifier, every decision, volume, planned risk, curve point, cent cash flow, whole-position net, censored entry fee, past-only mark, count, latch, drawdown, daily/monthly cash and Sharpe. All original and supplemental frozen hashes remain unchanged.",
+  "limitations": [
+    "Implementation/evidence verification, not verification of a durable trading edge or future returns.",
+    "Only immutable standalone source fills; additional or changed live signals, market impact, commission tiers and fill differences are not reconstructed.",
+    "Trial16 native history and Trial15 demo lot/margin metadata are different feeds.",
+    "Five-minute observed floating marks and missing open-swap marks cannot certify intrabar loss caps.",
+    "The fixed-risk cost stress follows a different admission path; its improved aggregate result is not evidence that higher execution costs are beneficial.",
+    "The $800 threshold is an initial-capital floor, not a 20% trailing maximum-drawdown guarantee."
+  ]
+}

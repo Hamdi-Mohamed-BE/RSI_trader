@@ -1,0 +1,32 @@
+{
+  "created_utc": "2026-10-17T18:20:19.582624+00:00",
+  "revision": 3,
+  "original_native_protocol_sha256": "4828e22c115502b057d5de9d6091141ffc5aafff21fbfbf023b99bc9e67bb41c",
+  "earlier_resume_sha256": "828175c02eb000a294e804e705e3de3a3875d85add7cb48bb9568f18c015d6c7",
+  "previously_completed_cases": [
+    "gold-overnight-value-area",
+    "xau-rsi-vwap"
+  ],
+  "remaining_cases": 3,
+  "prior_failed_export_evidence": {
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\nasdaq-overnight\\inputs.set": "1e9d1b218cd615bdbff62278646db5868e049fe8b36e91a13d089f22a7cfeef6",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\nasdaq-overnight\\deals.csv": "2fb1095d200c64b14578253a27339d103d3a84c83b0b65ebb33ca7db2f235a45",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\nasdaq-overnight\\equity.csv": "bff8acdbf4a350802ebdbc21a40c31b904f2e394ad75d1c5ea0c62dda6df4f98",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\nasdaq-overnight\\entry_risk.csv": "5c5aad8eaea182744e2b9082edbd48fabb0e26b95c529125d3287e33cc6af4cd",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\nasdaq-overnight\\coverage.csv": "61a541100177d1e47c6f4a934bf19b8c0981435ff6cae0efe1973d1f39b9f1d3",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\nasdaq-overnight\\contracts.csv": "3ad7ec4fa0a1f2d14269f2a04f4017eca4691203d2ef7d1136ab87860db0960e",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\nasdaq-overnight\\benchmarks.csv": "dad98571360c8e6e2c46ad7836b125b4abd35e2226dd6eb588a21dfa235ba6f0",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\nasdaq-overnight\\report.private.htm.gz": "a786a52bdaf5ed42794a4c6aad348e08e5f1c9273e96d35c8dc348863356bace",
+    "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Top5 vs Prop Ready 2026-10-17\\native\\nasdaq-overnight\\journal.private.txt.gz": "ab24798e16c8ad154d006b95009077456360854648875720a47d125969f2f30c"
+  },
+  "failure": "Final forced tester exit at23:59:58 is later than last market TimeCurrent20:54:59. Old HistorySelect end omitted it.",
+  "only_changes": [
+    "Read-only HistorySelect export horizon TimeCurrent+86400 catches native-generated final deals.",
+    "Equity CSV phase identifies market_sample versus finish_after_native_liquidation. Never treat final liquidated account cash as contemporaneous floating equity.",
+    "New builds-v3/cases-v3 paths and native_status_v3 preserve rejected export evidence and both accepted old cases."
+  ],
+  "strategy_parameters_dates_sizing_timers_unchanged": true,
+  "no_source_reselection": true,
+  "no_synthetic_closing_deals": true,
+  "live_changes": false
+}

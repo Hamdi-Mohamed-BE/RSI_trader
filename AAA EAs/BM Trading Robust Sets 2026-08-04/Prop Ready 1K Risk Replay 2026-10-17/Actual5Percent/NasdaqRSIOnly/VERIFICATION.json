@@ -1,0 +1,685 @@
+{
+  "status": "PASS",
+  "checks": 309722,
+  "categories": {
+    "frozen_hashes": 52,
+    "protocol": 1,
+    "sources": 1510,
+    "owned_marks": 14156,
+    "captured_marks": 237477,
+    "subset_freeze": 174,
+    "subset_protocol": 16,
+    "decisions": 2020,
+    "admitted_guards": 475,
+    "causality": 12170,
+    "censoring": 118,
+    "cash": 1780,
+    "counts": 12,
+    "latches": 12,
+    "curve": 38587,
+    "metrics": 64,
+    "drawdowns": 28,
+    "calendar": 1040,
+    "cost_pairing": 30
+  },
+  "selected": [
+    "nasdaq-5m-candle-momentum",
+    "xau-rsi-vwap"
+  ],
+  "verified_subset_candidates": 42,
+  "verified_source_candidates": 93,
+  "source_eas": 9,
+  "selected_eas": 2,
+  "scenarios": [
+    {
+      "scenario": "fixed50",
+      "stress": false,
+      "closed_positions": 32,
+      "ending_cash": 1307.4,
+      "ending_sampled_equity": 1471.6248275862072,
+      "cash_profit": 307.4,
+      "sampled_equity_dd_pct": 17.491452368220493,
+      "profit_factor": 1.5166551880532833,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 1,
+      "candidates": 42,
+      "observations": 4428,
+      "closed_position_net_profit": 307.57,
+      "open_position_entry_cash": -0.17,
+      "ending_unrealized_sampled_profit": 164.22482758620708
+    },
+    {
+      "scenario": "compound5",
+      "stress": false,
+      "closed_positions": 10,
+      "ending_cash": 824.93,
+      "ending_sampled_equity": 824.93,
+      "cash_profit": -175.07,
+      "sampled_equity_dd_pct": 22.08707121862248,
+      "profit_factor": 0.4339250493096647,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 0,
+      "candidates": 42,
+      "observations": 1195,
+      "closed_position_net_profit": -175.07,
+      "open_position_entry_cash": 0,
+      "ending_unrealized_sampled_profit": 0.0
+    },
+    {
+      "scenario": "fixed50",
+      "stress": true,
+      "closed_positions": 23,
+      "ending_cash": 949.83,
+      "ending_sampled_equity": 1114.054827586207,
+      "cash_profit": -50.17,
+      "sampled_equity_dd_pct": 19.566755546361943,
+      "profit_factor": 0.903032900247385,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 1,
+      "candidates": 42,
+      "observations": 3461,
+      "closed_position_net_profit": -49.78,
+      "open_position_entry_cash": -0.39,
+      "ending_unrealized_sampled_profit": 164.22482758620697
+    },
+    {
+      "scenario": "compound5",
+      "stress": true,
+      "closed_positions": 27,
+      "ending_cash": 981.72,
+      "ending_sampled_equity": 1140.079655172414,
+      "cash_profit": -18.28,
+      "sampled_equity_dd_pct": 20.879321297099505,
+      "profit_factor": 0.9663755048370434,
+      "permanent_hard_latch": false,
+      "paused_days": [],
+      "open_positions": 1,
+      "candidates": 42,
+      "observations": 3777,
+      "closed_position_net_profit": -17.9,
+      "open_position_entry_cash": -0.38,
+      "ending_unrealized_sampled_profit": 158.35965517241402
+    }
+  ],
+  "cost_path_diagnostics": [
+    {
+      "scenario": "fixed50",
+      "matched_same_volume": [
+        {
+          "id": "xau-rsi-vwap|2",
+          "volume": 0.01,
+          "recorded_net": 16.94,
+          "stressed_net": 16.57
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|2",
+          "volume": 0.28,
+          "recorded_net": -49.73,
+          "stressed_net": -50.17
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "volume": 0.28,
+          "recorded_net": 35.82,
+          "stressed_net": 35.39
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|6",
+          "volume": 0.28,
+          "recorded_net": -49.52,
+          "stressed_net": -49.96
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|8",
+          "volume": 0.28,
+          "recorded_net": 85.79,
+          "stressed_net": 83.42
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|10",
+          "volume": 0.28,
+          "recorded_net": -49.28,
+          "stressed_net": -49.71
+        },
+        {
+          "id": "xau-rsi-vwap|6",
+          "volume": 0.03,
+          "recorded_net": -39.88,
+          "stressed_net": -40.98
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|14",
+          "volume": 0.28,
+          "recorded_net": -52.07,
+          "stressed_net": -54.44
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|18",
+          "volume": 0.28,
+          "recorded_net": 5.88,
+          "stressed_net": 3.51
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|20",
+          "volume": 0.28,
+          "recorded_net": 71.22,
+          "stressed_net": 70.78
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|22",
+          "volume": 0.28,
+          "recorded_net": -57.89,
+          "stressed_net": -66.05
+        },
+        {
+          "id": "xau-rsi-vwap|12",
+          "volume": 0.01,
+          "recorded_net": 17.32,
+          "stressed_net": 16.96
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|24",
+          "volume": 0.28,
+          "recorded_net": -51.9,
+          "stressed_net": -54.27
+        },
+        {
+          "id": "xau-rsi-vwap|20",
+          "volume": 0.02,
+          "recorded_net": 20.15,
+          "stressed_net": 19.42
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|44",
+          "volume": 0.27,
+          "recorded_net": 67.4,
+          "stressed_net": 65.12
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|46",
+          "volume": 0.27,
+          "recorded_net": 6.31,
+          "stressed_net": 5.89
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|48",
+          "volume": 0.26,
+          "recorded_net": 45.17,
+          "stressed_net": 42.98
+        },
+        {
+          "id": "xau-rsi-vwap|22",
+          "volume": 0.02,
+          "recorded_net": 18.68,
+          "stressed_net": 17.95
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|50",
+          "volume": 0.26,
+          "recorded_net": -48.68,
+          "stressed_net": -49.08
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|52",
+          "volume": 0.27,
+          "recorded_net": 62.03,
+          "stressed_net": 61.61
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|54",
+          "volume": 0.27,
+          "recorded_net": -48.97,
+          "stressed_net": -49.39
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|58",
+          "volume": 0.27,
+          "recorded_net": -48.9,
+          "stressed_net": -49.32
+        }
+      ],
+      "first_admission_divergence_utc": "2026-09-14T13:35:00+00:00",
+      "first_admission_divergence": {
+        "recorded": {
+          "id": "nasdaq-5m-candle-momentum|28",
+          "ea": "nasdaq-5m-candle-momentum",
+          "epoch": 1789392900,
+          "equity": 882.7,
+          "budget": 50.0,
+          "source_volume_ceiling": null,
+          "volume": 0.28,
+          "stop_risk": 48.577200000000005,
+          "minimum_lot_risk": 8.6745,
+          "reason": "opened",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 5.503251387787471,
+          "balance_before_entry": 882.7,
+          "projected_protected_cash": 821.4785,
+          "Prague_day_anchor": 882.7,
+          "existing_initial_risk": 0
+        },
+        "stress": {
+          "id": "nasdaq-5m-candle-momentum|28",
+          "ea": "nasdaq-5m-candle-momentum",
+          "epoch": 1789392900,
+          "equity": 861.05,
+          "budget": 50.0,
+          "source_volume_ceiling": null,
+          "volume": 0.28,
+          "stop_risk": 48.577200000000005,
+          "minimum_lot_risk": 8.6745,
+          "reason": "equity_buffer",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 5.64162359909413,
+          "balance_before_entry": 861.05,
+          "projected_protected_cash": 799.8285,
+          "Prague_day_anchor": 861.05,
+          "existing_initial_risk": 0
+        }
+      },
+      "interpretation": "Cost and compounding changes can alter later guard admissions; aggregate outcomes are not assumed to be identical-trade cost comparisons."
+    },
+    {
+      "scenario": "compound5",
+      "matched_same_volume": [
+        {
+          "id": "xau-rsi-vwap|2",
+          "volume": 0.01,
+          "recorded_net": 16.94,
+          "stressed_net": 16.57
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|2",
+          "volume": 0.28,
+          "recorded_net": -49.73,
+          "stressed_net": -50.17
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "volume": 0.27,
+          "recorded_net": 34.54,
+          "stressed_net": 34.12
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|6",
+          "volume": 0.28,
+          "recorded_net": -49.52,
+          "stressed_net": -49.96
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|8",
+          "volume": 0.27,
+          "recorded_net": 82.72,
+          "stressed_net": 80.44
+        },
+        {
+          "id": "nasdaq-5m-candle-momentum|10",
+          "volume": 0.29,
+          "recorded_net": -51.04,
+          "stressed_net": -51.5
+        },
+        {
+          "id": "xau-rsi-vwap|6",
+          "volume": 0.03,
+          "recorded_net": -39.88,
+          "stressed_net": -40.98
+        },
+        {
+          "id": "xau-rsi-vwap|8",
+          "volume": 0.01,
+          "recorded_net": -26.29,
+          "stressed_net": -26.66
+        }
+      ],
+      "first_admission_divergence_utc": "2026-08-28T13:35:00+00:00",
+      "first_admission_divergence": {
+        "recorded": {
+          "id": "nasdaq-5m-candle-momentum|12",
+          "ea": "nasdaq-5m-candle-momentum",
+          "epoch": 1787924100,
+          "equity": 944.03,
+          "budget": 47.201499999999996,
+          "source_volume_ceiling": null,
+          "volume": 0.26,
+          "stop_risk": 46.1214,
+          "minimum_lot_risk": 8.8695,
+          "reason": "opened",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 4.885586263148417,
+          "balance_before_entry": 944.03,
+          "projected_protected_cash": 885.87825,
+          "Prague_day_anchor": 983.91,
+          "existing_initial_risk": 0
+        },
+        "stress": {
+          "id": "nasdaq-5m-candle-momentum|12",
+          "ea": "nasdaq-5m-candle-momentum",
+          "epoch": 1787924100,
+          "equity": 938.52,
+          "budget": 46.926,
+          "source_volume_ceiling": null,
+          "volume": 0.26,
+          "stop_risk": 46.1214,
+          "minimum_lot_risk": 8.8695,
+          "reason": "daily_reserved_loss",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 4.914269275028769,
+          "balance_before_entry": 938.52,
+          "projected_protected_cash": 880.36825,
+          "Prague_day_anchor": 979.5,
+          "existing_initial_risk": 0
+        }
+      },
+      "interpretation": "Cost and compounding changes can alter later guard admissions; aggregate outcomes are not assumed to be identical-trade cost comparisons."
+    }
+  ],
+  "risk_mode_path_diagnostics": [
+    {
+      "stress": false,
+      "first_lot_difference": {
+        "utc": "2026-08-21T13:35:00+00:00",
+        "fixed": {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "ea": "nasdaq-5m-candle-momentum",
+          "epoch": 1787319300,
+          "equity": 967.21,
+          "budget": 50.0,
+          "source_volume_ceiling": null,
+          "volume": 0.28,
+          "stop_risk": 48.79840000000001,
+          "minimum_lot_risk": 8.714,
+          "reason": "opened",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 5.045274552579068,
+          "balance_before_entry": 967.21,
+          "projected_protected_cash": 905.712,
+          "Prague_day_anchor": 967.21,
+          "existing_initial_risk": 0
+        },
+        "compound": {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "ea": "nasdaq-5m-candle-momentum",
+          "epoch": 1787319300,
+          "equity": 967.21,
+          "budget": 48.3605,
+          "source_volume_ceiling": null,
+          "volume": 0.27,
+          "stop_risk": 47.055600000000005,
+          "minimum_lot_risk": 8.714,
+          "reason": "opened",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 4.8650861757012445,
+          "balance_before_entry": 967.21,
+          "projected_protected_cash": 907.8905,
+          "Prague_day_anchor": 967.21,
+          "existing_initial_risk": 0
+        },
+        "fixed_closed_trade": {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "ea": "nasdaq-5m-candle-momentum",
+          "symbol": "USTEC",
+          "op": 1787319300,
+          "cl": 1787571133,
+          "side": "Short",
+          "open_price": 29298.6,
+          "close_price": 29170.049999999996,
+          "sl": 29472.88,
+          "tp": 0.0,
+          "lots": 0.28,
+          "risk": 48.79840000000001,
+          "entry_cash": -0.17,
+          "exit_cash": 35.99,
+          "net": 35.82,
+          "balance": 1003.03,
+          "gross": 35.9944827586207,
+          "commission": -0.1737931034482759,
+          "swap": 0.0
+        },
+        "compound_closed_trade": {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "ea": "nasdaq-5m-candle-momentum",
+          "symbol": "USTEC",
+          "op": 1787319300,
+          "cl": 1787571133,
+          "side": "Short",
+          "open_price": 29298.6,
+          "close_price": 29170.049999999996,
+          "sl": 29472.88,
+          "tp": 0.0,
+          "lots": 0.27,
+          "risk": 47.055600000000005,
+          "entry_cash": -0.17,
+          "exit_cash": 34.71,
+          "net": 34.54,
+          "balance": 1001.75,
+          "gross": 34.70896551724138,
+          "commission": -0.16758620689655174,
+          "swap": 0.0
+        }
+      },
+      "first_admission_difference": {
+        "utc": "2026-08-28T13:35:00+00:00",
+        "fixed": {
+          "id": "nasdaq-5m-candle-momentum|12",
+          "ea": "nasdaq-5m-candle-momentum",
+          "epoch": 1787924100,
+          "equity": 950.14,
+          "budget": 50.0,
+          "source_volume_ceiling": null,
+          "volume": 0.28,
+          "stop_risk": 49.669200000000004,
+          "minimum_lot_risk": 8.8695,
+          "reason": "daily_reserved_loss",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 5.2275664638895325,
+          "balance_before_entry": 950.14,
+          "projected_protected_cash": 887.5535,
+          "Prague_day_anchor": 990.02,
+          "existing_initial_risk": 0
+        },
+        "compound": {
+          "id": "nasdaq-5m-candle-momentum|12",
+          "ea": "nasdaq-5m-candle-momentum",
+          "epoch": 1787924100,
+          "equity": 944.03,
+          "budget": 47.201499999999996,
+          "source_volume_ceiling": null,
+          "volume": 0.26,
+          "stop_risk": 46.1214,
+          "minimum_lot_risk": 8.8695,
+          "reason": "opened",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 4.885586263148417,
+          "balance_before_entry": 944.03,
+          "projected_protected_cash": 885.87825,
+          "Prague_day_anchor": 983.91,
+          "existing_initial_risk": 0
+        },
+        "fixed_closed_trade": null,
+        "compound_closed_trade": {
+          "id": "nasdaq-5m-candle-momentum|12",
+          "ea": "nasdaq-5m-candle-momentum",
+          "symbol": "USTEC",
+          "op": 1787924100,
+          "cl": 1787928953,
+          "side": "Short",
+          "open_price": 29564.65,
+          "close_price": 29742.15,
+          "sl": 29742.04,
+          "tp": 0.0,
+          "lots": 0.26,
+          "risk": 46.1214,
+          "entry_cash": -0.16,
+          "exit_cash": -46.15,
+          "net": -46.31,
+          "balance": 897.72,
+          "gross": -46.154482758620695,
+          "commission": -0.1613793103448276,
+          "swap": 0.0
+        }
+      },
+      "interpretation": "Compounding changes lot steps and reserved-risk admission, not only scaling of an identical realized trade list. This short two-month outcome is highly path dependent."
+    },
+    {
+      "stress": true,
+      "first_lot_difference": {
+        "utc": "2026-08-21T13:35:00+00:00",
+        "fixed": {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "ea": "nasdaq-5m-candle-momentum",
+          "epoch": 1787319300,
+          "equity": 966.4,
+          "budget": 50.0,
+          "source_volume_ceiling": null,
+          "volume": 0.28,
+          "stop_risk": 48.79840000000001,
+          "minimum_lot_risk": 8.714,
+          "reason": "opened",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 5.049503311258279,
+          "balance_before_entry": 966.4,
+          "projected_protected_cash": 904.9019999999999,
+          "Prague_day_anchor": 966.4,
+          "existing_initial_risk": 0
+        },
+        "compound": {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "ea": "nasdaq-5m-candle-momentum",
+          "epoch": 1787319300,
+          "equity": 966.4,
+          "budget": 48.32,
+          "source_volume_ceiling": null,
+          "volume": 0.27,
+          "stop_risk": 47.055600000000005,
+          "minimum_lot_risk": 8.714,
+          "reason": "opened",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 4.8691639072847686,
+          "balance_before_entry": 966.4,
+          "projected_protected_cash": 907.0805,
+          "Prague_day_anchor": 966.4,
+          "existing_initial_risk": 0
+        },
+        "fixed_closed_trade": {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "ea": "nasdaq-5m-candle-momentum",
+          "symbol": "USTEC",
+          "op": 1787319300,
+          "cl": 1787571133,
+          "side": "Short",
+          "open_price": 29298.6,
+          "close_price": 29170.049999999996,
+          "sl": 29472.88,
+          "tp": 0.0,
+          "lots": 0.28,
+          "risk": 48.79840000000001,
+          "entry_cash": -0.39,
+          "exit_cash": 35.78,
+          "net": 35.39,
+          "balance": 1001.79,
+          "gross": 35.9944827586207,
+          "commission": -0.1737931034482759,
+          "swap": 0.0
+        },
+        "compound_closed_trade": {
+          "id": "nasdaq-5m-candle-momentum|4",
+          "ea": "nasdaq-5m-candle-momentum",
+          "symbol": "USTEC",
+          "op": 1787319300,
+          "cl": 1787571133,
+          "side": "Short",
+          "open_price": 29298.6,
+          "close_price": 29170.049999999996,
+          "sl": 29472.88,
+          "tp": 0.0,
+          "lots": 0.27,
+          "risk": 47.055600000000005,
+          "entry_cash": -0.38,
+          "exit_cash": 34.5,
+          "net": 34.12,
+          "balance": 1000.52,
+          "gross": 34.70896551724138,
+          "commission": -0.16758620689655174,
+          "swap": 0.0
+        }
+      },
+      "first_admission_difference": {
+        "utc": "2026-09-01T01:00:00+00:00",
+        "fixed": {
+          "id": "xau-rsi-vwap|8",
+          "ea": "xau-rsi-vwap",
+          "epoch": 1788224400,
+          "equity": 954.5106896551715,
+          "budget": 50.0,
+          "source_volume_ceiling": null,
+          "volume": 0.01,
+          "stop_risk": 26.1,
+          "minimum_lot_risk": 26.1,
+          "reason": "daily_reserved_loss",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 2.7343853015861916,
+          "balance_before_entry": 944.17,
+          "projected_protected_cash": 848.5564999999999,
+          "Prague_day_anchor": 944.17,
+          "existing_initial_risk": 49.59080000000001
+        },
+        "compound": {
+          "id": "xau-rsi-vwap|8",
+          "ea": "xau-rsi-vwap",
+          "epoch": 1788224400,
+          "equity": 947.7620689655164,
+          "budget": 47.388103448275814,
+          "source_volume_ceiling": null,
+          "volume": 0.01,
+          "stop_risk": 26.1,
+          "minimum_lot_risk": 26.1,
+          "reason": "opened",
+          "source_sizing_override_research_only": true,
+          "stop_risk_pct_equity": 2.7538557254658005,
+          "balance_before_entry": 938.16,
+          "projected_protected_cash": 846.97425,
+          "Prague_day_anchor": 938.16,
+          "existing_initial_risk": 46.04860000000001
+        },
+        "fixed_closed_trade": null,
+        "compound_closed_trade": {
+          "id": "xau-rsi-vwap|8",
+          "ea": "xau-rsi-vwap",
+          "symbol": "XAUUSD",
+          "op": 1788224400,
+          "cl": 1788237709,
+          "side": "Long",
+          "open_price": 4453.717,
+          "close_price": 4427.482,
+          "sl": 4427.617,
+          "tp": 4466.767,
+          "lots": 0.01,
+          "risk": 26.1,
+          "entry_cash": -0.24,
+          "exit_cash": -26.42,
+          "net": -26.66,
+          "balance": 911.5,
+          "gross": -26.235,
+          "commission": -0.055,
+          "swap": 0.0
+        }
+      },
+      "interpretation": "Compounding changes lot steps and reserved-risk admission, not only scaling of an identical realized trade list. This short two-month outcome is highly path dependent."
+    }
+  ],
+  "results_sha256": "c32d6431777b88edc0c96b7ca15dd15be8ab35a59611e97face73e16ee690e5c",
+  "freeze_sha256": "24daf6b900530f84a90888ac4addb9625052f1ff7e7277acd2d344bc5c717a43",
+  "verifier_sha256": "9339c39b3ad3a06c89a977c16bb308615f4594d768858cc7f2746ef95ce7afe7",
+  "independent_engine_sha256": "7dcbb3ee52411af60d3a04ffef0fb8378507bf5a1a1b36930a6faa8c736c8bde",
+  "method": "Separate independent event engine, without importing the subset run.py, ResearchReplay or original replay.py. Reconstructs all original native receipts and captured mark values, filters only the two requested EAs without changing signals, and verifies every subset sizing/guard decision, chronological curve point, fee/swap/cash event, whole position, censored entry fee, daily/monthly cash, drawdown and Sharpe. All frozen ancestor and subset files remain unchanged.",
+  "limitations": [
+    "Numerical/source-evidence verification is not a durable-edge or future-return guarantee.",
+    "Current source strategies, including existing DI settings, are unchanged. Subsetting is not signal or parameter optimization.",
+    "Historical Trial16 fills and Trial15 demo specifications differ; higher size is a linear immutable-fill replay, not a native simultaneous same-demo backtest.",
+    "Unavailable later signals, historical liquidity/fees/margin regimes and intrabar guard excursions cannot be reconstructed.",
+    "The $800 stop threshold is an initial-capital admission floor; it is not forced liquidation or a trailing 20% drawdown cap."
+  ]
+}
