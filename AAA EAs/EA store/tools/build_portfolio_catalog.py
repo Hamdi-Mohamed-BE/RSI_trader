@@ -27,6 +27,9 @@ ORB = PACKAGE_ROOT / 'ORB and Range Breakout RR05 Comparison 2026-10-08'
 LONG = PACKAGE_ROOT / 'Portfolio Long History 2026-10-08'
 LONG_CURRENT = PACKAGE_ROOT / 'Portfolio Long History All ORB05 2026-10-14'
 POLICY = json.loads((PACKAGE_ROOT/'_00 Live profiles/ORB05-policy.json').read_text(encoding='utf-8'))
+BEST_PROP = PACKAGE_ROOT / '_00 Live profiles' / 'Best Prop Portfolio 2026-10-20'
+PROP_READY = PACKAGE_ROOT / '_00 Live profiles' / 'Packages' / 'PropReady'
+NINE_HISTORIES = PACKAGE_ROOT / 'Website Portfolio Histories 2026-10-22' / 'HISTORIES.json'
 ALL_ORBS = POLICY['slugs']
 START, END = '2025-10-06', '2026-10-06'
 SOURCES = {}
@@ -209,6 +212,80 @@ def extend_long_evidence(profiles):
             profile['caveats'].append('Sub-minute news outcomes on generated ticks can be misleading. These longer source tests have mixed/simulated tick coverage, not full real-tick execution validation.')
 
 
+def nine_ea_histories(slug, label, basis):
+    """Fresh $10,000 continuous package-guard replay per window (Website Portfolio Histories 2026-10-22)."""
+    data = read(NINE_HISTORIES)
+    source = data['portfolios'][slug]
+    quality = sorted(set(s['history_quality'] for s in read(LONG_CURRENT/'AUDIT.json')['portfolios']['ftmo']['sources']))
+    out = []
+    for period, title, _ in PERIODS:
+        r = source['periods'][period]
+        scope = ('Offline replay of the frozen five-year native MT5 signal ledgers of these nine EAs through the package guard model '
+                 '(frozen FTMO Faster Portfolio Screen engine, as in Best Prop Portfolio Retest 2026-10-20; parity with that retest reproduced exactly). '
+                 'Continuous account from a fresh $10,000 in each window: no Challenge/Verification profit-target stop, no carry-in positions. '
+                 'Not a native simultaneous shared-margin MT5 test. Equity drawdown uses stop-reserve sampled marks, not tick-level floating equity. '
+                 f"Sampled-equity drawdown ${r['max_sampled_equity_dd_cash']:,.0f}; worst sampled day ${r['worst_day_sampled_equity_loss_cash']:,.0f}. ")
+        frozen = r['blocked'].get('soft_total_buffer9200', 0)
+        if frozen > 100:
+            last = r['trades'][-1]['close_time'][:10] if r['trades'] else r['start']
+            scope += (f"The static 92% entry buffer ($9,200) blocked {frozen:,} later entries: the account stopped trading after {last} at "
+                      f"${r['ending_balance']:,.2f} and stayed frozen to the window end. Reinstalling does not reset the saved baseline. ")
+        h = history_from_trades(r['trades'], r['start'], r['end_exclusive'], period, title + ' · ' + label, basis, scope)
+        assert h['stats']['trades'] == len(r['trades']), (slug, period, 'UTC date filter dropped a replayed trade')
+        h['requested_start'] = r['requested_start']
+        if r['start'] != r['requested_start']:
+            h['coverage'] = 'partial'
+            h['scope'] = f"Partial window: requested start {r['requested_start']}; signal source begins {r['start']}. " + h['scope']
+        h.update(evidence_kind='frozen-five-year-signal-ledger-package-guard-replay', member_coverage=dict(tested=9, total=9),
+                 source_history_quality=quality, guard_replay={k: r[k] for k in ('max_sampled_equity_dd_cash', 'worst_day_sampled_equity_loss_cash',
+                                                                                  'blocked', 'breached', 'ending_balance')})
+        out.append(h)
+    return out
+
+
+def nine_ea_profiles(catalog):
+    """Prop Ready (also launched as Codex_Best_FTMO) and Best Prop Portfolio: the same nine EAs, different guard caps."""
+    pr, bp = read(PROP_READY/'PACKAGE.json'), read(BEST_PROP/'PACKAGE.json')
+    assert len(pr['entries']) == 9 and {e['slug'] for e in pr['entries']} == {e['slug'] for e in bp['entries']}
+    pr_members = [member(catalog[e['slug']], {k: str(v) for k, v in e['inputs'].items()}, 'Prop Ready guarded preset; allocation capped at 0.5% of saved initial balance')
+                  for e in pr['entries']]
+
+    def set_inputs(path):
+        SOURCES[str(path.relative_to(PACKAGE_ROOT))] = hashlib.sha256(path.read_bytes()).hexdigest()
+        return {k.strip(): v.strip() for k, v in (l.split('=', 1) for l in path.read_text(encoding='utf-8-sig').splitlines() if '=' in l)}
+    bp_members = [member(catalog[e['slug']], set_inputs(BEST_PROP/'Sets'/e['settings']), 'Best Prop guarded preset; allocation capped at 1% of saved initial balance')
+                  for e in bp['entries']]
+    common = [rule('Same nine EAs', 'Nasdaq 5M Candle Momentum, USDJPY London Open Momentum, US100 Month End Flow, XAU RSI VWAP and the five ORBs at 0.5R. No news, hourly, EMA3 or DMC systems.'),
+              rule('Daily and frequency guards', 'New entries pause after a 3% daily reserved loss from the Prague-midnight anchor; 5% daily or 10% total loss latches a stop. At most 7 entries and 3 net losing positions per Prague day; 3-second entry reconciliation; 80% protected-equity margin cap. Existing trades keep their own exits: guards block NEW entries, they do not liquidate.'),
+              rule('Static 92% entry buffer', 'New entries need projected equity above 92% of the saved first-install balance. In continuous use this can freeze the account permanently after an early loss of about 7-8%; reinstalling does not reset the saved baseline.'),
+              rule('Account support', 'Broker-neutral MT5 HEDGING demo or live account, any account currency; fixed cash is in account currency. Netting accounts are blocked. Installer leaves Algo Trading OFF.')]
+    prop = dict(slug='prop-ready', name='Prop ready · Core 4 + five ORBs 0.5R', status='active',
+        status_note='Owner-selected broker-neutral launcher available (Prop ready.bat; Codex_Best_FTMO.bat installs the same package and safety state). Not confirmation it is installed or passing.',
+        description='Nine EAs with the broker-neutral guard at 0.5% per entry (USD 50 on a 10,000 account) and scaled exposure limits. Nasdaq and USDJPY DI ON by default.',
+        launcher='Prop ready.bat', version=pr['version'], members=pr_members, custom_scenarios=False,
+        risk_summary='Fixed cash (default 50, account currency) or equity % · hard cap 0.5% of saved initial balance',
+        rules=[rule('Risk selection / ceiling', 'Asks fixed cash (default 50 in account currency) or current-equity % (default 0.5%). Every entry is capped at 0.5% of the saved initial balance and at the original strategy volume; lots round DOWN and below-minimum entries are skipped.'),
+               rule('Exposure limits', 'Open initial-stop risk at most 2.25% of the saved balance; 1.5% per symbol. Reserve 1.25x protected risk plus 0.05% per open position and known negative swap.'),
+               rule('Mode and DI', 'Default continuous mode (no profit-target stop); Challenge (+10%) / Verification (+5%) optional. Separate Nasdaq 5M and USDJPY DI prompts, default ON; USDJPY ADX >= 20 retained.'),
+               rule('Codex_Best_FTMO alias', 'Codex_Best_FTMO.bat (same folder) installs the identical nine binaries and shares the saved Prop Ready baseline and latches, with its own MT5 profile name and Challenge as default mode.')] + common,
+        history=nine_ea_histories('prop-ready', 'Prop Ready guard replay', 'Fixed 0.5% cap ($50 on $10,000); Nasdaq DI ON (package default); package guard model, continuous mode.'),
+        caveats=['The nine EAs and both guard caps were chosen with knowledge of this history: in-sample evidence, not untouched out-of-sample validation.',
+                 'Other brokers, currencies, balances or DI/risk choices do not inherit these results or any firm pass rate; FTMO-specific studies are separate research.'])
+    best = dict(slug='best-prop', name='Best Prop Portfolio · nine EAs at 1%', status='active',
+        status_note='Owner-built launcher (Install Best Prop Portfolio.bat, own installer). Not confirmation it is installed or passing.',
+        description='The same nine EAs as Prop ready with a rebuilt guard at 1% per entry (USD 100 on a 10,000 account), 4.5% total and 3% per symbol. Nasdaq DI OFF by default.',
+        launcher='Install Best Prop Portfolio.bat', version=bp['version'], members=bp_members, custom_scenarios=False,
+        risk_summary='Default 1% of current equity (or fixed cash) · hard cap 1% of saved initial balance · Nasdaq DI OFF default',
+        rules=[rule('Risk selection / ceiling', 'Asks allocation (default 1% of current equity, or fixed cash in account currency). Every entry is capped at 1% of the saved initial balance and at the strategy request; lots round DOWN.'),
+               rule('Exposure limits', 'Open initial-stop risk at most 4.5% of the saved balance; 3% per symbol. Daily reserve stays 3% and the 92% entry buffer is unchanged, so one bad day uses a larger share of the buffer than at 0.5%.'),
+               rule('Mode and DI', 'Phase prompt (Challenge default, Verification, or continuous). Nasdaq 5M DI OFF by default (owner choice; DI ON is switchable at install and tested better in the retest); USDJPY DI ON + ADX >= 20.')] + common,
+        history=nine_ea_histories('best-prop', 'Best Prop guard replay', 'Fixed 1% cap ($100 on $10,000); Nasdaq DI OFF (package default); package guard model, continuous mode.'),
+        caveats=['Five-year window: an early loss in October 2021 left equity just above the $9,200 buffer, so the guard blocked every later entry. Shorter windows start fresh and trade normally; this is a property of the static buffer, not missing data.',
+                 'The nine EAs, the 1% cap and the DI OFF default were chosen with knowledge of this history: in-sample evidence, not untouched validation. See Best Prop Portfolio Retest 2026-10-20 and FTMO First Payout Study 2026-10-20 for Monte Carlo / phase results.',
+                 'Other brokers, currencies, balances or DI/risk choices do not inherit these results or any firm pass rate.'])
+    return [prop, best]
+
+
 def main():
     catalog = {p.slug: p for p in get_website_catalog()}
     ftmo, new = read(FTMO), read(NEW)
@@ -348,6 +425,12 @@ def main():
              history=full_history,
              caveats=['The archived combined results do not validate the current 37-EA composition, revised settings or hourly history-sizing.', 'News event settings and hourly selections are fitted to overlapping history; gaps and unbounded no-stop exposure matter.']),
     ]
+    profiles[0]['rules'].append(rule('Any-broker test launcher', 'Same folder: "FTMO guarded - Current 14 - ANY BROKER TEST.bat" installs these 17 EAs with identical strategy settings and the broker-neutral Prop Ready guard (any hedging account, broker and currency; limits scale with the saved initial balance and equal the FTMO limits on a 10,000 account). Owner test build, not separately replayed: this history describes the FTMO build.'))
+    profiles += nine_ea_profiles(catalog)
+    from tools.build_live_profiles import named_profiles
+    folders = {p['file']: p['folder'] for p in named_profiles()} | {'Install Best Prop Portfolio.bat': BEST_PROP.name}
+    for p in profiles:
+        p['launcher_folder'] = folders[p['launcher']]
     for p in profiles:
         p['caveats'].append('12 October 2026: all five ORBs changed to 0.5R by owner request. Annual and longer histories must use matching settings; old mixed-target results are never substituted. Long-history views are historical replays, not updated funding/pass-rate simulations.')
         p['caveats'].append(POLICY['selection_note'])
@@ -355,7 +438,7 @@ def main():
         keys=[m['slug'] for m in profile['members']]
         assert len(keys)==len(set(keys)) and set(keys)<=set(catalog)
     extend_long_evidence(profiles)
-    payload=dict(version='2026-10-14', launcher_directory=PACKAGE_ROOT.name+'/_00 Live profiles', status_meaning='Active means an owner-selected configured launcher is available, not observed live installation or a statistical validation pass.',
+    payload=dict(version='2026-10-22', launcher_directory=PACKAGE_ROOT.name+'/_00 Live profiles', status_meaning='Active means an owner-selected configured launcher is available, not observed live installation or a statistical validation pass.',
                  metrics_note='Portfolio PF, win rate and streaks use net closed cash in chronological exit order; DD is closed-balance peak-to-trough. Daily closed DD uses each UTC day’s intraday closed-cash peak. Floating-equity DD is unavailable without intraday equity history; no proxy is presented as measured equity. Sharpe uses daily closed returns × sqrt(365), including no-trade days; payoff = average win / absolute average loss.',
                  period_options=[dict(value=p,label=l) for p,l,_ in PERIODS],
                  period_note='Calendar-month windows end at each portfolio’s latest saved coverage date, not necessarily today. The selected period changes metrics, curves and streaks; it never changes the selected EAs or risk rules.',

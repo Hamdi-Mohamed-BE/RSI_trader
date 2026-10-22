@@ -1,0 +1,6399 @@
+{
+  "tag": "allrr05-us100-month-end-flow-half",
+  "slug": "us100-month-end-flow",
+  "variant": "half",
+  "window": [
+    "2021.10.06",
+    "2026.10.06"
+  ],
+  "inputs": {
+    "InpSignalTimeframe": "30",
+    "InpCalendarWindow": "5",
+    "InpEntryTime": "2",
+    "InpConfirmation": "0",
+    "InpTrendFilter": "0",
+    "InpDirection": "0",
+    "InpMaximumHoldHours": "6",
+    "InpStopMode": "0",
+    "InpStopValue": "1.5",
+    "InpRewardRisk": "0.6",
+    "InpManagement": "0",
+    "InpRiskPercent": "1.0",
+    "InpAdaptivePortfolioControls": "false",
+    "InpMaximumSpreadRiskPercent": "20.0",
+    "InpMaximumDeviationPoints": "100",
+    "InpMagic": "969060500",
+    "InpTesterOnly": "false",
+    "InpTesterServerUTCOffsetHours": "0",
+    "InpUseAutomaticLiveServerOffset": "true",
+    "InpManualLiveServerUTCOffsetHours": "0",
+    "InpRR05AuditTag": "allrr05-us100-month-end-flow-half"
+  },
+  "unsupported_set_inputs": [
+    "InpPortfolioRiskMode",
+    "InpPortfolioPercent",
+    "InpPortfolioFixedUSD",
+    "InpPortfolioExpectedLogin",
+    "InpPortfolioExpectedServer",
+    "InpPortfolioExpectedSymbol",
+    "InpPortfolioInstallNonce"
+  ],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10252.86,
+    "net_profit": 252.86,
+    "return_pct": 2.53,
+    "profit_factor": 1.04,
+    "win_rate_pct": 63.43,
+    "max_drawdown_pct": 12.57,
+    "trades": 175,
+    "sharpe_ratio": 3.01,
+    "recovery_factor": 0.2,
+    "history_quality": "15% real ticks",
+    "equity_dd_pct": 12.57,
+    "balance_dd_pct": 12.09
+  },
+  "metrics": {
+    "trades": 175,
+    "return_pct": 2.528599999999999,
+    "net_profit": 252.86,
+    "pf": 1.0420341845674066,
+    "wins": 111,
+    "losses": 64,
+    "flat": 0,
+    "win_rate": 63.42857142857143,
+    "equity_dd_pct": 12.57,
+    "balance_dd_pct": 12.09,
+    "sharpe_daily_equity": 0.13062490245850975,
+    "win_streak": 7,
+    "loss_streak": 4,
+    "avg_win": 56.47243243243243,
+    "avg_loss": -93.9934375,
+    "partial_positions": 0,
+    "exit_legs": 175,
+    "commission": -167.67,
+    "swap": -35.2,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1635777000,
+      "close_epoch": 1635777732,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 3.06,
+      "open_price": 15837.31,
+      "close_price": 15804.29,
+      "net": -102.95,
+      "magic": 969060500,
+      "sl": 15804.6,
+      "tp": 15856.94,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 15804.60"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.04,
+      "commission": -1.91,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1635863400,
+      "close_epoch": 1635867911,
+      "last_deal": 5,
+      "side": "Long",
+      "volume": 2.78,
+      "open_price": 15966.69,
+      "close_price": 15988.21,
+      "net": 58.09,
+      "magic": 969060500,
+      "sl": 15930.99,
+      "tp": 15988.11,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 15988.11"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.83,
+      "commission": -1.74,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1635949800,
+      "close_epoch": 1635955016,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 3.86,
+      "open_price": 15975.32,
+      "close_price": 15990.87,
+      "net": 57.61,
+      "magic": 969060500,
+      "sl": 15949.52,
+      "tp": 15990.8,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 15990.80"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 60.02,
+      "commission": -2.41,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1638372600,
+      "close_epoch": 1638373600,
+      "last_deal": 9,
+      "side": "Long",
+      "volume": 2.04,
+      "open_price": 16328.38,
+      "close_price": 16358.270000000002,
+      "net": 59.7,
+      "magic": 969060500,
+      "sl": 16279.11,
+      "tp": 16357.94,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 16357.94"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 60.98,
+      "commission": -1.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1638459000,
+      "close_epoch": 1638459796,
+      "last_deal": 11,
+      "side": "Long",
+      "volume": 0.89,
+      "open_price": 15918.27,
+      "close_price": 15804.22,
+      "net": -102.06,
+      "magic": 969060500,
+      "sl": 15804.79,
+      "tp": 15986.36,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 15804.79"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.5,
+      "commission": -0.56,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1638545400,
+      "close_epoch": 1638546083,
+      "last_deal": 13,
+      "side": "Long",
+      "volume": 1.07,
+      "open_price": 15822.74,
+      "close_price": 15728.75,
+      "net": -101.24,
+      "magic": 969060500,
+      "sl": 15729.45,
+      "tp": 15878.71,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 15729.45"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.57,
+      "commission": -0.67,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1641223800,
+      "close_epoch": 1641235393,
+      "last_deal": 15,
+      "side": "Long",
+      "volume": 1.69,
+      "open_price": 16435.1,
+      "close_price": 16470.39,
+      "net": 58.58,
+      "magic": 969060500,
+      "sl": 16376.38,
+      "tp": 16470.33,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 16470.33"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.64,
+      "commission": -1.06,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1641310200,
+      "close_epoch": 1641310479,
+      "last_deal": 17,
+      "side": "Long",
+      "volume": 2.03,
+      "open_price": 16414.11,
+      "close_price": 16364.589999999998,
+      "net": -101.8,
+      "magic": 969060500,
+      "sl": 16365.17,
+      "tp": 16443.48,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 16365.17"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.53,
+      "commission": -1.27,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1641396600,
+      "close_epoch": 1641397122,
+      "last_deal": 19,
+      "side": "Long",
+      "volume": 1.73,
+      "open_price": 16208.1,
+      "close_price": 16150.93,
+      "net": -99.98,
+      "magic": 969060500,
+      "sl": 16151.26,
+      "tp": 16242.21,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 16151.26"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -98.9,
+      "commission": -1.08,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1643729400,
+      "close_epoch": 1643731234,
+      "last_deal": 21,
+      "side": "Long",
+      "volume": 1.14,
+      "open_price": 14833.46,
+      "close_price": 14884.79,
+      "net": 57.81,
+      "magic": 969060500,
+      "sl": 14747.93,
+      "tp": 14884.78,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 14884.78"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 58.52,
+      "commission": -0.71,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1643815800,
+      "close_epoch": 1643818299,
+      "last_deal": 23,
+      "side": "Long",
+      "volume": 1.24,
+      "open_price": 15079.43,
+      "close_price": 14999.82,
+      "net": -99.5,
+      "magic": 969060500,
+      "sl": 15000.09,
+      "tp": 15127.03,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 15000.09"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -98.72,
+      "commission": -0.78,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1643902200,
+      "close_epoch": 1643903370,
+      "last_deal": 25,
+      "side": "Long",
+      "volume": 1.08,
+      "open_price": 14838.36,
+      "close_price": 14747.14,
+      "net": -99.2,
+      "magic": 969060500,
+      "sl": 14747.87,
+      "tp": 14892.65,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 14747.87"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -98.52,
+      "commission": -0.68,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1646148600,
+      "close_epoch": 1646149961,
+      "last_deal": 27,
+      "side": "Long",
+      "volume": 0.96,
+      "open_price": 14250.43,
+      "close_price": 14149.17,
+      "net": -97.81,
+      "magic": 969060500,
+      "sl": 14150.13,
+      "tp": 14310.61,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 14150.13"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -97.21,
+      "commission": -0.6,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 28,
+      "open_epoch": 1646235000,
+      "close_epoch": 1646237254,
+      "last_deal": 29,
+      "side": "Long",
+      "volume": 0.9,
+      "open_price": 14096.55,
+      "close_price": 14160.19,
+      "net": 56.72,
+      "magic": 969060500,
+      "sl": 13990.7,
+      "tp": 14160.06,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 14160.06"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.28,
+      "commission": -0.56,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 30,
+      "open_epoch": 1646321400,
+      "close_epoch": 1646323115,
+      "last_deal": 31,
+      "side": "Long",
+      "volume": 1.05,
+      "open_price": 14152.47,
+      "close_price": 14061.16,
+      "net": -96.54,
+      "magic": 969060500,
+      "sl": 14061.27,
+      "tp": 14207.19,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 14061.27"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -95.88,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 32,
+      "open_epoch": 1648823400,
+      "close_epoch": 1648823764,
+      "last_deal": 33,
+      "side": "Long",
+      "volume": 1.81,
+      "open_price": 14846.26,
+      "close_price": 14878.51,
+      "net": 57.24,
+      "magic": 969060500,
+      "sl": 14793.94,
+      "tp": 14877.65,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 14877.65"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 58.37,
+      "commission": -1.13,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 34,
+      "open_epoch": 1649082600,
+      "close_epoch": 1649084498,
+      "last_deal": 35,
+      "side": "Long",
+      "volume": 1.65,
+      "open_price": 15053.38,
+      "close_price": 15087.95,
+      "net": 56.01,
+      "magic": 969060500,
+      "sl": 14995.76,
+      "tp": 15087.95,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 15087.95"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.04,
+      "commission": -1.03,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 36,
+      "open_epoch": 1649169000,
+      "close_epoch": 1649172996,
+      "last_deal": 37,
+      "side": "Long",
+      "volume": 1.69,
+      "open_price": 14971.43,
+      "close_price": 14914.38,
+      "net": -97.47,
+      "magic": 969060500,
+      "sl": 14914.61,
+      "tp": 15005.52,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 14914.61"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.41,
+      "commission": -1.06,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 38,
+      "open_epoch": 1651501800,
+      "close_epoch": 1651503867,
+      "last_deal": 39,
+      "side": "Long",
+      "volume": 0.82,
+      "open_price": 12992.72,
+      "close_price": 12876.69,
+      "net": -95.65,
+      "magic": 969060500,
+      "sl": 12876.95,
+      "tp": 13062.18,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 12876.95"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -95.14,
+      "commission": -0.51,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 40,
+      "open_epoch": 1651588200,
+      "close_epoch": 1651589103,
+      "last_deal": 41,
+      "side": "Long",
+      "volume": 1.15,
+      "open_price": 13082.36,
+      "close_price": 13000.1,
+      "net": -95.32,
+      "magic": 969060500,
+      "sl": 13000.42,
+      "tp": 13131.52,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 13000.42"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -94.6,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 42,
+      "open_epoch": 1651674600,
+      "close_epoch": 1651676613,
+      "last_deal": 43,
+      "side": "Long",
+      "volume": 1.8,
+      "open_price": 12971.95,
+      "close_price": 12920.07,
+      "net": -94.51,
+      "magic": 969060500,
+      "sl": 12920.41,
+      "tp": 13002.87,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 12920.41"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -93.38,
+      "commission": -1.13,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 44,
+      "open_epoch": 1654093800,
+      "close_epoch": 1654095372,
+      "last_deal": 45,
+      "side": "Long",
+      "volume": 1.13,
+      "open_price": 12613.15,
+      "close_price": 12662.12,
+      "net": 54.63,
+      "magic": 969060500,
+      "sl": 12531.87,
+      "tp": 12661.92,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 12661.92"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.34,
+      "commission": -0.71,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 46,
+      "open_epoch": 1654180200,
+      "close_epoch": 1654180803,
+      "last_deal": 47,
+      "side": "Long",
+      "volume": 1.11,
+      "open_price": 12525.56,
+      "close_price": 12576.64,
+      "net": 56.01,
+      "magic": 969060500,
+      "sl": 12441.8,
+      "tp": 12575.81,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 12575.81"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.7,
+      "commission": -0.69,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 48,
+      "open_epoch": 1654266600,
+      "close_epoch": 1654268436,
+      "last_deal": 49,
+      "side": "Long",
+      "volume": 1.17,
+      "open_price": 12636.34,
+      "close_price": 12556.15,
+      "net": -94.55,
+      "magic": 969060500,
+      "sl": 12556.46,
+      "tp": 12684.27,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 12556.46"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -93.82,
+      "commission": -0.73,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 50,
+      "open_epoch": 1656685800,
+      "close_epoch": 1656688118,
+      "last_deal": 51,
+      "side": "Long",
+      "volume": 0.97,
+      "open_price": 11423.57,
+      "close_price": 11481.91,
+      "net": 55.98,
+      "magic": 969060500,
+      "sl": 11328.46,
+      "tp": 11480.64,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 11480.64"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.59,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 52,
+      "open_epoch": 1656945000,
+      "close_epoch": 1656947194,
+      "last_deal": 53,
+      "side": "Long",
+      "volume": 2.79,
+      "open_price": 11520.09,
+      "close_price": 11540.51,
+      "net": 55.23,
+      "magic": 969060500,
+      "sl": 11486.82,
+      "tp": 11540.05,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 11540.05"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.97,
+      "commission": -1.74,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 54,
+      "open_epoch": 1657031400,
+      "close_epoch": 1657031796,
+      "last_deal": 55,
+      "side": "Long",
+      "volume": 1.23,
+      "open_price": 11477.82,
+      "close_price": 11523.93,
+      "net": 55.95,
+      "magic": 969060500,
+      "sl": 11402.09,
+      "tp": 11523.26,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 11523.26"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.72,
+      "commission": -0.77,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 56,
+      "open_epoch": 1659364200,
+      "close_epoch": 1659364716,
+      "last_deal": 57,
+      "side": "Long",
+      "volume": 1.53,
+      "open_price": 12966.96,
+      "close_price": 13003.98,
+      "net": 55.68,
+      "magic": 969060500,
+      "sl": 12905.47,
+      "tp": 13003.85,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 13003.85"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.64,
+      "commission": -0.96,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 58,
+      "open_epoch": 1659450600,
+      "close_epoch": 1659451514,
+      "last_deal": 59,
+      "side": "Long",
+      "volume": 1.58,
+      "open_price": 12890.48,
+      "close_price": 12926.47,
+      "net": 55.87,
+      "magic": 969060500,
+      "sl": 12830.69,
+      "tp": 12926.35,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 12926.35"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.86,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 60,
+      "open_epoch": 1659537000,
+      "close_epoch": 1659537360,
+      "last_deal": 61,
+      "side": "Long",
+      "volume": 1.54,
+      "open_price": 13113.16,
+      "close_price": 13050.52,
+      "net": -97.43,
+      "magic": 969060500,
+      "sl": 13051.31,
+      "tp": 13150.27,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 13051.31"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.47,
+      "commission": -0.96,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 62,
+      "open_epoch": 1662042600,
+      "close_epoch": 1662043138,
+      "last_deal": 63,
+      "side": "Long",
+      "volume": 1.48,
+      "open_price": 12158.84,
+      "close_price": 12095.079999999998,
+      "net": -95.29,
+      "magic": 969060500,
+      "sl": 12095.35,
+      "tp": 12196.94,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 12095.35"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -94.36,
+      "commission": -0.93,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 64,
+      "open_epoch": 1662129000,
+      "close_epoch": 1662129688,
+      "last_deal": 65,
+      "side": "Long",
+      "volume": 1.16,
+      "open_price": 12400.61,
+      "close_price": 12449.14,
+      "net": 55.56,
+      "magic": 969060500,
+      "sl": 12320.17,
+      "tp": 12448.87,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 12448.87"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.29,
+      "commission": -0.73,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 66,
+      "open_epoch": 1662388200,
+      "close_epoch": 1662417000,
+      "last_deal": 67,
+      "side": "Long",
+      "volume": 2.25,
+      "open_price": 12141.17,
+      "close_price": 12147.55,
+      "net": 12.95,
+      "magic": 969060500,
+      "sl": 12099.55,
+      "tp": 12166.14,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 14.36,
+      "commission": -1.41,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 68,
+      "open_epoch": 1664807400,
+      "close_epoch": 1664817844,
+      "last_deal": 69,
+      "side": "Long",
+      "volume": 1.31,
+      "open_price": 11155.89,
+      "close_price": 11199.35,
+      "net": 56.11,
+      "magic": 969060500,
+      "sl": 11084.11,
+      "tp": 11198.96,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 11198.96"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.93,
+      "commission": -0.82,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 70,
+      "open_epoch": 1664893800,
+      "close_epoch": 1664894426,
+      "last_deal": 71,
+      "side": "Long",
+      "volume": 1.75,
+      "open_price": 11567.09,
+      "close_price": 11599.67,
+      "net": 55.93,
+      "magic": 969060500,
+      "sl": 11513.25,
+      "tp": 11599.4,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 11599.40"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.02,
+      "commission": -1.09,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 72,
+      "open_epoch": 1664980200,
+      "close_epoch": 1664983471,
+      "last_deal": 73,
+      "side": "Long",
+      "volume": 1.38,
+      "open_price": 11326.39,
+      "close_price": 11367.86,
+      "net": 56.37,
+      "magic": 969060500,
+      "sl": 11257.4,
+      "tp": 11367.78,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 11367.78"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.23,
+      "commission": -0.86,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 74,
+      "open_epoch": 1667313000,
+      "close_epoch": 1667313629,
+      "last_deal": 75,
+      "side": "Long",
+      "volume": 1.6,
+      "open_price": 11407.1,
+      "close_price": 11347.35,
+      "net": -96.6,
+      "magic": 969060500,
+      "sl": 11347.4,
+      "tp": 11442.92,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 11347.40"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -95.6,
+      "commission": -1.0,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 76,
+      "open_epoch": 1667399400,
+      "close_epoch": 1667405269,
+      "last_deal": 77,
+      "side": "Long",
+      "volume": 1.92,
+      "open_price": 11238.79,
+      "close_price": 11189.44,
+      "net": -95.95,
+      "magic": 969060500,
+      "sl": 11189.53,
+      "tp": 11268.34,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 11189.53"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -94.75,
+      "commission": -1.2,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 78,
+      "open_epoch": 1667485800,
+      "close_epoch": 1667489499,
+      "last_deal": 79,
+      "side": "Long",
+      "volume": 1.27,
+      "open_price": 10812.44,
+      "close_price": 10738.71,
+      "net": -94.43,
+      "magic": 969060500,
+      "sl": 10738.88,
+      "tp": 10856.57,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 10738.88"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -93.64,
+      "commission": -0.79,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 80,
+      "open_epoch": 1669908600,
+      "close_epoch": 1669909708,
+      "last_deal": 81,
+      "side": "Long",
+      "volume": 1.36,
+      "open_price": 11952.5,
+      "close_price": 11993.81,
+      "net": 55.33,
+      "magic": 969060500,
+      "sl": 11884.33,
+      "tp": 11993.4,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 11993.40"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.18,
+      "commission": -0.85,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 82,
+      "open_epoch": 1669995000,
+      "close_epoch": 1669999288,
+      "last_deal": 83,
+      "side": "Long",
+      "volume": 1.2,
+      "open_price": 11894.5,
+      "close_price": 11941.34,
+      "net": 55.46,
+      "magic": 969060500,
+      "sl": 11816.56,
+      "tp": 11941.27,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 11941.27"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.21,
+      "commission": -0.75,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 84,
+      "open_epoch": 1670254200,
+      "close_epoch": 1670254835,
+      "last_deal": 85,
+      "side": "Long",
+      "volume": 2.08,
+      "open_price": 11877.07,
+      "close_price": 11904.11,
+      "net": 54.94,
+      "magic": 969060500,
+      "sl": 11832.16,
+      "tp": 11904.02,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 11904.02"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.24,
+      "commission": -1.3,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 86,
+      "open_epoch": 1672759800,
+      "close_epoch": 1672764395,
+      "last_deal": 87,
+      "side": "Long",
+      "volume": 1.15,
+      "open_price": 10867.08,
+      "close_price": 10784.64,
+      "net": -95.53,
+      "magic": 969060500,
+      "sl": 10785.05,
+      "tp": 10916.3,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 10785.05"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -94.81,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 88,
+      "open_epoch": 1672846200,
+      "close_epoch": 1672847123,
+      "last_deal": 89,
+      "side": "Long",
+      "volume": 1.43,
+      "open_price": 10836.82,
+      "close_price": 10876.11,
+      "net": 55.29,
+      "magic": 969060500,
+      "sl": 10771.49,
+      "tp": 10876.02,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 10876.02"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.18,
+      "commission": -0.89,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 90,
+      "open_epoch": 1675265400,
+      "close_epoch": 1675266636,
+      "last_deal": 91,
+      "side": "Long",
+      "volume": 2.51,
+      "open_price": 12090.8,
+      "close_price": 12053.14,
+      "net": -96.1,
+      "magic": 969060500,
+      "sl": 12053.49,
+      "tp": 12113.19,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 12053.49"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -94.53,
+      "commission": -1.57,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 92,
+      "open_epoch": 1675351800,
+      "close_epoch": 1675351900,
+      "last_deal": 93,
+      "side": "Long",
+      "volume": 1.56,
+      "open_price": 12687.08,
+      "close_price": 12723.01,
+      "net": 55.07,
+      "magic": 969060500,
+      "sl": 12627.6,
+      "tp": 12722.77,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 12722.77"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.05,
+      "commission": -0.98,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 94,
+      "open_epoch": 1675438200,
+      "close_epoch": 1675438774,
+      "last_deal": 95,
+      "side": "Long",
+      "volume": 0.94,
+      "open_price": 12730.7,
+      "close_price": 12790.93,
+      "net": 56.03,
+      "magic": 969060500,
+      "sl": 12630.96,
+      "tp": 12790.55,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 12790.55"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.62,
+      "commission": -0.59,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 96,
+      "open_epoch": 1677684600,
+      "close_epoch": 1677685106,
+      "last_deal": 97,
+      "side": "Long",
+      "volume": 1.85,
+      "open_price": 11955.47,
+      "close_price": 11986.19,
+      "net": 55.67,
+      "magic": 969060500,
+      "sl": 11904.69,
+      "tp": 11985.94,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 11985.94"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.83,
+      "commission": -1.16,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 98,
+      "open_epoch": 1677771000,
+      "close_epoch": 1677782157,
+      "last_deal": 99,
+      "side": "Long",
+      "volume": 1.97,
+      "open_price": 11902.19,
+      "close_price": 11931.09,
+      "net": 55.7,
+      "magic": 969060500,
+      "sl": 11854.17,
+      "tp": 11931.0,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 11931.00"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.93,
+      "commission": -1.23,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 100,
+      "open_epoch": 1677857400,
+      "close_epoch": 1677859837,
+      "last_deal": 101,
+      "side": "Long",
+      "volume": 1.88,
+      "open_price": 12208.74,
+      "close_price": 12157.53,
+      "net": -97.45,
+      "magic": 969060500,
+      "sl": 12158.18,
+      "tp": 12239.08,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 12158.18"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.27,
+      "commission": -1.18,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 102,
+      "open_epoch": 1680532200,
+      "close_epoch": 1680533254,
+      "last_deal": 103,
+      "side": "Long",
+      "volume": 2.46,
+      "open_price": 13151.93,
+      "close_price": 13113.61,
+      "net": -95.81,
+      "magic": 969060500,
+      "sl": 13113.63,
+      "tp": 13174.91,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 13113.63"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -94.27,
+      "commission": -1.54,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 104,
+      "open_epoch": 1680618600,
+      "close_epoch": 1680620963,
+      "last_deal": 105,
+      "side": "Long",
+      "volume": 2.08,
+      "open_price": 13167.52,
+      "close_price": 13122.43,
+      "net": -95.09,
+      "magic": 969060500,
+      "sl": 13122.75,
+      "tp": 13194.38,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 13122.75"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -93.79,
+      "commission": -1.3,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 106,
+      "open_epoch": 1680705000,
+      "close_epoch": 1680705874,
+      "last_deal": 107,
+      "side": "Long",
+      "volume": 2.31,
+      "open_price": 12979.31,
+      "close_price": 12939.17,
+      "net": -94.16,
+      "magic": 969060500,
+      "sl": 12939.42,
+      "tp": 13003.25,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 12939.42"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -92.72,
+      "commission": -1.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 108,
+      "open_epoch": 1682951400,
+      "close_epoch": 1682952743,
+      "last_deal": 109,
+      "side": "Long",
+      "volume": 2.8,
+      "open_price": 13224.66,
+      "close_price": 13244.699999999999,
+      "net": 54.36,
+      "magic": 969060500,
+      "sl": 13192.1,
+      "tp": 13244.2,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 13244.20"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.11,
+      "commission": -1.75,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 110,
+      "open_epoch": 1683037800,
+      "close_epoch": 1683038173,
+      "last_deal": 111,
+      "side": "Long",
+      "volume": 2.58,
+      "open_price": 13147.74,
+      "close_price": 13112.05,
+      "net": -93.69,
+      "magic": 969060500,
+      "sl": 13112.18,
+      "tp": 13169.08,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 13112.18"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -92.08,
+      "commission": -1.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 112,
+      "open_epoch": 1683124200,
+      "close_epoch": 1683125416,
+      "last_deal": 113,
+      "side": "Long",
+      "volume": 2.6,
+      "open_price": 13135.82,
+      "close_price": 13156.919999999998,
+      "net": 53.23,
+      "magic": 969060500,
+      "sl": 13100.95,
+      "tp": 13156.74,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 13156.74"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.86,
+      "commission": -1.63,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 114,
+      "open_epoch": 1685629800,
+      "close_epoch": 1685630459,
+      "last_deal": 115,
+      "side": "Long",
+      "volume": 1.99,
+      "open_price": 14275.79,
+      "close_price": 14303.54,
+      "net": 53.98,
+      "magic": 969060500,
+      "sl": 14229.88,
+      "tp": 14303.33,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 14303.33"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.22,
+      "commission": -1.24,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 116,
+      "open_epoch": 1685716200,
+      "close_epoch": 1685717070,
+      "last_deal": 117,
+      "side": "Long",
+      "volume": 1.63,
+      "open_price": 14502.33,
+      "close_price": 14536.22,
+      "net": 54.22,
+      "magic": 969060500,
+      "sl": 14445.99,
+      "tp": 14536.13,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 14536.13"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.24,
+      "commission": -1.02,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 118,
+      "open_epoch": 1685975400,
+      "close_epoch": 1685975838,
+      "last_deal": 119,
+      "side": "Long",
+      "volume": 2.68,
+      "open_price": 14590.26,
+      "close_price": 14610.94,
+      "net": 53.74,
+      "magic": 969060500,
+      "sl": 14555.85,
+      "tp": 14610.91,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 14610.91"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.42,
+      "commission": -1.68,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 120,
+      "open_epoch": 1688394600,
+      "close_epoch": 1688395175,
+      "last_deal": 121,
+      "side": "Long",
+      "volume": 2.94,
+      "open_price": 15215.37,
+      "close_price": 15183.570000000002,
+      "net": -95.33,
+      "magic": 969060500,
+      "sl": 15183.73,
+      "tp": 15234.35,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 15183.73"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -93.49,
+      "commission": -1.84,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 122,
+      "open_epoch": 1688481000,
+      "close_epoch": 1688508300,
+      "last_deal": 123,
+      "side": "Long",
+      "volume": 6.56,
+      "open_price": 15211.35,
+      "close_price": 15206.9,
+      "net": -33.29,
+      "magic": 969060500,
+      "sl": 15197.34,
+      "tp": 15219.75,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -29.19,
+      "commission": -4.1,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 124,
+      "open_epoch": 1688567400,
+      "close_epoch": 1688570366,
+      "last_deal": 125,
+      "side": "Long",
+      "volume": 2.31,
+      "open_price": 15270.56,
+      "close_price": 15230.530000000002,
+      "net": -93.91,
+      "magic": 969060500,
+      "sl": 15230.86,
+      "tp": 15294.38,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 15230.86"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -92.47,
+      "commission": -1.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 126,
+      "open_epoch": 1690900200,
+      "close_epoch": 1690900598,
+      "last_deal": 127,
+      "side": "Long",
+      "volume": 2.04,
+      "open_price": 15696.57,
+      "close_price": 15723.74,
+      "net": 54.15,
+      "magic": 969060500,
+      "sl": 15651.98,
+      "tp": 15723.33,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 15723.33"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.43,
+      "commission": -1.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 128,
+      "open_epoch": 1690986600,
+      "close_epoch": 1690991302,
+      "last_deal": 129,
+      "side": "Long",
+      "volume": 1.44,
+      "open_price": 15464.08,
+      "close_price": 15400.09,
+      "net": -93.05,
+      "magic": 969060500,
+      "sl": 15400.58,
+      "tp": 15502.18,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 15400.58"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -92.15,
+      "commission": -0.9,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 130,
+      "open_epoch": 1691073000,
+      "close_epoch": 1691073326,
+      "last_deal": 131,
+      "side": "Long",
+      "volume": 1.32,
+      "open_price": 15280.72,
+      "close_price": 15322.27,
+      "net": 54.02,
+      "magic": 969060500,
+      "sl": 15211.99,
+      "tp": 15321.96,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 15321.96"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.85,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 132,
+      "open_epoch": 1693578600,
+      "close_epoch": 1693579599,
+      "last_deal": 133,
+      "side": "Long",
+      "volume": 1.54,
+      "open_price": 15564.97,
+      "close_price": 15505.67,
+      "net": -92.28,
+      "magic": 969060500,
+      "sl": 15505.97,
+      "tp": 15600.37,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 15505.97"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -91.32,
+      "commission": -0.96,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 134,
+      "open_epoch": 1693837800,
+      "close_epoch": 1693839125,
+      "last_deal": 135,
+      "side": "Long",
+      "volume": 4.42,
+      "open_price": 15537.93,
+      "close_price": 15517.04,
+      "net": -95.09,
+      "magic": 969060500,
+      "sl": 15517.58,
+      "tp": 15550.14,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 15517.58"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -92.33,
+      "commission": -2.76,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 136,
+      "open_epoch": 1693924200,
+      "close_epoch": 1693925537,
+      "last_deal": 137,
+      "side": "Long",
+      "volume": 1.57,
+      "open_price": 15483.89,
+      "close_price": 15518.37,
+      "net": 53.15,
+      "magic": 969060500,
+      "sl": 15427.02,
+      "tp": 15518.01,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 15518.01"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.13,
+      "commission": -0.98,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 138,
+      "open_epoch": 1696257000,
+      "close_epoch": 1696259054,
+      "last_deal": 139,
+      "side": "Long",
+      "volume": 1.47,
+      "open_price": 14794.66,
+      "close_price": 14831.62,
+      "net": 53.41,
+      "magic": 969060500,
+      "sl": 14733.69,
+      "tp": 14831.24,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 14831.24"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.33,
+      "commission": -0.92,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 140,
+      "open_epoch": 1696343400,
+      "close_epoch": 1696355376,
+      "last_deal": 141,
+      "side": "Long",
+      "volume": 1.2,
+      "open_price": 14637.01,
+      "close_price": 14560.81,
+      "net": -92.19,
+      "magic": 969060500,
+      "sl": 14561.52,
+      "tp": 14682.3,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 14561.52"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -91.44,
+      "commission": -0.75,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 142,
+      "open_epoch": 1696429800,
+      "close_epoch": 1696429955,
+      "last_deal": 143,
+      "side": "Long",
+      "volume": 1.39,
+      "open_price": 14602.87,
+      "close_price": 14641.63,
+      "net": 53.01,
+      "magic": 969060500,
+      "sl": 14538.75,
+      "tp": 14641.34,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 14641.34"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 53.88,
+      "commission": -0.87,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 144,
+      "open_epoch": 1698849000,
+      "close_epoch": 1698852817,
+      "last_deal": 145,
+      "side": "Long",
+      "volume": 1.56,
+      "open_price": 14560.13,
+      "close_price": 14502.29,
+      "net": -91.21,
+      "magic": 969060500,
+      "sl": 14502.57,
+      "tp": 14594.67,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 14502.57"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -90.23,
+      "commission": -0.98,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 146,
+      "open_epoch": 1698935400,
+      "close_epoch": 1698936761,
+      "last_deal": 147,
+      "side": "Long",
+      "volume": 1.96,
+      "open_price": 14857.04,
+      "close_price": 14884.33,
+      "net": 52.26,
+      "magic": 969060500,
+      "sl": 14811.73,
+      "tp": 14884.23,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 14884.23"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 53.49,
+      "commission": -1.23,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 148,
+      "open_epoch": 1699021800,
+      "close_epoch": 1699023575,
+      "last_deal": 149,
+      "side": "Long",
+      "volume": 1.65,
+      "open_price": 15003.91,
+      "close_price": 15036.72,
+      "net": 53.11,
+      "magic": 969060500,
+      "sl": 14949.71,
+      "tp": 15036.43,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 15036.43"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.14,
+      "commission": -1.03,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 150,
+      "open_epoch": 1701444600,
+      "close_epoch": 1701444928,
+      "last_deal": 151,
+      "side": "Long",
+      "volume": 2.19,
+      "open_price": 15862.32,
+      "close_price": 15887.220000000001,
+      "net": 53.16,
+      "magic": 969060500,
+      "sl": 15821.38,
+      "tp": 15886.88,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 15886.88"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.53,
+      "commission": -1.37,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 152,
+      "open_epoch": 1701703800,
+      "close_epoch": 1701708380,
+      "last_deal": 153,
+      "side": "Long",
+      "volume": 1.74,
+      "open_price": 15742.82,
+      "close_price": 15774.05,
+      "net": 53.25,
+      "magic": 969060500,
+      "sl": 15690.83,
+      "tp": 15774.01,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 15774.01"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.34,
+      "commission": -1.09,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 154,
+      "open_epoch": 1701790200,
+      "close_epoch": 1701790874,
+      "last_deal": 155,
+      "side": "Long",
+      "volume": 1.79,
+      "open_price": 15881.24,
+      "close_price": 15911.88,
+      "net": 53.73,
+      "magic": 969060500,
+      "sl": 15830.39,
+      "tp": 15911.75,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 15911.75"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.85,
+      "commission": -1.12,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 156,
+      "open_epoch": 1704209400,
+      "close_epoch": 1704213037,
+      "last_deal": 157,
+      "side": "Long",
+      "volume": 1.37,
+      "open_price": 16568.33,
+      "close_price": 16608.71,
+      "net": 54.46,
+      "magic": 969060500,
+      "sl": 16501.27,
+      "tp": 16608.56,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 16608.56"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.32,
+      "commission": -0.86,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 158,
+      "open_epoch": 1704295800,
+      "close_epoch": 1704297758,
+      "last_deal": 159,
+      "side": "Long",
+      "volume": 1.71,
+      "open_price": 16426.88,
+      "close_price": 16459.44,
+      "net": 54.61,
+      "magic": 969060500,
+      "sl": 16373.08,
+      "tp": 16459.16,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 16459.16"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.68,
+      "commission": -1.07,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 160,
+      "open_epoch": 1706801400,
+      "close_epoch": 1706802639,
+      "last_deal": 161,
+      "side": "Long",
+      "volume": 1.81,
+      "open_price": 17281.26,
+      "close_price": 17229.79,
+      "net": -94.29,
+      "magic": 969060500,
+      "sl": 17230.12,
+      "tp": 17311.94,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 17230.12"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -93.16,
+      "commission": -1.13,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 162,
+      "open_epoch": 1706887800,
+      "close_epoch": 1706888435,
+      "last_deal": 163,
+      "side": "Long",
+      "volume": 1.42,
+      "open_price": 17500.86,
+      "close_price": 17539.52,
+      "net": 54.01,
+      "magic": 969060500,
+      "sl": 17436.46,
+      "tp": 17539.5,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 17539.50"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.9,
+      "commission": -0.89,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 164,
+      "open_epoch": 1707147000,
+      "close_epoch": 1707147638,
+      "last_deal": 165,
+      "side": "Long",
+      "volume": 1.96,
+      "open_price": 17551.39,
+      "close_price": 17504.37,
+      "net": -93.39,
+      "magic": 969060500,
+      "sl": 17504.37,
+      "tp": 17579.6,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 17504.37"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -92.16,
+      "commission": -1.23,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 166,
+      "open_epoch": 1709307780,
+      "close_epoch": 1709308573,
+      "last_deal": 167,
+      "side": "Long",
+      "volume": 1.83,
+      "open_price": 18140.36,
+      "close_price": 18170.56,
+      "net": 54.13,
+      "magic": 969060500,
+      "sl": 18090.44,
+      "tp": 18170.31,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 18170.31"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.27,
+      "commission": -1.14,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 168,
+      "open_epoch": 1709566200,
+      "close_epoch": 1709566535,
+      "last_deal": 169,
+      "side": "Long",
+      "volume": 2.87,
+      "open_price": 18269.31,
+      "close_price": 18288.48,
+      "net": 53.23,
+      "magic": 969060500,
+      "sl": 18237.36,
+      "tp": 18288.48,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 18288.48"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.02,
+      "commission": -1.79,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 170,
+      "open_epoch": 1709652600,
+      "close_epoch": 1709663848,
+      "last_deal": 171,
+      "side": "Long",
+      "volume": 1.61,
+      "open_price": 17945.4,
+      "close_price": 17887.91,
+      "net": -93.57,
+      "magic": 969060500,
+      "sl": 17888.05,
+      "tp": 17979.81,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 17888.05"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -92.56,
+      "commission": -1.01,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 172,
+      "open_epoch": 1711981800,
+      "close_epoch": 1711982378,
+      "last_deal": 173,
+      "side": "Long",
+      "volume": 1.75,
+      "open_price": 18346.15,
+      "close_price": 18293.18,
+      "net": -93.79,
+      "magic": 969060500,
+      "sl": 18293.82,
+      "tp": 18377.55,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 18293.82"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -92.7,
+      "commission": -1.09,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 174,
+      "open_epoch": 1712068200,
+      "close_epoch": 1712072191,
+      "last_deal": 175,
+      "side": "Long",
+      "volume": 1.44,
+      "open_price": 18051.69,
+      "close_price": 18089.62,
+      "net": 53.72,
+      "magic": 969060500,
+      "sl": 17988.78,
+      "tp": 18089.44,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 18089.44"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.62,
+      "commission": -0.9,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 176,
+      "open_epoch": 1712154600,
+      "close_epoch": 1712158035,
+      "last_deal": 177,
+      "side": "Long",
+      "volume": 1.57,
+      "open_price": 18223.58,
+      "close_price": 18258.53,
+      "net": 53.89,
+      "magic": 969060500,
+      "sl": 18165.59,
+      "tp": 18258.37,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 18258.37"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 54.87,
+      "commission": -0.98,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 178,
+      "open_epoch": 1714573800,
+      "close_epoch": 1714575459,
+      "last_deal": 179,
+      "side": "Long",
+      "volume": 1.63,
+      "open_price": 17364.59,
+      "close_price": 17398.44,
+      "net": 54.16,
+      "magic": 969060500,
+      "sl": 17308.34,
+      "tp": 17398.34,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 17398.34"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.18,
+      "commission": -1.02,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 180,
+      "open_epoch": 1714660200,
+      "close_epoch": 1714662158,
+      "last_deal": 181,
+      "side": "Long",
+      "volume": 1.43,
+      "open_price": 17394.91,
+      "close_price": 17433.75,
+      "net": 54.65,
+      "magic": 969060500,
+      "sl": 17330.62,
+      "tp": 17433.48,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 17433.48"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.54,
+      "commission": -0.89,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 182,
+      "open_epoch": 1714746600,
+      "close_epoch": 1714751615,
+      "last_deal": 183,
+      "side": "Long",
+      "volume": 1.16,
+      "open_price": 17843.77,
+      "close_price": 17892.35,
+      "net": 55.62,
+      "magic": 969060500,
+      "sl": 17763.52,
+      "tp": 17891.92,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 17891.92"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.35,
+      "commission": -0.73,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 184,
+      "open_epoch": 1717425000,
+      "close_epoch": 1717425396,
+      "last_deal": 185,
+      "side": "Long",
+      "volume": 1.82,
+      "open_price": 18678.85,
+      "close_price": 18627.76,
+      "net": -94.12,
+      "magic": 969060500,
+      "sl": 18627.81,
+      "tp": 18709.47,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 18627.81"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -92.98,
+      "commission": -1.14,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 186,
+      "open_epoch": 1717511400,
+      "close_epoch": 1717524916,
+      "last_deal": 187,
+      "side": "Long",
+      "volume": 1.43,
+      "open_price": 18601.24,
+      "close_price": 18640.18,
+      "net": 54.79,
+      "magic": 969060500,
+      "sl": 18536.69,
+      "tp": 18639.97,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 18639.97"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.68,
+      "commission": -0.89,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 188,
+      "open_epoch": 1717597800,
+      "close_epoch": 1717598065,
+      "last_deal": 189,
+      "side": "Long",
+      "volume": 1.9,
+      "open_price": 18875.7,
+      "close_price": 18905.29,
+      "net": 55.03,
+      "magic": 969060500,
+      "sl": 18827.0,
+      "tp": 18904.92,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 18904.92"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.22,
+      "commission": -1.19,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 190,
+      "open_epoch": 1719844200,
+      "close_epoch": 1719845621,
+      "last_deal": 191,
+      "side": "Long",
+      "volume": 1.31,
+      "open_price": 19728.07,
+      "close_price": 19656.65,
+      "net": -94.38,
+      "magic": 969060500,
+      "sl": 19656.66,
+      "tp": 19770.92,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 19656.66"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -93.56,
+      "commission": -0.82,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 192,
+      "open_epoch": 1719930600,
+      "close_epoch": 1719931226,
+      "last_deal": 193,
+      "side": "Long",
+      "volume": 1.6,
+      "open_price": 19853.89,
+      "close_price": 19888.74,
+      "net": 54.76,
+      "magic": 969060500,
+      "sl": 19796.19,
+      "tp": 19888.51,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 19888.51"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.76,
+      "commission": -1.0,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 194,
+      "open_epoch": 1720017000,
+      "close_epoch": 1720017755,
+      "last_deal": 195,
+      "side": "Long",
+      "volume": 2.3,
+      "open_price": 20056.01,
+      "close_price": 20080.63,
+      "net": 55.19,
+      "magic": 969060500,
+      "sl": 20015.7,
+      "tp": 20080.2,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 20080.20"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.63,
+      "commission": -1.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 196,
+      "open_epoch": 1722522600,
+      "close_epoch": 1722524437,
+      "last_deal": 197,
+      "side": "Long",
+      "volume": 0.78,
+      "open_price": 19325.58,
+      "close_price": 19205.05,
+      "net": -94.5,
+      "magic": 969060500,
+      "sl": 19205.27,
+      "tp": 19397.77,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 19205.27"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -94.01,
+      "commission": -0.49,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 198,
+      "open_epoch": 1722609000,
+      "close_epoch": 1722613291,
+      "last_deal": 199,
+      "side": "Long",
+      "volume": 0.61,
+      "open_price": 18376.63,
+      "close_price": 18468.33,
+      "net": 55.56,
+      "magic": 969060500,
+      "sl": 18224.59,
+      "tp": 18467.85,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 18467.85"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 55.94,
+      "commission": -0.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 200,
+      "open_epoch": 1722868200,
+      "close_epoch": 1722869666,
+      "last_deal": 201,
+      "side": "Long",
+      "volume": 0.32,
+      "open_price": 17757.86,
+      "close_price": 17937.73,
+      "net": 57.36,
+      "magic": 969060500,
+      "sl": 17458.95,
+      "tp": 17937.25,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 17937.25"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.56,
+      "commission": -0.2,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 202,
+      "open_epoch": 1725287400,
+      "close_epoch": 1725287596,
+      "last_deal": 203,
+      "side": "Long",
+      "volume": 2.75,
+      "open_price": 19577.72,
+      "close_price": 19598.4,
+      "net": 55.15,
+      "magic": 969060500,
+      "sl": 19543.67,
+      "tp": 19598.15,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 19598.15"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.87,
+      "commission": -1.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 204,
+      "open_epoch": 1725373800,
+      "close_epoch": 1725374556,
+      "last_deal": 205,
+      "side": "Long",
+      "volume": 1.08,
+      "open_price": 19289.05,
+      "close_price": 19200.84,
+      "net": -95.95,
+      "magic": 969060500,
+      "sl": 19201.49,
+      "tp": 19341.58,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 19201.49"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -95.27,
+      "commission": -0.68,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 206,
+      "open_epoch": 1725460200,
+      "close_epoch": 1725460743,
+      "last_deal": 207,
+      "side": "Long",
+      "volume": 1.13,
+      "open_price": 18962.64,
+      "close_price": 19012.79,
+      "net": 55.96,
+      "magic": 969060500,
+      "sl": 18879.91,
+      "tp": 19012.28,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 19012.28"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.67,
+      "commission": -0.71,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 208,
+      "open_epoch": 1727793000,
+      "close_epoch": 1727797348,
+      "last_deal": 209,
+      "side": "Long",
+      "volume": 1.04,
+      "open_price": 19719.46,
+      "close_price": 19774.09,
+      "net": 56.17,
+      "magic": 969060500,
+      "sl": 19629.21,
+      "tp": 19773.61,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 19773.61"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.82,
+      "commission": -0.65,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 210,
+      "open_epoch": 1727879400,
+      "close_epoch": 1727882140,
+      "last_deal": 211,
+      "side": "Long",
+      "volume": 1.11,
+      "open_price": 19816.45,
+      "close_price": 19867.45,
+      "net": 55.92,
+      "magic": 969060500,
+      "sl": 19731.49,
+      "tp": 19867.42,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 19867.42"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.61,
+      "commission": -0.69,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 212,
+      "open_epoch": 1727965800,
+      "close_epoch": 1727966006,
+      "last_deal": 213,
+      "side": "Long",
+      "volume": 1.19,
+      "open_price": 19775.97,
+      "close_price": 19824.26,
+      "net": 56.73,
+      "magic": 969060500,
+      "sl": 19696.15,
+      "tp": 19823.86,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 19823.86"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.47,
+      "commission": -0.74,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 214,
+      "open_epoch": 1730471400,
+      "close_epoch": 1730472200,
+      "last_deal": 215,
+      "side": "Long",
+      "volume": 1.41,
+      "open_price": 20163.09,
+      "close_price": 20095.42,
+      "net": -96.29,
+      "magic": 969060500,
+      "sl": 20095.44,
+      "tp": 20203.68,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 20095.44"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -95.41,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 216,
+      "open_epoch": 1730734200,
+      "close_epoch": 1730738606,
+      "last_deal": 217,
+      "side": "Long",
+      "volume": 1.28,
+      "open_price": 20086.41,
+      "close_price": 20012.21,
+      "net": -95.78,
+      "magic": 969060500,
+      "sl": 20012.32,
+      "tp": 20130.86,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 20012.32"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -94.98,
+      "commission": -0.8,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 218,
+      "open_epoch": 1730820600,
+      "close_epoch": 1730821657,
+      "last_deal": 219,
+      "side": "Long",
+      "volume": 1.59,
+      "open_price": 20172.8,
+      "close_price": 20208.18,
+      "net": 55.26,
+      "magic": 969060500,
+      "sl": 20113.87,
+      "tp": 20208.16,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 20208.16"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.25,
+      "commission": -0.99,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 220,
+      "open_epoch": 1733153400,
+      "close_epoch": 1733157507,
+      "last_deal": 221,
+      "side": "Long",
+      "volume": 1.94,
+      "open_price": 21149.99,
+      "close_price": 21179.29,
+      "net": 55.63,
+      "magic": 969060500,
+      "sl": 21101.5,
+      "tp": 21179.08,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 21179.08"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.84,
+      "commission": -1.21,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 222,
+      "open_epoch": 1733239800,
+      "close_epoch": 1733240055,
+      "last_deal": 223,
+      "side": "Long",
+      "volume": 2.27,
+      "open_price": 21153.64,
+      "close_price": 21178.77,
+      "net": 55.63,
+      "magic": 969060500,
+      "sl": 21112.03,
+      "tp": 21178.61,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 21178.61"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.05,
+      "commission": -1.42,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 224,
+      "open_epoch": 1733326200,
+      "close_epoch": 1733326530,
+      "last_deal": 225,
+      "side": "Long",
+      "volume": 2.23,
+      "open_price": 21435.36,
+      "close_price": 21461.32,
+      "net": 56.5,
+      "magic": 969060500,
+      "sl": 21392.63,
+      "tp": 21461.0,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 21461.00"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.89,
+      "commission": -1.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 226,
+      "open_epoch": 1735831800,
+      "close_epoch": 1735838958,
+      "last_deal": 227,
+      "side": "Long",
+      "volume": 0.82,
+      "open_price": 21111.56,
+      "close_price": 20994.08,
+      "net": -96.84,
+      "magic": 969060500,
+      "sl": 20994.18,
+      "tp": 21181.67,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 20994.18"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -96.33,
+      "commission": -0.51,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 228,
+      "open_epoch": 1735918200,
+      "close_epoch": 1735919021,
+      "last_deal": 229,
+      "side": "Long",
+      "volume": 1.15,
+      "open_price": 21155.4,
+      "close_price": 21204.94,
+      "net": 56.25,
+      "magic": 969060500,
+      "sl": 21072.77,
+      "tp": 21204.88,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 21204.88"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 56.97,
+      "commission": -0.72,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 230,
+      "open_epoch": 1738596600,
+      "close_epoch": 1738597301,
+      "last_deal": 231,
+      "side": "Long",
+      "volume": 0.85,
+      "open_price": 21258.91,
+      "close_price": 21326.03,
+      "net": 56.52,
+      "magic": 969060500,
+      "sl": 21146.82,
+      "tp": 21326.02,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 21326.02"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.05,
+      "commission": -0.53,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 232,
+      "open_epoch": 1738683000,
+      "close_epoch": 1738687239,
+      "last_deal": 233,
+      "side": "Long",
+      "volume": 1.12,
+      "open_price": 21546.47,
+      "close_price": 21597.81,
+      "net": 56.8,
+      "magic": 969060500,
+      "sl": 21460.96,
+      "tp": 21597.73,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 21597.73"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.5,
+      "commission": -0.7,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 234,
+      "open_epoch": 1738769400,
+      "close_epoch": 1738771764,
+      "last_deal": 235,
+      "side": "Long",
+      "volume": 1.41,
+      "open_price": 21491.63,
+      "close_price": 21532.66,
+      "net": 56.97,
+      "magic": 969060500,
+      "sl": 21423.3,
+      "tp": 21532.55,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 21532.55"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 57.85,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 236,
+      "open_epoch": 1741015800,
+      "close_epoch": 1741017580,
+      "last_deal": 237,
+      "side": "Long",
+      "volume": 0.92,
+      "open_price": 20933.16,
+      "close_price": 20827.11,
+      "net": -98.15,
+      "magic": 969060500,
+      "sl": 20827.12,
+      "tp": 20996.98,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 20827.12"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -97.57,
+      "commission": -0.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 238,
+      "open_epoch": 1741102200,
+      "close_epoch": 1741102421,
+      "last_deal": 239,
+      "side": "Long",
+      "volume": 0.75,
+      "open_price": 20138.21,
+      "close_price": 20216.4,
+      "net": 58.17,
+      "magic": 969060500,
+      "sl": 20009.17,
+      "tp": 20216.32,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 20216.32"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 58.64,
+      "commission": -0.47,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 240,
+      "open_epoch": 1741188600,
+      "close_epoch": 1741189118,
+      "last_deal": 241,
+      "side": "Long",
+      "volume": 0.74,
+      "open_price": 20310.7,
+      "close_price": 20389.3,
+      "net": 57.7,
+      "magic": 969060500,
+      "sl": 20179.55,
+      "tp": 20389.24,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 20389.24"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 58.16,
+      "commission": -0.46,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 242,
+      "open_epoch": 1743517800,
+      "close_epoch": 1743518310,
+      "last_deal": 243,
+      "side": "Long",
+      "volume": 0.99,
+      "open_price": 19167.72,
+      "close_price": 19226.89,
+      "net": 57.96,
+      "magic": 969060500,
+      "sl": 19069.5,
+      "tp": 19226.81,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 19226.81"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 58.58,
+      "commission": -0.62,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 244,
+      "open_epoch": 1743604200,
+      "close_epoch": 1743607296,
+      "last_deal": 245,
+      "side": "Long",
+      "volume": 0.93,
+      "open_price": 19435.94,
+      "close_price": 19499.28,
+      "net": 58.33,
+      "magic": 969060500,
+      "sl": 19330.19,
+      "tp": 19499.27,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 19499.27"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 58.91,
+      "commission": -0.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 246,
+      "open_epoch": 1743690600,
+      "close_epoch": 1743691830,
+      "last_deal": 247,
+      "side": "Long",
+      "volume": 0.71,
+      "open_price": 18764.54,
+      "close_price": 18625.14,
+      "net": -99.41,
+      "magic": 969060500,
+      "sl": 18625.18,
+      "tp": 18848.36,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 18625.18"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -98.97,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 248,
+      "open_epoch": 1746109800,
+      "close_epoch": 1746110850,
+      "last_deal": 249,
+      "side": "Long",
+      "volume": 1.29,
+      "open_price": 19904.03,
+      "close_price": 19949.39,
+      "net": 57.7,
+      "magic": 969060500,
+      "sl": 19828.37,
+      "tp": 19949.33,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 19949.33"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 58.51,
+      "commission": -0.81,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 250,
+      "open_epoch": 1746196200,
+      "close_epoch": 1746201698,
+      "last_deal": 251,
+      "side": "Long",
+      "volume": 1.05,
+      "open_price": 20081.92,
+      "close_price": 20138.28,
+      "net": 58.52,
+      "magic": 969060500,
+      "sl": 19988.04,
+      "tp": 20138.23,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 20138.23"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.18,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 252,
+      "open_epoch": 1746455400,
+      "close_epoch": 1746456879,
+      "last_deal": 253,
+      "side": "Long",
+      "volume": 1.55,
+      "open_price": 19973.05,
+      "close_price": 20011.22,
+      "net": 58.19,
+      "magic": 969060500,
+      "sl": 19909.39,
+      "tp": 20011.17,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 20011.17"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.16,
+      "commission": -0.97,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 254,
+      "open_epoch": 1748874600,
+      "close_epoch": 1748879464,
+      "last_deal": 255,
+      "side": "Long",
+      "volume": 1.13,
+      "open_price": 21354.05,
+      "close_price": 21406.92,
+      "net": 59.03,
+      "magic": 969060500,
+      "sl": 21266.14,
+      "tp": 21406.73,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 21406.73"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.74,
+      "commission": -0.71,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 256,
+      "open_epoch": 1748961000,
+      "close_epoch": 1748962766,
+      "last_deal": 257,
+      "side": "Long",
+      "volume": 1.64,
+      "open_price": 21601.45,
+      "close_price": 21637.99,
+      "net": 58.9,
+      "magic": 969060500,
+      "sl": 21540.57,
+      "tp": 21637.98,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 21637.98"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.93,
+      "commission": -1.03,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 258,
+      "open_epoch": 1749047400,
+      "close_epoch": 1749049899,
+      "last_deal": 259,
+      "side": "Long",
+      "volume": 1.53,
+      "open_price": 21726.22,
+      "close_price": 21765.719999999998,
+      "net": 59.48,
+      "magic": 969060500,
+      "sl": 21660.39,
+      "tp": 21765.72,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 21765.72"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 60.44,
+      "commission": -0.96,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 260,
+      "open_epoch": 1751380200,
+      "close_epoch": 1751380832,
+      "last_deal": 261,
+      "side": "Long",
+      "volume": 1.88,
+      "open_price": 22575.63,
+      "close_price": 22521.9,
+      "net": -102.19,
+      "magic": 969060500,
+      "sl": 22521.92,
+      "tp": 22607.86,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 22521.92"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.01,
+      "commission": -1.18,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 262,
+      "open_epoch": 1751466600,
+      "close_epoch": 1751467858,
+      "last_deal": 263,
+      "side": "Long",
+      "volume": 1.57,
+      "open_price": 22598.26,
+      "close_price": 22636.42,
+      "net": 58.93,
+      "magic": 969060500,
+      "sl": 22534.7,
+      "tp": 22636.39,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 22636.39"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.91,
+      "commission": -0.98,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 264,
+      "open_epoch": 1751553000,
+      "close_epoch": 1751557224,
+      "last_deal": 265,
+      "side": "Long",
+      "volume": 1.95,
+      "open_price": 22867.79,
+      "close_price": 22898.73,
+      "net": 59.11,
+      "magic": 969060500,
+      "sl": 22816.22,
+      "tp": 22898.73,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 22898.73"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 60.33,
+      "commission": -1.22,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 266,
+      "open_epoch": 1754058600,
+      "close_epoch": 1754067793,
+      "last_deal": 267,
+      "side": "Long",
+      "volume": 0.83,
+      "open_price": 22871.01,
+      "close_price": 22748.13,
+      "net": -102.51,
+      "magic": 969060500,
+      "sl": 22748.18,
+      "tp": 22944.96,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 22748.18"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.99,
+      "commission": -0.52,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 268,
+      "open_epoch": 1754317800,
+      "close_epoch": 1754319675,
+      "last_deal": 269,
+      "side": "Long",
+      "volume": 1.66,
+      "open_price": 23145.04,
+      "close_price": 23084.74,
+      "net": -101.14,
+      "magic": 969060500,
+      "sl": 23084.85,
+      "tp": 23181.16,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 23084.85"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.1,
+      "commission": -1.04,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 270,
+      "open_epoch": 1754404200,
+      "close_epoch": 1754404710,
+      "last_deal": 271,
+      "side": "Long",
+      "volume": 1.66,
+      "open_price": 23190.99,
+      "close_price": 23131.21,
+      "net": -100.27,
+      "magic": 969060500,
+      "sl": 23131.26,
+      "tp": 23226.83,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 23131.26"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -99.23,
+      "commission": -1.04,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 272,
+      "open_epoch": 1756737000,
+      "close_epoch": 1756740665,
+      "last_deal": 273,
+      "side": "Long",
+      "volume": 2.95,
+      "open_price": 23449.61,
+      "close_price": 23469.669999999995,
+      "net": 57.34,
+      "magic": 969060500,
+      "sl": 23416.41,
+      "tp": 23469.53,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 23469.53"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.18,
+      "commission": -1.84,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 274,
+      "open_epoch": 1756823400,
+      "close_epoch": 1756824511,
+      "last_deal": 275,
+      "side": "Long",
+      "volume": 0.9,
+      "open_price": 23233.01,
+      "close_price": 23123.32,
+      "net": -99.28,
+      "magic": 969060500,
+      "sl": 23123.35,
+      "tp": 23299.03,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 23123.35"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -98.72,
+      "commission": -0.56,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 276,
+      "open_epoch": 1756909800,
+      "close_epoch": 1756910019,
+      "last_deal": 277,
+      "side": "Long",
+      "volume": 1.6,
+      "open_price": 23404.88,
+      "close_price": 23441.55,
+      "net": 57.67,
+      "magic": 969060500,
+      "sl": 23343.81,
+      "tp": 23441.55,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 23441.55"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 58.67,
+      "commission": -1.0,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 278,
+      "open_epoch": 1759329000,
+      "close_epoch": 1759333205,
+      "last_deal": 279,
+      "side": "Long",
+      "volume": 1.33,
+      "open_price": 24694.24,
+      "close_price": 24738.55,
+      "net": 58.1,
+      "magic": 969060500,
+      "sl": 24620.46,
+      "tp": 24738.47,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 24738.47"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 58.93,
+      "commission": -0.83,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 280,
+      "open_epoch": 1759415400,
+      "close_epoch": 1759416402,
+      "last_deal": 281,
+      "side": "Long",
+      "volume": 1.98,
+      "open_price": 24891.38,
+      "close_price": 24841.37,
+      "net": -100.26,
+      "magic": 969060500,
+      "sl": 24841.41,
+      "tp": 24921.36,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 24841.41"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -99.02,
+      "commission": -1.24,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 282,
+      "open_epoch": 1759501800,
+      "close_epoch": 1759502321,
+      "last_deal": 283,
+      "side": "Long",
+      "volume": 2.44,
+      "open_price": 24903.8,
+      "close_price": 24927.86,
+      "net": 57.18,
+      "magic": 969060500,
+      "sl": 24863.68,
+      "tp": 24927.84,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 24927.84"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 58.71,
+      "commission": -1.53,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 284,
+      "open_epoch": 1762183800,
+      "close_epoch": 1762184622,
+      "last_deal": 285,
+      "side": "Long",
+      "volume": 1.29,
+      "open_price": 25951.69,
+      "close_price": 25997.82,
+      "net": 58.7,
+      "magic": 969060500,
+      "sl": 25875.29,
+      "tp": 25997.66,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 25997.66"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.51,
+      "commission": -0.81,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 286,
+      "open_epoch": 1762270200,
+      "close_epoch": 1762271834,
+      "last_deal": 287,
+      "side": "Long",
+      "volume": 0.99,
+      "open_price": 25774.92,
+      "close_price": 25674.8,
+      "net": -99.74,
+      "magic": 969060500,
+      "sl": 25674.9,
+      "tp": 25834.71,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 25674.90"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -99.12,
+      "commission": -0.62,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 288,
+      "open_epoch": 1762356600,
+      "close_epoch": 1762360958,
+      "last_deal": 289,
+      "side": "Long",
+      "volume": 0.98,
+      "open_price": 25604.64,
+      "close_price": 25664.87,
+      "net": 58.42,
+      "magic": 969060500,
+      "sl": 25503.91,
+      "tp": 25664.87,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 25664.87"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.03,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 290,
+      "open_epoch": 1764603000,
+      "close_epoch": 1764604299,
+      "last_deal": 291,
+      "side": "Long",
+      "volume": 1.25,
+      "open_price": 25313.13,
+      "close_price": 25360.55,
+      "net": 58.5,
+      "magic": 969060500,
+      "sl": 25234.26,
+      "tp": 25360.37,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 25360.37"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.28,
+      "commission": -0.78,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 292,
+      "open_epoch": 1764689400,
+      "close_epoch": 1764690148,
+      "last_deal": 293,
+      "side": "Long",
+      "volume": 1.43,
+      "open_price": 25564.91,
+      "close_price": 25606.84,
+      "net": 59.07,
+      "magic": 969060500,
+      "sl": 25496.02,
+      "tp": 25606.8,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 25606.80"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.96,
+      "commission": -0.89,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 294,
+      "open_epoch": 1764775800,
+      "close_epoch": 1764776022,
+      "last_deal": 295,
+      "side": "Long",
+      "volume": 1.22,
+      "open_price": 25520.05,
+      "close_price": 25569.18,
+      "net": 59.18,
+      "magic": 969060500,
+      "sl": 25438.05,
+      "tp": 25569.1,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 25569.10"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.94,
+      "commission": -0.76,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 296,
+      "open_epoch": 1767367800,
+      "close_epoch": 1767368055,
+      "last_deal": 297,
+      "side": "Long",
+      "volume": 1.16,
+      "open_price": 25316.77,
+      "close_price": 25372.83,
+      "net": 64.3,
+      "magic": 969060500,
+      "sl": 25234.0,
+      "tp": 25372.53,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 25372.53"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 65.03,
+      "commission": -0.73,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 298,
+      "open_epoch": 1767627000,
+      "close_epoch": 1767636502,
+      "last_deal": 299,
+      "side": "Long",
+      "volume": 1.34,
+      "open_price": 25509.75,
+      "close_price": 25431.7,
+      "net": -105.43,
+      "magic": 969060500,
+      "sl": 25432.22,
+      "tp": 25552.54,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 25432.22"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.59,
+      "commission": -0.84,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 300,
+      "open_epoch": 1770046200,
+      "close_epoch": 1770054953,
+      "last_deal": 301,
+      "side": "Long",
+      "volume": 0.86,
+      "open_price": 25771.22,
+      "close_price": 25840.650000000005,
+      "net": 59.17,
+      "magic": 969060500,
+      "sl": 25654.54,
+      "tp": 25840.35,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 25840.35"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.71,
+      "commission": -0.54,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 302,
+      "open_epoch": 1770132600,
+      "close_epoch": 1770133820,
+      "last_deal": 303,
+      "side": "Long",
+      "volume": 1.03,
+      "open_price": 25452.77,
+      "close_price": 25512.91,
+      "net": 61.3,
+      "magic": 969060500,
+      "sl": 25356.78,
+      "tp": 25512.8,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 25512.80"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 61.94,
+      "commission": -0.64,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 304,
+      "open_epoch": 1770219000,
+      "close_epoch": 1770219395,
+      "last_deal": 305,
+      "side": "Long",
+      "volume": 0.91,
+      "open_price": 25158.28,
+      "close_price": 25049.44,
+      "net": -99.61,
+      "magic": 969060500,
+      "sl": 25049.49,
+      "tp": 25227.49,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 25049.49"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -99.04,
+      "commission": -0.57,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 306,
+      "open_epoch": 1772465400,
+      "close_epoch": 1772467725,
+      "last_deal": 307,
+      "side": "Long",
+      "volume": 0.72,
+      "open_price": 24856.81,
+      "close_price": 24941.22,
+      "net": 60.33,
+      "magic": 969060500,
+      "sl": 24719.05,
+      "tp": 24941.2,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 24941.20"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 60.78,
+      "commission": -0.45,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 308,
+      "open_epoch": 1772551800,
+      "close_epoch": 1772552202,
+      "last_deal": 309,
+      "side": "Long",
+      "volume": 0.67,
+      "open_price": 24339.75,
+      "close_price": 24433.04,
+      "net": 62.08,
+      "magic": 969060500,
+      "sl": 24188.8,
+      "tp": 24431.69,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 24431.69"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 62.5,
+      "commission": -0.42,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 310,
+      "open_epoch": 1772638200,
+      "close_epoch": 1772661600,
+      "last_deal": 311,
+      "side": "Long",
+      "volume": 0.69,
+      "open_price": 25122.95,
+      "close_price": 25122.33,
+      "net": -0.86,
+      "magic": 969060500,
+      "sl": 24975.84,
+      "tp": 25210.4,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -0.43,
+      "commission": -0.43,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 312,
+      "open_epoch": 1775053800,
+      "close_epoch": 1775055510,
+      "last_deal": 313,
+      "side": "Long",
+      "volume": 0.8,
+      "open_price": 24027.5,
+      "close_price": 24101.83,
+      "net": 58.96,
+      "magic": 969060500,
+      "sl": 23899.56,
+      "tp": 24101.77,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 24101.77"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 59.46,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 314,
+      "open_epoch": 1775140200,
+      "close_epoch": 1775140393,
+      "last_deal": 315,
+      "side": "Long",
+      "volume": 0.92,
+      "open_price": 23781.13,
+      "close_price": 23849.79,
+      "net": 62.59,
+      "magic": 969060500,
+      "sl": 23670.87,
+      "tp": 23849.34,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 23849.34"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 63.17,
+      "commission": -0.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 316,
+      "open_epoch": 1777645800,
+      "close_epoch": 1777646163,
+      "last_deal": 317,
+      "side": "Long",
+      "volume": 1.3,
+      "open_price": 27765.34,
+      "close_price": 27684.99,
+      "net": -105.27,
+      "magic": 969060500,
+      "sl": 27685.17,
+      "tp": 27811.89,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 27685.17"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.46,
+      "commission": -0.81,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 318,
+      "open_epoch": 1777905000,
+      "close_epoch": 1777905905,
+      "last_deal": 319,
+      "side": "Long",
+      "volume": 0.99,
+      "open_price": 27772.28,
+      "close_price": 27834.28,
+      "net": 60.76,
+      "magic": 969060500,
+      "sl": 27669.59,
+      "tp": 27834.28,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 27834.28"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 61.38,
+      "commission": -0.62,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 320,
+      "open_epoch": 1777991400,
+      "close_epoch": 1778003546,
+      "last_deal": 321,
+      "side": "Long",
+      "volume": 1.41,
+      "open_price": 28021.85,
+      "close_price": 28065.92,
+      "net": 61.26,
+      "magic": 969060500,
+      "sl": 27949.03,
+      "tp": 28065.43,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 28065.43"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 62.14,
+      "commission": -0.88,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 322,
+      "open_epoch": 1780324200,
+      "close_epoch": 1780325336,
+      "last_deal": 323,
+      "side": "Long",
+      "volume": 1.02,
+      "open_price": 30362.85,
+      "close_price": 30422.87,
+      "net": 60.58,
+      "magic": 969060500,
+      "sl": 30262.06,
+      "tp": 30422.8,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 30422.80"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 61.22,
+      "commission": -0.64,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 324,
+      "open_epoch": 1780410600,
+      "close_epoch": 1780411018,
+      "last_deal": 325,
+      "side": "Long",
+      "volume": 1.3,
+      "open_price": 30544.31,
+      "close_price": 30592.33,
+      "net": 61.62,
+      "magic": 969060500,
+      "sl": 30464.28,
+      "tp": 30592.01,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 30592.01"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 62.43,
+      "commission": -0.81,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 326,
+      "open_epoch": 1780497000,
+      "close_epoch": 1780501224,
+      "last_deal": 327,
+      "side": "Long",
+      "volume": 0.97,
+      "open_price": 30711.82,
+      "close_price": 30603.639999999996,
+      "net": -105.54,
+      "magic": 969060500,
+      "sl": 30604.2,
+      "tp": 30776.39,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 30604.20"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.93,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 328,
+      "open_epoch": 1782916200,
+      "close_epoch": 1782917107,
+      "last_deal": 329,
+      "side": "Long",
+      "volume": 0.97,
+      "open_price": 30067.49,
+      "close_price": 29960.22,
+      "net": -104.66,
+      "magic": 969060500,
+      "sl": 29960.27,
+      "tp": 30130.19,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 29960.27"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -104.05,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 330,
+      "open_epoch": 1783002600,
+      "close_epoch": 1783004003,
+      "last_deal": 331,
+      "side": "Long",
+      "volume": 0.53,
+      "open_price": 29719.65,
+      "close_price": 29526.17,
+      "net": -102.87,
+      "magic": 969060500,
+      "sl": 29526.6,
+      "tp": 29836.95,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 29526.60"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.54,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 332,
+      "open_epoch": 1783089000,
+      "close_epoch": 1783288802,
+      "last_deal": 333,
+      "side": "Long",
+      "volume": 1.79,
+      "open_price": 29695.74,
+      "close_price": 29752.37,
+      "net": 65.05,
+      "magic": 969060500,
+      "sl": 29639.98,
+      "tp": 29729.92,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 29729.92"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 101.37,
+      "commission": -1.12,
+      "swap": -35.2,
+      "fee": 0.0
+    },
+    {
+      "position_id": 334,
+      "open_epoch": 1785767400,
+      "close_epoch": 1785768700,
+      "last_deal": 335,
+      "side": "Long",
+      "volume": 0.67,
+      "open_price": 28573.59,
+      "close_price": 28664.0,
+      "net": 60.15,
+      "magic": 969060500,
+      "sl": 28419.14,
+      "tp": 28663.86,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 28663.86"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 60.57,
+      "commission": -0.42,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 336,
+      "open_epoch": 1785853800,
+      "close_epoch": 1785856759,
+      "last_deal": 337,
+      "side": "Long",
+      "volume": 0.83,
+      "open_price": 29455.3,
+      "close_price": 29528.66,
+      "net": 60.37,
+      "magic": 969060500,
+      "sl": 29331.32,
+      "tp": 29528.49,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 29528.49"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 60.89,
+      "commission": -0.52,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 338,
+      "open_epoch": 1785940200,
+      "close_epoch": 1785941622,
+      "last_deal": 339,
+      "side": "Long",
+      "volume": 1.01,
+      "open_price": 29809.45,
+      "close_price": 29710.44,
+      "net": -100.63,
+      "magic": 969060500,
+      "sl": 29711.02,
+      "tp": 29874.51,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 29711.02"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.0,
+      "commission": -0.63,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 340,
+      "open_epoch": 1788273000,
+      "close_epoch": 1788273896,
+      "last_deal": 341,
+      "side": "Long",
+      "volume": 0.93,
+      "open_price": 29138.5,
+      "close_price": 29205.0,
+      "net": 61.27,
+      "magic": 969060500,
+      "sl": 29029.92,
+      "tp": 29204.45,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 29204.45"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 61.85,
+      "commission": -0.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 342,
+      "open_epoch": 1788359400,
+      "close_epoch": 1788381000,
+      "last_deal": 343,
+      "side": "Long",
+      "volume": 0.89,
+      "open_price": 29162.75,
+      "close_price": 29132.01,
+      "net": -27.92,
+      "magic": 969060500,
+      "sl": 29047.97,
+      "tp": 29232.02,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        ""
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -27.36,
+      "commission": -0.56,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 344,
+      "open_epoch": 1788445800,
+      "close_epoch": 1788447790,
+      "last_deal": 345,
+      "side": "Long",
+      "volume": 0.92,
+      "open_price": 29321.0,
+      "close_price": 29387.25,
+      "net": 60.37,
+      "magic": 969060500,
+      "sl": 29209.25,
+      "tp": 29387.25,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 29387.25"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 60.95,
+      "commission": -0.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 346,
+      "open_epoch": 1790865000,
+      "close_epoch": 1790865562,
+      "last_deal": 347,
+      "side": "Long",
+      "volume": 0.71,
+      "open_price": 30389.86,
+      "close_price": 30478.34,
+      "net": 62.38,
+      "magic": 969060500,
+      "sl": 30246.53,
+      "tp": 30478.26,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 30478.26"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 62.82,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 348,
+      "open_epoch": 1790951400,
+      "close_epoch": 1790953397,
+      "last_deal": 349,
+      "side": "Long",
+      "volume": 0.84,
+      "open_price": 31039.4,
+      "close_price": 30915.65,
+      "net": -104.48,
+      "magic": 969060500,
+      "sl": 30915.75,
+      "tp": 31113.59,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "sl 30915.75"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.95,
+      "commission": -0.53,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 350,
+      "open_epoch": 1791210600,
+      "close_epoch": 1791222260,
+      "last_deal": 351,
+      "side": "Long",
+      "volume": 0.99,
+      "open_price": 31019.15,
+      "close_price": 31081.15,
+      "net": 60.76,
+      "magic": 969060500,
+      "sl": 30914.69,
+      "tp": 31081.03,
+      "entry_comment": "Month-end flow",
+      "exit_comments": [
+        "tp 31081.03"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 61.38,
+      "commission": -0.62,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1635777000,
+      "deal": 2,
+      "balance": 9998.09,
+      "net": -1.91
+    },
+    {
+      "epoch": 1635777732,
+      "deal": 3,
+      "balance": 9897.05,
+      "net": -101.04
+    },
+    {
+      "epoch": 1635863400,
+      "deal": 4,
+      "balance": 9895.31,
+      "net": -1.74
+    },
+    {
+      "epoch": 1635867911,
+      "deal": 5,
+      "balance": 9955.14,
+      "net": 59.83
+    },
+    {
+      "epoch": 1635949800,
+      "deal": 6,
+      "balance": 9952.73,
+      "net": -2.41
+    },
+    {
+      "epoch": 1635955016,
+      "deal": 7,
+      "balance": 10012.75,
+      "net": 60.02
+    },
+    {
+      "epoch": 1638372600,
+      "deal": 8,
+      "balance": 10011.47,
+      "net": -1.28
+    },
+    {
+      "epoch": 1638373600,
+      "deal": 9,
+      "balance": 10072.45,
+      "net": 60.98
+    },
+    {
+      "epoch": 1638459000,
+      "deal": 10,
+      "balance": 10071.89,
+      "net": -0.56
+    },
+    {
+      "epoch": 1638459796,
+      "deal": 11,
+      "balance": 9970.39,
+      "net": -101.5
+    },
+    {
+      "epoch": 1638545400,
+      "deal": 12,
+      "balance": 9969.72,
+      "net": -0.67
+    },
+    {
+      "epoch": 1638546083,
+      "deal": 13,
+      "balance": 9869.15,
+      "net": -100.57
+    },
+    {
+      "epoch": 1641223800,
+      "deal": 14,
+      "balance": 9868.09,
+      "net": -1.06
+    },
+    {
+      "epoch": 1641235393,
+      "deal": 15,
+      "balance": 9927.73,
+      "net": 59.64
+    },
+    {
+      "epoch": 1641310200,
+      "deal": 16,
+      "balance": 9926.46,
+      "net": -1.27
+    },
+    {
+      "epoch": 1641310479,
+      "deal": 17,
+      "balance": 9825.93,
+      "net": -100.53
+    },
+    {
+      "epoch": 1641396600,
+      "deal": 18,
+      "balance": 9824.85,
+      "net": -1.08
+    },
+    {
+      "epoch": 1641397122,
+      "deal": 19,
+      "balance": 9725.95,
+      "net": -98.9
+    },
+    {
+      "epoch": 1643729400,
+      "deal": 20,
+      "balance": 9725.24,
+      "net": -0.71
+    },
+    {
+      "epoch": 1643731234,
+      "deal": 21,
+      "balance": 9783.76,
+      "net": 58.52
+    },
+    {
+      "epoch": 1643815800,
+      "deal": 22,
+      "balance": 9782.98,
+      "net": -0.78
+    },
+    {
+      "epoch": 1643818299,
+      "deal": 23,
+      "balance": 9684.26,
+      "net": -98.72
+    },
+    {
+      "epoch": 1643902200,
+      "deal": 24,
+      "balance": 9683.58,
+      "net": -0.68
+    },
+    {
+      "epoch": 1643903370,
+      "deal": 25,
+      "balance": 9585.06,
+      "net": -98.52
+    },
+    {
+      "epoch": 1646148600,
+      "deal": 26,
+      "balance": 9584.46,
+      "net": -0.6
+    },
+    {
+      "epoch": 1646149961,
+      "deal": 27,
+      "balance": 9487.25,
+      "net": -97.21
+    },
+    {
+      "epoch": 1646235000,
+      "deal": 28,
+      "balance": 9486.69,
+      "net": -0.56
+    },
+    {
+      "epoch": 1646237254,
+      "deal": 29,
+      "balance": 9543.97,
+      "net": 57.28
+    },
+    {
+      "epoch": 1646321400,
+      "deal": 30,
+      "balance": 9543.31,
+      "net": -0.66
+    },
+    {
+      "epoch": 1646323115,
+      "deal": 31,
+      "balance": 9447.43,
+      "net": -95.88
+    },
+    {
+      "epoch": 1648823400,
+      "deal": 32,
+      "balance": 9446.3,
+      "net": -1.13
+    },
+    {
+      "epoch": 1648823764,
+      "deal": 33,
+      "balance": 9504.67,
+      "net": 58.37
+    },
+    {
+      "epoch": 1649082600,
+      "deal": 34,
+      "balance": 9503.64,
+      "net": -1.03
+    },
+    {
+      "epoch": 1649084498,
+      "deal": 35,
+      "balance": 9560.68,
+      "net": 57.04
+    },
+    {
+      "epoch": 1649169000,
+      "deal": 36,
+      "balance": 9559.62,
+      "net": -1.06
+    },
+    {
+      "epoch": 1649172996,
+      "deal": 37,
+      "balance": 9463.21,
+      "net": -96.41
+    },
+    {
+      "epoch": 1651501800,
+      "deal": 38,
+      "balance": 9462.7,
+      "net": -0.51
+    },
+    {
+      "epoch": 1651503867,
+      "deal": 39,
+      "balance": 9367.56,
+      "net": -95.14
+    },
+    {
+      "epoch": 1651588200,
+      "deal": 40,
+      "balance": 9366.84,
+      "net": -0.72
+    },
+    {
+      "epoch": 1651589103,
+      "deal": 41,
+      "balance": 9272.24,
+      "net": -94.6
+    },
+    {
+      "epoch": 1651674600,
+      "deal": 42,
+      "balance": 9271.11,
+      "net": -1.13
+    },
+    {
+      "epoch": 1651676613,
+      "deal": 43,
+      "balance": 9177.73,
+      "net": -93.38
+    },
+    {
+      "epoch": 1654093800,
+      "deal": 44,
+      "balance": 9177.02,
+      "net": -0.71
+    },
+    {
+      "epoch": 1654095372,
+      "deal": 45,
+      "balance": 9232.36,
+      "net": 55.34
+    },
+    {
+      "epoch": 1654180200,
+      "deal": 46,
+      "balance": 9231.67,
+      "net": -0.69
+    },
+    {
+      "epoch": 1654180803,
+      "deal": 47,
+      "balance": 9288.37,
+      "net": 56.7
+    },
+    {
+      "epoch": 1654266600,
+      "deal": 48,
+      "balance": 9287.64,
+      "net": -0.73
+    },
+    {
+      "epoch": 1654268436,
+      "deal": 49,
+      "balance": 9193.82,
+      "net": -93.82
+    },
+    {
+      "epoch": 1656685800,
+      "deal": 50,
+      "balance": 9193.21,
+      "net": -0.61
+    },
+    {
+      "epoch": 1656688118,
+      "deal": 51,
+      "balance": 9249.8,
+      "net": 56.59
+    },
+    {
+      "epoch": 1656945000,
+      "deal": 52,
+      "balance": 9248.06,
+      "net": -1.74
+    },
+    {
+      "epoch": 1656947194,
+      "deal": 53,
+      "balance": 9305.03,
+      "net": 56.97
+    },
+    {
+      "epoch": 1657031400,
+      "deal": 54,
+      "balance": 9304.26,
+      "net": -0.77
+    },
+    {
+      "epoch": 1657031796,
+      "deal": 55,
+      "balance": 9360.98,
+      "net": 56.72
+    },
+    {
+      "epoch": 1659364200,
+      "deal": 56,
+      "balance": 9360.02,
+      "net": -0.96
+    },
+    {
+      "epoch": 1659364716,
+      "deal": 57,
+      "balance": 9416.66,
+      "net": 56.64
+    },
+    {
+      "epoch": 1659450600,
+      "deal": 58,
+      "balance": 9415.67,
+      "net": -0.99
+    },
+    {
+      "epoch": 1659451514,
+      "deal": 59,
+      "balance": 9472.53,
+      "net": 56.86
+    },
+    {
+      "epoch": 1659537000,
+      "deal": 60,
+      "balance": 9471.57,
+      "net": -0.96
+    },
+    {
+      "epoch": 1659537360,
+      "deal": 61,
+      "balance": 9375.1,
+      "net": -96.47
+    },
+    {
+      "epoch": 1662042600,
+      "deal": 62,
+      "balance": 9374.17,
+      "net": -0.93
+    },
+    {
+      "epoch": 1662043138,
+      "deal": 63,
+      "balance": 9279.81,
+      "net": -94.36
+    },
+    {
+      "epoch": 1662129000,
+      "deal": 64,
+      "balance": 9279.08,
+      "net": -0.73
+    },
+    {
+      "epoch": 1662129688,
+      "deal": 65,
+      "balance": 9335.37,
+      "net": 56.29
+    },
+    {
+      "epoch": 1662388200,
+      "deal": 66,
+      "balance": 9333.96,
+      "net": -1.41
+    },
+    {
+      "epoch": 1662417000,
+      "deal": 67,
+      "balance": 9348.32,
+      "net": 14.36
+    },
+    {
+      "epoch": 1664807400,
+      "deal": 68,
+      "balance": 9347.5,
+      "net": -0.82
+    },
+    {
+      "epoch": 1664817844,
+      "deal": 69,
+      "balance": 9404.43,
+      "net": 56.93
+    },
+    {
+      "epoch": 1664893800,
+      "deal": 70,
+      "balance": 9403.34,
+      "net": -1.09
+    },
+    {
+      "epoch": 1664894426,
+      "deal": 71,
+      "balance": 9460.36,
+      "net": 57.02
+    },
+    {
+      "epoch": 1664980200,
+      "deal": 72,
+      "balance": 9459.5,
+      "net": -0.86
+    },
+    {
+      "epoch": 1664983471,
+      "deal": 73,
+      "balance": 9516.73,
+      "net": 57.23
+    },
+    {
+      "epoch": 1667313000,
+      "deal": 74,
+      "balance": 9515.73,
+      "net": -1.0
+    },
+    {
+      "epoch": 1667313629,
+      "deal": 75,
+      "balance": 9420.13,
+      "net": -95.6
+    },
+    {
+      "epoch": 1667399400,
+      "deal": 76,
+      "balance": 9418.93,
+      "net": -1.2
+    },
+    {
+      "epoch": 1667405269,
+      "deal": 77,
+      "balance": 9324.18,
+      "net": -94.75
+    },
+    {
+      "epoch": 1667485800,
+      "deal": 78,
+      "balance": 9323.39,
+      "net": -0.79
+    },
+    {
+      "epoch": 1667489499,
+      "deal": 79,
+      "balance": 9229.75,
+      "net": -93.64
+    },
+    {
+      "epoch": 1669908600,
+      "deal": 80,
+      "balance": 9228.9,
+      "net": -0.85
+    },
+    {
+      "epoch": 1669909708,
+      "deal": 81,
+      "balance": 9285.08,
+      "net": 56.18
+    },
+    {
+      "epoch": 1669995000,
+      "deal": 82,
+      "balance": 9284.33,
+      "net": -0.75
+    },
+    {
+      "epoch": 1669999288,
+      "deal": 83,
+      "balance": 9340.54,
+      "net": 56.21
+    },
+    {
+      "epoch": 1670254200,
+      "deal": 84,
+      "balance": 9339.24,
+      "net": -1.3
+    },
+    {
+      "epoch": 1670254835,
+      "deal": 85,
+      "balance": 9395.48,
+      "net": 56.24
+    },
+    {
+      "epoch": 1672759800,
+      "deal": 86,
+      "balance": 9394.76,
+      "net": -0.72
+    },
+    {
+      "epoch": 1672764395,
+      "deal": 87,
+      "balance": 9299.95,
+      "net": -94.81
+    },
+    {
+      "epoch": 1672846200,
+      "deal": 88,
+      "balance": 9299.06,
+      "net": -0.89
+    },
+    {
+      "epoch": 1672847123,
+      "deal": 89,
+      "balance": 9355.24,
+      "net": 56.18
+    },
+    {
+      "epoch": 1675265400,
+      "deal": 90,
+      "balance": 9353.67,
+      "net": -1.57
+    },
+    {
+      "epoch": 1675266636,
+      "deal": 91,
+      "balance": 9259.14,
+      "net": -94.53
+    },
+    {
+      "epoch": 1675351800,
+      "deal": 92,
+      "balance": 9258.16,
+      "net": -0.98
+    },
+    {
+      "epoch": 1675351900,
+      "deal": 93,
+      "balance": 9314.21,
+      "net": 56.05
+    },
+    {
+      "epoch": 1675438200,
+      "deal": 94,
+      "balance": 9313.62,
+      "net": -0.59
+    },
+    {
+      "epoch": 1675438774,
+      "deal": 95,
+      "balance": 9370.24,
+      "net": 56.62
+    },
+    {
+      "epoch": 1677684600,
+      "deal": 96,
+      "balance": 9369.08,
+      "net": -1.16
+    },
+    {
+      "epoch": 1677685106,
+      "deal": 97,
+      "balance": 9425.91,
+      "net": 56.83
+    },
+    {
+      "epoch": 1677771000,
+      "deal": 98,
+      "balance": 9424.68,
+      "net": -1.23
+    },
+    {
+      "epoch": 1677782157,
+      "deal": 99,
+      "balance": 9481.61,
+      "net": 56.93
+    },
+    {
+      "epoch": 1677857400,
+      "deal": 100,
+      "balance": 9480.43,
+      "net": -1.18
+    },
+    {
+      "epoch": 1677859837,
+      "deal": 101,
+      "balance": 9384.16,
+      "net": -96.27
+    },
+    {
+      "epoch": 1680532200,
+      "deal": 102,
+      "balance": 9382.62,
+      "net": -1.54
+    },
+    {
+      "epoch": 1680533254,
+      "deal": 103,
+      "balance": 9288.35,
+      "net": -94.27
+    },
+    {
+      "epoch": 1680618600,
+      "deal": 104,
+      "balance": 9287.05,
+      "net": -1.3
+    },
+    {
+      "epoch": 1680620963,
+      "deal": 105,
+      "balance": 9193.26,
+      "net": -93.79
+    },
+    {
+      "epoch": 1680705000,
+      "deal": 106,
+      "balance": 9191.82,
+      "net": -1.44
+    },
+    {
+      "epoch": 1680705874,
+      "deal": 107,
+      "balance": 9099.1,
+      "net": -92.72
+    },
+    {
+      "epoch": 1682951400,
+      "deal": 108,
+      "balance": 9097.35,
+      "net": -1.75
+    },
+    {
+      "epoch": 1682952743,
+      "deal": 109,
+      "balance": 9153.46,
+      "net": 56.11
+    },
+    {
+      "epoch": 1683037800,
+      "deal": 110,
+      "balance": 9151.85,
+      "net": -1.61
+    },
+    {
+      "epoch": 1683038173,
+      "deal": 111,
+      "balance": 9059.77,
+      "net": -92.08
+    },
+    {
+      "epoch": 1683124200,
+      "deal": 112,
+      "balance": 9058.14,
+      "net": -1.63
+    },
+    {
+      "epoch": 1683125416,
+      "deal": 113,
+      "balance": 9113.0,
+      "net": 54.86
+    },
+    {
+      "epoch": 1685629800,
+      "deal": 114,
+      "balance": 9111.76,
+      "net": -1.24
+    },
+    {
+      "epoch": 1685630459,
+      "deal": 115,
+      "balance": 9166.98,
+      "net": 55.22
+    },
+    {
+      "epoch": 1685716200,
+      "deal": 116,
+      "balance": 9165.96,
+      "net": -1.02
+    },
+    {
+      "epoch": 1685717070,
+      "deal": 117,
+      "balance": 9221.2,
+      "net": 55.24
+    },
+    {
+      "epoch": 1685975400,
+      "deal": 118,
+      "balance": 9219.52,
+      "net": -1.68
+    },
+    {
+      "epoch": 1685975838,
+      "deal": 119,
+      "balance": 9274.94,
+      "net": 55.42
+    },
+    {
+      "epoch": 1688394600,
+      "deal": 120,
+      "balance": 9273.1,
+      "net": -1.84
+    },
+    {
+      "epoch": 1688395175,
+      "deal": 121,
+      "balance": 9179.61,
+      "net": -93.49
+    },
+    {
+      "epoch": 1688481000,
+      "deal": 122,
+      "balance": 9175.51,
+      "net": -4.1
+    },
+    {
+      "epoch": 1688508300,
+      "deal": 123,
+      "balance": 9146.32,
+      "net": -29.19
+    },
+    {
+      "epoch": 1688567400,
+      "deal": 124,
+      "balance": 9144.88,
+      "net": -1.44
+    },
+    {
+      "epoch": 1688570366,
+      "deal": 125,
+      "balance": 9052.41,
+      "net": -92.47
+    },
+    {
+      "epoch": 1690900200,
+      "deal": 126,
+      "balance": 9051.13,
+      "net": -1.28
+    },
+    {
+      "epoch": 1690900598,
+      "deal": 127,
+      "balance": 9106.56,
+      "net": 55.43
+    },
+    {
+      "epoch": 1690986600,
+      "deal": 128,
+      "balance": 9105.66,
+      "net": -0.9
+    },
+    {
+      "epoch": 1690991302,
+      "deal": 129,
+      "balance": 9013.51,
+      "net": -92.15
+    },
+    {
+      "epoch": 1691073000,
+      "deal": 130,
+      "balance": 9012.68,
+      "net": -0.83
+    },
+    {
+      "epoch": 1691073326,
+      "deal": 131,
+      "balance": 9067.53,
+      "net": 54.85
+    },
+    {
+      "epoch": 1693578600,
+      "deal": 132,
+      "balance": 9066.57,
+      "net": -0.96
+    },
+    {
+      "epoch": 1693579599,
+      "deal": 133,
+      "balance": 8975.25,
+      "net": -91.32
+    },
+    {
+      "epoch": 1693837800,
+      "deal": 134,
+      "balance": 8972.49,
+      "net": -2.76
+    },
+    {
+      "epoch": 1693839125,
+      "deal": 135,
+      "balance": 8880.16,
+      "net": -92.33
+    },
+    {
+      "epoch": 1693924200,
+      "deal": 136,
+      "balance": 8879.18,
+      "net": -0.98
+    },
+    {
+      "epoch": 1693925537,
+      "deal": 137,
+      "balance": 8933.31,
+      "net": 54.13
+    },
+    {
+      "epoch": 1696257000,
+      "deal": 138,
+      "balance": 8932.39,
+      "net": -0.92
+    },
+    {
+      "epoch": 1696259054,
+      "deal": 139,
+      "balance": 8986.72,
+      "net": 54.33
+    },
+    {
+      "epoch": 1696343400,
+      "deal": 140,
+      "balance": 8985.97,
+      "net": -0.75
+    },
+    {
+      "epoch": 1696355376,
+      "deal": 141,
+      "balance": 8894.53,
+      "net": -91.44
+    },
+    {
+      "epoch": 1696429800,
+      "deal": 142,
+      "balance": 8893.66,
+      "net": -0.87
+    },
+    {
+      "epoch": 1696429955,
+      "deal": 143,
+      "balance": 8947.54,
+      "net": 53.88
+    },
+    {
+      "epoch": 1698849000,
+      "deal": 144,
+      "balance": 8946.56,
+      "net": -0.98
+    },
+    {
+      "epoch": 1698852817,
+      "deal": 145,
+      "balance": 8856.33,
+      "net": -90.23
+    },
+    {
+      "epoch": 1698935400,
+      "deal": 146,
+      "balance": 8855.1,
+      "net": -1.23
+    },
+    {
+      "epoch": 1698936761,
+      "deal": 147,
+      "balance": 8908.59,
+      "net": 53.49
+    },
+    {
+      "epoch": 1699021800,
+      "deal": 148,
+      "balance": 8907.56,
+      "net": -1.03
+    },
+    {
+      "epoch": 1699023575,
+      "deal": 149,
+      "balance": 8961.7,
+      "net": 54.14
+    },
+    {
+      "epoch": 1701444600,
+      "deal": 150,
+      "balance": 8960.33,
+      "net": -1.37
+    },
+    {
+      "epoch": 1701444928,
+      "deal": 151,
+      "balance": 9014.86,
+      "net": 54.53
+    },
+    {
+      "epoch": 1701703800,
+      "deal": 152,
+      "balance": 9013.77,
+      "net": -1.09
+    },
+    {
+      "epoch": 1701708380,
+      "deal": 153,
+      "balance": 9068.11,
+      "net": 54.34
+    },
+    {
+      "epoch": 1701790200,
+      "deal": 154,
+      "balance": 9066.99,
+      "net": -1.12
+    },
+    {
+      "epoch": 1701790874,
+      "deal": 155,
+      "balance": 9121.84,
+      "net": 54.85
+    },
+    {
+      "epoch": 1704209400,
+      "deal": 156,
+      "balance": 9120.98,
+      "net": -0.86
+    },
+    {
+      "epoch": 1704213037,
+      "deal": 157,
+      "balance": 9176.3,
+      "net": 55.32
+    },
+    {
+      "epoch": 1704295800,
+      "deal": 158,
+      "balance": 9175.23,
+      "net": -1.07
+    },
+    {
+      "epoch": 1704297758,
+      "deal": 159,
+      "balance": 9230.91,
+      "net": 55.68
+    },
+    {
+      "epoch": 1706801400,
+      "deal": 160,
+      "balance": 9229.78,
+      "net": -1.13
+    },
+    {
+      "epoch": 1706802639,
+      "deal": 161,
+      "balance": 9136.62,
+      "net": -93.16
+    },
+    {
+      "epoch": 1706887800,
+      "deal": 162,
+      "balance": 9135.73,
+      "net": -0.89
+    },
+    {
+      "epoch": 1706888435,
+      "deal": 163,
+      "balance": 9190.63,
+      "net": 54.9
+    },
+    {
+      "epoch": 1707147000,
+      "deal": 164,
+      "balance": 9189.4,
+      "net": -1.23
+    },
+    {
+      "epoch": 1707147638,
+      "deal": 165,
+      "balance": 9097.24,
+      "net": -92.16
+    },
+    {
+      "epoch": 1709307780,
+      "deal": 166,
+      "balance": 9096.1,
+      "net": -1.14
+    },
+    {
+      "epoch": 1709308573,
+      "deal": 167,
+      "balance": 9151.37,
+      "net": 55.27
+    },
+    {
+      "epoch": 1709566200,
+      "deal": 168,
+      "balance": 9149.58,
+      "net": -1.79
+    },
+    {
+      "epoch": 1709566535,
+      "deal": 169,
+      "balance": 9204.6,
+      "net": 55.02
+    },
+    {
+      "epoch": 1709652600,
+      "deal": 170,
+      "balance": 9203.59,
+      "net": -1.01
+    },
+    {
+      "epoch": 1709663848,
+      "deal": 171,
+      "balance": 9111.03,
+      "net": -92.56
+    },
+    {
+      "epoch": 1711981800,
+      "deal": 172,
+      "balance": 9109.94,
+      "net": -1.09
+    },
+    {
+      "epoch": 1711982378,
+      "deal": 173,
+      "balance": 9017.24,
+      "net": -92.7
+    },
+    {
+      "epoch": 1712068200,
+      "deal": 174,
+      "balance": 9016.34,
+      "net": -0.9
+    },
+    {
+      "epoch": 1712072191,
+      "deal": 175,
+      "balance": 9070.96,
+      "net": 54.62
+    },
+    {
+      "epoch": 1712154600,
+      "deal": 176,
+      "balance": 9069.98,
+      "net": -0.98
+    },
+    {
+      "epoch": 1712158035,
+      "deal": 177,
+      "balance": 9124.85,
+      "net": 54.87
+    },
+    {
+      "epoch": 1714573800,
+      "deal": 178,
+      "balance": 9123.83,
+      "net": -1.02
+    },
+    {
+      "epoch": 1714575459,
+      "deal": 179,
+      "balance": 9179.01,
+      "net": 55.18
+    },
+    {
+      "epoch": 1714660200,
+      "deal": 180,
+      "balance": 9178.12,
+      "net": -0.89
+    },
+    {
+      "epoch": 1714662158,
+      "deal": 181,
+      "balance": 9233.66,
+      "net": 55.54
+    },
+    {
+      "epoch": 1714746600,
+      "deal": 182,
+      "balance": 9232.93,
+      "net": -0.73
+    },
+    {
+      "epoch": 1714751615,
+      "deal": 183,
+      "balance": 9289.28,
+      "net": 56.35
+    },
+    {
+      "epoch": 1717425000,
+      "deal": 184,
+      "balance": 9288.14,
+      "net": -1.14
+    },
+    {
+      "epoch": 1717425396,
+      "deal": 185,
+      "balance": 9195.16,
+      "net": -92.98
+    },
+    {
+      "epoch": 1717511400,
+      "deal": 186,
+      "balance": 9194.27,
+      "net": -0.89
+    },
+    {
+      "epoch": 1717524916,
+      "deal": 187,
+      "balance": 9249.95,
+      "net": 55.68
+    },
+    {
+      "epoch": 1717597800,
+      "deal": 188,
+      "balance": 9248.76,
+      "net": -1.19
+    },
+    {
+      "epoch": 1717598065,
+      "deal": 189,
+      "balance": 9304.98,
+      "net": 56.22
+    },
+    {
+      "epoch": 1719844200,
+      "deal": 190,
+      "balance": 9304.16,
+      "net": -0.82
+    },
+    {
+      "epoch": 1719845621,
+      "deal": 191,
+      "balance": 9210.6,
+      "net": -93.56
+    },
+    {
+      "epoch": 1719930600,
+      "deal": 192,
+      "balance": 9209.6,
+      "net": -1.0
+    },
+    {
+      "epoch": 1719931226,
+      "deal": 193,
+      "balance": 9265.36,
+      "net": 55.76
+    },
+    {
+      "epoch": 1720017000,
+      "deal": 194,
+      "balance": 9263.92,
+      "net": -1.44
+    },
+    {
+      "epoch": 1720017755,
+      "deal": 195,
+      "balance": 9320.55,
+      "net": 56.63
+    },
+    {
+      "epoch": 1722522600,
+      "deal": 196,
+      "balance": 9320.06,
+      "net": -0.49
+    },
+    {
+      "epoch": 1722524437,
+      "deal": 197,
+      "balance": 9226.05,
+      "net": -94.01
+    },
+    {
+      "epoch": 1722609000,
+      "deal": 198,
+      "balance": 9225.67,
+      "net": -0.38
+    },
+    {
+      "epoch": 1722613291,
+      "deal": 199,
+      "balance": 9281.61,
+      "net": 55.94
+    },
+    {
+      "epoch": 1722868200,
+      "deal": 200,
+      "balance": 9281.41,
+      "net": -0.2
+    },
+    {
+      "epoch": 1722869666,
+      "deal": 201,
+      "balance": 9338.97,
+      "net": 57.56
+    },
+    {
+      "epoch": 1725287400,
+      "deal": 202,
+      "balance": 9337.25,
+      "net": -1.72
+    },
+    {
+      "epoch": 1725287596,
+      "deal": 203,
+      "balance": 9394.12,
+      "net": 56.87
+    },
+    {
+      "epoch": 1725373800,
+      "deal": 204,
+      "balance": 9393.44,
+      "net": -0.68
+    },
+    {
+      "epoch": 1725374556,
+      "deal": 205,
+      "balance": 9298.17,
+      "net": -95.27
+    },
+    {
+      "epoch": 1725460200,
+      "deal": 206,
+      "balance": 9297.46,
+      "net": -0.71
+    },
+    {
+      "epoch": 1725460743,
+      "deal": 207,
+      "balance": 9354.13,
+      "net": 56.67
+    },
+    {
+      "epoch": 1727793000,
+      "deal": 208,
+      "balance": 9353.48,
+      "net": -0.65
+    },
+    {
+      "epoch": 1727797348,
+      "deal": 209,
+      "balance": 9410.3,
+      "net": 56.82
+    },
+    {
+      "epoch": 1727879400,
+      "deal": 210,
+      "balance": 9409.61,
+      "net": -0.69
+    },
+    {
+      "epoch": 1727882140,
+      "deal": 211,
+      "balance": 9466.22,
+      "net": 56.61
+    },
+    {
+      "epoch": 1727965800,
+      "deal": 212,
+      "balance": 9465.48,
+      "net": -0.74
+    },
+    {
+      "epoch": 1727966006,
+      "deal": 213,
+      "balance": 9522.95,
+      "net": 57.47
+    },
+    {
+      "epoch": 1730471400,
+      "deal": 214,
+      "balance": 9522.07,
+      "net": -0.88
+    },
+    {
+      "epoch": 1730472200,
+      "deal": 215,
+      "balance": 9426.66,
+      "net": -95.41
+    },
+    {
+      "epoch": 1730734200,
+      "deal": 216,
+      "balance": 9425.86,
+      "net": -0.8
+    },
+    {
+      "epoch": 1730738606,
+      "deal": 217,
+      "balance": 9330.88,
+      "net": -94.98
+    },
+    {
+      "epoch": 1730820600,
+      "deal": 218,
+      "balance": 9329.89,
+      "net": -0.99
+    },
+    {
+      "epoch": 1730821657,
+      "deal": 219,
+      "balance": 9386.14,
+      "net": 56.25
+    },
+    {
+      "epoch": 1733153400,
+      "deal": 220,
+      "balance": 9384.93,
+      "net": -1.21
+    },
+    {
+      "epoch": 1733157507,
+      "deal": 221,
+      "balance": 9441.77,
+      "net": 56.84
+    },
+    {
+      "epoch": 1733239800,
+      "deal": 222,
+      "balance": 9440.35,
+      "net": -1.42
+    },
+    {
+      "epoch": 1733240055,
+      "deal": 223,
+      "balance": 9497.4,
+      "net": 57.05
+    },
+    {
+      "epoch": 1733326200,
+      "deal": 224,
+      "balance": 9496.01,
+      "net": -1.39
+    },
+    {
+      "epoch": 1733326530,
+      "deal": 225,
+      "balance": 9553.9,
+      "net": 57.89
+    },
+    {
+      "epoch": 1735831800,
+      "deal": 226,
+      "balance": 9553.39,
+      "net": -0.51
+    },
+    {
+      "epoch": 1735838958,
+      "deal": 227,
+      "balance": 9457.06,
+      "net": -96.33
+    },
+    {
+      "epoch": 1735918200,
+      "deal": 228,
+      "balance": 9456.34,
+      "net": -0.72
+    },
+    {
+      "epoch": 1735919021,
+      "deal": 229,
+      "balance": 9513.31,
+      "net": 56.97
+    },
+    {
+      "epoch": 1738596600,
+      "deal": 230,
+      "balance": 9512.78,
+      "net": -0.53
+    },
+    {
+      "epoch": 1738597301,
+      "deal": 231,
+      "balance": 9569.83,
+      "net": 57.05
+    },
+    {
+      "epoch": 1738683000,
+      "deal": 232,
+      "balance": 9569.13,
+      "net": -0.7
+    },
+    {
+      "epoch": 1738687239,
+      "deal": 233,
+      "balance": 9626.63,
+      "net": 57.5
+    },
+    {
+      "epoch": 1738769400,
+      "deal": 234,
+      "balance": 9625.75,
+      "net": -0.88
+    },
+    {
+      "epoch": 1738771764,
+      "deal": 235,
+      "balance": 9683.6,
+      "net": 57.85
+    },
+    {
+      "epoch": 1741015800,
+      "deal": 236,
+      "balance": 9683.02,
+      "net": -0.58
+    },
+    {
+      "epoch": 1741017580,
+      "deal": 237,
+      "balance": 9585.45,
+      "net": -97.57
+    },
+    {
+      "epoch": 1741102200,
+      "deal": 238,
+      "balance": 9584.98,
+      "net": -0.47
+    },
+    {
+      "epoch": 1741102421,
+      "deal": 239,
+      "balance": 9643.62,
+      "net": 58.64
+    },
+    {
+      "epoch": 1741188600,
+      "deal": 240,
+      "balance": 9643.16,
+      "net": -0.46
+    },
+    {
+      "epoch": 1741189118,
+      "deal": 241,
+      "balance": 9701.32,
+      "net": 58.16
+    },
+    {
+      "epoch": 1743517800,
+      "deal": 242,
+      "balance": 9700.7,
+      "net": -0.62
+    },
+    {
+      "epoch": 1743518310,
+      "deal": 243,
+      "balance": 9759.28,
+      "net": 58.58
+    },
+    {
+      "epoch": 1743604200,
+      "deal": 244,
+      "balance": 9758.7,
+      "net": -0.58
+    },
+    {
+      "epoch": 1743607296,
+      "deal": 245,
+      "balance": 9817.61,
+      "net": 58.91
+    },
+    {
+      "epoch": 1743690600,
+      "deal": 246,
+      "balance": 9817.17,
+      "net": -0.44
+    },
+    {
+      "epoch": 1743691830,
+      "deal": 247,
+      "balance": 9718.2,
+      "net": -98.97
+    },
+    {
+      "epoch": 1746109800,
+      "deal": 248,
+      "balance": 9717.39,
+      "net": -0.81
+    },
+    {
+      "epoch": 1746110850,
+      "deal": 249,
+      "balance": 9775.9,
+      "net": 58.51
+    },
+    {
+      "epoch": 1746196200,
+      "deal": 250,
+      "balance": 9775.24,
+      "net": -0.66
+    },
+    {
+      "epoch": 1746201698,
+      "deal": 251,
+      "balance": 9834.42,
+      "net": 59.18
+    },
+    {
+      "epoch": 1746455400,
+      "deal": 252,
+      "balance": 9833.45,
+      "net": -0.97
+    },
+    {
+      "epoch": 1746456879,
+      "deal": 253,
+      "balance": 9892.61,
+      "net": 59.16
+    },
+    {
+      "epoch": 1748874600,
+      "deal": 254,
+      "balance": 9891.9,
+      "net": -0.71
+    },
+    {
+      "epoch": 1748879464,
+      "deal": 255,
+      "balance": 9951.64,
+      "net": 59.74
+    },
+    {
+      "epoch": 1748961000,
+      "deal": 256,
+      "balance": 9950.61,
+      "net": -1.03
+    },
+    {
+      "epoch": 1748962766,
+      "deal": 257,
+      "balance": 10010.54,
+      "net": 59.93
+    },
+    {
+      "epoch": 1749047400,
+      "deal": 258,
+      "balance": 10009.58,
+      "net": -0.96
+    },
+    {
+      "epoch": 1749049899,
+      "deal": 259,
+      "balance": 10070.02,
+      "net": 60.44
+    },
+    {
+      "epoch": 1751380200,
+      "deal": 260,
+      "balance": 10068.84,
+      "net": -1.18
+    },
+    {
+      "epoch": 1751380832,
+      "deal": 261,
+      "balance": 9967.83,
+      "net": -101.01
+    },
+    {
+      "epoch": 1751466600,
+      "deal": 262,
+      "balance": 9966.85,
+      "net": -0.98
+    },
+    {
+      "epoch": 1751467858,
+      "deal": 263,
+      "balance": 10026.76,
+      "net": 59.91
+    },
+    {
+      "epoch": 1751553000,
+      "deal": 264,
+      "balance": 10025.54,
+      "net": -1.22
+    },
+    {
+      "epoch": 1751557224,
+      "deal": 265,
+      "balance": 10085.87,
+      "net": 60.33
+    },
+    {
+      "epoch": 1754058600,
+      "deal": 266,
+      "balance": 10085.35,
+      "net": -0.52
+    },
+    {
+      "epoch": 1754067793,
+      "deal": 267,
+      "balance": 9983.36,
+      "net": -101.99
+    },
+    {
+      "epoch": 1754317800,
+      "deal": 268,
+      "balance": 9982.32,
+      "net": -1.04
+    },
+    {
+      "epoch": 1754319675,
+      "deal": 269,
+      "balance": 9882.22,
+      "net": -100.1
+    },
+    {
+      "epoch": 1754404200,
+      "deal": 270,
+      "balance": 9881.18,
+      "net": -1.04
+    },
+    {
+      "epoch": 1754404710,
+      "deal": 271,
+      "balance": 9781.95,
+      "net": -99.23
+    },
+    {
+      "epoch": 1756737000,
+      "deal": 272,
+      "balance": 9780.11,
+      "net": -1.84
+    },
+    {
+      "epoch": 1756740665,
+      "deal": 273,
+      "balance": 9839.29,
+      "net": 59.18
+    },
+    {
+      "epoch": 1756823400,
+      "deal": 274,
+      "balance": 9838.73,
+      "net": -0.56
+    },
+    {
+      "epoch": 1756824511,
+      "deal": 275,
+      "balance": 9740.01,
+      "net": -98.72
+    },
+    {
+      "epoch": 1756909800,
+      "deal": 276,
+      "balance": 9739.01,
+      "net": -1.0
+    },
+    {
+      "epoch": 1756910019,
+      "deal": 277,
+      "balance": 9797.68,
+      "net": 58.67
+    },
+    {
+      "epoch": 1759329000,
+      "deal": 278,
+      "balance": 9796.85,
+      "net": -0.83
+    },
+    {
+      "epoch": 1759333205,
+      "deal": 279,
+      "balance": 9855.78,
+      "net": 58.93
+    },
+    {
+      "epoch": 1759415400,
+      "deal": 280,
+      "balance": 9854.54,
+      "net": -1.24
+    },
+    {
+      "epoch": 1759416402,
+      "deal": 281,
+      "balance": 9755.52,
+      "net": -99.02
+    },
+    {
+      "epoch": 1759501800,
+      "deal": 282,
+      "balance": 9753.99,
+      "net": -1.53
+    },
+    {
+      "epoch": 1759502321,
+      "deal": 283,
+      "balance": 9812.7,
+      "net": 58.71
+    },
+    {
+      "epoch": 1762183800,
+      "deal": 284,
+      "balance": 9811.89,
+      "net": -0.81
+    },
+    {
+      "epoch": 1762184622,
+      "deal": 285,
+      "balance": 9871.4,
+      "net": 59.51
+    },
+    {
+      "epoch": 1762270200,
+      "deal": 286,
+      "balance": 9870.78,
+      "net": -0.62
+    },
+    {
+      "epoch": 1762271834,
+      "deal": 287,
+      "balance": 9771.66,
+      "net": -99.12
+    },
+    {
+      "epoch": 1762356600,
+      "deal": 288,
+      "balance": 9771.05,
+      "net": -0.61
+    },
+    {
+      "epoch": 1762360958,
+      "deal": 289,
+      "balance": 9830.08,
+      "net": 59.03
+    },
+    {
+      "epoch": 1764603000,
+      "deal": 290,
+      "balance": 9829.3,
+      "net": -0.78
+    },
+    {
+      "epoch": 1764604299,
+      "deal": 291,
+      "balance": 9888.58,
+      "net": 59.28
+    },
+    {
+      "epoch": 1764689400,
+      "deal": 292,
+      "balance": 9887.69,
+      "net": -0.89
+    },
+    {
+      "epoch": 1764690148,
+      "deal": 293,
+      "balance": 9947.65,
+      "net": 59.96
+    },
+    {
+      "epoch": 1764775800,
+      "deal": 294,
+      "balance": 9946.89,
+      "net": -0.76
+    },
+    {
+      "epoch": 1764776022,
+      "deal": 295,
+      "balance": 10006.83,
+      "net": 59.94
+    },
+    {
+      "epoch": 1767367800,
+      "deal": 296,
+      "balance": 10006.1,
+      "net": -0.73
+    },
+    {
+      "epoch": 1767368055,
+      "deal": 297,
+      "balance": 10071.13,
+      "net": 65.03
+    },
+    {
+      "epoch": 1767627000,
+      "deal": 298,
+      "balance": 10070.29,
+      "net": -0.84
+    },
+    {
+      "epoch": 1767636502,
+      "deal": 299,
+      "balance": 9965.7,
+      "net": -104.59
+    },
+    {
+      "epoch": 1770046200,
+      "deal": 300,
+      "balance": 9965.16,
+      "net": -0.54
+    },
+    {
+      "epoch": 1770054953,
+      "deal": 301,
+      "balance": 10024.87,
+      "net": 59.71
+    },
+    {
+      "epoch": 1770132600,
+      "deal": 302,
+      "balance": 10024.23,
+      "net": -0.64
+    },
+    {
+      "epoch": 1770133820,
+      "deal": 303,
+      "balance": 10086.17,
+      "net": 61.94
+    },
+    {
+      "epoch": 1770219000,
+      "deal": 304,
+      "balance": 10085.6,
+      "net": -0.57
+    },
+    {
+      "epoch": 1770219395,
+      "deal": 305,
+      "balance": 9986.56,
+      "net": -99.04
+    },
+    {
+      "epoch": 1772465400,
+      "deal": 306,
+      "balance": 9986.11,
+      "net": -0.45
+    },
+    {
+      "epoch": 1772467725,
+      "deal": 307,
+      "balance": 10046.89,
+      "net": 60.78
+    },
+    {
+      "epoch": 1772551800,
+      "deal": 308,
+      "balance": 10046.47,
+      "net": -0.42
+    },
+    {
+      "epoch": 1772552202,
+      "deal": 309,
+      "balance": 10108.97,
+      "net": 62.5
+    },
+    {
+      "epoch": 1772638200,
+      "deal": 310,
+      "balance": 10108.54,
+      "net": -0.43
+    },
+    {
+      "epoch": 1772661600,
+      "deal": 311,
+      "balance": 10108.11,
+      "net": -0.43
+    },
+    {
+      "epoch": 1775053800,
+      "deal": 312,
+      "balance": 10107.61,
+      "net": -0.5
+    },
+    {
+      "epoch": 1775055510,
+      "deal": 313,
+      "balance": 10167.07,
+      "net": 59.46
+    },
+    {
+      "epoch": 1775140200,
+      "deal": 314,
+      "balance": 10166.49,
+      "net": -0.58
+    },
+    {
+      "epoch": 1775140393,
+      "deal": 315,
+      "balance": 10229.66,
+      "net": 63.17
+    },
+    {
+      "epoch": 1777645800,
+      "deal": 316,
+      "balance": 10228.85,
+      "net": -0.81
+    },
+    {
+      "epoch": 1777646163,
+      "deal": 317,
+      "balance": 10124.39,
+      "net": -104.46
+    },
+    {
+      "epoch": 1777905000,
+      "deal": 318,
+      "balance": 10123.77,
+      "net": -0.62
+    },
+    {
+      "epoch": 1777905905,
+      "deal": 319,
+      "balance": 10185.15,
+      "net": 61.38
+    },
+    {
+      "epoch": 1777991400,
+      "deal": 320,
+      "balance": 10184.27,
+      "net": -0.88
+    },
+    {
+      "epoch": 1778003546,
+      "deal": 321,
+      "balance": 10246.41,
+      "net": 62.14
+    },
+    {
+      "epoch": 1780324200,
+      "deal": 322,
+      "balance": 10245.77,
+      "net": -0.64
+    },
+    {
+      "epoch": 1780325336,
+      "deal": 323,
+      "balance": 10306.99,
+      "net": 61.22
+    },
+    {
+      "epoch": 1780410600,
+      "deal": 324,
+      "balance": 10306.18,
+      "net": -0.81
+    },
+    {
+      "epoch": 1780411018,
+      "deal": 325,
+      "balance": 10368.61,
+      "net": 62.43
+    },
+    {
+      "epoch": 1780497000,
+      "deal": 326,
+      "balance": 10368.0,
+      "net": -0.61
+    },
+    {
+      "epoch": 1780501224,
+      "deal": 327,
+      "balance": 10263.07,
+      "net": -104.93
+    },
+    {
+      "epoch": 1782916200,
+      "deal": 328,
+      "balance": 10262.46,
+      "net": -0.61
+    },
+    {
+      "epoch": 1782917107,
+      "deal": 329,
+      "balance": 10158.41,
+      "net": -104.05
+    },
+    {
+      "epoch": 1783002600,
+      "deal": 330,
+      "balance": 10158.08,
+      "net": -0.33
+    },
+    {
+      "epoch": 1783004003,
+      "deal": 331,
+      "balance": 10055.54,
+      "net": -102.54
+    },
+    {
+      "epoch": 1783089000,
+      "deal": 332,
+      "balance": 10054.42,
+      "net": -1.12
+    },
+    {
+      "epoch": 1783288802,
+      "deal": 333,
+      "balance": 10120.59,
+      "net": 66.17
+    },
+    {
+      "epoch": 1785767400,
+      "deal": 334,
+      "balance": 10120.17,
+      "net": -0.42
+    },
+    {
+      "epoch": 1785768700,
+      "deal": 335,
+      "balance": 10180.74,
+      "net": 60.57
+    },
+    {
+      "epoch": 1785853800,
+      "deal": 336,
+      "balance": 10180.22,
+      "net": -0.52
+    },
+    {
+      "epoch": 1785856759,
+      "deal": 337,
+      "balance": 10241.11,
+      "net": 60.89
+    },
+    {
+      "epoch": 1785940200,
+      "deal": 338,
+      "balance": 10240.48,
+      "net": -0.63
+    },
+    {
+      "epoch": 1785941622,
+      "deal": 339,
+      "balance": 10140.48,
+      "net": -100.0
+    },
+    {
+      "epoch": 1788273000,
+      "deal": 340,
+      "balance": 10139.9,
+      "net": -0.58
+    },
+    {
+      "epoch": 1788273896,
+      "deal": 341,
+      "balance": 10201.75,
+      "net": 61.85
+    },
+    {
+      "epoch": 1788359400,
+      "deal": 342,
+      "balance": 10201.19,
+      "net": -0.56
+    },
+    {
+      "epoch": 1788381000,
+      "deal": 343,
+      "balance": 10173.83,
+      "net": -27.36
+    },
+    {
+      "epoch": 1788445800,
+      "deal": 344,
+      "balance": 10173.25,
+      "net": -0.58
+    },
+    {
+      "epoch": 1788447790,
+      "deal": 345,
+      "balance": 10234.2,
+      "net": 60.95
+    },
+    {
+      "epoch": 1790865000,
+      "deal": 346,
+      "balance": 10233.76,
+      "net": -0.44
+    },
+    {
+      "epoch": 1790865562,
+      "deal": 347,
+      "balance": 10296.58,
+      "net": 62.82
+    },
+    {
+      "epoch": 1790951400,
+      "deal": 348,
+      "balance": 10296.05,
+      "net": -0.53
+    },
+    {
+      "epoch": 1790953397,
+      "deal": 349,
+      "balance": 10192.1,
+      "net": -103.95
+    },
+    {
+      "epoch": 1791210600,
+      "deal": 350,
+      "balance": 10191.48,
+      "net": -0.62
+    },
+    {
+      "epoch": 1791222260,
+      "deal": 351,
+      "balance": 10252.86,
+      "net": 61.38
+    }
+  ],
+  "seconds": 44.7329957485199,
+  "binary_sha256": "e9576901ba67e50e972152716303e4d331e3e39dd9a9e2841274b50a7f05efac",
+  "report_sha256": "bc6ac21a260819645d50875287b4a758ca465d66578c5128c955df509e00c3b9",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

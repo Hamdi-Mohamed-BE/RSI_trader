@@ -105,7 +105,7 @@ def read_json(path):
 
 def snapshot_distribution():
     paths = [path for path in FTMO.rglob("*") if path.is_file()]
-    paths += [SHARED, WRAPPER, LIVE / "Profiles.json", LIVE / "Prop ready.bat"]
+    paths += [SHARED, WRAPPER, LIVE / "Profiles.json", LIVE / "Prop ready" / "Prop ready.bat"]
     return {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
 
 
@@ -130,9 +130,10 @@ def test_prop_ready_is_named_local_profile_with_explicit_safe_defaults():
     assert profile["default_percent"] == 0.5
     assert profile["default_news_percent"] == 0
     assert profile["di_parameters"] == ["NasdaqDIFilter", "UsdJpyDIFilter"]
-    assert profile["website_catalog"] is False
-    bat = (LIVE / profile["file"]).read_text(encoding="utf-8-sig")
-    assert '%~dp0Start-LiveProfile.ps1' in bat
+    assert profile.get("website_catalog", True) is True  # published on /portfolios since 2026-10-22
+    assert profile["folder"] == "Prop ready"
+    bat = (LIVE / profile["folder"] / profile["file"]).read_text(encoding="utf-8-sig")
+    assert '%~dp0..\\Start-LiveProfile.ps1' in bat
     assert '-Portfolio "prop-ready"' in bat
     assert "%*" in bat
     assert "Copy-Item" not in bat and "terminal64.exe" not in bat.lower()

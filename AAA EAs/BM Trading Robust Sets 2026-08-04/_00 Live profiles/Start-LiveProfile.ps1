@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)][ValidateSet('ftmo','current14-orb05','orbs-only','full-eas','prop-ready','codex-best-ftmo')][string]$Portfolio,
+    [Parameter(Mandatory=$true)][ValidateSet('ftmo','ftmo-any-broker','current14-orb05','orbs-only','full-eas','prop-ready','codex-best-ftmo')][string]$Portfolio,
     [ValidateSet('','PERCENT','FIXED_USD')][string]$RiskMode='',
     [double]$RiskValue=0,
     [double]$NewsRiskPercent=0,
@@ -41,7 +41,7 @@ if(-not $RiskMode){
     if($ValidateOnly){$RiskMode=$selected.default_mode}
     else {
         $default=if($selected.default_mode -eq 'FIXED_USD'){'2'}else{'1'}
-        if($Portfolio -in @('prop-ready','codex-best-ftmo')){Write-Host '1 = percentage of current equity; 2 = fixed cash in account currency per trade (USD on USD accounts)'}
+        if($Portfolio -in @('prop-ready','codex-best-ftmo','ftmo-any-broker')){Write-Host '1 = percentage of current equity; 2 = fixed cash in account currency per trade (USD on USD accounts)'}
         else{Write-Host '1 = percentage of current equity; 2 = fixed USD per trade'}
         $choice=(Read-Host "Risk type [$default]").Trim();if(-not $choice){$choice=$default}
         $RiskMode=switch($choice){'1'{'PERCENT'}'2'{'FIXED_USD'}default{throw 'Choose 1 or 2.'}}
@@ -49,7 +49,7 @@ if(-not $RiskMode){
 }
 if($RiskValue -eq 0){
     $default=if($RiskMode -eq 'PERCENT'){[double]$selected.default_percent}else{[double]$selected.default_usd}
-    $RiskValue=if($ValidateOnly){$default}else{Read-PositiveNumber $(if($RiskMode -eq 'PERCENT'){'Percent per trade'}elseif($Portfolio -in @('prop-ready','codex-best-ftmo')){'Cash per trade in account currency'}else{'USD per trade'}) $default}
+    $RiskValue=if($ValidateOnly){$default}else{Read-PositiveNumber $(if($RiskMode -eq 'PERCENT'){'Percent per trade'}elseif($Portfolio -in @('prop-ready','codex-best-ftmo','ftmo-any-broker')){'Cash per trade in account currency'}else{'USD per trade'}) $default}
 }
 Assert-LiveProfileRisk $RiskMode $RiskValue
 if($Portfolio -eq 'full-eas'){
@@ -71,8 +71,16 @@ if($Portfolio -eq 'codex-best-ftmo' -and -not $PSBoundParameters.ContainsKey('Ph
     $phaseChoice=(Read-Host 'Account mode [1]').Trim();if(-not $phaseChoice){$phaseChoice='1'}
     $Phase=switch($phaseChoice){'1'{'Challenge'}'2'{'Verification'}'3'{'Funded'}default{throw 'Choose 1, 2 or 3.'}}
 }
-if($Portfolio -ne 'codex-best-ftmo' -and ($GoldSymbol -or $NasdaqSymbol -or $UsdJpySymbol)){
-    throw 'Explicit broker-symbol overrides are supported by Codex_Best_FTMO only.'
+if($Portfolio -eq 'ftmo-any-broker' -and -not $PSBoundParameters.ContainsKey('Phase')){
+    $Phase='Funded'
+    if(-not $ValidateOnly){
+        Write-Host '1 = Challenge (+10% target); 2 = Verification (+5% target); 3 = continuous demo/live (no profit-target entry stop)'
+        $phaseChoice=(Read-Host 'Account mode [3]').Trim();if(-not $phaseChoice){$phaseChoice='3'}
+        $Phase=switch($phaseChoice){'1'{'Challenge'}'2'{'Verification'}'3'{'Funded'}default{throw 'Choose 1, 2 or 3.'}}
+    }
+}
+if($Portfolio -notin @('codex-best-ftmo','ftmo-any-broker') -and ($GoldSymbol -or $NasdaqSymbol -or $UsdJpySymbol)){
+    throw 'Explicit broker-symbol overrides are supported by Codex_Best_FTMO and the FTMO any-broker test build only.'
 }
 Write-Host "Selected risk: $RiskValue $RiskMode per trade; DI choices change the published tested preset."
 $arguments=@{RiskMode=$RiskMode;RiskValue=$RiskValue;NasdaqDIFilter=$NasdaqDIFilter;UsdJpyDIFilter=$UsdJpyDIFilter}
@@ -88,6 +96,13 @@ switch($Portfolio){
     'ftmo' {
         $arguments.Phase=$Phase
         & (Join-Path $PSScriptRoot 'Packages\FTMO\Install-Portfolio.ps1') @arguments
+    }
+    'ftmo-any-broker' {
+        $arguments.Phase=$Phase
+        $arguments.GoldSymbol=$GoldSymbol
+        $arguments.NasdaqSymbol=$NasdaqSymbol
+        $arguments.UsdJpySymbol=$UsdJpySymbol
+        & (Join-Path $PSScriptRoot 'Packages\FTMO-AnyBroker\Install-Portfolio.ps1') @arguments
     }
     'codex-best-ftmo' {
         $arguments.Phase=$Phase

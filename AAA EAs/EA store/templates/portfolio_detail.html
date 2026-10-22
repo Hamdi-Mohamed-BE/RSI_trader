@@ -4,7 +4,7 @@
 {% block content %}
 <section class="page-hero"><div class="mx-auto max-w-7xl px-5 py-14 lg:px-8"><a href="/portfolios" class="text-mint">← All portfolios</a><div class="pf-card-heading mt-6"><span class="badge {{ 'badge-good' if profile.status=='active' else 'badge-warn' }}">{{ profile.status_label }}</span><span class="pf-small">{{ profile.ea_count }} included EAs · {{ profile.version }}</span></div><h1 class="page-title">{{ profile.name }}</h1><p class="page-lead">{{ profile.description }}</p><p class="pf-risk">{{ profile.risk_summary }}</p></div></section>
 <section class="mx-auto max-w-7xl px-5 py-12 lg:px-8">
-  <div class="pf-notice">{{ profile.status_note }} {% if profile.launcher %}Launcher: <strong>{{ profile.launcher }}</strong> in {{ publication.launcher_directory }}.{% endif %} Website status is not account installation status.</div>
+  <div class="pf-notice">{{ profile.status_note }} {% if profile.launcher %}Launcher: <strong>{{ profile.launcher }}</strong> in {{ publication.launcher_directory }}{% if profile.launcher_folder %}/{{ profile.launcher_folder }}{% endif %}.{% endif %} Website status is not account installation status.</div>
   {% for warning in publication.warnings %}<p class="pf-warning">{{ warning }}</p>{% endfor %}
   <nav class="pf-filters" aria-label="Portfolio sections"><a href="#history">History &amp; metrics</a><a href="#rules">Risk &amp; drawdown rules</a><a href="#members">Included EAs</a>{% if profile.screening %}<a href="#screening">ORB selection audit</a>{% endif %}</nav>
   <section id="history" class="pf-section" data-portfolio-view="{{ profile.slug }}" data-compact="false"><p class="eyebrow-simple">Recorded evidence, not a forecast</p><h2>History &amp; performance</h2>

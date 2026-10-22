@@ -337,6 +337,115 @@ of what is currently attached to a live terminal.
   StrictMode. MT5 had already been closed; partial Experts/Charts/Tester folders left; no state file, common.ini or restart.
   Fixed (one line, matches PropReady); real installer statements sandbox-tested end to end on a fake data folder + BAT
   -ValidateOnly PASS. Re-run creates a new timestamped profile; the partial folders can be deleted by the owner.
+- 2026-10-20: `FTMO First Payout Study 2026-10-20/` (research only, Python replay, in-sample): Best Prop DI OFF, FTMO
+  rules day-14 flat request, 80% split, fee refund. Parity exact (retest continuous + OOS challenge; scaled 10k = main).
+  From buying (MC, recorded): funded 55–56%, median 68–72 d (mean 74–78); first payout 47–49% of challenges, request
+  median 85–88 d (mean 90–96) + 2–4 business days; payout median/mean 10k $245/$334, 25k $602/$812, 50k $1,220/$1,633,
+  100k $2,418/$3,246 (20k is not an FTMO size). Funded only: 82–83% paid, median day 15, 0% breach, 16–18% frozen.
+  ZERO challenge breaches: the non-paid half FREEZES below the 92% entry buffer (10k hist: 42.5% stuck at 180 d).
+  Stress: paid 34–36%. OOS 2024-26 starts: paid 86% (best regime). DI ON 10k e2e 57–58% vs 49%.
+  GUARD LIMITATION (unfixed): CalyxFTMOGuard FTMOLedger fails closed on ANY balance operation after start, so the
+  FTMO reward withdrawal blocks all new entries after payout #1; same-login reinstall keeps the state file. Income model
+  (`income.py`, assumes manual re-baseline after each reward, 100k, $20 every 14 d, recorded): 0% breach, 100% FREEZE
+  at the 92% buffer (reset to 100k removes the cushion); MC median 78 d to end (mean 110), $5,136/month while alive,
+  total $10,892 median / $18,628 mean; history 91 d, $4,916/month; OOS starts 159 d, $36k total; stress MC 60 d.
+  Lower funded risk (`lowrisk.py`, guard-exact sizing, MC 36 m recorded): 1.00% $5,109/mo, 79 d, total mean $18.7k;
+  0.75% $3,654/mo, 148 d, $25.9k; 0.50% $2,203/mo, 532 d, $42.5k (23% still trading at 36 m); 0.25% $992/mo, 93%
+  still trading, $34.5k. 0% breaches. Guard-cap change at 0.5% = installer input 0.5 (no code change needed). Not deployed.
+- 2026-10-21: `Negative RR Study 2026-10-21/` (owner idea: TP 0.75/0.6/0.5R on Current14 ORB05 EAs ≥1R) — REJECTED.
+  44 native Model-4 runs (11 fresh baselines + 33 variants, 0 failures). Tester swap spec has drifted since 10-08 baselines
+  (signal paths identical, cash 0–2.3%): compare with FRESH baselines. USDJPY current exit = 16:00 London TIME EXIT
+  (InpTargetMode=0), not 1R. Lower TP raises win rate but cuts expectancy for 9/10 EAs (Nasdaq 5M +215% → −7% to −22%;
+  only Gold Overnight improves). Best Prop 9 MC: funded 57% → 31/30/20%, first payout 49% → 26/25/16%, median 88 → 124–134 d;
+  funded 100k 0.5%: $2,209/mo, 532 d, $42.7k mean → $828/$739/$586/mo. Keep current targets. Side result: DI ON funded
+  100k 0.5% MC $2,267/mo, median 835 d, $54.2k mean (best found; DI ON is not the package default). Nothing deployed.
+- 2026-10-21: `USDJPY NY Open Exit 2026-10-21/` — REJECTED. Exit at NY open via InpExitLondonHour (input only): 13:00 London
+  (NY 08:00) 5y +4.1% PF 1.05 eqDD 15.9%; 14:30 London (NY 09:30) +68.7% PF 1.45 eqDD 11.1%; current 16:00 London +147.6%
+  PF 1.66 eqDD 8.8% (462 trades each, 7.7/month). Current best in dev and validation; OOS PF 1.51 vs 1.48 (09:30).
+  The edge is in the NY morning. 30/462 trades fall in US/UK DST-gap weeks. Keep 16:00 London. Nothing deployed.
+- 2026-10-21: `EURUSD 8am Swing Low Raw 2026-10-21/` (pasted clip: buy after a fresh swing low at 8am) — REJECTED at the raw gate.
+  30 native Model-4 runs, H1, 1%, end 2026-10-17. 2-bar fractal confirmed at 08:00, stop below pivot, 4 h exit:
+  London 5y +3.5% PF 1.08 (0.38/week), 1y −4.0% PF 0.57; New York 5y +4.1% PF 1.04, 3y −15.0%, 1y −12.0%. Both fail the
+  best-day check. Short mirror loses (clip agrees), but every-day/random longs are ~flat too. "Swing low within last 4 h"
+  matches the clip's 1–2/week (London +65.7% PF 1.14, NY +77.8% PF 1.12) but earned it in 2021–23; London last 12 m −23.9%.
+  No version held up in the last 12 months. No optimisation. Nothing installed/deployed/pushed.
+- 2026-10-21: `EURUSD 8am Swing Low Pipeline 2026-10-21/` — owner-requested EXPLORATORY OVERRIDE full pipeline, both sessions
+  REJECTED_AT_PLATEAU. Case-table engine parity exact vs raw (L8/NY8/SHORT_NY8). 699 configs, dev 2016-10-17→2023-10-17 Model 1.
+  Best dev: London M30 pivot ≤4 bars lower low, stop-entry, 4 h exit, skip Fri PF 1.65 n174; NY H1 lower low, limit 0.25 ATR,
+  ATR<median PF 1.82 n77. Plateau 28–56% neighbours profitable (need 70%). Labelled diagnostic: all 6 finalists lose OOS
+  2024-26 (−9.9% to −15.1%, PF 0.10–0.53). No MC (no survivor). Nothing installed/deployed/pushed.
+- 2026-10-21: `BTC Time Series Momentum Raw 2026-10-21/` (pasted clip: 30-day return sign + vol target 20%, weekly rebalance) —
+  RAW GATE PASS for both LF (long/flat) and LS (long/short). 25 native runs, $100k, end 2026-10-20; Model 4 gate, Model 1 screen
+  (agree within 0.2%). LF 5y +60.9% Sharpe 0.65 eqDD 26.1% (relative; first reported 22.1% = MT5 "maximal") (3y +60.5%, 1y +1.9%); LS 5y +79.2% Sharpe 0.63 DD 33%. Controls:
+  always-long vol-target +3.6%, signal fixed 1x +44.8% DD 51%, random +1.0%, buy & hold CFD −25.2% (swap −$52.9k vs +$27.4k
+  gross). Gains concentrated in late 2023–early 2024; flat since; without 5 best days negative. Not optimised; Bear review
+  not run. Await owner decision on stage 5. Nothing installed/deployed/pushed.
+- 2026-10-21/22: `Pairs Trading Raw 2026-10-21/` (pasted clip: fade 2σ spread, exit at 0, stop 3–4σ) — 8/9 pairs REJECTED;
+  only EUR/GBP (P4) passes the raw gate. ln A − ln B dollar-neutral, z over 60 D1 closes, stop 3.5σ, 1% to stop, $100k, end
+  2026-10-20. 90 Model-1 runs (revision recorded before real runs) + 2 Model-4 confirmations, 0 failures; end-of-test open pair
+  booked so pair totals reconcile with native net. P4 5y +13.19% PF 1.89 win 73% eqDD 5.4%, 30 pair trades (0.5/month);
+  Model 4 5y +13.51% PF 1.92, 3y +5.78%. MOM PF 0.25, random 0.71; all 6 sensitivities positive; best-day PASS. Weak recently
+  (6m −2.2%, 1y +0.7%); 2023 flat; picked from 9 pairs (selection bias). Stock/index pairs trended apart (PF 0.14–0.66, swap
+  $22–24k). Gold/silver 5y +5.5% but 3y −1.3%. No stage 5. Nothing installed/deployed/pushed. See REPORT.md.
+- 2026-10-22: `Turtle Breakout Raw 2026-10-22/` (pasted Revelio video + Pine: 20-day high, 2 ATR stop, 10-day-low trail, 2% HWM,
+  long only; US500/USTEC/XAU/XAG/BTC one $100k account) — HOLD PASSES raw gate, DAY (16:30 close / 18:00 re-entry) FAILS.
+  Native Model 4, end 2026-10-22, 0 failed orders. HOLD 5y +111.6% CAGR 16.2% PF 1.47 Sharpe 0.64 equity DD 46.9% (relative;
+  MT5 "maximal" 35.1%), 177 trades (2.95/month), −35.1% in 2022; 3y +153% PF 1.84; 1y +19.2%. Indices lose after swap (HOLD
+  swap −$89k/5y); gains from gold, silver and BTC trends; without 5 best days negative. Random-entry HOLD +23% to +57% (mean R
+  0.114 vs 0.208). DAY 5y +0.5% PF 1.00 DD 57.9%; random DAY ≈ −3%; S55/SATR3/SR1 all ≈ flat or negative. Video DAY claim
+  (31%/yr) not reproduced: tester swap at 00:00 UTC still charged, overnight trend moves given up. 4 EA fixes during the study
+  (stop raise at market reopen; DAY close before session/quote end per weekday), all in RULES.md; invalid runs kept in
+  `native-INVALID-*`; HOLD parity identical v2→v5. 71/2,865 DAY positions carried over US holidays (no holiday calendar).
+  No stage 5. Nothing installed/deployed/pushed. Shared parser `max_drawdown_pct` = MT5 "maximal": understates worst % DD on
+  compounding runs (audit task offered).
+- 2026-10-22: `Nasdaq 5M DI Two Week 2026-10-22/` — production Nasdaq 5M (EX5 fe9f391db5af, SET 24911cd513b2) DI ON vs DI OFF
+  (only InpRequireDIAgreement), 2026-10-08→10-22 excl., Model 4 100% real ticks, $10k 1%: IDENTICAL ledgers, 9 trades,
+  +4.32%, PF 2.05, win 55.6%, eqDD 2.65%. DI agreed with EMA12 on all 9 signal days; Mon 10-12 skipped in both (held short).
+  Tiny sample, not a selection test. Nothing changed live.
+  Same for the last month (`Nasdaq 5M DI One Month 2026-10-22/`, 2026-09-22→10-22 excl.): DI ON +9.81% 15 trades PF 3.26 eqDD
+  2.65%; DI OFF +11.03% 19 trades PF 3.02 eqDD 2.89%. DI filtered 5 days (DI OFF 4 won/1 lost, +$223); DI ON's 10-05 long
+  (+$99) blocked in DI OFF by a held position. Retrospective snapshot; longer studies favoured DI ON.
+- 2026-10-22: `_00 Live profiles` REORGANISED (owner request), one folder per portfolio. Each folder holds its BAT(s),
+  EAs/ + Sets/ (SHA-256 copies of exactly what the BAT installs, in PORTFOLIO.json) and a README.
+  - Folders: `FTMO guarded - Current 14/` (FTMO account build + Any broker test build), `Current 14 + ORB 0.5R/`,
+    `ORB-only - All five at 0.5R/`, `Full EA portfolio - Recommended Adaptive/` (37 SETs / 27 EX5 resolved by the canonical
+    installer's own Get-PortfolioItems via `EA store/tools/resolve_full_portfolio.ps1`), `Prop ready/` (+ Codex_Best_FTMO.bat
+    and both guides), `Best Prop Portfolio 2026-10-20/` (unchanged path), `MT 5 init/`.
+  - The shared engine stays at the top level (Start-LiveProfile.ps1, Profiles.json, ORB05-policy.json, ORB05 Sets, Packages);
+    installers still read their packages.
+  - Generator: `uv run python -m tools.build_live_profiles launchers` (no recompile); the full `main()` would recompile every
+    package, so don't run it casually.
+  - All 8 BATs pass -ValidateOnly from their new paths.
+- 2026-10-22: FTMO ANY-BROKER TEST build (owner: "make all FTMO portfolios work with any broker for testing").
+  - `Packages/FTMO-AnyBroker` = the 17 FTMO EAs with identical strategy SETs, recompiled with the broker-neutral Prop Ready
+    guard (0.5% of saved initial balance, 2.25% / 1.5% / 3% daily / 92% buffer / 90% floor; equal to the FTMO $ limits on
+    $10k), plus the Prop Ready installer generated for 17 (`EA store/tools/build_ftmo_any_broker.py`). Version
+    FTMO17-ANY-BROKER-TEST-20261022.
+  - Launcher: `FTMO guarded - Current 14 - ANY BROKER TEST.bat`, route `ftmo-any-broker`. Phase prompt defaults to
+    continuous; exact symbol overrides allowed; shares the Prop Ready saved baseline/latches on the same account.
+  - The original FTMO-only build is unchanged and stays FTMO-only. Prop ready, Codex_Best_FTMO and Best Prop were already
+    broker-neutral.
+  - Not separately backtested. Not installed on any terminal.
+- 2026-10-22: Website portfolio library (LOCAL publication 2026-10-22, not yet on the VPS) now has 6 portfolios.
+  - Added `prop-ready` (Codex_Best_FTMO shown as its alias) and `best-prop`.
+  - Their histories come from `Website Portfolio Histories 2026-10-22/` (frozen Best Prop retest engine, continuous mode,
+    fresh $10k per window; parity with the retest exact, DI_OFF 908 / DI_ON 832 trades). Signal ledgers end 2026-10-06, same
+    as the other portfolios.
+  - 1y: Prop ready +50.1% PF 1.70 (447 trades); Best Prop +64.9% PF 1.37 (457).
+  - 3y: Prop ready +132.3%; Best Prop +219.5% (closed DD 16.3%).
+  - 5y: Prop ready +149.6% (2,181 trades). Best Prop 5y is FROZEN: 11 trades then the static 92% buffer blocked 2,644
+    entries from 2021-10-18 (−7.4%); this is disclosed on the page.
+  - Custom risk calculator disabled for these two (their guard scales with the saved balance).
+  - The other 4 portfolios' histories, members and risk ledger are byte-identical; the manifest-changed warning is cleared.
+  - 226 portfolio/launcher tests pass. Pre-existing unrelated failures remain: News Pulse compatibility record, client
+    file hashes, `BEST RECOMMENDED 2026-09-01.bat` text, test_store.
+  - Public site needs commit + push + VPS update (not done).
+- 2026-10-22: `_00 Live profiles/MT 5 init/Create MT5 Instance.bat`: asks only for an instance name.
+  - Copies program files only (exe, servers.dat, terminal.lic, sounds, templates, Default chart profile, Bases\Default;
+    never accounts, MQL5 or history) from `C:\Program Files\MetaTrader 5` (Ava, testers and temp folders excluded) to
+    `C:\MT5 Instances\<name>`.
+  - Adds a desktop shortcut and starts it once so the Calyx installers detect it.
+  - Dry-run and scratch-copy tested; a launched new instance was not tested.
 
 ## Main locations
 

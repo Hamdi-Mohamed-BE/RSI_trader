@@ -19,7 +19,10 @@ PERIODS = {'3m': '3 months', '6m': '6 months', '1y': '1 year', '3y': '3 years', 
 MANIFESTS = ('FTMO Thirteen EA Deployment 2026-09-27/PACKAGE.json',
              'Current14 Plus ORB05 Portfolio 2026-10-08/Package.json',
              '_00 Live profiles/Profiles.json', '_00 Live profiles/Packages/FTMO/PACKAGE.json',
-             '_00 Live profiles/Packages/ORB-only/Package.json', '_00 Live profiles/ORB05-policy.json')
+             '_00 Live profiles/Packages/ORB-only/Package.json', '_00 Live profiles/ORB05-policy.json',
+             '_00 Live profiles/Packages/PropReady/PACKAGE.json', '_00 Live profiles/Best Prop Portfolio 2026-10-20/PACKAGE.json')
+PUBLISHED = {'ftmo', 'current14-orb05', 'orbs-only', 'full-eas', 'prop-ready', 'best-prop'}
+RISK_DEFAULTS = {'full-eas': (.25, 25), 'best-prop': (1., 100)}  # others: 0.5% / USD 50
 
 
 def _chart(history):
@@ -51,7 +54,7 @@ def _load(mtime_ns, manifest_stamp):
     profiles = data['portfolios']
     inventory = {p.slug for p in get_website_catalog()}
     ids = [p['slug'] for p in profiles]
-    if len(ids) != len(set(ids)) or set(ids) != {'ftmo','current14-orb05','orbs-only','full-eas'}:
+    if len(ids) != len(set(ids)) or set(ids) != PUBLISHED:
         raise ValueError('Invalid portfolio publication')
     warnings = []
     # Portable publication works without the large research folders on the web host.
@@ -69,8 +72,9 @@ def _load(mtime_ns, manifest_stamp):
         p['status_label'] = STATUSES[p['status']]
         p['url'] = '/portfolios/' + p['slug']
         p['summary'] = next((h for h in p['history'] if h['id'].startswith('1y')), p['history'][0])
-        p['risk_defaults'] = dict(percent=.25 if p['slug']=='full-eas' else .5,
-                                 fixed=25 if p['slug']=='full-eas' else 50, news_percent=.10)
+        percent, fixed = RISK_DEFAULTS.get(p['slug'], (.5, 50))
+        p['risk_defaults'] = dict(percent=percent, fixed=fixed, news_percent=.10)
+        p.setdefault('custom_scenarios', True)
         for h in p['history']:
             _decorate_history(h)
     return dict(data, warnings=warnings, counts={key:sum(p['status']==key for p in profiles) for key in ('active','disabled')})
@@ -115,6 +119,9 @@ def portfolio_scenario(profile, period='1y', risk_mode='recorded', risk_value=50
     if risk_mode=='recorded':
         if daily_limit_mode!='off':raise ValueError('Select fixed USD or dynamic % to calculate a custom daily-loss limit.')
         return portfolio_history(profile,period)
+    if not profile.get('custom_scenarios',True):
+        raise ValueError('Custom sizing replays are not available for this guarded package: its guard scales every limit with the saved '
+                         'initial balance, and only the recorded package-guard replay is published.')
     if profile['slug']=='ftmo' and initial_balance!=10000:
         raise ValueError('Saved FTMO guard is specifically for $10,000; do not scale its fixed account thresholds to another balance.')
     return _scenario(SNAPSHOT.stat().st_mtime_ns,RISK_LEDGER.stat().st_mtime_ns,profile['slug'],period,

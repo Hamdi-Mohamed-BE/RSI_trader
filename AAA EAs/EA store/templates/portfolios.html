@@ -16,7 +16,7 @@
       {% include 'partials/portfolio_periods.html' %}
       {% include 'partials/portfolio_calculator.html' %}
       <div data-history-panel>{% include 'partials/portfolio_history.html' %}</div>
-      <div class="pf-card-footer"><a href="{{ profile.url }}?period={{ selected_period }}" data-detail-link class="button-secondary">EAs, history &amp; risk rules →</a><span class="pf-small">{{ profile.launcher or 'No live launcher' }}</span></div>
+      <div class="pf-card-footer"><a href="{{ profile.url }}?period={{ selected_period }}" data-detail-link class="button-secondary">EAs, history &amp; risk rules →</a><span class="pf-small">{% if profile.launcher %}{% if profile.launcher_folder %}{{ profile.launcher_folder }} / {% endif %}{{ profile.launcher }}{% else %}No live launcher{% endif %}</span></div>
     </article>
   {% endfor %}
   </div>

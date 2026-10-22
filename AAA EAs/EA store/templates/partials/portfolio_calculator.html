@@ -1,4 +1,5 @@
 {% set settings = risk_options|default({'risk_mode':'recorded','risk_value':50,'initial_balance':10000,'news_risk_percent':0.10,'daily_limit_mode':'off','daily_limit_value':0}) %}
+{% if not profile.get('custom_scenarios', true) %}<p class="pf-small">Custom sizing scenarios are not available for this guarded package: its guard scales every limit with the saved initial balance. The history below is the recorded package-guard replay ({{ profile.risk_summary }}).</p>{% else %}
 <details class="pf-calculator pf-expand" {% if settings.risk_mode!='recorded' or not compact %}open{% endif %}><summary>Risk &amp; daily-loss calculator · fixed USD / dynamic %</summary>
   <form method="get" action="{{ profile.url }}" data-risk-form data-default-percent="{{ profile.risk_defaults.percent }}" data-default-fixed="{{ profile.risk_defaults.fixed }}">
     <input type="hidden" name="period" value="{{ selected_period }}">
@@ -13,4 +14,4 @@
     <button type="submit" class="button-secondary">Calculate scenario</button> <button type="button" data-reset-risk class="button-secondary">Reset reference</button>
     <p class="pf-small">Percentage sizes each entry from simulated closed balance, not a measured floating-equity path. Limits block new entries only; open trades can exceed them. Calculations do not change BATs or MT5. {% if profile.slug=='ftmo' %}FTMO’s $50 hard ceiling and original guards remain.{% endif %}</p>
   </form>
-</details>
+</details>{% endif %}

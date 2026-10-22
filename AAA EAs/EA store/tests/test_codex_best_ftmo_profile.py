@@ -34,6 +34,7 @@ NINE = {
 }
 EXISTING_PROFILES = {
     "ftmo": (17, "FTMO guarded - Current 14.bat"),
+    "ftmo-any-broker": (17, "FTMO guarded - Current 14 - ANY BROKER TEST.bat"),
     "current14-orb05": (17, "Current 14 + ORB 0.5R.bat"),
     "orbs-only": (5, "ORB-only - 50pct+ PF1.15+.bat"),
     "prop-ready": (9, "Prop ready.bat"),
@@ -75,8 +76,9 @@ def declarations_only_named_profiles():
     """Do not import a builder or run its compile/copy/write operations."""
     tree = ast.parse(BUILDER.read_text(encoding="utf-8-sig"), filename=str(BUILDER))
     functions = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "named_profiles"]
-    assert len(functions) == 1
-    module = ast.Module(body=functions, type_ignores=[])
+    folders = [node for node in tree.body if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == "FOLDERS" for t in node.targets)]
+    assert len(functions) == 1 and len(folders) == 1
+    module = ast.Module(body=folders + functions, type_ignores=[])
     namespace = {}
     exec(compile(ast.fix_missing_locations(module), str(BUILDER), "exec"), namespace)
     return namespace["named_profiles"]()
@@ -84,7 +86,7 @@ def declarations_only_named_profiles():
 
 def snapshot():
     paths = [p for p in GENERIC.rglob("*") if p.is_file()]
-    paths += [WRAPPER, LIVE / "Profiles.json", LIVE / "Codex_Best_FTMO.bat"]
+    paths += [WRAPPER, LIVE / "Profiles.json", LIVE / "Prop ready" / "Codex_Best_FTMO.bat"]
     return {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
 
 
@@ -125,9 +127,9 @@ def test_named_profile_metadata_matches_generator_without_running_builder():
 
 
 def test_new_bat_routes_to_named_wrapper_and_preserves_argument_forwarding():
-    raw = (LIVE / "Codex_Best_FTMO.bat").read_bytes()
+    raw = (LIVE / "Prop ready" / "Codex_Best_FTMO.bat").read_bytes()
     source = raw.decode("ascii")
-    assert "-File \"%~dp0Start-LiveProfile.ps1\"" in source
+    assert "-File \"%~dp0..\\Start-LiveProfile.ps1\"" in source
     assert '-Portfolio "codex-best-ftmo" %*' in source
     assert 'set "CALYX_EXIT=%ERRORLEVEL%"' in source
     assert "exit /b %CALYX_EXIT%" in source

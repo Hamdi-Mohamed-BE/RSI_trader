@@ -15,11 +15,11 @@ client = TestClient(app)
 
 def test_publication_preserves_individual_catalogue_and_review():
     d = portfolio_catalog()
-    assert d['counts'] == {'active':4,'disabled':0}
+    assert d['counts'] == {'active':6,'disabled':0}
     assert not d['warnings']
     assert len(get_website_catalog())==37 and len(get_sellable_catalog())==35
     assert review_data()['counts']=={'live':27,'paused':5,'review':5}
-    assert {p['slug']:p['ea_count'] for p in d['portfolios']}=={'ftmo':17,'current14-orb05':17,'orbs-only':5,'full-eas':37}
+    assert {p['slug']:p['ea_count'] for p in d['portfolios']}=={'ftmo':17,'current14-orb05':17,'orbs-only':5,'full-eas':37,'prop-ready':9,'best-prop':9}
 
 
 def test_current_portfolio_matches_saved_manifests():
@@ -46,7 +46,7 @@ def test_owner_override_does_not_hide_unqualified_pf():
     assert 'Undefined' in client.get('/portfolios/orbs-only').text
 
 
-@pytest.mark.parametrize('slug,n',[('ftmo',17),('current14-orb05',17),('orbs-only',5),('full-eas',37)])
+@pytest.mark.parametrize('slug,n',[('ftmo',17),('current14-orb05',17),('orbs-only',5),('full-eas',37),('prop-ready',9),('best-prop',9)])
 def test_detail_contains_history_and_risk_and_members(slug,n):
     response = client.get('/portfolios/'+slug)
     assert response.status_code==200
@@ -57,7 +57,7 @@ def test_detail_contains_history_and_risk_and_members(slug,n):
     assert client.get('/api/portfolios/'+slug).json()['ea_count']==n
 
 
-@pytest.mark.parametrize('status,count',[('all',4),('active',4),('disabled',0)])
+@pytest.mark.parametrize('status,count',[('all',6),('active',6),('disabled',0)])
 def test_portfolio_status_filter(status,count):
     page=client.get('/portfolios?status='+status)
     assert page.status_code==200 and page.text.count('data-portfolio=')==count
@@ -117,12 +117,12 @@ def test_publication_does_not_need_research_files_on_web_host(tmp_path,monkeypat
     monkeypatch.setattr(module,'PACKAGE_ROOT',tmp_path)
     module._load.cache_clear()
     try:
-        assert portfolio_catalog()['counts']=={'active':4,'disabled':0}
+        assert portfolio_catalog()['counts']=={'active':6,'disabled':0}
     finally:
         module._load.cache_clear()
 
 
-@pytest.mark.parametrize('slug',['ftmo','current14-orb05','orbs-only','full-eas'])
+@pytest.mark.parametrize('slug',['ftmo','current14-orb05','orbs-only','full-eas','prop-ready','best-prop'])
 @pytest.mark.parametrize('period',['3m','6m','1y','3y','5y'])
 def test_periods_have_matched_api_and_inline_metrics(slug,period):
     response=client.get(f'/api/portfolios/{slug}?period={period}')
@@ -149,7 +149,7 @@ def test_recent_windows_are_calendar_months_and_do_not_change_members():
     assert full['history'][-1]['coverage']=='partial'
     end='2026-10-06'
     assert all(h['end_exclusive']==end for h in full['history'])
-    assert client.get('/portfolios?period=3m').text.count('data-loaded-period="3m"')==4
+    assert client.get('/portfolios?period=3m').text.count('data-loaded-period="3m"')==6
     assert client.get('/api/portfolios/ftmo?period=invalid').status_code==422
     assert client.get('/portfolios/ftmo?period=invalid').status_code==404
 
@@ -206,3 +206,22 @@ def test_full_long_history_is_current_partial_not_archived_or_zero_filled(period
     assert h['end_exclusive']=='2026-10-06'
     assert 'not a native simultaneous shared-margin' in h['scope']
     assert h['stats']['max_daily_equity_drawdown_pct'] is None
+
+
+def test_nine_ea_guarded_portfolios_publish_the_frozen_package_guard_replay():
+    source=json.loads((PACKAGE_ROOT/'Website Portfolio Histories 2026-10-22/HISTORIES.json').read_text())
+    assert source['parity']['DI_OFF']['reproduced']['trades']==908 and source['parity']['DI_ON']['reproduced']['trades']==832
+    for slug,launcher,folder in (('prop-ready','Prop ready.bat','Prop ready'),('best-prop','Install Best Prop Portfolio.bat','Best Prop Portfolio 2026-10-20')):
+        p=portfolio_by_slug(slug)
+        assert p['launcher']==launcher and p['launcher_folder']==folder and p['custom_scenarios'] is False
+        for h in p['history']:
+            rows=source['portfolios'][slug]['periods'][h['id']]
+            assert h['stats']['trades']==len(rows['trades']) and h['end_exclusive']=='2026-10-06'
+            assert h['member_coverage']=={'tested':9,'total':9}
+            assert h['evidence_kind']=='frozen-five-year-signal-ledger-package-guard-replay'
+        assert client.get(f'/portfolios/{slug}?risk_mode=fixed&risk_value=50').status_code==422
+        assert 'Custom sizing scenarios are not available' in client.get('/portfolios/'+slug).text
+    frozen=portfolio_by_slug('best-prop')['history'][-1]
+    assert frozen['id']=='5y' and frozen['stats']['trades']==11 and 'blocked 2,644 later entries' in frozen['scope']
+    assert 'Codex_Best_FTMO.bat' in client.get('/portfolios/prop-ready').text
+    assert 'ANY BROKER TEST' in client.get('/portfolios/ftmo').text

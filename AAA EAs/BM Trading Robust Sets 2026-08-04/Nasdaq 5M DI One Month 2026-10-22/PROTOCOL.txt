@@ -1,0 +1,12 @@
+User request 2026-10-22: "do the same for the last month (DI ON vs DI OFF, Nasdaq 5M)".
+Frozen standalone comparison, no optimization or strategy modification. Reuses the 2026-10-04 two-week harness unchanged
+except for the dates, the case list and the output names.
+Window: 2026-09-22 inclusive through 2026-10-22 exclusive (last month; last weekday Wednesday 21 October).
+Each variant starts flat at USD 10,000; 1% equity planned risk (round UP / minimum volume as in production). No inherited positions.
+DI_ON: exact installer EX5 (Nasdaq 5M DI Wide ATR EA.ex5) and selected SET (11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set):
+DI14 + EMA12 at the 09:30 NY M5 candle, both directions, 0.60% price SL, ATR14 x6 trailing from +1R, no TP, overnight holding.
+DI_OFF: same EX5 and SET; the only strategy input difference is InpRequireDIAgreement=false.
+InpAdaptivePortfolioControls=false in both (standalone; no portfolio overlay, FTMO guard or 0.25x multiplier).
+Broker Exness-MT5Trial16 isolated research terminal, USTEC, M5, Model 4 (real ticks), 150 ms delay, USD, 1:2000.
+Test-end liquidations are labelled separately, not as normal exits.
+One month is a small retrospective snapshot, not validation or a forecast. No live terminal, SET, BAT, website or Git change.

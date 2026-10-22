@@ -1,0 +1,3013 @@
+{
+  "tag": "allrr05-dmc-fresh-reaction-us100-half",
+  "slug": "dmc-fresh-reaction-us100",
+  "variant": "half",
+  "window": [
+    "2021.10.06",
+    "2026.10.06"
+  ],
+  "inputs": {
+    "InpAdaptivePortfolioControls": "false",
+    "InpUseDynamicTrailingSL": "true",
+    "InpDynamicTriggerFraction": "0.5",
+    "InpDynamicLockFraction": "0.2",
+    "InpResearchSession": "3",
+    "InpResearchBrokerUtcOffsetMinutes": "180",
+    "InpEnableTrading": "true",
+    "InpRiskPercent": "1.0",
+    "InpRewardRisk": "0.5",
+    "InpMagic": "1090902",
+    "InpMaxSpreadPoints": "0",
+    "InpTesterServerClockMode": "1",
+    "InpUseMarkovRegimeFilter": "false",
+    "InpMarkovReturnWindow": "40",
+    "InpMarkovThreshold": "0.05",
+    "InpMarkovSignalGate": "0.05",
+    "InpMarkovMinLabels": "252",
+    "InpMarkovHistoryBars": "2600",
+    "InpPivotBars": "5",
+    "InpTrendEMA": "200",
+    "InpTrendSlopeBars": "6",
+    "InpUseTrailing": "true",
+    "InpTrailStartR": "1.5",
+    "InpTrailDistanceR": "1.0",
+    "InpAsiaBufferPercent": "0.03",
+    "InpAMDStopBufferRange": "0.03",
+    "InpDmCFixedStopPrice": "30.0",
+    "InpDmCSignalTimeframe": "16385",
+    "InpDmCStopMode": "1",
+    "InpDmCATRPeriod": "14",
+    "InpDmCStopATR": "1.5",
+    "InpDmCSignalBufferATR": "0.1",
+    "InpDmCFreshMode": "2",
+    "InpDmCFreshTouchTimeframe": "15",
+    "InpDmCFreshToleranceATR": "0.05",
+    "InpDmCSignalMode": "0",
+    "InpDmCRegainMaxBars": "1",
+    "InpDmCRoomGateEnabled": "false",
+    "InpDmCMinimumRoomR": "2.0",
+    "InpDmCRoomRequireMappedLevel": "false",
+    "InpDmCUseWeeklyMonthlyLevels": "true",
+    "InpDmCHTFProximityEnabled": "true",
+    "InpDmCHTFProximityATR": "0.25",
+    "InpDmCConfirmMode": "0",
+    "InpDmCM15StructureLookback": "4",
+    "InpDmCConfirmExpiryHours": "2",
+    "InpDmCWeekdaysOnly": "false",
+    "InpUseEconomicCalendar": "true",
+    "InpNewsExpiryMinutes": "15",
+    "InpNewsStopPrice": "9.0",
+    "InpAllowProvisionalWeekend": "false",
+    "InpGridLevels": "3",
+    "InpGridRiskPercent": "0.5",
+    "InpWeaknessATRImpulse": "2.0",
+    "InpRR05AuditTag": "allrr05-dmc-fresh-reaction-us100-half"
+  },
+  "unsupported_set_inputs": [
+    "InpPortfolioRiskMode",
+    "InpPortfolioPercent",
+    "InpPortfolioFixedUSD",
+    "InpPortfolioExpectedLogin",
+    "InpPortfolioExpectedServer",
+    "InpPortfolioExpectedSymbol",
+    "InpPortfolioInstallNonce"
+  ],
+  "native": {
+    "initial_balance": 10000.0,
+    "final_balance": 10700.14,
+    "net_profit": 700.14,
+    "return_pct": 7.0,
+    "profit_factor": 1.38,
+    "win_rate_pct": 78.75,
+    "max_drawdown_pct": 3.87,
+    "trades": 80,
+    "sharpe_ratio": 14.84,
+    "recovery_factor": 1.77,
+    "history_quality": "15% real ticks",
+    "equity_dd_pct": 3.87,
+    "balance_dd_pct": 3.02
+  },
+  "metrics": {
+    "trades": 80,
+    "return_pct": 7.0014,
+    "net_profit": 700.14,
+    "pf": 1.393567027926429,
+    "wins": 63,
+    "losses": 17,
+    "flat": 0,
+    "win_rate": 78.75,
+    "equity_dd_pct": 3.87,
+    "balance_dd_pct": 3.02,
+    "sharpe_daily_equity": 0.5774781063556118,
+    "win_streak": 11,
+    "loss_streak": 2,
+    "avg_win": 39.35079365079365,
+    "avg_loss": -104.64470588235294,
+    "partial_positions": 0,
+    "exit_legs": 80,
+    "commission": -53.02,
+    "swap": -45.69,
+    "fee": 0.0
+  },
+  "flags": {
+    "init_failed": 0,
+    "runtime": 0,
+    "history": 0,
+    "stopout": 0,
+    "invalid_stops": 0,
+    "invalid_volume": 0,
+    "export_failed": 0
+  },
+  "trades": [
+    {
+      "position_id": 2,
+      "open_epoch": 1634922000,
+      "close_epoch": 1634927611,
+      "last_deal": 3,
+      "side": "Long",
+      "volume": 1.65,
+      "open_price": 15355.69,
+      "close_price": 15386.31,
+      "net": 49.49,
+      "magic": 1090902,
+      "sl": 15294.88,
+      "tp": 15386.1,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 15386.10"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.52,
+      "commission": -1.03,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 4,
+      "open_epoch": 1637600400,
+      "close_epoch": 1637610472,
+      "last_deal": 5,
+      "side": "Short",
+      "volume": 1.51,
+      "open_price": 16513.42,
+      "close_price": 16580.47,
+      "net": -102.19,
+      "magic": 1090902,
+      "sl": 16580.22,
+      "tp": 16480.02,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 16580.22"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.25,
+      "commission": -0.94,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 6,
+      "open_epoch": 1638298800,
+      "close_epoch": 1638324157,
+      "last_deal": 7,
+      "side": "Long",
+      "volume": 0.71,
+      "open_price": 16223.1,
+      "close_price": 16293.81,
+      "net": 45.11,
+      "magic": 1090902,
+      "sl": 16082.83,
+      "tp": 16293.24,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 16293.24"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.2,
+      "commission": -0.44,
+      "swap": -4.65,
+      "fee": 0.0
+    },
+    {
+      "position_id": 8,
+      "open_epoch": 1639681200,
+      "close_epoch": 1639684058,
+      "last_deal": 9,
+      "side": "Long",
+      "volume": 0.92,
+      "open_price": 15942.77,
+      "close_price": 15833.18,
+      "net": -101.4,
+      "magic": 1090902,
+      "sl": 15833.42,
+      "tp": 15997.45,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 15833.42"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.82,
+      "commission": -0.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 10,
+      "open_epoch": 1639956600,
+      "close_epoch": 1639958153,
+      "last_deal": 11,
+      "side": "Short",
+      "volume": 0.56,
+      "open_price": 15809.65,
+      "close_price": 15719.56,
+      "net": 50.1,
+      "magic": 1090902,
+      "sl": 15989.18,
+      "tp": 15719.89,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 15719.89"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.45,
+      "commission": -0.35,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 12,
+      "open_epoch": 1641225600,
+      "close_epoch": 1641227915,
+      "last_deal": 13,
+      "side": "Long",
+      "volume": 1.55,
+      "open_price": 16452.5,
+      "close_price": 16387.96,
+      "net": -101.01,
+      "magic": 1090902,
+      "sl": 16388.09,
+      "tp": 16484.71,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 16388.09"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.04,
+      "commission": -0.97,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 14,
+      "open_epoch": 1641916800,
+      "close_epoch": 1641917032,
+      "last_deal": 15,
+      "side": "Long",
+      "volume": 1.04,
+      "open_price": 15577.84,
+      "close_price": 15625.61,
+      "net": 49.03,
+      "magic": 1090902,
+      "sl": 15482.54,
+      "tp": 15625.49,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 15625.49"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 49.68,
+      "commission": -0.65,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 16,
+      "open_epoch": 1644190200,
+      "close_epoch": 1644201671,
+      "last_deal": 17,
+      "side": "Short",
+      "volume": 0.52,
+      "open_price": 14714.95,
+      "close_price": 14618.58,
+      "net": 49.78,
+      "magic": 1090902,
+      "sl": 14906.45,
+      "tp": 14619.2,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 14619.20"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.11,
+      "commission": -0.33,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 18,
+      "open_epoch": 1646766000,
+      "close_epoch": 1646772435,
+      "last_deal": 19,
+      "side": "Short",
+      "volume": 0.42,
+      "open_price": 13356.31,
+      "close_price": 13332.71,
+      "net": 9.65,
+      "magic": 1090902,
+      "sl": 13596.13,
+      "tp": 13236.4,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 13332.33"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 9.91,
+      "commission": -0.26,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 20,
+      "open_epoch": 1647367200,
+      "close_epoch": 1647368375,
+      "last_deal": 21,
+      "side": "Short",
+      "volume": 0.72,
+      "open_price": 13340.34,
+      "close_price": 13270.34,
+      "net": 49.95,
+      "magic": 1090902,
+      "sl": 13478.94,
+      "tp": 13271.04,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 13271.04"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.4,
+      "commission": -0.45,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 22,
+      "open_epoch": 1648422000,
+      "close_epoch": 1648436531,
+      "last_deal": 23,
+      "side": "Short",
+      "volume": 0.86,
+      "open_price": 14737.89,
+      "close_price": 14726.3,
+      "net": 9.43,
+      "magic": 1090902,
+      "sl": 14854.64,
+      "tp": 14679.52,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 14726.22"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 9.97,
+      "commission": -0.54,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 24,
+      "open_epoch": 1651446000,
+      "close_epoch": 1651462718,
+      "last_deal": 25,
+      "side": "Long",
+      "volume": 0.62,
+      "open_price": 12890.37,
+      "close_price": 12972.18,
+      "net": 50.33,
+      "magic": 1090902,
+      "sl": 12728.34,
+      "tp": 12971.39,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 12971.39"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.72,
+      "commission": -0.39,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 26,
+      "open_epoch": 1651683600,
+      "close_epoch": 1651687101,
+      "last_deal": 27,
+      "side": "Long",
+      "volume": 1.22,
+      "open_price": 13110.87,
+      "close_price": 13152.25,
+      "net": 49.72,
+      "magic": 1090902,
+      "sl": 13028.22,
+      "tp": 13152.2,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 13152.20"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.48,
+      "commission": -0.76,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 28,
+      "open_epoch": 1654470000,
+      "close_epoch": 1654482995,
+      "last_deal": 29,
+      "side": "Long",
+      "volume": 0.86,
+      "open_price": 12552.52,
+      "close_price": 12612.36,
+      "net": 50.92,
+      "magic": 1090902,
+      "sl": 12433.68,
+      "tp": 12611.94,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 12611.94"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.46,
+      "commission": -0.54,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 30,
+      "open_epoch": 1656887400,
+      "close_epoch": 1656975878,
+      "last_deal": 31,
+      "side": "Long",
+      "volume": 0.72,
+      "open_price": 11580.9,
+      "close_price": 11651.76,
+      "net": 50.57,
+      "magic": 1090902,
+      "sl": 11439.32,
+      "tp": 11651.69,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 11651.69"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.02,
+      "commission": -0.45,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 32,
+      "open_epoch": 1657494000,
+      "close_epoch": 1657546547,
+      "last_deal": 33,
+      "side": "Long",
+      "volume": 0.83,
+      "open_price": 12083.36,
+      "close_price": 11959.61,
+      "net": -103.23,
+      "magic": 1090902,
+      "sl": 11959.98,
+      "tp": 12145.05,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 11959.98"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.71,
+      "commission": -0.52,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 34,
+      "open_epoch": 1663799400,
+      "close_epoch": 1663808113,
+      "last_deal": 35,
+      "side": "Short",
+      "volume": 0.69,
+      "open_price": 11599.34,
+      "close_price": 11525.09,
+      "net": 50.8,
+      "magic": 1090902,
+      "sl": 11747.33,
+      "tp": 11525.35,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 11525.35"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.23,
+      "commission": -0.43,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 36,
+      "open_epoch": 1664294400,
+      "close_epoch": 1664295124,
+      "last_deal": 37,
+      "side": "Short",
+      "volume": 1.08,
+      "open_price": 11282.11,
+      "close_price": 11234.6,
+      "net": 50.63,
+      "magic": 1090902,
+      "sl": 11376.78,
+      "tp": 11234.78,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 11234.78"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.31,
+      "commission": -0.68,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 38,
+      "open_epoch": 1666650600,
+      "close_epoch": 1666705588,
+      "last_deal": 39,
+      "side": "Short",
+      "volume": 0.8,
+      "open_price": 11432.82,
+      "close_price": 11562.18,
+      "net": -103.99,
+      "magic": 1090902,
+      "sl": 11561.96,
+      "tp": 11368.25,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 11561.96"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.49,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 40,
+      "open_epoch": 1669651200,
+      "close_epoch": 1669658748,
+      "last_deal": 41,
+      "side": "Short",
+      "volume": 1.77,
+      "open_price": 11672.08,
+      "close_price": 11666.4,
+      "net": 8.94,
+      "magic": 1090902,
+      "sl": 11729.41,
+      "tp": 11643.42,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 11666.35"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.05,
+      "commission": -1.11,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 42,
+      "open_epoch": 1670801400,
+      "close_epoch": 1670874874,
+      "last_deal": 43,
+      "side": "Short",
+      "volume": 1.0,
+      "open_price": 11538.33,
+      "close_price": 11640.66,
+      "net": -102.96,
+      "magic": 1090902,
+      "sl": 11640.34,
+      "tp": 11487.33,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 11640.34"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.33,
+      "commission": -0.63,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 44,
+      "open_epoch": 1672097400,
+      "close_epoch": 1672148614,
+      "last_deal": 45,
+      "side": "Long",
+      "volume": 0.92,
+      "open_price": 11060.25,
+      "close_price": 10950.67,
+      "net": -107.42,
+      "magic": 1090902,
+      "sl": 10951.25,
+      "tp": 11114.75,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 10951.25"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -100.81,
+      "commission": -0.58,
+      "swap": -6.03,
+      "fee": 0.0
+    },
+    {
+      "position_id": 46,
+      "open_epoch": 1676563200,
+      "close_epoch": 1676568880,
+      "last_deal": 47,
+      "side": "Long",
+      "volume": 1.44,
+      "open_price": 12612.87,
+      "close_price": 12647.49,
+      "net": 48.95,
+      "magic": 1090902,
+      "sl": 12544.06,
+      "tp": 12647.28,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 12647.28"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 49.85,
+      "commission": -0.9,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 48,
+      "open_epoch": 1677178800,
+      "close_epoch": 1677179712,
+      "last_deal": 49,
+      "side": "Long",
+      "volume": 1.3,
+      "open_price": 12091.39,
+      "close_price": 12130.3,
+      "net": 49.77,
+      "magic": 1090902,
+      "sl": 12014.3,
+      "tp": 12129.94,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 12129.94"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.58,
+      "commission": -0.81,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 50,
+      "open_epoch": 1678662000,
+      "close_epoch": 1678699357,
+      "last_deal": 51,
+      "side": "Short",
+      "volume": 0.65,
+      "open_price": 11944.4,
+      "close_price": 11865.34,
+      "net": 50.98,
+      "magic": 1090902,
+      "sl": 12100.64,
+      "tp": 11866.28,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 11866.28"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.39,
+      "commission": -0.41,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 52,
+      "open_epoch": 1679266800,
+      "close_epoch": 1679287178,
+      "last_deal": 53,
+      "side": "Short",
+      "volume": 0.9,
+      "open_price": 12576.95,
+      "close_price": 12520.6,
+      "net": 50.16,
+      "magic": 1090902,
+      "sl": 12688.88,
+      "tp": 12520.99,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 12520.99"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.72,
+      "commission": -0.56,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 54,
+      "open_epoch": 1679598000,
+      "close_epoch": 1679599237,
+      "last_deal": 55,
+      "side": "Short",
+      "volume": 1.08,
+      "open_price": 12678.16,
+      "close_price": 12631.01,
+      "net": 50.24,
+      "magic": 1090902,
+      "sl": 12771.85,
+      "tp": 12631.32,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 12631.32"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.92,
+      "commission": -0.68,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 56,
+      "open_epoch": 1679869800,
+      "close_epoch": 1679929776,
+      "last_deal": 57,
+      "side": "Long",
+      "volume": 0.97,
+      "open_price": 12820.49,
+      "close_price": 12714.83,
+      "net": -103.1,
+      "magic": 1090902,
+      "sl": 12715.17,
+      "tp": 12873.15,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 12715.17"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.49,
+      "commission": -0.61,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 58,
+      "open_epoch": 1682013600,
+      "close_epoch": 1682014711,
+      "last_deal": 59,
+      "side": "Short",
+      "volume": 1.64,
+      "open_price": 13078.98,
+      "close_price": 13047.87,
+      "net": 49.99,
+      "magic": 1090902,
+      "sl": 13140.39,
+      "tp": 13048.28,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 13048.28"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.02,
+      "commission": -1.03,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 60,
+      "open_epoch": 1687903500,
+      "close_epoch": 1687907861,
+      "last_deal": 61,
+      "side": "Short",
+      "volume": 1.38,
+      "open_price": 14935.78,
+      "close_price": 14898.78,
+      "net": 50.2,
+      "magic": 1090902,
+      "sl": 15009.06,
+      "tp": 14899.14,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 14899.14"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.06,
+      "commission": -0.86,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 62,
+      "open_epoch": 1688752800,
+      "close_epoch": 1688755564,
+      "last_deal": 63,
+      "side": "Short",
+      "volume": 1.57,
+      "open_price": 15191.72,
+      "close_price": 15159.07,
+      "net": 50.28,
+      "magic": 1090902,
+      "sl": 15256.77,
+      "tp": 15159.2,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 15159.20"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.26,
+      "commission": -0.98,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 64,
+      "open_epoch": 1688940300,
+      "close_epoch": 1688951484,
+      "last_deal": 65,
+      "side": "Short",
+      "volume": 1.28,
+      "open_price": 15049.72,
+      "close_price": 15041.970000000001,
+      "net": 9.12,
+      "magic": 1090902,
+      "sl": 15129.57,
+      "tp": 15009.8,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 15041.74"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 9.92,
+      "commission": -0.8,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 66,
+      "open_epoch": 1690484400,
+      "close_epoch": 1690514921,
+      "last_deal": 67,
+      "side": "Short",
+      "volume": 1.04,
+      "open_price": 15454.63,
+      "close_price": 15554.43,
+      "net": -104.44,
+      "magic": 1090902,
+      "sl": 15553.11,
+      "tp": 15405.39,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 15553.11"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -103.79,
+      "commission": -0.65,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 68,
+      "open_epoch": 1692896400,
+      "close_epoch": 1692905788,
+      "last_deal": 69,
+      "side": "Long",
+      "volume": 1.06,
+      "open_price": 14960.88,
+      "close_price": 14865.01,
+      "net": -102.28,
+      "magic": 1090902,
+      "sl": 14865.11,
+      "tp": 15008.77,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 14865.11"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -101.62,
+      "commission": -0.66,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 70,
+      "open_epoch": 1693843200,
+      "close_epoch": 1693871879,
+      "last_deal": 71,
+      "side": "Long",
+      "volume": 3.39,
+      "open_price": 15512.16,
+      "close_price": 15515.03,
+      "net": 7.61,
+      "magic": 1090902,
+      "sl": 15482.57,
+      "tp": 15526.96,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 15515.12"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 9.73,
+      "commission": -2.12,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 72,
+      "open_epoch": 1696197900,
+      "close_epoch": 1696240119,
+      "last_deal": 73,
+      "side": "Short",
+      "volume": 1.08,
+      "open_price": 14814.14,
+      "close_price": 14767.21,
+      "net": 50.0,
+      "magic": 1090902,
+      "sl": 14906.87,
+      "tp": 14767.78,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 14767.78"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.68,
+      "commission": -0.68,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 74,
+      "open_epoch": 1700240400,
+      "close_epoch": 1700244691,
+      "last_deal": 75,
+      "side": "Long",
+      "volume": 2.43,
+      "open_price": 15831.9,
+      "close_price": 15853.45,
+      "net": 50.85,
+      "magic": 1090902,
+      "sl": 15790.38,
+      "tp": 15852.66,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 15852.66"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 52.37,
+      "commission": -1.52,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 76,
+      "open_epoch": 1705273200,
+      "close_epoch": 1705300652,
+      "last_deal": 77,
+      "side": "Long",
+      "volume": 1.2,
+      "open_price": 16833.9,
+      "close_price": 16876.34,
+      "net": 50.18,
+      "magic": 1090902,
+      "sl": 16749.42,
+      "tp": 16876.14,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 16876.14"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.93,
+      "commission": -0.75,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 78,
+      "open_epoch": 1705939200,
+      "close_epoch": 1705941333,
+      "last_deal": 79,
+      "side": "Short",
+      "volume": 1.89,
+      "open_price": 17333.82,
+      "close_price": 17388.149999999998,
+      "net": -103.86,
+      "magic": 1090902,
+      "sl": 17387.69,
+      "tp": 17306.89,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 17387.69"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.68,
+      "commission": -1.18,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 80,
+      "open_epoch": 1709222400,
+      "close_epoch": 1709224228,
+      "last_deal": 81,
+      "side": "Short",
+      "volume": 1.54,
+      "open_price": 17969.26,
+      "close_price": 17936.58,
+      "net": 49.37,
+      "magic": 1090902,
+      "sl": 18034.59,
+      "tp": 17936.6,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 17936.60"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.33,
+      "commission": -0.96,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 82,
+      "open_epoch": 1710345600,
+      "close_epoch": 1710349289,
+      "last_deal": 83,
+      "side": "Long",
+      "volume": 1.68,
+      "open_price": 18097.75,
+      "close_price": 18128.37,
+      "net": 50.39,
+      "magic": 1090902,
+      "sl": 18037.33,
+      "tp": 18127.96,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 18127.96"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.44,
+      "commission": -1.05,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 84,
+      "open_epoch": 1711321200,
+      "close_epoch": 1711349740,
+      "last_deal": 85,
+      "side": "Short",
+      "volume": 1.5,
+      "open_price": 18349.92,
+      "close_price": 18343.2,
+      "net": 9.14,
+      "magic": 1090902,
+      "sl": 18417.85,
+      "tp": 18315.96,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 18343.13"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.08,
+      "commission": -0.94,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 86,
+      "open_epoch": 1712944800,
+      "close_epoch": 1713132096,
+      "last_deal": 87,
+      "side": "Long",
+      "volume": 1.08,
+      "open_price": 18002.71,
+      "close_price": 18050.51,
+      "net": 29.7,
+      "magic": 1090902,
+      "sl": 17908.5,
+      "tp": 18049.82,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 18049.82"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.62,
+      "commission": -0.68,
+      "swap": -21.24,
+      "fee": 0.0
+    },
+    {
+      "position_id": 88,
+      "open_epoch": 1713196800,
+      "close_epoch": 1713198266,
+      "last_deal": 89,
+      "side": "Long",
+      "volume": 1.47,
+      "open_price": 18057.63,
+      "close_price": 17988.08,
+      "net": -103.16,
+      "magic": 1090902,
+      "sl": 17988.23,
+      "tp": 18092.33,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 17988.23"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.24,
+      "commission": -0.92,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 90,
+      "open_epoch": 1714406400,
+      "close_epoch": 1714408830,
+      "last_deal": 91,
+      "side": "Long",
+      "volume": 1.9,
+      "open_price": 17779.2,
+      "close_price": 17784.45,
+      "net": 8.79,
+      "magic": 1090902,
+      "sl": 17726.02,
+      "tp": 17805.79,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 17784.52"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 9.98,
+      "commission": -1.19,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 92,
+      "open_epoch": 1717365600,
+      "close_epoch": 1717396537,
+      "last_deal": 93,
+      "side": "Long",
+      "volume": 0.77,
+      "open_price": 18568.27,
+      "close_price": 18634.46,
+      "net": 50.49,
+      "magic": 1090902,
+      "sl": 18436.12,
+      "tp": 18634.35,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 18634.35"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.97,
+      "commission": -0.48,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 94,
+      "open_epoch": 1717430400,
+      "close_epoch": 1717431155,
+      "last_deal": 95,
+      "side": "Long",
+      "volume": 1.48,
+      "open_price": 18585.3,
+      "close_price": 18516.1,
+      "net": -103.35,
+      "magic": 1090902,
+      "sl": 18516.54,
+      "tp": 18619.68,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 18516.54"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -102.42,
+      "commission": -0.93,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 96,
+      "open_epoch": 1722268800,
+      "close_epoch": 1722269636,
+      "last_deal": 97,
+      "side": "Long",
+      "volume": 1.0,
+      "open_price": 19134.76,
+      "close_price": 19185.44,
+      "net": 50.05,
+      "magic": 1090902,
+      "sl": 19033.82,
+      "tp": 19185.23,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 19185.23"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.68,
+      "commission": -0.63,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 98,
+      "open_epoch": 1723413600,
+      "close_epoch": 1723446997,
+      "last_deal": 99,
+      "side": "Long",
+      "volume": 0.7,
+      "open_price": 18504.91,
+      "close_price": 18519.23,
+      "net": 9.58,
+      "magic": 1090902,
+      "sl": 18359.1,
+      "tp": 18577.82,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 18519.49"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.02,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 100,
+      "open_epoch": 1724018400,
+      "close_epoch": 1724045246,
+      "last_deal": 101,
+      "side": "Short",
+      "volume": 1.11,
+      "open_price": 19559.21,
+      "close_price": 19512.66,
+      "net": 50.98,
+      "magic": 1090902,
+      "sl": 19650.95,
+      "tp": 19513.34,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 19513.34"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.67,
+      "commission": -0.69,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 102,
+      "open_epoch": 1724626800,
+      "close_epoch": 1724681318,
+      "last_deal": 103,
+      "side": "Short",
+      "volume": 0.8,
+      "open_price": 19680.16,
+      "close_price": 19616.31,
+      "net": 50.58,
+      "magic": 1090902,
+      "sl": 19807.53,
+      "tp": 19616.48,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 19616.48"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.08,
+      "commission": -0.5,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 104,
+      "open_epoch": 1725231600,
+      "close_epoch": 1725261386,
+      "last_deal": 105,
+      "side": "Short",
+      "volume": 0.89,
+      "open_price": 19555.65,
+      "close_price": 19497.81,
+      "net": 50.92,
+      "magic": 1090902,
+      "sl": 19670.68,
+      "tp": 19498.14,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 19498.14"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.48,
+      "commission": -0.56,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 106,
+      "open_epoch": 1726441200,
+      "close_epoch": 1726483595,
+      "last_deal": 107,
+      "side": "Short",
+      "volume": 1.22,
+      "open_price": 19501.78,
+      "close_price": 19493.53,
+      "net": 9.31,
+      "magic": 1090902,
+      "sl": 19586.4,
+      "tp": 19459.47,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 19493.32"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.07,
+      "commission": -0.76,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 108,
+      "open_epoch": 1727046000,
+      "close_epoch": 1727051423,
+      "last_deal": 109,
+      "side": "Long",
+      "volume": 1.07,
+      "open_price": 19829.61,
+      "close_price": 19878.17,
+      "net": 51.29,
+      "magic": 1090902,
+      "sl": 19733.2,
+      "tp": 19877.82,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 19877.82"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.96,
+      "commission": -0.67,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 110,
+      "open_epoch": 1732118400,
+      "close_epoch": 1732121263,
+      "last_deal": 111,
+      "side": "Long",
+      "volume": 1.22,
+      "open_price": 20568.13,
+      "close_price": 20610.67,
+      "net": 51.14,
+      "magic": 1090902,
+      "sl": 20483.16,
+      "tp": 20610.62,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 20610.62"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.9,
+      "commission": -0.76,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 112,
+      "open_epoch": 1734710400,
+      "close_epoch": 1734710666,
+      "last_deal": 113,
+      "side": "Long",
+      "volume": 0.73,
+      "open_price": 21305.71,
+      "close_price": 21377.48,
+      "net": 51.93,
+      "magic": 1090902,
+      "sl": 21162.68,
+      "tp": 21377.38,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 21377.38"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 52.39,
+      "commission": -0.46,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 114,
+      "open_epoch": 1738252800,
+      "close_epoch": 1738253741,
+      "last_deal": 115,
+      "side": "Short",
+      "volume": 1.11,
+      "open_price": 21358.36,
+      "close_price": 21348.98,
+      "net": 9.72,
+      "magic": 1090902,
+      "sl": 21453.21,
+      "tp": 21311.1,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 21348.91"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.41,
+      "commission": -0.69,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 116,
+      "open_epoch": 1740589200,
+      "close_epoch": 1740591638,
+      "last_deal": 117,
+      "side": "Short",
+      "volume": 1.37,
+      "open_price": 21301.0,
+      "close_price": 21262.9,
+      "net": 51.34,
+      "magic": 1090902,
+      "sl": 21377.69,
+      "tp": 21262.91,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 21262.91"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 52.2,
+      "commission": -0.86,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 118,
+      "open_epoch": 1741557600,
+      "close_epoch": 1741609900,
+      "last_deal": 119,
+      "side": "Long",
+      "volume": 0.44,
+      "open_price": 20104.41,
+      "close_price": 19864.170000000002,
+      "net": -105.99,
+      "magic": 1090902,
+      "sl": 19864.31,
+      "tp": 20224.37,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 19864.31"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -105.71,
+      "commission": -0.28,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 120,
+      "open_epoch": 1742414400,
+      "close_epoch": 1742465537,
+      "last_deal": 121,
+      "side": "Short",
+      "volume": 0.7,
+      "open_price": 19748.84,
+      "close_price": 19673.78,
+      "net": 52.1,
+      "magic": 1090902,
+      "sl": 19898.99,
+      "tp": 19673.78,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 19673.78"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 52.54,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 122,
+      "open_epoch": 1742767200,
+      "close_epoch": 1742799158,
+      "last_deal": 123,
+      "side": "Long",
+      "volume": 0.66,
+      "open_price": 19881.25,
+      "close_price": 19961.35,
+      "net": 52.46,
+      "magic": 1090902,
+      "sl": 19721.9,
+      "tp": 19961.33,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 19961.33"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 52.87,
+      "commission": -0.41,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 124,
+      "open_epoch": 1745186400,
+      "close_epoch": 1745196640,
+      "last_deal": 125,
+      "side": "Long",
+      "volume": 0.6,
+      "open_price": 18203.89,
+      "close_price": 18221.41,
+      "net": 10.13,
+      "magic": 1090902,
+      "sl": 18028.15,
+      "tp": 18292.2,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 18221.55"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.51,
+      "commission": -0.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 126,
+      "open_epoch": 1746399600,
+      "close_epoch": 1746402373,
+      "last_deal": 127,
+      "side": "Short",
+      "volume": 0.83,
+      "open_price": 20028.05,
+      "close_price": 19964.069999999996,
+      "net": 52.58,
+      "magic": 1090902,
+      "sl": 20155.99,
+      "tp": 19964.08,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 19964.08"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 53.1,
+      "commission": -0.52,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 128,
+      "open_epoch": 1747000800,
+      "close_epoch": 1747003772,
+      "last_deal": 129,
+      "side": "Short",
+      "volume": 0.92,
+      "open_price": 20355.48,
+      "close_price": 20344.069999999996,
+      "net": 9.92,
+      "magic": 1090902,
+      "sl": 20470.61,
+      "tp": 20297.92,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 20343.97"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.5,
+      "commission": -0.58,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 130,
+      "open_epoch": 1748818800,
+      "close_epoch": 1748871209,
+      "last_deal": 131,
+      "side": "Long",
+      "volume": 0.65,
+      "open_price": 21289.31,
+      "close_price": 21371.4,
+      "net": 52.95,
+      "magic": 1090902,
+      "sl": 21125.18,
+      "tp": 21371.38,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 21371.38"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 53.36,
+      "commission": -0.41,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 132,
+      "open_epoch": 1749672000,
+      "close_epoch": 1749692247,
+      "last_deal": 133,
+      "side": "Long",
+      "volume": 0.88,
+      "open_price": 21882.36,
+      "close_price": 21760.58,
+      "net": -113.49,
+      "magic": 1090902,
+      "sl": 21760.62,
+      "tp": 21943.22,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 21760.62"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -107.17,
+      "commission": -0.55,
+      "swap": -5.77,
+      "fee": 0.0
+    },
+    {
+      "position_id": 134,
+      "open_epoch": 1754262000,
+      "close_epoch": 1754288016,
+      "last_deal": 135,
+      "side": "Long",
+      "volume": 0.6,
+      "open_price": 22804.76,
+      "close_price": 22893.21,
+      "net": 52.69,
+      "magic": 1090902,
+      "sl": 22627.92,
+      "tp": 22893.18,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 22893.18"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 53.07,
+      "commission": -0.38,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 136,
+      "open_epoch": 1757286000,
+      "close_epoch": 1757297495,
+      "last_deal": 137,
+      "side": "Long",
+      "volume": 0.85,
+      "open_price": 23724.05,
+      "close_price": 23736.570000000003,
+      "net": 10.11,
+      "magic": 1090902,
+      "sl": 23598.66,
+      "tp": 23786.75,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 23736.59"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.64,
+      "commission": -0.53,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 138,
+      "open_epoch": 1757534400,
+      "close_epoch": 1757549737,
+      "last_deal": 139,
+      "side": "Long",
+      "volume": 1.22,
+      "open_price": 23870.04,
+      "close_price": 23878.74,
+      "net": 1.85,
+      "magic": 1090902,
+      "sl": 23783.08,
+      "tp": 23913.78,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 23878.79"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.61,
+      "commission": -0.76,
+      "swap": -8.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 140,
+      "open_epoch": 1763568000,
+      "close_epoch": 1763569300,
+      "last_deal": 141,
+      "side": "Short",
+      "volume": 0.66,
+      "open_price": 24724.13,
+      "close_price": 24708.05,
+      "net": 10.2,
+      "magic": 1090902,
+      "sl": 24886.11,
+      "tp": 24643.47,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 24708.00"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.61,
+      "commission": -0.41,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 142,
+      "open_epoch": 1768500000,
+      "close_epoch": 1768505191,
+      "last_deal": 143,
+      "side": "Short",
+      "volume": 1.02,
+      "open_price": 25708.83,
+      "close_price": 25659.47,
+      "net": 49.71,
+      "magic": 1090902,
+      "sl": 25815.23,
+      "tp": 25659.71,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 25659.71"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 50.35,
+      "commission": -0.64,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 144,
+      "open_epoch": 1769014800,
+      "close_epoch": 1769015609,
+      "last_deal": 145,
+      "side": "Short",
+      "volume": 0.71,
+      "open_price": 25104.58,
+      "close_price": 25031.91,
+      "net": 51.16,
+      "magic": 1090902,
+      "sl": 25257.78,
+      "tp": 25032.12,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 25032.12"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.6,
+      "commission": -0.44,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 146,
+      "open_epoch": 1771196401,
+      "close_epoch": 1771253226,
+      "last_deal": 147,
+      "side": "Short",
+      "volume": 0.54,
+      "open_price": 24729.85,
+      "close_price": 24634.12,
+      "net": 51.35,
+      "magic": 1090902,
+      "sl": 24933.53,
+      "tp": 24634.52,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 24634.52"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 51.69,
+      "commission": -0.34,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 148,
+      "open_epoch": 1772406001,
+      "close_epoch": 1772406665,
+      "last_deal": 149,
+      "side": "Short",
+      "volume": 0.72,
+      "open_price": 24642.78,
+      "close_price": 24790.23,
+      "net": -106.61,
+      "magic": 1090902,
+      "sl": 24789.09,
+      "tp": 24562.65,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 24789.09"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -106.16,
+      "commission": -0.45,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 150,
+      "open_epoch": 1775577600,
+      "close_epoch": 1775577777,
+      "last_deal": 151,
+      "side": "Long",
+      "volume": 0.68,
+      "open_price": 23966.02,
+      "close_price": 24044.52,
+      "net": 52.95,
+      "magic": 1090902,
+      "sl": 23806.63,
+      "tp": 24043.78,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 24043.78"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 53.38,
+      "commission": -0.43,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 152,
+      "open_epoch": 1776700800,
+      "close_epoch": 1776704533,
+      "last_deal": 153,
+      "side": "Long",
+      "volume": 1.02,
+      "open_price": 26535.64,
+      "close_price": 26546.26,
+      "net": 10.19,
+      "magic": 1090902,
+      "sl": 26431.97,
+      "tp": 26588.89,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 26546.29"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.83,
+      "commission": -0.64,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 154,
+      "open_epoch": 1776794400,
+      "close_epoch": 1776798753,
+      "last_deal": 155,
+      "side": "Long",
+      "volume": 0.95,
+      "open_price": 26581.16,
+      "close_price": 26636.44,
+      "net": 51.93,
+      "magic": 1090902,
+      "sl": 26466.99,
+      "tp": 26635.95,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 26635.95"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 52.52,
+      "commission": -0.59,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 156,
+      "open_epoch": 1782079201,
+      "close_epoch": 1782079974,
+      "last_deal": 157,
+      "side": "Short",
+      "volume": 0.91,
+      "open_price": 30325.05,
+      "close_price": 30248.97,
+      "net": 68.66,
+      "magic": 1090902,
+      "sl": 30427.12,
+      "tp": 30249.37,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "tp 30249.37"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 69.23,
+      "commission": -0.57,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 158,
+      "open_epoch": 1785708016,
+      "close_epoch": 1785746545,
+      "last_deal": 159,
+      "side": "Short",
+      "volume": 0.46,
+      "open_price": 28469.15,
+      "close_price": 28445.34,
+      "net": 10.66,
+      "magic": 1090902,
+      "sl": 28703.09,
+      "tp": 28348.25,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 28444.97"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": 10.95,
+      "commission": -0.29,
+      "swap": 0.0,
+      "fee": 0.0
+    },
+    {
+      "position_id": 160,
+      "open_epoch": 1788278400,
+      "close_epoch": 1788280248,
+      "last_deal": 161,
+      "side": "Long",
+      "volume": 0.76,
+      "open_price": 29271.25,
+      "close_price": 29126.51,
+      "net": -110.48,
+      "magic": 1090902,
+      "sl": 29126.61,
+      "tp": 29341.7,
+      "entry_comment": "AAA DmC fresh rejection",
+      "exit_comments": [
+        "sl 29126.61"
+      ],
+      "exit_legs": 1,
+      "partial": false,
+      "gross": -110.0,
+      "commission": -0.48,
+      "swap": 0.0,
+      "fee": 0.0
+    }
+  ],
+  "ledger": [
+    {
+      "epoch": 1634922000,
+      "deal": 2,
+      "balance": 9998.97,
+      "net": -1.03
+    },
+    {
+      "epoch": 1634927611,
+      "deal": 3,
+      "balance": 10049.49,
+      "net": 50.52
+    },
+    {
+      "epoch": 1637600400,
+      "deal": 4,
+      "balance": 10048.55,
+      "net": -0.94
+    },
+    {
+      "epoch": 1637610472,
+      "deal": 5,
+      "balance": 9947.3,
+      "net": -101.25
+    },
+    {
+      "epoch": 1638298800,
+      "deal": 6,
+      "balance": 9946.86,
+      "net": -0.44
+    },
+    {
+      "epoch": 1638324157,
+      "deal": 7,
+      "balance": 9992.41,
+      "net": 45.55
+    },
+    {
+      "epoch": 1639681200,
+      "deal": 8,
+      "balance": 9991.83,
+      "net": -0.58
+    },
+    {
+      "epoch": 1639684058,
+      "deal": 9,
+      "balance": 9891.01,
+      "net": -100.82
+    },
+    {
+      "epoch": 1639956600,
+      "deal": 10,
+      "balance": 9890.66,
+      "net": -0.35
+    },
+    {
+      "epoch": 1639958153,
+      "deal": 11,
+      "balance": 9941.11,
+      "net": 50.45
+    },
+    {
+      "epoch": 1641225600,
+      "deal": 12,
+      "balance": 9940.14,
+      "net": -0.97
+    },
+    {
+      "epoch": 1641227915,
+      "deal": 13,
+      "balance": 9840.1,
+      "net": -100.04
+    },
+    {
+      "epoch": 1641916800,
+      "deal": 14,
+      "balance": 9839.45,
+      "net": -0.65
+    },
+    {
+      "epoch": 1641917032,
+      "deal": 15,
+      "balance": 9889.13,
+      "net": 49.68
+    },
+    {
+      "epoch": 1644190200,
+      "deal": 16,
+      "balance": 9888.8,
+      "net": -0.33
+    },
+    {
+      "epoch": 1644201671,
+      "deal": 17,
+      "balance": 9938.91,
+      "net": 50.11
+    },
+    {
+      "epoch": 1646766000,
+      "deal": 18,
+      "balance": 9938.65,
+      "net": -0.26
+    },
+    {
+      "epoch": 1646772435,
+      "deal": 19,
+      "balance": 9948.56,
+      "net": 9.91
+    },
+    {
+      "epoch": 1647367200,
+      "deal": 20,
+      "balance": 9948.11,
+      "net": -0.45
+    },
+    {
+      "epoch": 1647368375,
+      "deal": 21,
+      "balance": 9998.51,
+      "net": 50.4
+    },
+    {
+      "epoch": 1648422000,
+      "deal": 22,
+      "balance": 9997.97,
+      "net": -0.54
+    },
+    {
+      "epoch": 1648436531,
+      "deal": 23,
+      "balance": 10007.94,
+      "net": 9.97
+    },
+    {
+      "epoch": 1651446000,
+      "deal": 24,
+      "balance": 10007.55,
+      "net": -0.39
+    },
+    {
+      "epoch": 1651462718,
+      "deal": 25,
+      "balance": 10058.27,
+      "net": 50.72
+    },
+    {
+      "epoch": 1651683600,
+      "deal": 26,
+      "balance": 10057.51,
+      "net": -0.76
+    },
+    {
+      "epoch": 1651687101,
+      "deal": 27,
+      "balance": 10107.99,
+      "net": 50.48
+    },
+    {
+      "epoch": 1654470000,
+      "deal": 28,
+      "balance": 10107.45,
+      "net": -0.54
+    },
+    {
+      "epoch": 1654482995,
+      "deal": 29,
+      "balance": 10158.91,
+      "net": 51.46
+    },
+    {
+      "epoch": 1656887400,
+      "deal": 30,
+      "balance": 10158.46,
+      "net": -0.45
+    },
+    {
+      "epoch": 1656975878,
+      "deal": 31,
+      "balance": 10209.48,
+      "net": 51.02
+    },
+    {
+      "epoch": 1657494000,
+      "deal": 32,
+      "balance": 10208.96,
+      "net": -0.52
+    },
+    {
+      "epoch": 1657546547,
+      "deal": 33,
+      "balance": 10106.25,
+      "net": -102.71
+    },
+    {
+      "epoch": 1663799400,
+      "deal": 34,
+      "balance": 10105.82,
+      "net": -0.43
+    },
+    {
+      "epoch": 1663808113,
+      "deal": 35,
+      "balance": 10157.05,
+      "net": 51.23
+    },
+    {
+      "epoch": 1664294400,
+      "deal": 36,
+      "balance": 10156.37,
+      "net": -0.68
+    },
+    {
+      "epoch": 1664295124,
+      "deal": 37,
+      "balance": 10207.68,
+      "net": 51.31
+    },
+    {
+      "epoch": 1666650600,
+      "deal": 38,
+      "balance": 10207.18,
+      "net": -0.5
+    },
+    {
+      "epoch": 1666705588,
+      "deal": 39,
+      "balance": 10103.69,
+      "net": -103.49
+    },
+    {
+      "epoch": 1669651200,
+      "deal": 40,
+      "balance": 10102.58,
+      "net": -1.11
+    },
+    {
+      "epoch": 1669658748,
+      "deal": 41,
+      "balance": 10112.63,
+      "net": 10.05
+    },
+    {
+      "epoch": 1670801400,
+      "deal": 42,
+      "balance": 10112.0,
+      "net": -0.63
+    },
+    {
+      "epoch": 1670874874,
+      "deal": 43,
+      "balance": 10009.67,
+      "net": -102.33
+    },
+    {
+      "epoch": 1672097400,
+      "deal": 44,
+      "balance": 10009.09,
+      "net": -0.58
+    },
+    {
+      "epoch": 1672148614,
+      "deal": 45,
+      "balance": 9902.25,
+      "net": -106.84
+    },
+    {
+      "epoch": 1676563200,
+      "deal": 46,
+      "balance": 9901.35,
+      "net": -0.9
+    },
+    {
+      "epoch": 1676568880,
+      "deal": 47,
+      "balance": 9951.2,
+      "net": 49.85
+    },
+    {
+      "epoch": 1677178800,
+      "deal": 48,
+      "balance": 9950.39,
+      "net": -0.81
+    },
+    {
+      "epoch": 1677179712,
+      "deal": 49,
+      "balance": 10000.97,
+      "net": 50.58
+    },
+    {
+      "epoch": 1678662000,
+      "deal": 50,
+      "balance": 10000.56,
+      "net": -0.41
+    },
+    {
+      "epoch": 1678699357,
+      "deal": 51,
+      "balance": 10051.95,
+      "net": 51.39
+    },
+    {
+      "epoch": 1679266800,
+      "deal": 52,
+      "balance": 10051.39,
+      "net": -0.56
+    },
+    {
+      "epoch": 1679287178,
+      "deal": 53,
+      "balance": 10102.11,
+      "net": 50.72
+    },
+    {
+      "epoch": 1679598000,
+      "deal": 54,
+      "balance": 10101.43,
+      "net": -0.68
+    },
+    {
+      "epoch": 1679599237,
+      "deal": 55,
+      "balance": 10152.35,
+      "net": 50.92
+    },
+    {
+      "epoch": 1679869800,
+      "deal": 56,
+      "balance": 10151.74,
+      "net": -0.61
+    },
+    {
+      "epoch": 1679929776,
+      "deal": 57,
+      "balance": 10049.25,
+      "net": -102.49
+    },
+    {
+      "epoch": 1682013600,
+      "deal": 58,
+      "balance": 10048.22,
+      "net": -1.03
+    },
+    {
+      "epoch": 1682014711,
+      "deal": 59,
+      "balance": 10099.24,
+      "net": 51.02
+    },
+    {
+      "epoch": 1687903500,
+      "deal": 60,
+      "balance": 10098.38,
+      "net": -0.86
+    },
+    {
+      "epoch": 1687907861,
+      "deal": 61,
+      "balance": 10149.44,
+      "net": 51.06
+    },
+    {
+      "epoch": 1688752800,
+      "deal": 62,
+      "balance": 10148.46,
+      "net": -0.98
+    },
+    {
+      "epoch": 1688755564,
+      "deal": 63,
+      "balance": 10199.72,
+      "net": 51.26
+    },
+    {
+      "epoch": 1688940300,
+      "deal": 64,
+      "balance": 10198.92,
+      "net": -0.8
+    },
+    {
+      "epoch": 1688951484,
+      "deal": 65,
+      "balance": 10208.84,
+      "net": 9.92
+    },
+    {
+      "epoch": 1690484400,
+      "deal": 66,
+      "balance": 10208.19,
+      "net": -0.65
+    },
+    {
+      "epoch": 1690514921,
+      "deal": 67,
+      "balance": 10104.4,
+      "net": -103.79
+    },
+    {
+      "epoch": 1692896400,
+      "deal": 68,
+      "balance": 10103.74,
+      "net": -0.66
+    },
+    {
+      "epoch": 1692905788,
+      "deal": 69,
+      "balance": 10002.12,
+      "net": -101.62
+    },
+    {
+      "epoch": 1693843200,
+      "deal": 70,
+      "balance": 10000.0,
+      "net": -2.12
+    },
+    {
+      "epoch": 1693871879,
+      "deal": 71,
+      "balance": 10009.73,
+      "net": 9.73
+    },
+    {
+      "epoch": 1696197900,
+      "deal": 72,
+      "balance": 10009.05,
+      "net": -0.68
+    },
+    {
+      "epoch": 1696240119,
+      "deal": 73,
+      "balance": 10059.73,
+      "net": 50.68
+    },
+    {
+      "epoch": 1700240400,
+      "deal": 74,
+      "balance": 10058.21,
+      "net": -1.52
+    },
+    {
+      "epoch": 1700244691,
+      "deal": 75,
+      "balance": 10110.58,
+      "net": 52.37
+    },
+    {
+      "epoch": 1705273200,
+      "deal": 76,
+      "balance": 10109.83,
+      "net": -0.75
+    },
+    {
+      "epoch": 1705300652,
+      "deal": 77,
+      "balance": 10160.76,
+      "net": 50.93
+    },
+    {
+      "epoch": 1705939200,
+      "deal": 78,
+      "balance": 10159.58,
+      "net": -1.18
+    },
+    {
+      "epoch": 1705941333,
+      "deal": 79,
+      "balance": 10056.9,
+      "net": -102.68
+    },
+    {
+      "epoch": 1709222400,
+      "deal": 80,
+      "balance": 10055.94,
+      "net": -0.96
+    },
+    {
+      "epoch": 1709224228,
+      "deal": 81,
+      "balance": 10106.27,
+      "net": 50.33
+    },
+    {
+      "epoch": 1710345600,
+      "deal": 82,
+      "balance": 10105.22,
+      "net": -1.05
+    },
+    {
+      "epoch": 1710349289,
+      "deal": 83,
+      "balance": 10156.66,
+      "net": 51.44
+    },
+    {
+      "epoch": 1711321200,
+      "deal": 84,
+      "balance": 10155.72,
+      "net": -0.94
+    },
+    {
+      "epoch": 1711349740,
+      "deal": 85,
+      "balance": 10165.8,
+      "net": 10.08
+    },
+    {
+      "epoch": 1712944800,
+      "deal": 86,
+      "balance": 10165.12,
+      "net": -0.68
+    },
+    {
+      "epoch": 1713132096,
+      "deal": 87,
+      "balance": 10195.5,
+      "net": 30.38
+    },
+    {
+      "epoch": 1713196800,
+      "deal": 88,
+      "balance": 10194.58,
+      "net": -0.92
+    },
+    {
+      "epoch": 1713198266,
+      "deal": 89,
+      "balance": 10092.34,
+      "net": -102.24
+    },
+    {
+      "epoch": 1714406400,
+      "deal": 90,
+      "balance": 10091.15,
+      "net": -1.19
+    },
+    {
+      "epoch": 1714408830,
+      "deal": 91,
+      "balance": 10101.13,
+      "net": 9.98
+    },
+    {
+      "epoch": 1717365600,
+      "deal": 92,
+      "balance": 10100.65,
+      "net": -0.48
+    },
+    {
+      "epoch": 1717396537,
+      "deal": 93,
+      "balance": 10151.62,
+      "net": 50.97
+    },
+    {
+      "epoch": 1717430400,
+      "deal": 94,
+      "balance": 10150.69,
+      "net": -0.93
+    },
+    {
+      "epoch": 1717431155,
+      "deal": 95,
+      "balance": 10048.27,
+      "net": -102.42
+    },
+    {
+      "epoch": 1722268800,
+      "deal": 96,
+      "balance": 10047.64,
+      "net": -0.63
+    },
+    {
+      "epoch": 1722269636,
+      "deal": 97,
+      "balance": 10098.32,
+      "net": 50.68
+    },
+    {
+      "epoch": 1723413600,
+      "deal": 98,
+      "balance": 10097.88,
+      "net": -0.44
+    },
+    {
+      "epoch": 1723446997,
+      "deal": 99,
+      "balance": 10107.9,
+      "net": 10.02
+    },
+    {
+      "epoch": 1724018400,
+      "deal": 100,
+      "balance": 10107.21,
+      "net": -0.69
+    },
+    {
+      "epoch": 1724045246,
+      "deal": 101,
+      "balance": 10158.88,
+      "net": 51.67
+    },
+    {
+      "epoch": 1724626800,
+      "deal": 102,
+      "balance": 10158.38,
+      "net": -0.5
+    },
+    {
+      "epoch": 1724681318,
+      "deal": 103,
+      "balance": 10209.46,
+      "net": 51.08
+    },
+    {
+      "epoch": 1725231600,
+      "deal": 104,
+      "balance": 10208.9,
+      "net": -0.56
+    },
+    {
+      "epoch": 1725261386,
+      "deal": 105,
+      "balance": 10260.38,
+      "net": 51.48
+    },
+    {
+      "epoch": 1726441200,
+      "deal": 106,
+      "balance": 10259.62,
+      "net": -0.76
+    },
+    {
+      "epoch": 1726483595,
+      "deal": 107,
+      "balance": 10269.69,
+      "net": 10.07
+    },
+    {
+      "epoch": 1727046000,
+      "deal": 108,
+      "balance": 10269.02,
+      "net": -0.67
+    },
+    {
+      "epoch": 1727051423,
+      "deal": 109,
+      "balance": 10320.98,
+      "net": 51.96
+    },
+    {
+      "epoch": 1732118400,
+      "deal": 110,
+      "balance": 10320.22,
+      "net": -0.76
+    },
+    {
+      "epoch": 1732121263,
+      "deal": 111,
+      "balance": 10372.12,
+      "net": 51.9
+    },
+    {
+      "epoch": 1734710400,
+      "deal": 112,
+      "balance": 10371.66,
+      "net": -0.46
+    },
+    {
+      "epoch": 1734710666,
+      "deal": 113,
+      "balance": 10424.05,
+      "net": 52.39
+    },
+    {
+      "epoch": 1738252800,
+      "deal": 114,
+      "balance": 10423.36,
+      "net": -0.69
+    },
+    {
+      "epoch": 1738253741,
+      "deal": 115,
+      "balance": 10433.77,
+      "net": 10.41
+    },
+    {
+      "epoch": 1740589200,
+      "deal": 116,
+      "balance": 10432.91,
+      "net": -0.86
+    },
+    {
+      "epoch": 1740591638,
+      "deal": 117,
+      "balance": 10485.11,
+      "net": 52.2
+    },
+    {
+      "epoch": 1741557600,
+      "deal": 118,
+      "balance": 10484.83,
+      "net": -0.28
+    },
+    {
+      "epoch": 1741609900,
+      "deal": 119,
+      "balance": 10379.12,
+      "net": -105.71
+    },
+    {
+      "epoch": 1742414400,
+      "deal": 120,
+      "balance": 10378.68,
+      "net": -0.44
+    },
+    {
+      "epoch": 1742465537,
+      "deal": 121,
+      "balance": 10431.22,
+      "net": 52.54
+    },
+    {
+      "epoch": 1742767200,
+      "deal": 122,
+      "balance": 10430.81,
+      "net": -0.41
+    },
+    {
+      "epoch": 1742799158,
+      "deal": 123,
+      "balance": 10483.68,
+      "net": 52.87
+    },
+    {
+      "epoch": 1745186400,
+      "deal": 124,
+      "balance": 10483.3,
+      "net": -0.38
+    },
+    {
+      "epoch": 1745196640,
+      "deal": 125,
+      "balance": 10493.81,
+      "net": 10.51
+    },
+    {
+      "epoch": 1746399600,
+      "deal": 126,
+      "balance": 10493.29,
+      "net": -0.52
+    },
+    {
+      "epoch": 1746402373,
+      "deal": 127,
+      "balance": 10546.39,
+      "net": 53.1
+    },
+    {
+      "epoch": 1747000800,
+      "deal": 128,
+      "balance": 10545.81,
+      "net": -0.58
+    },
+    {
+      "epoch": 1747003772,
+      "deal": 129,
+      "balance": 10556.31,
+      "net": 10.5
+    },
+    {
+      "epoch": 1748818800,
+      "deal": 130,
+      "balance": 10555.9,
+      "net": -0.41
+    },
+    {
+      "epoch": 1748871209,
+      "deal": 131,
+      "balance": 10609.26,
+      "net": 53.36
+    },
+    {
+      "epoch": 1749672000,
+      "deal": 132,
+      "balance": 10608.71,
+      "net": -0.55
+    },
+    {
+      "epoch": 1749692247,
+      "deal": 133,
+      "balance": 10495.77,
+      "net": -112.94
+    },
+    {
+      "epoch": 1754262000,
+      "deal": 134,
+      "balance": 10495.39,
+      "net": -0.38
+    },
+    {
+      "epoch": 1754288016,
+      "deal": 135,
+      "balance": 10548.46,
+      "net": 53.07
+    },
+    {
+      "epoch": 1757286000,
+      "deal": 136,
+      "balance": 10547.93,
+      "net": -0.53
+    },
+    {
+      "epoch": 1757297495,
+      "deal": 137,
+      "balance": 10558.57,
+      "net": 10.64
+    },
+    {
+      "epoch": 1757534400,
+      "deal": 138,
+      "balance": 10557.81,
+      "net": -0.76
+    },
+    {
+      "epoch": 1757549737,
+      "deal": 139,
+      "balance": 10560.42,
+      "net": 2.61
+    },
+    {
+      "epoch": 1763568000,
+      "deal": 140,
+      "balance": 10560.01,
+      "net": -0.41
+    },
+    {
+      "epoch": 1763569300,
+      "deal": 141,
+      "balance": 10570.62,
+      "net": 10.61
+    },
+    {
+      "epoch": 1768500000,
+      "deal": 142,
+      "balance": 10569.98,
+      "net": -0.64
+    },
+    {
+      "epoch": 1768505191,
+      "deal": 143,
+      "balance": 10620.33,
+      "net": 50.35
+    },
+    {
+      "epoch": 1769014800,
+      "deal": 144,
+      "balance": 10619.89,
+      "net": -0.44
+    },
+    {
+      "epoch": 1769015609,
+      "deal": 145,
+      "balance": 10671.49,
+      "net": 51.6
+    },
+    {
+      "epoch": 1771196401,
+      "deal": 146,
+      "balance": 10671.15,
+      "net": -0.34
+    },
+    {
+      "epoch": 1771253226,
+      "deal": 147,
+      "balance": 10722.84,
+      "net": 51.69
+    },
+    {
+      "epoch": 1772406001,
+      "deal": 148,
+      "balance": 10722.39,
+      "net": -0.45
+    },
+    {
+      "epoch": 1772406665,
+      "deal": 149,
+      "balance": 10616.23,
+      "net": -106.16
+    },
+    {
+      "epoch": 1775577600,
+      "deal": 150,
+      "balance": 10615.8,
+      "net": -0.43
+    },
+    {
+      "epoch": 1775577777,
+      "deal": 151,
+      "balance": 10669.18,
+      "net": 53.38
+    },
+    {
+      "epoch": 1776700800,
+      "deal": 152,
+      "balance": 10668.54,
+      "net": -0.64
+    },
+    {
+      "epoch": 1776704533,
+      "deal": 153,
+      "balance": 10679.37,
+      "net": 10.83
+    },
+    {
+      "epoch": 1776794400,
+      "deal": 154,
+      "balance": 10678.78,
+      "net": -0.59
+    },
+    {
+      "epoch": 1776798753,
+      "deal": 155,
+      "balance": 10731.3,
+      "net": 52.52
+    },
+    {
+      "epoch": 1782079201,
+      "deal": 156,
+      "balance": 10730.73,
+      "net": -0.57
+    },
+    {
+      "epoch": 1782079974,
+      "deal": 157,
+      "balance": 10799.96,
+      "net": 69.23
+    },
+    {
+      "epoch": 1785708016,
+      "deal": 158,
+      "balance": 10799.67,
+      "net": -0.29
+    },
+    {
+      "epoch": 1785746545,
+      "deal": 159,
+      "balance": 10810.62,
+      "net": 10.95
+    },
+    {
+      "epoch": 1788278400,
+      "deal": 160,
+      "balance": 10810.14,
+      "net": -0.48
+    },
+    {
+      "epoch": 1788280248,
+      "deal": 161,
+      "balance": 10700.14,
+      "net": -110.0
+    }
+  ],
+  "seconds": 63.786163330078125,
+  "binary_sha256": "a74f6d6401ea72e86d05a1122bc1c4422cc80bbee960ca5007350af3478638e2",
+  "report_sha256": "91f00f3ec200efde4aafd6483feea3df1be57e541580903a51c5258da68f42b0",
+  "tick_notes": [
+    "real ticks begin from 2026.01.01 00:00:00"
+  ],
+  "source_patch": [],
+  "no_live_changes": true
+}

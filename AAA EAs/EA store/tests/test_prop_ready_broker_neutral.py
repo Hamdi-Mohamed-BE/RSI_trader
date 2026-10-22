@@ -460,7 +460,7 @@ def test_broker_filling_helper_runs_before_ctrade_early_return_and_for_closing_d
 
 def distribution_snapshot():
     paths = [p for folder in (FTMO, GENERIC) for p in folder.rglob("*") if p.is_file()]
-    paths += [WRAPPER, SHARED, LIVE / "Profiles.json", LIVE / "Prop ready.bat"]
+    paths += [WRAPPER, SHARED, LIVE / "Profiles.json", LIVE / "Prop ready" / "Prop ready.bat"]
     return {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
 
 

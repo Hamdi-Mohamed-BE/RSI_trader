@@ -42,13 +42,16 @@ Import-CalyxHelpers {quote(path)} @({','.join(quote(n) for n in names)})
 
 def test_named_bats_and_website_are_synchronized():
     publication={p['slug']:p for p in portfolio_catalog()['portfolios']}
-    assert len(CONFIG['profiles'])==5 and len(list(LIVE.glob('*.bat')))==5
+    # One folder per portfolio; no launcher is left at the top level.
+    assert len(CONFIG['profiles'])==7 and not list(LIVE.glob('*.bat'))
+    assert {p.relative_to(LIVE).as_posix() for p in LIVE.glob('*/*.bat')}>={p['folder']+'/'+p['file'] for p in CONFIG['profiles']}
     published_profiles={p['slug'] for p in CONFIG['profiles'] if p.get('website_catalog',True)}
-    assert published_profiles==set(publication)
-    assert {p['slug'] for p in CONFIG['profiles'] if not p.get('website_catalog',True)}=={'prop-ready'}
+    # Best Prop has its own installer BAT in its own folder, not a Start-LiveProfile route.
+    assert published_profiles|{'best-prop'}==set(publication)
+    assert {p['slug'] for p in CONFIG['profiles'] if not p.get('website_catalog',True)}=={'codex-best-ftmo','ftmo-any-broker'}
     for profile in CONFIG['profiles']:
-        bat=(LIVE/profile['file']).read_text()
-        assert '%~dp0Start-LiveProfile.ps1' in bat and f'-Portfolio "{profile["slug"]}"' in bat
+        bat=(LIVE/profile['folder']/profile['file']).read_text()
+        assert '%~dp0..\\Start-LiveProfile.ps1' in bat and f'-Portfolio "{profile["slug"]}"' in bat
         if profile.get('website_catalog',True):
             assert publication[profile['slug']]['launcher']==profile['file']
             assert publication[profile['slug']]['ea_count']==profile['eas']
@@ -59,7 +62,7 @@ def test_named_bats_and_website_are_synchronized():
 
 
 @pytest.mark.skipif(os.name!='nt',reason='Windows launcher validation')
-@pytest.mark.parametrize('slug',['ftmo','current14-orb05','orbs-only','full-eas','prop-ready'])
+@pytest.mark.parametrize('slug',['ftmo','ftmo-any-broker','current14-orb05','orbs-only','full-eas','prop-ready','codex-best-ftmo'])
 def test_validate_only_is_offline_and_does_not_change_files(slug):
     before=hashlib.sha256(SHARED.read_bytes()).hexdigest()
     result=powershell(f"& {quote(LIVE/'Start-LiveProfile.ps1')} -Portfolio '{slug}' -ValidateOnly")

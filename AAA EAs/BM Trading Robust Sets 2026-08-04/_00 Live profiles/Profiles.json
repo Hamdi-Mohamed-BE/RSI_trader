@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-17",
+  "version": "2026-10-22",
   "profiles": [
     {
       "slug": "ftmo",
@@ -14,7 +14,26 @@
         "UsdJpyDIFilter"
       ],
       "eas": 17,
-      "warning": "FTMO USD 10K Swing hedging only. Requested risk is capped at USD50 per trade. Existing daily/exposure/phase guards stay unchanged. No news or hourly EAs."
+      "warning": "FTMO USD 10K Swing hedging only. Requested risk is capped at USD50 per trade. Existing daily/exposure/phase guards stay unchanged. No news or hourly EAs.",
+      "folder": "FTMO guarded - Current 14"
+    },
+    {
+      "slug": "ftmo-any-broker",
+      "name": "FTMO guarded - Current 14 + ORB 0.5R - ANY BROKER TEST",
+      "file": "FTMO guarded - Current 14 - ANY BROKER TEST.bat",
+      "default_mode": "FIXED_USD",
+      "default_percent": 0.5,
+      "default_usd": 50,
+      "default_news_percent": 0,
+      "di_parameters": [
+        "NasdaqDIFilter",
+        "UsdJpyDIFilter"
+      ],
+      "eas": 17,
+      "website_catalog": false,
+      "default_phase": "Funded",
+      "warning": "Owner test build (2026-10-22): the same 17 FTMO-guarded EAs and settings with the broker-neutral Prop Ready guard. Any MT5 hedging account, broker and currency; risk capped at 0.5% of saved initial balance with scaled daily/exposure guards. Asks Challenge/Verification/continuous mode (default continuous). Not the tested FTMO build: no FTMO pass rate or firm compliance is inherited.",
+      "folder": "FTMO guarded - Current 14"
     },
     {
       "slug": "current14-orb05",
@@ -29,7 +48,8 @@
         "UsdJpyDIFilter"
       ],
       "eas": 17,
-      "warning": "17 unique systems. ALL five ORBs at 0.5R; no shared daily stop or FTMO guard. Owner overrides previous PF admission screen. Risk applies per trade/per 3-Way module."
+      "warning": "17 unique systems. ALL five ORBs at 0.5R; no shared daily stop or FTMO guard. Owner overrides previous PF admission screen. Risk applies per trade/per 3-Way module.",
+      "folder": "Current 14 + ORB 0.5R"
     },
     {
       "slug": "orbs-only",
@@ -41,7 +61,8 @@
       "default_news_percent": 0,
       "di_parameters": [],
       "eas": 5,
-      "warning": "Owner-selected five ORBs, ALL at 0.5R. NY PF0.97 and five-trade Selective sample remain limitations. No shared loss guard. Legacy BAT filename retained for compatibility."
+      "warning": "Owner-selected five ORBs, ALL at 0.5R. NY PF0.97 and five-trade Selective sample remain limitations. No shared loss guard. Legacy BAT filename retained for compatibility.",
+      "folder": "ORB-only - All five at 0.5R"
     },
     {
       "slug": "prop-ready",
@@ -56,8 +77,8 @@
         "UsdJpyDIFilter"
       ],
       "eas": 9,
-      "website_catalog": false,
-      "warning": "Nine selected EAs; all five ORBs at 0.5R. Broker-neutral demo/live MT5 hedging account; fixed cash uses account currency. Planned risk capped at 0.5% of saved initial balance, with scaled daily/exposure guards. Default continuous mode; no phase profit stop. Other brokers/custom risk/DI choices do not inherit FTMO pass rates or guarantee firm compliance."
+      "warning": "Nine selected EAs; all five ORBs at 0.5R. Broker-neutral demo/live MT5 hedging account; fixed cash uses account currency. Planned risk capped at 0.5% of saved initial balance, with scaled daily/exposure guards. Default continuous mode; no phase profit stop. Other brokers/custom risk/DI choices do not inherit FTMO pass rates or guarantee firm compliance.",
+      "folder": "Prop ready"
     },
     {
       "slug": "codex-best-ftmo",
@@ -74,7 +95,8 @@
       "eas": 9,
       "website_catalog": false,
       "default_phase": "Challenge",
-      "warning": "Core 4 plus five 0.5R ORBs; DI ON by default for Nasdaq and USDJPY. Broker-neutral MT5 hedging, any supported account currency/balance; no FTMO-only lock. Ask Challenge/Verification/continuous mode. Cash allocation is in account currency; planned risk capped at 0.5% of saved initial balance. Reuses Prop Ready safety state; different brokers or custom inputs do not inherit historical pass rates."
+      "warning": "Core 4 plus five 0.5R ORBs; DI ON by default for Nasdaq and USDJPY. Broker-neutral MT5 hedging, any supported account currency/balance; no FTMO-only lock. Ask Challenge/Verification/continuous mode. Cash allocation is in account currency; planned risk capped at 0.5% of saved initial balance. Reuses Prop Ready safety state; different brokers or custom inputs do not inherit historical pass rates.",
+      "folder": "Prop ready"
     },
     {
       "slug": "full-eas",
@@ -89,13 +111,15 @@
         "UsdJpyDIFilter"
       ],
       "eas": 37,
-      "warning": "37-EA normal adaptive roster. Lower starting allocation: 0.25% non-news, separate 0.10% news per ORDER. Nasdaq uses 0.25x selection. Hourly has no SL; minimum lots/gaps can exceed budgets. Not FTMO-safe."
+      "warning": "37-EA normal adaptive roster. Lower starting allocation: 0.25% non-news, separate 0.10% news per ORDER. Nasdaq uses 0.25x selection. Hourly has no SL; minimum lots/gaps can exceed budgets. Not FTMO-safe.",
+      "folder": "Full EA portfolio - Recommended Adaptive"
     }
   ],
   "live_account_access": false,
   "policy": "Creating BAT files does not install or start them. No backtest inherits a changed risk/DI choice.",
   "packages": {
     "ftmo": "FTMO17-ORB05-LIVE-PROMPTS-20261012",
+    "ftmo-any-broker": "FTMO17-ANY-BROKER-TEST-20261022",
     "prop-ready": "PROP-READY9-BROKER-NEUTRAL-20261017",
     "codex-best-ftmo": "PROP-READY9-BROKER-NEUTRAL-20261017",
     "orbs-only": "ORB-ONLY-ALL5-RR05-20261012"
