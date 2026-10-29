@@ -1,0 +1,73 @@
+"""Owner 2026-10-26: every existing portfolio, used AS IT IS, on the Turbo $50k reward-account rules, at 0.3/0.5/0.6/0.75/1%.
+Same numba kernel / firm model as sim.py. Guard models:
+  - Calyx guarded packages (FTMO guarded 17, Prop ready 9, Best Prop 9): per-trade r, total open 4.5r, per symbol 3r, daily 3%;
+    their static 92% buffer sits below the Turbo trailing floor, so it never protects (modelled as none). No taper, no profit cap.
+  - Unguarded (Current 14 + ORB, ORB-only, Full EA): only per-trade r.
+  - Full EA = 32 members (news excluded: not credible; hourly no-SL kept with their frozen worst-loss reference); its adaptive
+    governor is NOT modelled (fixed r).
+  - Turbo 25 (chosen profile) and Turbo 20 improved (IMPROVE.json) shown for comparison.
+python all_portfolios.py
+"""
+import json
+from pathlib import Path
+import numpy as np
+import sim
+
+R = Path(__file__).resolve().parent; B = R.parent
+L = lambda n: json.loads((R / n).read_text(encoding='utf-8'))  # noqa: E731
+
+# full-eas stream incl. hourly (news excluded) + Nasdaq 5M DI OFF lane from the Best Prop retest stream
+raw = json.loads(sim.SRC.read_text(encoding='utf-8'))['full-eas']
+rows = [(r['op'], r['cl'], r['key'], r['symbol'], r['unit_risk'], r['unit_gross'] + r['unit_comm'] + r['unit_swap'], r.get('risk_weight', 1.))
+        for r in raw if r['unit_risk'] > 0 and r['op'] < r['cl'] and not r['key'].startswith('news-pulse')]
+for c in json.loads((B / 'Best Prop Portfolio Retest 2026-10-20/INPUTS-DI_OFF.json').read_text(encoding='utf-8'))['candidates']:
+    if c['ea'] == 'nasdaq-5m-candle-momentum' and not c['end_censored']:
+        rows.append((c['op'], c['cl'], 'nasdaq-5m-di-off', c['symbol'], c['unit_risk'], c['unit_gross'] + c['unit_commission'] + c['unit_swap'], 1.0))
+rows.sort(key=lambda r: (r[0], r[1]))
+keys = sorted({r[2] for r in rows}); syms = sorted({r[3] for r in rows})
+sim.A = dict(op=np.array([r[0] for r in rows]), cl=np.array([r[1] for r in rows]), lane=np.array([keys.index(r[2]) for r in rows], np.int64),
+             sym=np.array([syms.index(r[3]) for r in rows], np.int64), ur=np.array([r[4] for r in rows]), un=np.array([r[5] for r in rows]), w=np.array([r[6] for r in rows]))
+sim.KEYS, sim.SYMS, sim.NL, sim.NS = keys, syms, len(keys), len(syms)
+
+ORB5 = ['us100-h1-orb-13utc', 'us100-orb-new-york-m30', 'us100-selective-orb-v3', 'xau-orb-new-york-m30', 'xau-orb-london-ny-overlap-m30']
+FTMO17 = ['gold-overnight-value-area', 'nasdaq-5m-candle-momentum', 'usdjpy-london-open-momentum', 'dmc-current-xau', '3-way-gold', 'xau-rsi-vwap',
+          'xau-trend-progression', 'ema3', 'nasdaq-overnight', 'us100-month-end-flow', 'xau-squeeze-momentum-standard', 'dmc-fresh-reaction-us100'] + ORB5
+PR9 = ['nasdaq-5m-candle-momentum', 'usdjpy-london-open-momentum', 'xau-rsi-vwap', 'us100-month-end-flow'] + ORB5
+BEST9 = ['nasdaq-5m-di-off'] + [m for m in PR9 if m != 'nasdaq-5m-candle-momentum']
+FULL = [k for k in keys if k != 'nasdaq-5m-di-off']
+assert len(FTMO17) == 17 and len(PR9) == 9 and len(BEST9) == 9 and len(FULL) == 32, (len(FTMO17), len(PR9), len(BEST9), len(FULL))
+CALYX = lambda r: dict(maxopen=4.5 * r, persym=3.0, dstop=3.0, buffer=-1e6, taper=0.0, dcap=0.0)  # noqa: E731
+NONE = lambda r: dict(maxopen=1e6, persym=1e6, dstop=1e6, buffer=-1e6, taper=0.0, dcap=0.0)  # noqa: E731
+fin, imp = L('FINAL.json'), L('IMPROVE.json')
+PORTS = [('FTMO guarded · Current 14 + ORB (17)', FTMO17, CALYX), ('Current 14 + ORB 0.5R, no guard (17)', FTMO17, NONE),
+         ('ORB-only (5), no guard', ORB5, NONE), ('Prop ready (9, DI ON)', PR9, CALYX), ('Best Prop (9, DI OFF)', BEST9, CALYX),
+         ('Full EA, 32 (no news), no guard', FULL, NONE),
+         ('Turbo 25 (chosen profile)', L('SELECT.json')['members'], lambda r: fin[str(r)]['guard']),
+         ('Turbo 20 improved', imp['basket'], lambda r: imp['risks'][str(r)]['guard'])]
+
+mc3 = sim.mc_paths('all', sim.MC_N, 3 * 364, sim.SEED + 1); hist = sim.hist_paths('all', 365); out = {}
+for name, mem, guard in PORTS:
+    for r in sim.RISKS:
+        g = guard(r)
+        out[f'{name}|{r}'] = dict(portfolio=name, risk=r, members=len(mem), guard=g,
+                                 mc3=sim.summary(sim.simulate(mc3, mem, r, g, 3 * 364), 3 * 364),
+                                 mc3_opt=sim.summary(sim.simulate(mc3, mem, r, g, 3 * 364, pess=False), 3 * 364),
+                                 hist1=sim.summary(sim.simulate(hist, mem, r, g, 365), 365))
+        m = out[f'{name}|{r}']['mc3']; print(name, r, 'mean/mo', round(m['income_total_mean'] / 36), 'breach', m['breach'], 'freeze', m['freeze'], flush=True)
+(R / 'ALL_PORTFOLIOS.json').write_text(json.dumps(out, indent=1), encoding='utf-8')
+
+usd = lambda v: '-' if v is None else f'${v:,.0f}'  # noqa: E731
+pct = lambda v: '-' if v is None else f'{100 * v:.0f}%'  # noqa: E731
+num = lambda v: '-' if v is None else f'{v:g}'  # noqa: E731
+md = ['# All portfolios as they are on the Turbo $50k rules (generated by all_portfolios.py)', '',
+      'Turbo model as in sim.py (3% daily of day-start balance; $3,000 trailing below the highest closed balance, re-based after rewards; 14-day rewards with 3 days ≥ $250 and',
+      'best day ≤ 20% of cycle profit; 80% share). Breach = PESSIMISTIC (all open stops hit); the optimistic (closed-balance) breach is shown too. Income per month = mean over',
+      'all paths of total paid ÷ 36 months (3-year MC, 1,000 paths) — accounts that ended early count as earning nothing afterwards. History = every weekday start 2021-10 → 2025-10, 12 months.', '',
+      '| Portfolio | Risk | Avg income / month 3 y (mean / median) | First-year income / month: MC mean / history mean | Breach 3 y pess / opt | Breach ≤ 1 y (history) | Frozen 3 y | Median days account lasts | Worst day | Worst week | Worst DD (stop-marked) | Win / loss streak avg (max) | Trades / month | / day |',
+      '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|']
+for k, v in out.items():
+    m, o, h = v['mc3'], v['mc3_opt'], v['hist1']
+    md.append(f"| {v['portfolio']} | {v['risk']:g}% | {usd(m['income_total_mean'] / 36)} / {usd(m['income_total_median'] / 36)} | — / {usd(h['income_total_mean'] / 12)} | "
+              f"{pct(m['breach'])} / {pct(o['breach'])} | {pct(h['breach_365'])} | {pct(m['freeze'])} | {num(m['days_alive_median'])} | {usd(m['worst_day'])} | {usd(m['worst_week'])} | {usd(m['dd_stop_worst'])} | "
+              f"{m['win_streak_avg']} / {m['loss_streak_avg']} ({num(m['win_streak_max'])} / {num(m['loss_streak_max'])}) | {m['trades_per_month']} | {m['trades_per_day']} |")
+(R / 'ALL_PORTFOLIOS.md').write_text('\n'.join(md) + '\n', encoding='utf-8'); print('ALL_PORTFOLIOS.md')

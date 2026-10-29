@@ -1,0 +1,7 @@
+These four runs used the exact production Nasdaq 5M EX5 with InpRiskPercent 5.0 / 10.0.
+The production EA hard-caps applied risk at 1% (line 109: MathMin(InpRiskPercent,1.00)), so F05 and F10
+are identical and are really 1%-target paths. At $100 the 1% target is far below the USTEC minimum lot 0.05,
+so the EA rounded UP to 0.05-0.06 lots (about 4-6% of a $100 balance at a typical stop, falling as the balance grew).
+Kept as a valid native record of "production EA, $100 deposit, minimum-lot sizing". Not the 5% / 10% test.
+Protocol at the time: PROTOCOL-r0.txt (its SHA-256 is in each manifest).
+The 5% / 10% runs use the research copy in ../EA (cap raised to 10%) and live in ../native.

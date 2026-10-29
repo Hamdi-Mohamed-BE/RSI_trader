@@ -1,0 +1,13 @@
+Small Account Challenge 2026-10-23, part D: native MT5 single paths (see PLAN.md).
+Revision 1 (2026-10-23, before any uncapped run): the production Nasdaq 5M EX5 hard-caps applied risk at 1%, so the first
+F05/F10 runs were identical 1%-capped paths. They are kept, labelled, in native-CAPPED-1PCT/ (protocol PROTOCOL-r0.txt).
+Part D now uses EA/Nasdaq 5M Uncapped Research.mq5: a byte-for-byte copy of the production source
+(Nasdaq 5M DI ATR Deployment 2026-09-28/EA/Nasdaq 5M DI Wide ATR EA.mq5) whose only change is the cap line
+MathMin(InpRiskPercent,1.00) -> MathMin(InpRiskPercent,10.00) and its comment. Compiled in the isolated tester, 0 errors, 0 warnings.
+Research only, never for a live chart.
+Selected SET (11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set); the only input changes are InpRiskPercent = 5.0 or 10.0
+(10 is the EA's input maximum) and InpAdaptivePortfolioControls = false (standalone).
+Sizing is the EA's own: percent of EQUITY, rounded UP to the lot step, broker minimum if below (Calyx standard; USTEC minimum 0.05).
+Deposit USD 100, Exness-MT5Trial16 isolated research terminal, USTEC M5, Model 4 (real ticks in 2026; earlier ticks generated), 150 ms, 1:2000.
+Windows: last 12 months 2025-10-23 -> 2026-10-23 and last 24 months 2024-10-23 -> 2026-10-23 (end exclusive).
+One historical path each: not a probability. Test-end liquidations labelled. No live terminal, SET, BAT, website or Git change.

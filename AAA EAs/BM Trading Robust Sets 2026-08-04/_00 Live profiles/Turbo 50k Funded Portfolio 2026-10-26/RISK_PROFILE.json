@@ -1,0 +1,71 @@
+{
+ "firm": "Turbo programme (owner screenshot 2026-10-26)",
+ "account": 50000,
+ "set_risk_percent": 0.3,
+ "profile_label_risk_percent": 0.75,
+ "firm_rules": {
+  "daily_loss": "3% of day-start balance (assumed basis)",
+  "max_loss": "6% trailing below highest closed balance (assumed; re-based after rewards)",
+  "rewards": "every 14 days (5-day option), 3 profitable days >= 0.5%, consistency 20%, share 80% (95% upgrade)"
+ },
+ "guard_for_recommended": {
+  "per_trade_usd": "min($375, 5% of room) -> at most $150",
+  "max_open_risk_usd": 1000.0,
+  "max_per_symbol_usd": 750.0,
+  "daily_profit_cap_usd": 375.0,
+  "daily_soft_stop_usd": 1000.0,
+  "trailing_buffer_usd": 125.0,
+  "room_taper": "risk <= 5% of (balance - open stops - trailing floor)",
+  "fit": "cut each trade to fit every limit; skip under $25 risk"
+ },
+ "guards_by_risk": {
+  "0.3": {
+   "maxopen": 1.5,
+   "persym": 1.0,
+   "dstop": 2.5,
+   "buffer": 0.25,
+   "taper": 0.2,
+   "dcap": 1.0
+  },
+  "0.5": {
+   "maxopen": 2.0,
+   "persym": 1.0,
+   "dstop": 1.5,
+   "buffer": 0.25,
+   "taper": 0.1,
+   "dcap": 1.5
+  },
+  "0.6": {
+   "maxopen": 2.0,
+   "persym": 1.0,
+   "dstop": 1.5,
+   "buffer": 0.25,
+   "taper": 0.1,
+   "dcap": 1.5
+  },
+  "0.75": {
+   "maxopen": 2.0,
+   "persym": 2.0,
+   "dstop": 2.0,
+   "buffer": 0.25,
+   "taper": 0.05,
+   "dcap": 0.75
+  },
+  "1.0": {
+   "maxopen": 2.5,
+   "persym": 2.0,
+   "dstop": 2.0,
+   "buffer": 0.25,
+   "taper": 0.05,
+   "dcap": 0.75
+  }
+ },
+ "removed_as_drags": [
+  "ema3",
+  "gold-overnight-value-area",
+  "us100-h1-orb-13utc",
+  "xau-slow-trend",
+  "xau-weakness"
+ ],
+ "evidence": "AAA EAs/BM Trading Robust Sets 2026-08-04/Turbo 50k Funded Portfolio 2026-10-26/"
+}

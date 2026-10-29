@@ -1,0 +1,782 @@
+{
+ "rows": [
+  {
+   "basket": "TOP5",
+   "lanes": [
+    "usdjpy-london-open-momentum",
+    "us100-selective-orb-v3",
+    "xau-squeeze-momentum-standard",
+    "3-way-gold#930930102",
+    "3-way-gold#930930101"
+   ],
+   "policy": [
+    "FIXED",
+    0.5
+   ],
+   "policy_name": "FIXED 50%",
+   "cap": "none",
+   "mc": {
+    "n": 2000,
+    "p10k": 0.0365,
+    "p5k": 0.0565,
+    "p1k": 0.2065,
+    "bust": 0.654,
+    "days_10k_median": 56.0,
+    "days_bust_median": 30.5,
+    "bal_end_median": 8.46,
+    "ended_below_100": 0.765,
+    "maxdd_median": 0.9575,
+    "max_open_risk_median": 1.454,
+    "trades_per_month": 14.88,
+    "trades_per_day": 0.489,
+    "skipped_median": 1.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": 2739.73
+   },
+   "hist": {
+    "n": 458,
+    "p10k": 0.0262,
+    "p5k": 0.0262,
+    "p1k": 0.1485,
+    "bust": 0.7314,
+    "days_10k_median": 70.1,
+    "days_bust_median": 41.5,
+    "bal_end_median": 6.89,
+    "ended_below_100": 0.8013,
+    "maxdd_median": 0.9806,
+    "max_open_risk_median": 1.455,
+    "trades_per_month": 13.87,
+    "trades_per_day": 0.456,
+    "skipped_median": 1.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": 3816.67
+   },
+   "role": "chosen"
+  },
+  {
+   "basket": "GREEDY6",
+   "lanes": [
+    "usdjpy-london-open-momentum",
+    "3-way-gold#930930101",
+    "3-way-gold#930930100",
+    "xau-squeeze-momentum-standard",
+    "us100-selective-orb-v3",
+    "3-way-gold#930930102"
+   ],
+   "policy": [
+    "FIXED",
+    0.5
+   ],
+   "policy_name": "FIXED 50%",
+   "cap": "none",
+   "mc": {
+    "n": 2000,
+    "p10k": 0.025,
+    "p5k": 0.047,
+    "p1k": 0.2355,
+    "bust": 0.8855,
+    "days_10k_median": 67.5,
+    "days_bust_median": 24.6,
+    "bal_end_median": 0.0,
+    "ended_below_100": 0.906,
+    "maxdd_median": 1.0,
+    "max_open_risk_median": 1.831,
+    "trades_per_month": 17.92,
+    "trades_per_day": 0.589,
+    "skipped_median": 0.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": 4000.0
+   },
+   "hist": {
+    "n": 458,
+    "p10k": 0.0087,
+    "p5k": 0.0175,
+    "p1k": 0.2271,
+    "bust": 0.8908,
+    "days_10k_median": 25.5,
+    "days_bust_median": 26.6,
+    "bal_end_median": 0.0,
+    "ended_below_100": 0.917,
+    "maxdd_median": 1.0,
+    "max_open_risk_median": 1.794,
+    "trades_per_month": 15.56,
+    "trades_per_day": 0.511,
+    "skipped_median": 0.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": 11450.0
+   },
+   "role": "development #1"
+  },
+  {
+   "basket": "PR9",
+   "lanes": [
+    "nasdaq-5m-candle-momentum",
+    "usdjpy-london-open-momentum",
+    "us100-h1-orb-13utc",
+    "xau-rsi-vwap",
+    "us100-month-end-flow",
+    "xau-orb-london-ny-overlap-m30",
+    "xau-orb-new-york-m30",
+    "us100-orb-new-york-m30",
+    "us100-selective-orb-v3"
+   ],
+   "policy": [
+    "FIXED",
+    0.05
+   ],
+   "policy_name": "FIXED 5%",
+   "cap": "none",
+   "mc": {
+    "n": 2000,
+    "p10k": 0.0,
+    "p5k": 0.0,
+    "p1k": 0.0255,
+    "bust": 0.0,
+    "days_10k_median": null,
+    "days_bust_median": null,
+    "bal_end_median": 314.38,
+    "ended_below_100": 0.009,
+    "maxdd_median": 0.2841,
+    "max_open_risk_median": 0.226,
+    "trades_per_month": 38.22,
+    "trades_per_day": 1.256,
+    "skipped_median": 8.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": null
+   },
+   "hist": {
+    "n": 458,
+    "p10k": 0.0,
+    "p5k": 0.0,
+    "p1k": 0.0,
+    "bust": 0.0,
+    "days_10k_median": null,
+    "days_bust_median": null,
+    "bal_end_median": 328.57,
+    "ended_below_100": 0.0,
+    "maxdd_median": 0.282,
+    "max_open_risk_median": 0.215,
+    "trades_per_month": 37.54,
+    "trades_per_day": 1.233,
+    "skipped_median": 6.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": null
+   },
+   "role": "baseline"
+  },
+  {
+   "basket": "FTMO17",
+   "lanes": [
+    "3-way-gold#930930100",
+    "3-way-gold#930930101",
+    "3-way-gold#930930102",
+    "dmc-current-xau",
+    "dmc-fresh-reaction-us100",
+    "ema3",
+    "gold-overnight-value-area",
+    "nasdaq-5m-candle-momentum",
+    "nasdaq-overnight",
+    "us100-h1-orb-13utc",
+    "us100-month-end-flow",
+    "us100-orb-new-york-m30",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-orb-london-ny-overlap-m30",
+    "xau-orb-new-york-m30",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard",
+    "xau-trend-progression"
+   ],
+   "policy": [
+    "FIXED",
+    0.03
+   ],
+   "policy_name": "FIXED 3%",
+   "cap": "none",
+   "mc": {
+    "n": 2000,
+    "p10k": 0.0,
+    "p5k": 0.0,
+    "p1k": 0.0135,
+    "bust": 0.0,
+    "days_10k_median": null,
+    "days_bust_median": null,
+    "bal_end_median": 231.33,
+    "ended_below_100": 0.0615,
+    "maxdd_median": 0.2876,
+    "max_open_risk_median": 0.209,
+    "trades_per_month": 41.94,
+    "trades_per_day": 1.378,
+    "skipped_median": 151.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": null
+   },
+   "hist": {
+    "n": 458,
+    "p10k": 0.0,
+    "p5k": 0.0,
+    "p1k": 0.0022,
+    "bust": 0.0,
+    "days_10k_median": null,
+    "days_bust_median": null,
+    "bal_end_median": 225.7,
+    "ended_below_100": 0.0109,
+    "maxdd_median": 0.2903,
+    "max_open_risk_median": 0.206,
+    "trades_per_month": 40.25,
+    "trades_per_day": 1.322,
+    "skipped_median": 153.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": null
+   },
+   "role": "baseline"
+  },
+  {
+   "basket": "FTMO17",
+   "lanes": [
+    "3-way-gold#930930100",
+    "3-way-gold#930930101",
+    "3-way-gold#930930102",
+    "dmc-current-xau",
+    "dmc-fresh-reaction-us100",
+    "ema3",
+    "gold-overnight-value-area",
+    "nasdaq-5m-candle-momentum",
+    "nasdaq-overnight",
+    "us100-h1-orb-13utc",
+    "us100-month-end-flow",
+    "us100-orb-new-york-m30",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-orb-london-ny-overlap-m30",
+    "xau-orb-new-york-m30",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard",
+    "xau-trend-progression"
+   ],
+   "policy": [
+    "FIXED",
+    0.1
+   ],
+   "policy_name": "FIXED 10%",
+   "cap": "none",
+   "mc": {
+    "n": 2000,
+    "p10k": 0.1225,
+    "p5k": 0.2575,
+    "p1k": 0.576,
+    "bust": 0.051,
+    "days_10k_median": 77.0,
+    "days_bust_median": 60.0,
+    "bal_end_median": 948.36,
+    "ended_below_100": 0.2585,
+    "maxdd_median": 0.748,
+    "max_open_risk_median": 0.825,
+    "trades_per_month": 78.8,
+    "trades_per_day": 2.589,
+    "skipped_median": 32.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": 816.33
+   },
+   "hist": {
+    "n": 458,
+    "p10k": 0.1419,
+    "p5k": 0.2358,
+    "p1k": 0.5895,
+    "bust": 0.0939,
+    "days_10k_median": 73.5,
+    "days_bust_median": 72.6,
+    "bal_end_median": 860.53,
+    "ended_below_100": 0.2969,
+    "maxdd_median": 0.7412,
+    "max_open_risk_median": 0.812,
+    "trades_per_month": 77.11,
+    "trades_per_day": 2.533,
+    "skipped_median": 28.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": 704.62
+   },
+   "role": "baseline"
+  },
+  {
+   "basket": "FTMO17",
+   "lanes": [
+    "3-way-gold#930930100",
+    "3-way-gold#930930101",
+    "3-way-gold#930930102",
+    "dmc-current-xau",
+    "dmc-fresh-reaction-us100",
+    "ema3",
+    "gold-overnight-value-area",
+    "nasdaq-5m-candle-momentum",
+    "nasdaq-overnight",
+    "us100-h1-orb-13utc",
+    "us100-month-end-flow",
+    "us100-orb-new-york-m30",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-orb-london-ny-overlap-m30",
+    "xau-orb-new-york-m30",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard",
+    "xau-trend-progression"
+   ],
+   "policy": [
+    "FIXED",
+    0.2
+   ],
+   "policy_name": "FIXED 20%",
+   "cap": "none",
+   "mc": {
+    "n": 2000,
+    "p10k": 0.2665,
+    "p5k": 0.3415,
+    "p1k": 0.519,
+    "bust": 0.5695,
+    "days_10k_median": 57.6,
+    "days_bust_median": 20.9,
+    "bal_end_median": 8.56,
+    "ended_below_100": 0.5865,
+    "maxdd_median": 0.9595,
+    "max_open_risk_median": 1.708,
+    "trades_per_month": 88.27,
+    "trades_per_day": 2.9,
+    "skipped_median": 6.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": 375.23
+   },
+   "hist": {
+    "n": 458,
+    "p10k": 0.2882,
+    "p5k": 0.3297,
+    "p1k": 0.5306,
+    "bust": 0.5,
+    "days_10k_median": 50.5,
+    "days_bust_median": 16.0,
+    "bal_end_median": 29.68,
+    "ended_below_100": 0.5066,
+    "maxdd_median": 0.9576,
+    "max_open_risk_median": 1.712,
+    "trades_per_month": 86.92,
+    "trades_per_day": 2.856,
+    "skipped_median": 3.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": 346.97
+   },
+   "role": "baseline"
+  },
+  {
+   "basket": "RSI_VWAP",
+   "lanes": [
+    "xau-rsi-vwap"
+   ],
+   "policy": [
+    "FIXED",
+    1.0
+   ],
+   "policy_name": "FIXED 100%",
+   "cap": "none",
+   "mc": {
+    "n": 2000,
+    "p10k": 0.003,
+    "p5k": 0.013,
+    "p1k": 0.102,
+    "bust": 0.8415,
+    "days_10k_median": 86.0,
+    "days_bust_median": 30.4,
+    "bal_end_median": 2.76,
+    "ended_below_100": 0.904,
+    "maxdd_median": 0.9874,
+    "max_open_risk_median": 0.997,
+    "trades_per_month": 3.04,
+    "trades_per_day": 0.1,
+    "skipped_median": 0.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": 33333.33
+   },
+   "hist": {
+    "n": 458,
+    "p10k": 0.0,
+    "p5k": 0.0,
+    "p1k": 0.0393,
+    "bust": 0.7686,
+    "days_10k_median": null,
+    "days_bust_median": 29.2,
+    "bal_end_median": 3.03,
+    "ended_below_100": 0.9061,
+    "maxdd_median": 0.9885,
+    "max_open_risk_median": 0.997,
+    "trades_per_month": 1.86,
+    "trades_per_day": 0.061,
+    "skipped_median": 0.0,
+    "deposits_mean": 100.0,
+    "deposit_per_success": null
+   },
+   "role": "owner comparison: RSI VWAP alone"
+  }
+ ],
+ "lane_stats_validation": {
+  "3-way-gold#930930100": {
+   "trades": 44,
+   "per_month": 3.66,
+   "per_day": 0.12,
+   "mean_r": 0.0461,
+   "win": 0.6818,
+   "kelly": 0.0684,
+   "score": 0.000189
+  },
+  "3-way-gold#930930101": {
+   "trades": 63,
+   "per_month": 5.24,
+   "per_day": 0.172,
+   "mean_r": 0.0865,
+   "win": 0.5397,
+   "kelly": 0.0801,
+   "score": 0.000596
+  },
+  "3-way-gold#930930102": {
+   "trades": 10,
+   "per_month": 0.83,
+   "per_day": 0.027,
+   "mean_r": 0.364,
+   "win": 0.4,
+   "kelly": 0.2782,
+   "score": 0.001383
+  },
+  "dmc-current-xau": {
+   "trades": 56,
+   "per_month": 4.66,
+   "per_day": 0.153,
+   "mean_r": 0.0303,
+   "win": 0.3929,
+   "kelly": 0.013,
+   "score": 3e-05
+  },
+  "dmc-fresh-reaction-us100": {
+   "trades": 18,
+   "per_month": 1.5,
+   "per_day": 0.049,
+   "mean_r": 0.3436,
+   "win": 0.6667,
+   "kelly": 0.2341,
+   "score": 0.001978
+  },
+  "ema3": {
+   "trades": 38,
+   "per_month": 3.16,
+   "per_day": 0.104,
+   "mean_r": 0.1627,
+   "win": 0.5263,
+   "kelly": 0.1071,
+   "score": 0.000905
+  },
+  "gold-overnight-value-area": {
+   "trades": 203,
+   "per_month": 16.88,
+   "per_day": 0.555,
+   "mean_r": -0.0123,
+   "win": 0.67,
+   "kelly": 0.0,
+   "score": -0.0
+  },
+  "nasdaq-5m-candle-momentum": {
+   "trades": 176,
+   "per_month": 14.64,
+   "per_day": 0.481,
+   "mean_r": -0.0446,
+   "win": 0.3977,
+   "kelly": 0.0,
+   "score": -0.0
+  },
+  "nasdaq-5m-di-off": {
+   "trades": 234,
+   "per_month": 19.46,
+   "per_day": 0.639,
+   "mean_r": -0.013,
+   "win": 0.4145,
+   "kelly": 0.0,
+   "score": -0.0
+  },
+  "nasdaq-overnight": {
+   "trades": 44,
+   "per_month": 3.66,
+   "per_day": 0.12,
+   "mean_r": 0.0642,
+   "win": 0.5682,
+   "kelly": 0.3314,
+   "score": 0.001279
+  },
+  "us100-h1-orb-13utc": {
+   "trades": 43,
+   "per_month": 3.58,
+   "per_day": 0.117,
+   "mean_r": 0.0407,
+   "win": 0.6512,
+   "kelly": 0.0944,
+   "score": 0.000226
+  },
+  "us100-month-end-flow": {
+   "trades": 35,
+   "per_month": 2.91,
+   "per_day": 0.096,
+   "mean_r": 0.3278,
+   "win": 0.4857,
+   "kelly": 0.1413,
+   "score": 0.002215
+  },
+  "us100-orb-new-york-m30": {
+   "trades": 6,
+   "per_month": 0.5,
+   "per_day": 0.016,
+   "mean_r": 0.2422,
+   "win": 0.8333,
+   "kelly": 0.65,
+   "score": 0.001291
+  },
+  "us100-selective-orb-v3": {
+   "trades": 11,
+   "per_month": 0.91,
+   "per_day": 0.03,
+   "mean_r": 0.3243,
+   "win": 0.9091,
+   "kelly": 1.0944,
+   "score": 0.005333
+  },
+  "usdjpy-london-open-momentum": {
+   "trades": 90,
+   "per_month": 7.48,
+   "per_day": 0.246,
+   "mean_r": 0.406,
+   "win": 0.5222,
+   "kelly": 0.1236,
+   "score": 0.006168
+  },
+  "xau-orb-london-ny-overlap-m30": {
+   "trades": 20,
+   "per_month": 1.66,
+   "per_day": 0.055,
+   "mean_r": -0.0003,
+   "win": 0.65,
+   "kelly": 0.0,
+   "score": -0.0
+  },
+  "xau-orb-new-york-m30": {
+   "trades": 15,
+   "per_month": 1.25,
+   "per_day": 0.041,
+   "mean_r": 0.0543,
+   "win": 0.7333,
+   "kelly": 0.1277,
+   "score": 0.000142
+  },
+  "xau-rsi-vwap": {
+   "trades": 35,
+   "per_month": 2.91,
+   "per_day": 0.096,
+   "mean_r": 0.3621,
+   "win": 0.9143,
+   "kelly": 1.1628,
+   "score": 0.020134
+  },
+  "xau-squeeze-momentum-standard": {
+   "trades": 37,
+   "per_month": 3.08,
+   "per_day": 0.101,
+   "mean_r": 0.4909,
+   "win": 0.5946,
+   "kelly": 0.4234,
+   "score": 0.010507
+  },
+  "xau-trend-progression": {
+   "trades": 55,
+   "per_month": 4.57,
+   "per_day": 0.15,
+   "mean_r": 0.1914,
+   "win": 0.7636,
+   "kelly": 0.385,
+   "score": 0.005536
+  }
+ },
+ "lane_stats_oos": {
+  "3-way-gold#930930100": {
+   "trades": 98,
+   "per_month": 4.09,
+   "per_day": 0.134,
+   "mean_r": 0.1381,
+   "win": 0.7143,
+   "kelly": 0.2199,
+   "score": 0.002038
+  },
+  "3-way-gold#930930101": {
+   "trades": 107,
+   "per_month": 4.46,
+   "per_day": 0.147,
+   "mean_r": 0.1871,
+   "win": 0.5981,
+   "kelly": 0.1729,
+   "score": 0.00237
+  },
+  "3-way-gold#930930102": {
+   "trades": 21,
+   "per_month": 0.88,
+   "per_day": 0.029,
+   "mean_r": 0.167,
+   "win": 0.4762,
+   "kelly": 0.3382,
+   "score": 0.000812
+  },
+  "dmc-current-xau": {
+   "trades": 205,
+   "per_month": 8.55,
+   "per_day": 0.281,
+   "mean_r": 0.2135,
+   "win": 0.4146,
+   "kelly": 0.0766,
+   "score": 0.002297
+  },
+  "dmc-fresh-reaction-us100": {
+   "trades": 26,
+   "per_month": 1.08,
+   "per_day": 0.036,
+   "mean_r": 0.3355,
+   "win": 0.6154,
+   "kelly": 0.2058,
+   "score": 0.00123
+  },
+  "ema3": {
+   "trades": 93,
+   "per_month": 3.88,
+   "per_day": 0.127,
+   "mean_r": 0.2728,
+   "win": 0.6129,
+   "kelly": 0.1941,
+   "score": 0.003373
+  },
+  "gold-overnight-value-area": {
+   "trades": 397,
+   "per_month": 16.55,
+   "per_day": 0.544,
+   "mean_r": 0.0485,
+   "win": 0.7078,
+   "kelly": 0.1728,
+   "score": 0.002281
+  },
+  "nasdaq-5m-candle-momentum": {
+   "trades": 356,
+   "per_month": 14.84,
+   "per_day": 0.488,
+   "mean_r": 0.328,
+   "win": 0.5253,
+   "kelly": 0.0959,
+   "score": 0.007669
+  },
+  "nasdaq-5m-di-off": {
+   "trades": 457,
+   "per_month": 19.05,
+   "per_day": 0.626,
+   "mean_r": 0.2229,
+   "win": 0.5033,
+   "kelly": 0.0755,
+   "score": 0.005269
+  },
+  "nasdaq-overnight": {
+   "trades": 132,
+   "per_month": 5.5,
+   "per_day": 0.181,
+   "mean_r": 0.0428,
+   "win": 0.5606,
+   "kelly": 0.2094,
+   "score": 0.00081
+  },
+  "us100-h1-orb-13utc": {
+   "trades": 141,
+   "per_month": 5.88,
+   "per_day": 0.193,
+   "mean_r": 0.1253,
+   "win": 0.7518,
+   "kelly": 0.2962,
+   "score": 0.003585
+  },
+  "us100-month-end-flow": {
+   "trades": 69,
+   "per_month": 2.88,
+   "per_day": 0.095,
+   "mean_r": 0.3315,
+   "win": 0.5072,
+   "kelly": 0.1684,
+   "score": 0.002639
+  },
+  "us100-orb-new-york-m30": {
+   "trades": 25,
+   "per_month": 1.04,
+   "per_day": 0.034,
+   "mean_r": 0.0134,
+   "win": 0.68,
+   "kelly": 0.0273,
+   "score": 6e-06
+  },
+  "us100-selective-orb-v3": {
+   "trades": 8,
+   "per_month": 0.33,
+   "per_day": 0.011,
+   "mean_r": 0.4597,
+   "win": 1.0,
+   "kelly": 2.0677,
+   "score": 0.005209
+  },
+  "usdjpy-london-open-momentum": {
+   "trades": 184,
+   "per_month": 7.67,
+   "per_day": 0.252,
+   "mean_r": 0.1425,
+   "win": 0.4783,
+   "kelly": 0.1394,
+   "score": 0.002503
+  },
+  "xau-orb-london-ny-overlap-m30": {
+   "trades": 55,
+   "per_month": 2.29,
+   "per_day": 0.075,
+   "mean_r": 0.1319,
+   "win": 0.7455,
+   "kelly": 0.3558,
+   "score": 0.001768
+  },
+  "xau-orb-new-york-m30": {
+   "trades": 34,
+   "per_month": 1.42,
+   "per_day": 0.047,
+   "mean_r": 0.2204,
+   "win": 0.7353,
+   "kelly": 0.7735,
+   "score": 0.00397
+  },
+  "xau-rsi-vwap": {
+   "trades": 97,
+   "per_month": 4.04,
+   "per_day": 0.133,
+   "mean_r": 0.1045,
+   "win": 0.7423,
+   "kelly": 0.2358,
+   "score": 0.001637
+  },
+  "xau-squeeze-momentum-standard": {
+   "trades": 50,
+   "per_month": 2.08,
+   "per_day": 0.068,
+   "mean_r": 0.1218,
+   "win": 0.38,
+   "kelly": 0.1267,
+   "score": 0.000529
+  },
+  "xau-trend-progression": {
+   "trades": 93,
+   "per_month": 3.88,
+   "per_day": 0.127,
+   "mean_r": 0.0715,
+   "win": 0.6774,
+   "kelly": 0.1242,
+   "score": 0.000566
+  }
+ }
+}

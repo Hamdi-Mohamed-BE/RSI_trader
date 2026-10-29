@@ -1,0 +1,37 @@
+{
+ "note": "Kernel vs ../Small Account Challenge 2026-10-23/sim.py path(), all weekday starts 2021-10-07..2024-10-06, 2-year horizon. With the same cent-rounding function every path matches to the cent (end balance, closed trades, $10k and bust). Python round() and numba np.round differ at some half-cent cases; that changes later lot rounding, so individual paths diverge, while the aggregate rates below stay close.",
+ "checks": {
+  "PR9 F05": {
+   "history_starts": 782,
+   "exact_with_matched_rounding": 782,
+   "reach_10k_2y_python_round": 0.4962,
+   "reach_10k_2y_kernel": 0.4962,
+   "bust_2y_python_round": 0.0575,
+   "bust_2y_kernel": 0.055
+  },
+  "FTMO17 F03": {
+   "history_starts": 782,
+   "exact_with_matched_rounding": 782,
+   "reach_10k_2y_python_round": 0.4898,
+   "reach_10k_2y_kernel": 0.4898,
+   "bust_2y_python_round": 0.0,
+   "bust_2y_kernel": 0.0
+  },
+  "PR9 F20": {
+   "history_starts": 782,
+   "exact_with_matched_rounding": 782,
+   "reach_10k_2y_python_round": 0.1228,
+   "reach_10k_2y_kernel": 0.1228,
+   "bust_2y_python_round": 0.8772,
+   "bust_2y_kernel": 0.8772
+  },
+  "NAS5M F10": {
+   "history_starts": 782,
+   "exact_with_matched_rounding": 782,
+   "reach_10k_2y_python_round": 0.0691,
+   "reach_10k_2y_kernel": 0.0691,
+   "bust_2y_python_round": 0.0448,
+   "bust_2y_kernel": 0.0448
+  }
+ }
+}

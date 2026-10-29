@@ -1,0 +1,7 @@
+Small Account Challenge 2026-10-23, part D: native MT5 single paths (see PLAN.md).
+Exact production Nasdaq 5M EX5 (Nasdaq 5M DI Wide ATR EA.ex5) and selected SET (11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set).
+The only input changes are InpRiskPercent = 5.0 or 10.0 (10 is the EA's maximum) and InpAdaptivePortfolioControls = false (standalone).
+Sizing is the EA's own: percent of balance, rounded UP to the lot step, broker minimum if below (Calyx standard; USTEC minimum 0.05).
+Deposit USD 100, Exness-MT5Trial16 isolated research terminal, USTEC M5, Model 4 (real ticks in 2026; earlier ticks generated), 150 ms, 1:2000.
+Windows: last 12 months 2025-10-23 -> 2026-10-23 and last 24 months 2024-10-23 -> 2026-10-23 (end exclusive).
+One historical path each: not a probability. Test-end liquidations labelled. No live terminal, SET, BAT, website or Git change.

@@ -1,0 +1,85 @@
+# Turbo 50k Funded Portfolio (2026-10-26) — RESEARCH FILES, NOT AN INSTALLER
+
+Built for the owner's existing **$50k Turbo reward account**. The rules come from the owner's screenshot:
+- 3% daily loss;
+- 6% trailing max loss;
+- 3 profitable days of ≥ 0.5%;
+- 20% consistency rule;
+- 80% / 95% share, rewards every 5 / 14 days.
+
+Evidence: `AAA EAs/BM Trading Robust Sets 2026-08-04/Turbo 50k Funded Portfolio 2026-10-26/` (PLAN, sim.py,
+RESULTS.md, REPORT.md).
+
+## What is in this folder
+- **`EAs/`:** the 21 exact EX5 files used by the tested ledgers (SHA-256 values in `PORTFOLIO.json`).
+- **`Sets/`:** 25 SETs. Each is the tested preset plus the tested input overrides, with:
+  - risk per trade = **0.75%** (the predeclared recommendation; `InpRiskPercent`, and the three LTA risk inputs);
+  - `InpAdaptivePortfolioControls=false`, because the simulation used fixed risk per trade.
+- **`RISK_PROFILE.json`:** the firm rules as modelled, plus the risk-management profile for every risk level.
+
+## Members (25; chosen on 2021–23 data only)
+Gold:
+- 3 Way Gold (watch-only EA)
+- Asia Breakout
+- DMC Fresh Reaction XAU
+- EMA3
+- Gold Overnight Value Area
+- LTA Volume Profile
+- ORB Volume Profile
+- ORB Volume Profile Volume Confirmed
+- XAU Elliott Wave 1-2-3
+- XAU ORB New York M30 (0.5R)
+- XAU Regime Switch
+- XAU RSI VWAP
+- XAU Slow Trend
+- XAU Squeeze Momentum
+- XAU Trend Progression
+- XAU Weakness
+
+Nasdaq / US100:
+- Nasdaq 5M Candle Momentum
+- Nasdaq Overnight
+- Sell Nasdaq 15min
+- US100 H1 ORB 13UTC (0.5R)
+- US100 ORB New York M30 (0.5R)
+- US100 Selective ORB V3 (0.5R)
+
+Other:
+- USDJPY London Open Momentum
+- BTC POC Fibonacci
+- ETH Top Down FVG Liquidity
+
+**Left out:**
+- News Pulse ×4: news-spike ledgers are not credible.
+- US30 / US100 hourly: no stop-loss.
+- Gold News V9: no evidence.
+- Removed by the 2021–23 selection: DMC Current XAU, DMC Fresh Reaction US100, BTC Top Down FVG, XAU ORB London-NY,
+  US100 Month End Flow.
+
+## The risk-management profile (at 0.75% per trade on $50k)
+
+| Rule | Value |
+|---|---|
+| Risk per trade | $375 (0.75% of $50k), cut smaller to fit every limit, skipped if under $25 |
+| Max total open risk (all stops) | $1,250 (2.5%) |
+| Max open risk per symbol | $375 (one full trade per symbol) |
+| Daily soft stop (today's realised loss + all open stops) | $1,000 (2%), inside the firm's 3% |
+| Trailing buffer (balance − open stops must stay above floor + buffer) | $250 above the trailing floor |
+| Room taper | Each trade ≤ 10% of (balance − open stops − trailing floor) |
+| Rewards | Request as soon as eligible: ≥ 3 days ≥ +$250 and best day ≤ 20% of cycle profit |
+
+The profiles for 0.3 / 0.5 / 0.6 / 1% are in `RISK_PROFILE.json`.
+
+## IMPORTANT — what is NOT done
+- **No guard EA enforces these limits yet.** The EAs only size each trade (`InpRiskPercent`).
+  - Max open risk, the daily soft stop, the trailing buffer and the taper need a portfolio guard that tracks a
+    **trailing** floor.
+  - The existing Calyx guards use a static floor, so they do not fit this firm.
+- **The simulated "0% breach" applies only with that guard.** Running these 25 EAs without it gives no such protection.
+- **Not installed, nothing changed:** no terminal, account or AutoTrading was touched.
+- **Confirm the firm's rules first:**
+  - Whether the trailing loss follows balance or equity.
+  - Whether it locks at the start balance.
+  - Whether withdrawals re-base it.
+  - The exact consistency definition.
+  - These change the results (see the static-floor sensitivity in RESULTS.md).

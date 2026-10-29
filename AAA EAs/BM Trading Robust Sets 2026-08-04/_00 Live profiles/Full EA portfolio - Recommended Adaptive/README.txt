@@ -1,7 +1,7 @@
 FULL EA PORTFOLIO - RECOMMENDED ADAPTIVE
 
 Run: Full EA portfolio - Recommended Adaptive.bat
-  37-EA normal adaptive roster. Lower starting allocation: 0.25% non-news, separate 0.10% news per ORDER. Nasdaq uses 0.25x selection. Hourly has no SL; minimum lots/gaps can exceed budgets. Not FTMO-safe.
+  37-EA normal adaptive roster. Lower starting allocation: 0.25% non-news, separate 0.10% news per ORDER. Nasdaq 5M uses the chosen risk (no 0.25x, owner 2026-10-27). Hourly has no SL; minimum lots/gaps can exceed budgets. Not FTMO-safe.
 
 Check files offline (no MT5): append -ValidateOnly to the BAT.
 

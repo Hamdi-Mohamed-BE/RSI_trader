@@ -24,6 +24,10 @@ param(
     [switch]$UseRecommendedSelections,
     [switch]$UseClaudeSelections,
     [switch]$UseAdaptiveProfile,
+    # 2026-10-27 owner: the Full EA launcher gives Nasdaq 5M the chosen risk (no 0.25x installer reduction).
+    [switch]$NasdaqChosenRisk,
+    # 2026-10-27 owner: news bots the user switched OFF in the launcher are not installed at all.
+    [string[]]$SkipNewsBots = @(),
     [switch]$ValidateOnly,
     [switch]$PreflightOnly,
     [switch]$Yes
@@ -328,6 +332,14 @@ function Get-PortfolioItems {
     # Filter before file checks, symbol discovery, risk settings or chart creation.
     # Owner restored all five selected news systems in normal BATs on 2026-10-03.
     $items = @(Select-NormalNewsItems -Items $items)
+    $skipValue = Get-Variable SkipNewsBots -ValueOnly -ErrorAction SilentlyContinue
+    $skipNews = @(foreach ($entry in @($skipValue)) { foreach ($part in ([string]$entry).Split(',')) { if ($part.Trim()) { $part.Trim() } } })
+    if ($skipNews.Count) {
+        $newsLabels = @('News Pulse XAU', 'News Pulse XAG', 'News Pulse BTC', 'News Pulse EURUSD', 'Gold News V9 Direction')
+        foreach ($name in $skipNews) { if ([string]$name -notin $newsLabels) { Stop-WithMessage "Unknown news bot to skip: $name" } }
+        $items = @($items | Where-Object { [string]$_.Label -notin $skipNews })
+        Write-Host ('News bots switched OFF and not installed: ' + ($skipNews -join ', '))
+    }
     # Get-Variable keeps older static manifest tests compatible when this opt-in flag is absent.
     if (Get-Variable UseReviewedSelections -ValueOnly -ErrorAction SilentlyContinue) {
         $items = @(Select-ReviewedItems $items)
@@ -375,7 +387,7 @@ function Get-PortfolioItems {
         if (-not $item.PSObject.Properties['LockRisk']) {
             $item | Add-Member -NotePropertyName LockRisk -NotePropertyValue $false
         }
-        $adaptiveBaseMultiplier = if ($UseAdaptiveProfile -and $item.Label -eq 'Nasdaq 5M Candle Momentum') { 0.25 } else { 1.0 }
+        $adaptiveBaseMultiplier = if ($UseAdaptiveProfile -and -not (Get-Variable NasdaqChosenRisk -ValueOnly -ErrorAction SilentlyContinue) -and $item.Label -eq 'Nasdaq 5M Candle Momentum') { 0.25 } else { 1.0 }
         $item | Add-Member -NotePropertyName AdaptiveBaseMultiplier -NotePropertyValue $adaptiveBaseMultiplier
         $safeByDesign = [bool]$UseRecommendedSelections -and [bool]$item.RecommendedSafe
         $dynamicByDesign = [bool]$UseRecommendedSelections -and -not $IsFullSafe -and -not $safeByDesign -and [bool]$item.RecommendedDynamic -and [bool]$item.RecommendedSetSource
@@ -710,7 +722,7 @@ function Assert-EffectiveRiskInputs([object[]]$Items) {
         }
     }
     $modeText = if ($UsesDynamicRisk) { ('selected {0:N4}%' -f $EffectiveAdaptiveRiskPercent) } else { 'default 1.0000%' }
-    $adaptiveText = if ($UseAdaptiveProfile) { '; native 5% daily-stop/drawdown/loss-streak controls apply to non-News EAs and Nasdaq 5M is correctly reduced to 0.25x' } else { '' }
+    $adaptiveText = if ($UseAdaptiveProfile) { '; native 5% daily-stop/drawdown/loss-streak controls apply to non-News EAs and Nasdaq 5M is ' + $(if (Get-Variable NasdaqChosenRisk -ValueOnly -ErrorAction SilentlyContinue) { 'at the chosen risk (no 0.25x)' } else { 'correctly reduced to 0.25x' }) } else { '' }
     Write-Host ("Risk audit passed: stop-based non-News uses {0}{1}; all five news EAs use {2:N4}% per order and bypass adaptive controls. Each straddle plans {3:N4}%; four concurrent straddles plan {4:N4}%, plus V9, before rounding, gaps and fees." -f $modeText, $adaptiveText, $NewsRiskPercent, (2 * $NewsRiskPercent), (8 * $NewsRiskPercent)) -ForegroundColor Green
     Write-Host 'Hourly profiles: chosen risk sizes against the frozen worst completed-trade loss from the published recent windows. NO SL; future loss is not capped. Broker minimum/rounding can exceed this scenario budget.' -ForegroundColor Yellow
 }

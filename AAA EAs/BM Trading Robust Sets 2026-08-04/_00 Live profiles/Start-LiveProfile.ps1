@@ -4,6 +4,7 @@ param(
     [ValidateSet('','PERCENT','FIXED_USD')][string]$RiskMode='',
     [double]$RiskValue=0,
     [double]$NewsRiskPercent=0,
+    [string[]]$NewsOff=@(),
     [ValidateSet('','ON','OFF')][string]$NasdaqDIFilter='',
     [ValidateSet('','ON','OFF')][string]$UsdJpyDIFilter='',
     [ValidateSet('Challenge','Verification','Funded')][string]$Phase='Challenge',
@@ -52,7 +53,23 @@ if($RiskValue -eq 0){
     $RiskValue=if($ValidateOnly){$default}else{Read-PositiveNumber $(if($RiskMode -eq 'PERCENT'){'Percent per trade'}elseif($Portfolio -in @('prop-ready','codex-best-ftmo','ftmo-any-broker')){'Cash per trade in account currency'}else{'USD per trade'}) $default}
 }
 Assert-LiveProfileRisk $RiskMode $RiskValue
+$skipNews=@()
 if($Portfolio -eq 'full-eas'){
+    # 2026-10-27 owner: ask for each news bot; OFF = skipped and not installed. -NewsOff 'News Pulse XAU',... skips the prompts.
+    $newsBots=@('News Pulse XAU','News Pulse XAG','News Pulse BTC','News Pulse EURUSD','Gold News V9 Direction')
+    if($PSBoundParameters.ContainsKey('NewsOff')){
+        $skipNews=@($NewsOff | ForEach-Object {([string]$_).Split(',')} | ForEach-Object {$_.Trim()} | Where-Object {$_})
+        foreach($n in $skipNews){if($n -notin $newsBots){throw "Unknown news bot: $n"}}
+    }elseif(-not $ValidateOnly){
+        foreach($n in $newsBots){
+            $answer=(Read-Host ($n+' ON or OFF [ON]')).Trim().ToUpperInvariant()
+            if(-not $answer){$answer='ON'};if($answer -notin @('ON','OFF')){throw 'News choice must be ON or OFF.'}
+            if($answer -eq 'OFF'){$skipNews+=$n}
+        }
+    }
+    $kept=@($newsBots | Where-Object {$_ -notin $skipNews})
+    Write-Host ('News bots ON: '+$(if($kept.Count){$kept -join ', '}else{'none'})+'; OFF (not installed): '+$(if($skipNews.Count){$skipNews -join ', '}else{'none'}))
+    if($kept.Count -eq 0 -and $NewsRiskPercent -eq 0){$NewsRiskPercent=[double]$selected.default_news_percent}
     if($NewsRiskPercent -eq 0){$NewsRiskPercent=if($ValidateOnly){[double]$selected.default_news_percent}else{Read-PositiveNumber 'Separate news percent per ORDER (two sides double one event risk)' ([double]$selected.default_news_percent)}}
     Assert-LiveProfileRisk 'PERCENT' $NewsRiskPercent
 }
@@ -125,6 +142,8 @@ switch($Portfolio){
         $arguments.HourlyRiskPercent=if($RiskMode -eq 'PERCENT'){$RiskValue}else{[double]$selected.default_percent}
         $arguments.AccountProfile='AUTO';$arguments.SafetyMode='STANDARD'
         $arguments.UseRecommendedSelections=$true;$arguments.UseAdaptiveProfile=$true
+        $arguments.NasdaqChosenRisk=$true
+        if($skipNews.Count){$arguments.SkipNewsBots=[string[]]$skipNews}
         $arguments.ApplyLiveProfileDIChoices=$true
         if($Yes){$arguments.Yes=$true}
         & (Join-Path $root '_Auto Deploy\Install-BMTradingPortfolio.ps1') @arguments
