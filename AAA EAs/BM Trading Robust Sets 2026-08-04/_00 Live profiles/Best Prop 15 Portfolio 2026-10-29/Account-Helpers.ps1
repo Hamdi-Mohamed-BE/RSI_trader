@@ -28,6 +28,31 @@ function Get-PropReadyReference([object]$Probe,[object]$Existing=$null) {
     return $Existing
 }
 
+function Resolve-RiskCapPercent([string]$Mode,[double]$Value,[double]$Reference) {
+    # 2026-10-30 owner: the guard's per-entry cap follows the chosen risk instead of a fixed share of the saved balance.
+    $pct=if($Mode -eq 'PERCENT'){$Value}else{100.0*$Value/$Reference}
+    if([double]::IsNaN($pct) -or [double]::IsInfinity($pct) -or $pct -le 0){throw 'Invalid risk selection.'}
+    if($pct -gt 2.0){throw ("Chosen risk = {0:0.###}% of the saved starting balance; the maximum is 2% (the guard's 3% daily reserve would refuse larger entries)." -f $pct)}
+    return [math]::Round($pct,6)
+}
+
+function Select-PropReadyReference([object]$Probe,[object]$Existing,[bool]$Ask) {
+    # Returns the reference to use and whether the state file must be (re)written. A saved baseline is kept unless the
+    # user explicitly starts fresh, because re-basing moves every loss limit.
+    $saved=Get-PropReadyReference $Probe $Existing
+    if($null -eq $Existing){return [pscustomobject]@{reference=$saved;write=$true}}
+    $was=[double]$saved.reference_balance;$now=[double]$Probe.account.balance
+    if(-not $Ask -or [math]::Abs($now-$was) -le 0.005*$was){return [pscustomobject]@{reference=$saved;write=$false}}
+    Write-Host ("Saved starting balance for this login: {0:N2}; current balance: {1:N2}." -f $was,$now) -ForegroundColor Yellow
+    Write-Host 'Every risk cap and loss limit is measured from the SAVED starting balance.'
+    Write-Host '1 = keep the saved starting balance (loss limits stay where they are)'
+    Write-Host '2 = start fresh from the current balance (after a deposit, a reset or a new account size)'
+    $answer=(Read-Host 'Starting balance [1]').Trim();if(-not $answer){$answer='1'}
+    if($answer -eq '1'){return [pscustomobject]@{reference=$saved;write=$false}}
+    if($answer -ne '2'){throw 'Choose 1 or 2.'}
+    return [pscustomobject]@{reference=(Get-PropReadyReference $Probe $null);write=$true}
+}
+
 function Assert-PropReadyConfirmation([object]$Original,[object]$Confirmation) {
     Assert-PropReadyAccount $Confirmation
     foreach($field in @('login','server','currency','margin_mode','balance','equity')){

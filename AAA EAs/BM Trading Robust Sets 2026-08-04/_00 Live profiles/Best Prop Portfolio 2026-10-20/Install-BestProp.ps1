@@ -69,7 +69,7 @@ if($Interactive -and -not $ValidateOnly){
         if(-not $Phase){throw 'Phase must be 1, 2 or 3.'}
     }
     if(-not $PSBoundParameters.ContainsKey('RiskValue')){
-        $answer=(Read-Host 'Risk per trade, % of current equity (the guard caps it at 1% of the starting balance) [1.0]').Trim()
+        $answer=(Read-Host 'Risk per trade, % of current equity, e.g. 0.5 / 1.0 / 2.0 (max 2) [1.0]').Trim()
         if($answer){$RiskValue=[double]::Parse($answer,[Globalization.CultureInfo]::InvariantCulture)}
     }
     if(-not $PSBoundParameters.ContainsKey('NasdaqDIFilter')){
@@ -81,7 +81,7 @@ if($Interactive -and -not $ValidateOnly){
 }
 if([double]::IsNaN($RiskValue) -or [double]::IsInfinity($RiskValue) -or $RiskValue -le 0 -or ($RiskMode -eq 'PERCENT' -and $RiskValue -gt 10)){throw 'Invalid risk selection.'}
 Write-Host 'BEST PROP PORTFOLIO: nine EAs / five ORBs at 0.5R / broker-neutral MT5 hedging profile.' -ForegroundColor Cyan
-Write-Host 'Allocation is capped at 1% of the saved starting balance and at the strategy request; lots round DOWN.' -ForegroundColor Yellow
+Write-Host 'Each trade risks the amount you chose (at most 2% of the saved starting balance) and never more than the strategy request; lots round DOWN.' -ForegroundColor Yellow
 if($ValidateOnly){
     foreach($entry in $manifest.entries){$null=Get-PropReadyPresetInputs $entry}
     Write-Host 'PASS: 9 integrity-checked guarded EAs (1% cap, 4.5% total, 3% per symbol); ORBs 0.5R; Nasdaq DI default OFF. No account accessed.';exit 0
@@ -107,8 +107,12 @@ try{$serverHash=([BitConverter]::ToString($serverHasher.ComputeHash([Text.Encodi
 # The saved baseline is never reset by reinstalling; a new account (login) gets its own baseline.
 $statePath=Join-Path $dataRoot ("MQL5\Files\Calyx-BestProp9-$login-$serverHash.json")
 $oldState=if(Test-Path -LiteralPath $statePath){Get-Content -Raw -LiteralPath $statePath | ConvertFrom-Json}else{$null}
-$reference=Get-PropReadyReference $probe $oldState
+$chosen=Select-PropReadyReference $probe $oldState (-not $ValidateOnly)
+$reference=$chosen.reference
 $initial=[double]$reference.reference_balance
+# 2026-10-30 owner: the per-entry cap is the chosen risk (fixed cash -> % of the saved starting balance), not a fixed 1%.
+$capPercent=Resolve-RiskCapPercent $RiskMode $RiskValue $initial
+$capText=$capPercent.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)
 if([double]$probe.account.equity -lt $initial*0.92){throw 'Account is below the retained 92% entry buffer; stop for review. Reinstallation does not reset losses.'}
 $phaseNumber=@{Challenge=1;Verification=2;Funded=3}[$Phase]
 $aliasMap=@{XAUUSD=@('XAUUSD','GOLD');USTEC=@('USTEC','US100','NAS100','NDX100','UT100','NASDAQ100','NASUSD','USTECH','USNDX');USDJPY=@('USDJPY')}
@@ -128,6 +132,7 @@ foreach($entry in $manifest.entries){
     $inputs['FTMOExpectedCurrency']=$currency
     $inputs['FTMOReferenceBalance']=$initial.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)
     $inputs['FTMOStartUtcTime']=[string]$reference.start_utc;$inputs['FTMOPhase']=[string]$phaseNumber
+    $inputs['FTMORiskCapPercent']=$capText
     if($inputs.Contains('InpExpectedLogin')){$inputs['InpExpectedLogin']=$login;$inputs['InpExpectedServer']=$server}
     $tf=[string]$entry.timeframe
     $minutes=if($tf.StartsWith('H')){60*[int]$tf.Substring(1)}elseif($tf.StartsWith('M')){[int]$tf.Substring(1)}else{throw 'Unsupported timeframe.'}
@@ -136,8 +141,8 @@ foreach($entry in $manifest.entries){
 }
 Write-Host "Broker: $($probe.account.company) / login $login / $server / balance $($probe.account.balance) $currency"
 Write-Host "Saved risk reference: $initial $currency; phase $Phase."
-Write-Host "Requested risk: $RiskValue $RiskMode; per-entry maximum: $($initial*0.01) $currency."
-Write-Host "Limits: $($initial*0.045) total open risk; $($initial*0.03) per symbol; $($initial*0.03) daily reserved loss; $($initial*0.92) equity entry buffer."
+Write-Host "Requested risk: $RiskValue $RiskMode = $capPercent% of the saved starting balance; per-entry maximum: $([math]::Round($initial*$capPercent/100,2)) $currency."
+Write-Host "Limits: $([math]::Round($initial*$capPercent*0.045,2)) total open risk; $([math]::Round($initial*$capPercent*0.03,2)) per symbol; $($initial*0.03) daily reserved loss; $($initial*0.92) equity entry buffer."
 Write-Host 'Seven entries / three losing positions maximum per Prague day; 80% protected-equity margin cap.'
 Write-Host "Nasdaq DI: $NasdaqDIFilter / USDJPY DI: $UsdJpyDIFilter (ADX20 kept). News and hourly EAs are not included."
 Write-Host 'Historical FTMO replay results do not guarantee any future result or any firm rule compliance.' -ForegroundColor Yellow
@@ -171,7 +176,7 @@ for($i=0;$i -lt $portfolio.Count;$i++){
 $order=((1..$portfolio.Count | ForEach-Object {'chart{0:D2}.chr' -f $_}) -join "`r`n")+"`r`n"
 [IO.File]::WriteAllText((Join-Path $profile 'order.wnd'),$order,$unicode)
 Test-ManagedProfile $profile $portfolio 'Best Prop installed profile'
-if(-not(Test-Path -LiteralPath $statePath)){
+if($chosen.write){                                       # first install, or the user chose to start fresh
     [void](New-Item -ItemType Directory -Path (Split-Path -Parent $statePath) -Force)
     [IO.File]::WriteAllText($statePath,($reference | ConvertTo-Json),[Text.UTF8Encoding]::new($false))
 }
@@ -182,7 +187,7 @@ Set-IniValue $commonIni 'Experts' 'Enabled' '0'
 Set-IniValue $commonIni 'Experts' 'Account' '1'
 Set-IniValue $commonIni 'Charts' 'ProfileLast' $ProfileName
 [IO.File]::WriteAllText((Join-Path $profile 'DEPLOYMENT.txt'),
-    "Portfolio: Best Prop Portfolio 2026-10-20 (nine EAs, 1%)`r`nAccount: $login / $server / $currency`r`nPhase: $Phase`r`nReference: $initial; start UTC: $($reference.start_utc)`r`nRequested allocation: $RiskMode $RiskValue (cap 1% of reference)`r`nNasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`nNews: OFF; five ORBs: 0.5R; Algo Trading: OFF`r`n",[Text.UTF8Encoding]::new($false))
+    "Portfolio: Best Prop Portfolio 2026-10-20 (nine EAs, 1%)`r`nAccount: $login / $server / $currency`r`nPhase: $Phase`r`nReference: $initial; start UTC: $($reference.start_utc)`r`nRequested allocation: $RiskMode $RiskValue (per-entry cap $capPercent% of reference)`r`nNasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`nNews: OFF; five ORBs: 0.5R; Algo Trading: OFF`r`n",[Text.UTF8Encoding]::new($false))
 Start-Process -FilePath $terminalPath -ArgumentList ('/profile:"'+$ProfileName+'"') -WindowStyle Hidden
 Write-Host "Installed $ProfileName. Review all nine charts and inputs; Algo Trading remains OFF."
 Write-Host 'Turn Algo Trading ON yourself when satisfied. No orders were placed by this installer.'

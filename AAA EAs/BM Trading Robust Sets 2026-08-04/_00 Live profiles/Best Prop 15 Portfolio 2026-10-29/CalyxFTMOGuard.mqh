@@ -1,14 +1,16 @@
 #ifndef CALYX_PROP_READY_GUARD
 #define CALYX_PROP_READY_GUARD
 // Best Prop 15 Portfolio 2026-10-29: the Best Prop 9 guard (same limits) with its own state key BP15.
-// Best Prop Portfolio 2026-10-20: derived from the Prop Ready guard. Per-entry cap 1%, total open risk 4.5%,
-// same-symbol 3% of the frozen reference balance; daily reserve 3%, 92% buffer, 90% floor, 5% daily loss unchanged.
+// Best Prop Portfolio 2026-10-20: derived from the Prop Ready guard. Per-entry cap = the chosen risk (default 1%),
+// total open 4.5x and same-symbol 3x that cap, of the frozen reference balance; daily reserve 3%, 92% buffer, 90% floor,
+// 5% daily loss unchanged.
 // Broker-neutral Best Prop 15 builds. Admission guard, NOT a guaranteed loss limiter.
 // Legacy FTMO input/function names preserve the strategy wrapper interface only.
 // Fixed allocation is in ACCOUNT CURRENCY, not necessarily USD. No account switching,
 // liquidation, asynchronous execution or permission to use netting accounts.
 input int FTMOAllocationMode=1; // 0=fixed account-currency amount, 1=current equity %
 input double FTMOAllocationValue=1.0;
+input double FTMORiskCapPercent=1.0; // per-entry cap, % of the saved reference balance; the installer sets it to the chosen risk (2026-10-30). Totals scale: 4.5x open, 3x per symbol
 input long   FTMOExpectedLogin=0;
 input string FTMOExpectedServer="";
 input string FTMOExpectedSymbol="";
@@ -17,9 +19,9 @@ input double FTMOReferenceBalance=0.0; // Flat-account baseline frozen by instal
 input long FTMOStartUtcTime=0; // UTC Unix seconds; frozen, never reset on reinstall
 input int    FTMOPhase=1; // 1=10% target, 2=5% target, 3=no challenge target stop
 
-double FTMORiskCap(){return FTMOReferenceBalance*0.01;}
-double FTMOTotalRiskCap(){return FTMOReferenceBalance*0.045;}
-double FTMOSymbolRiskCap(){return FTMOReferenceBalance*0.03;}
+double FTMORiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent/100.0;}
+double FTMOTotalRiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent*0.045;}
+double FTMOSymbolRiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent*0.03;}
 double FTMODailyReserve(){return FTMOReferenceBalance*0.03;}
 double FTMOEquityBuffer(){return FTMOReferenceBalance*0.92;}
 double FTMOHardFloor(){return FTMOReferenceBalance*0.90;}
@@ -27,7 +29,8 @@ double FTMODailyHardLoss(){return FTMOReferenceBalance*0.05;}
 
 bool FTMOAllocationValid() {
    return FTMOAllocationMode>=0 && FTMOAllocationMode<=1 && MathIsValidNumber(FTMOAllocationValue)
-      && FTMOAllocationValue>0 && (FTMOAllocationMode==0 || FTMOAllocationValue<=10);
+      && FTMOAllocationValue>0 && (FTMOAllocationMode==0 || FTMOAllocationValue<=10)
+      && MathIsValidNumber(FTMORiskCapPercent) && FTMORiskCapPercent>0 && FTMORiskCapPercent<=2.0;   // 3% daily reserve admits at most ~2.4% per entry
 }
 double FTMOAllocationBudget() {
    if(!FTMOAllocationValid())return 0;

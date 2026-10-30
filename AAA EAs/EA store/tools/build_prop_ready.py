@@ -66,10 +66,10 @@ def main():
         entry['expert_sha'] = sha(package / entry['expert'])
         entry['settings_sha'] = sha(package / entry['settings'])
     new_manifest = dict(
-        version='PROP-READY9-BROKER-NEUTRAL-20261017', entries=entries,
+        version='PROP-READY9-BROKER-NEUTRAL-20261030', entries=entries,
         news_enabled=False, currency_mode='ACCOUNT_CURRENCY', hedging_required=True,
         reference_mode='PERSISTED_FIRST_INSTALL_BALANCE', default_phase='Funded',
-        risk_cap_fraction=.005, guard_sha=sha(TARGET / 'CalyxFTMOGuard.mqh'),
+        risk_cap_fraction=.005, risk_cap_input='FTMORiskCapPercent (installer = chosen risk, max 2%; 0.005 is the default)', guard_sha=sha(TARGET / 'CalyxFTMOGuard.mqh'),
         source_version=manifest['version'], source_guard_sha=manifest['guard_sha'],
         files={str(p.relative_to(package)).replace('\\', '/'): sha(p)
                for p in package.rglob('*') if p.is_file() and p.suffix != '.log'},

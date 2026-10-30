@@ -49,10 +49,19 @@ The guard keeps its own state (`BP15`), separate from Best Prop 9.
 ## Install
 1. MT5 open and logged in; account **flat**; **Algo Trading OFF**; hedging account.
 2. Double-click **`Install Best Prop 15 Portfolio.bat`**.
-3. Answer the three questions, pressing Enter for the defaults:
-   - **Phase:** 1 = Challenge.
-   - **Risk:** 1.0% of current equity.
-   - **Nasdaq DI:** OFF.
+3. Answer the questions; Enter keeps the default:
+
+| Question | Choices | Default |
+|---|---|---|
+| Phase | 1 Challenge (stop at +10%) / 2 Verification (+5%) / 3 Funded (no target) | 1 |
+| **Risk type** | 1 = % of current equity / 2 = fixed amount per trade in the account currency | 1 |
+| **Risk per trade** | any value, e.g. `0.25`, `0.5`, `1.0` (comma accepted), or e.g. `50` for a fixed amount | 1.0 % (or 100) |
+| **Nasdaq 5M DI filter** | ON / OFF | OFF |
+| **USDJPY London DI filter** | ON / OFF (its ADX20 filter always stays on) | ON |
+
+   - Only these two EAs have a DI filter; the other 13 have none.
+   - **The guard caps every trade at 1% of the saved starting balance.** A higher request shows a warning and is capped. Going above 1% needs a guard rebuild.
+   - **Non-interactive form:** `-RiskMode FIXED_USD -RiskValue 50 -NasdaqDIFilter ON -UsdJpyDIFilter OFF -Phase Funded`.
 4. **Type the confirmation line exactly:** `BEST PROP 15 <login> <currency> <phase>`.
 5. MT5 restarts into a new profile, `Calyx-BestProp15-<login>-<time>`, with **15 charts** and **Algo Trading still OFF**. Check the charts, then turn Algo Trading on yourself.
 

@@ -6,6 +6,7 @@
 // liquidation, asynchronous execution or permission to use netting accounts.
 input int FTMOAllocationMode=0; // 0=fixed account-currency amount, 1=current equity %
 input double FTMOAllocationValue=50.0;
+input double FTMORiskCapPercent=0.5; // per-entry cap, % of the saved reference balance; the installer sets it to the chosen risk (2026-10-30). Totals scale: 4.5x open, 3x per symbol
 input long   FTMOExpectedLogin=0;
 input string FTMOExpectedServer="";
 input string FTMOExpectedSymbol="";
@@ -14,9 +15,9 @@ input double FTMOReferenceBalance=0.0; // Flat-account baseline frozen by instal
 input long FTMOStartUtcTime=0; // UTC Unix seconds; frozen, never reset on reinstall
 input int    FTMOPhase=3; // 1=10% target, 2=5% target, 3=no challenge target stop
 
-double FTMORiskCap(){return FTMOReferenceBalance*0.005;}
-double FTMOTotalRiskCap(){return FTMOReferenceBalance*0.0225;}
-double FTMOSymbolRiskCap(){return FTMOReferenceBalance*0.015;}
+double FTMORiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent/100.0;}
+double FTMOTotalRiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent*0.045;}
+double FTMOSymbolRiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent*0.03;}
 double FTMODailyReserve(){return FTMOReferenceBalance*0.03;}
 double FTMOEquityBuffer(){return FTMOReferenceBalance*0.92;}
 double FTMOHardFloor(){return FTMOReferenceBalance*0.90;}
@@ -24,7 +25,8 @@ double FTMODailyHardLoss(){return FTMOReferenceBalance*0.05;}
 
 bool FTMOAllocationValid() {
    return FTMOAllocationMode>=0 && FTMOAllocationMode<=1 && MathIsValidNumber(FTMOAllocationValue)
-      && FTMOAllocationValue>0 && (FTMOAllocationMode==0 || FTMOAllocationValue<=10);
+      && FTMOAllocationValue>0 && (FTMOAllocationMode==0 || FTMOAllocationValue<=10)
+      && MathIsValidNumber(FTMORiskCapPercent) && FTMORiskCapPercent>0 && FTMORiskCapPercent<=2.0;   // 3% daily reserve admits at most ~2.4% per entry
 }
 double FTMOAllocationBudget() {
    if(!FTMOAllocationValid())return 0;

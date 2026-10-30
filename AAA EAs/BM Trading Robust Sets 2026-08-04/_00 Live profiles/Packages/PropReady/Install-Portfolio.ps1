@@ -116,7 +116,7 @@ if($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilte
 }
 Write-Host "${profileDisplay}: nine EAs / five ORBs at 0.5R / broker-neutral MT5 hedging profile." -ForegroundColor Cyan
 Write-Host 'Fixed cash is in ACCOUNT CURRENCY (USD on a USD account); % uses current equity. Legacy parameter name: FIXED_USD.'
-Write-Host 'Allocation is capped at 0.5% of saved initial balance and at the original strategy volume; lots round DOWN.' -ForegroundColor Yellow
+Write-Host 'Each trade risks the amount you chose (at most 2% of the saved starting balance) and never more than the original strategy volume; lots round DOWN.' -ForegroundColor Yellow
 if($ValidateOnly){
     foreach($entry in $manifest.entries){$null=Get-PropReadyPresetInputs $entry}
     Write-Host 'PASS: 9 integrity-checked guarded EAs; all five ORBs at 0.5R. No account accessed.';exit 0
@@ -142,8 +142,12 @@ try{$serverHash=([BitConverter]::ToString($serverHasher.ComputeHash([Text.Encodi
 # Branding must not reset the retained account baseline or shared safety state.
 $statePath=Join-Path $dataRoot ("MQL5\Files\Calyx-PropReady-$login-$serverHash.json")
 $oldState=if(Test-Path -LiteralPath $statePath){Get-Content -Raw -LiteralPath $statePath | ConvertFrom-Json}else{$null}
-$reference=Get-PropReadyReference $probe $oldState
+$chosen=Select-PropReadyReference $probe $oldState (-not $ValidateOnly)
+$reference=$chosen.reference
 $initial=[double]$reference.reference_balance
+# 2026-10-30 owner: the per-entry cap is the chosen risk (fixed cash -> % of the saved starting balance), not a fixed 0.5%.
+$capPercent=Resolve-RiskCapPercent $RiskMode $RiskValue $initial
+$capText=$capPercent.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)
 if([double]$probe.account.equity -lt $initial*0.92){throw 'Account is below the retained 92% entry buffer; stop for review. Reinstallation does not reset losses.'}
 $phaseNumber=@{Challenge=1;Verification=2;Funded=3}[$Phase]
 $aliasMap=@{XAUUSD=@('XAUUSD','GOLD');USTEC=@('USTEC','US100','NAS100','NDX100','UT100','NASDAQ100','NASUSD','USTECH','USNDX');USDJPY=@('USDJPY')}
@@ -169,6 +173,7 @@ foreach($entry in $manifest.entries){
     $inputs['FTMOExpectedCurrency']=$currency
     $inputs['FTMOReferenceBalance']=$initial.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)
     $inputs['FTMOStartUtcTime']=[string]$reference.start_utc;$inputs['FTMOPhase']=[string]$phaseNumber
+    $inputs['FTMORiskCapPercent']=$capText
     if($inputs.Contains('InpExpectedLogin')){$inputs['InpExpectedLogin']=$login;$inputs['InpExpectedServer']=$server}
     $tf=[string]$entry.timeframe
     $minutes=if($tf.StartsWith('H')){60*[int]$tf.Substring(1)}elseif($tf.StartsWith('M')){[int]$tf.Substring(1)}else{throw 'Unsupported timeframe.'}
@@ -177,8 +182,8 @@ foreach($entry in $manifest.entries){
 }
 Write-Host "Broker: $($probe.account.company) / login $login / $server / balance $($probe.account.balance) $currency"
 Write-Host "Saved risk reference: $initial $currency; phase $Phase (Funded = continuous demo/live mode, no phase profit stop)."
-Write-Host "Requested risk: $RiskValue $RiskMode; planned per-entry maximum: $($initial*0.005) $currency."
-Write-Host "Limits: $($initial*0.0225) open risk; $($initial*0.015) per symbol; $($initial*0.03) daily reserved loss; $($initial*0.92) equity entry buffer."
+Write-Host "Requested risk: $RiskValue $RiskMode = $capPercent% of the saved starting balance; per-entry maximum: $([math]::Round($initial*$capPercent/100,2)) $currency."
+Write-Host "Limits: $([math]::Round($initial*$capPercent*0.045,2)) open risk; $([math]::Round($initial*$capPercent*0.03,2)) per symbol; $($initial*0.03) daily reserved loss; $($initial*0.92) equity entry buffer."
 Write-Host 'Seven entries / three net losing positions maximum per Prague day; 80% protected-equity margin cap.'
 Write-Host 'Initial deployment starts a new baseline; reruns retain it. No automatic liquidation. Gaps/costs may exceed planned risk.'
 Write-Host "Nasdaq DI: $NasdaqDIFilter / USDJPY DI: $UsdJpyDIFilter (ADX20 retained). News and hourly EAs OFF."
@@ -213,8 +218,8 @@ for($i=0;$i -lt $portfolio.Count;$i++){
 $order=((1..$portfolio.Count | ForEach-Object {'chart{0:D2}.chr' -f $_}) -join "`r`n")+"`r`n"
 [IO.File]::WriteAllText((Join-Path $profile 'order.wnd'),$order,$unicode)
 Test-ManagedProfile $profile $portfolio $profileValidationLabel
-# Preserve baseline on reruns; never clear terminal global-variable safety latches.
-if(-not(Test-Path -LiteralPath $statePath)){
+# Preserve the baseline on reruns unless the user chose to start fresh; never clear terminal global-variable safety latches.
+if($chosen.write){                                       # first install, or the user chose to start fresh
     [void](New-Item -ItemType Directory -Path (Split-Path -Parent $statePath) -Force)
     [IO.File]::WriteAllText($statePath,($reference | ConvertTo-Json),[Text.UTF8Encoding]::new($false))
 }
@@ -225,7 +230,7 @@ Set-IniValue $commonIni 'Experts' 'Enabled' '0'
 Set-IniValue $commonIni 'Experts' 'Account' '1'
 Set-IniValue $commonIni 'Charts' 'ProfileLast' $ProfileName
 [IO.File]::WriteAllText((Join-Path $profile 'DEPLOYMENT.txt'),
-    "Portfolio: $profileDeploymentLabel broker-neutral`r`nAccount: $login / $server / $currency`r`nPhase: $Phase`r`nReference: $initial; start UTC: $($reference.start_utc)`r`nRequested allocation: $RiskMode $RiskValue`r`nNasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`nNews: OFF; five ORBs: 0.5R; Algo Trading: OFF`r`n",[Text.UTF8Encoding]::new($false))
+    "Portfolio: $profileDeploymentLabel broker-neutral`r`nAccount: $login / $server / $currency`r`nPhase: $Phase`r`nReference: $initial; start UTC: $($reference.start_utc)`r`nRequested allocation: $RiskMode $RiskValue (per-entry cap $capPercent% of reference)`r`nNasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`nNews: OFF; five ORBs: 0.5R; Algo Trading: OFF`r`n",[Text.UTF8Encoding]::new($false))
 Start-Process -FilePath $terminalPath -ArgumentList ('/profile:"'+$ProfileName+'"') -WindowStyle Hidden
 Write-Host "Installed $ProfileName. Review all nine charts and inputs; Algo Trading remains OFF."
 Write-Host 'Enable Algo Trading yourself only when satisfied. No orders were placed by this installer.'

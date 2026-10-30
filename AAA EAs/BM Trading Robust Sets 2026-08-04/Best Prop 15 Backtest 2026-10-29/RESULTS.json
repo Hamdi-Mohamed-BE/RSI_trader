@@ -1,0 +1,2943 @@
+{
+ "seconds": 1035,
+ "split": {
+  "dev": [
+   "2021-10-07",
+   "2023-10-06"
+  ],
+  "val": [
+   "2023-10-06",
+   "2024-10-06"
+  ],
+  "oos": [
+   "2024-10-06",
+   "2026-10-06"
+  ],
+  "all": [
+   "2021-10-07",
+   "2026-10-06"
+  ]
+ },
+ "challenge": {
+  "BP9|dev|recorded_exness": {
+   "n": 392,
+   "pass_both_180": 0.5153,
+   "funded_90": 0.2934,
+   "funded_60": 0.1633,
+   "phase1_60": 0.4541,
+   "breach": 0.0,
+   "stalled_buffer": 0.6862,
+   "median_days_both": 71.0,
+   "median_days_funded": 78.0,
+   "p25_funded": 53,
+   "p75_funded": 111,
+   "eqdd_p50": 887.1,
+   "eqdd_p95": 1456.2,
+   "eqdd_max": 1857.5,
+   "day_p95": 247.8,
+   "day_max": 247.8,
+   "median_trades": 79.5
+  },
+  "BP9|dev|fixed_cost_stress": {
+   "n": 392,
+   "pass_both_180": 0.3469,
+   "funded_90": 0.1939,
+   "funded_60": 0.1122,
+   "phase1_60": 0.3648,
+   "breach": 0.0,
+   "stalled_buffer": 0.8138,
+   "median_days_both": 75.5,
+   "median_days_funded": 82.5,
+   "p25_funded": 50,
+   "p75_funded": 123,
+   "eqdd_p50": 909.9,
+   "eqdd_p95": 1655.5,
+   "eqdd_max": 1753.7,
+   "day_p95": 253.8,
+   "day_max": 255.2,
+   "median_trades": 69.5
+  },
+  "BP9|val|recorded_exness": {
+   "n": 133,
+   "pass_both_180": 0.5338,
+   "funded_90": 0.4211,
+   "funded_60": 0.1805,
+   "phase1_60": 0.7368,
+   "breach": 0.0,
+   "stalled_buffer": 0.6241,
+   "median_days_both": 68,
+   "median_days_funded": 75,
+   "p25_funded": 49,
+   "p75_funded": 87,
+   "eqdd_p50": 833.7,
+   "eqdd_p95": 1675.9,
+   "eqdd_max": 1740.6,
+   "day_p95": 223.1,
+   "day_max": 223.1,
+   "median_trades": 77
+  },
+  "BP9|val|fixed_cost_stress": {
+   "n": 133,
+   "pass_both_180": 0.3835,
+   "funded_90": 0.1729,
+   "funded_60": 0.1278,
+   "phase1_60": 0.4436,
+   "breach": 0.0,
+   "stalled_buffer": 0.7594,
+   "median_days_both": 86,
+   "median_days_funded": 93,
+   "p25_funded": 48,
+   "p75_funded": 113,
+   "eqdd_p50": 836.4,
+   "eqdd_p95": 1649.0,
+   "eqdd_max": 1765.4,
+   "day_p95": 237.3,
+   "day_max": 237.4,
+   "median_trades": 73
+  },
+  "BP9|oos|recorded_exness": {
+   "n": 394,
+   "pass_both_180": 0.8985,
+   "funded_90": 0.6853,
+   "funded_60": 0.3858,
+   "phase1_60": 0.7766,
+   "breach": 0.0,
+   "stalled_buffer": 0.1954,
+   "median_days_both": 57.0,
+   "median_days_funded": 64.0,
+   "p25_funded": 49,
+   "p75_funded": 89,
+   "eqdd_p50": 594.4,
+   "eqdd_p95": 1057.7,
+   "eqdd_max": 1406.3,
+   "day_p95": 256.7,
+   "day_max": 256.7,
+   "median_trades": 69.0
+  },
+  "BP9|oos|fixed_cost_stress": {
+   "n": 394,
+   "pass_both_180": 0.8706,
+   "funded_90": 0.6396,
+   "funded_60": 0.2792,
+   "phase1_60": 0.6954,
+   "breach": 0.0,
+   "stalled_buffer": 0.2081,
+   "median_days_both": 64,
+   "median_days_funded": 71,
+   "p25_funded": 55,
+   "p75_funded": 92,
+   "eqdd_p50": 698.7,
+   "eqdd_p95": 1462.4,
+   "eqdd_max": 1515.2,
+   "day_p95": 271.2,
+   "day_max": 271.2,
+   "median_trades": 76.0
+  },
+  "BP9|all|recorded_exness": {
+   "n": 1176,
+   "pass_both_180": 0.6071,
+   "funded_90": 0.4294,
+   "funded_60": 0.2287,
+   "phase1_60": 0.591,
+   "breach": 0.0,
+   "stalled_buffer": 0.5255,
+   "median_days_both": 63.0,
+   "median_days_funded": 70.0,
+   "p25_funded": 51,
+   "p75_funded": 97,
+   "eqdd_p50": 793.3,
+   "eqdd_p95": 1368.5,
+   "eqdd_max": 1857.5,
+   "day_p95": 252.9,
+   "day_max": 256.7,
+   "median_trades": 71.0
+  },
+  "BP9|all|fixed_cost_stress": {
+   "n": 1176,
+   "pass_both_180": 0.5153,
+   "funded_90": 0.3401,
+   "funded_60": 0.1522,
+   "phase1_60": 0.4906,
+   "breach": 0.0,
+   "stalled_buffer": 0.6003,
+   "median_days_both": 67.0,
+   "median_days_funded": 74.0,
+   "p25_funded": 57,
+   "p75_funded": 108,
+   "eqdd_p50": 823.2,
+   "eqdd_p95": 1467.1,
+   "eqdd_max": 1765.4,
+   "day_p95": 267.2,
+   "day_max": 271.2,
+   "median_trades": 71.0
+  },
+  "BP15|dev|recorded_exness": {
+   "n": 392,
+   "pass_both_180": 0.3597,
+   "funded_90": 0.1607,
+   "funded_60": 0.1097,
+   "phase1_60": 0.1964,
+   "breach": 0.0,
+   "stalled_buffer": 0.5714,
+   "median_days_both": 90,
+   "median_days_funded": 97,
+   "p25_funded": 55,
+   "p75_funded": 140,
+   "eqdd_p50": 805.5,
+   "eqdd_p95": 1540.4,
+   "eqdd_max": 1977.2,
+   "day_p95": 228.2,
+   "day_max": 271.4,
+   "median_trades": 104.0
+  },
+  "BP15|dev|fixed_cost_stress": {
+   "n": 392,
+   "pass_both_180": 0.1633,
+   "funded_90": 0.1046,
+   "funded_60": 0.0689,
+   "phase1_60": 0.1556,
+   "breach": 0.0,
+   "stalled_buffer": 0.6658,
+   "median_days_both": 64.5,
+   "median_days_funded": 71.5,
+   "p25_funded": 45,
+   "p75_funded": 141,
+   "eqdd_p50": 846.9,
+   "eqdd_p95": 1596.4,
+   "eqdd_max": 1780.5,
+   "day_p95": 249.8,
+   "day_max": 249.8,
+   "median_trades": 110.0
+  },
+  "BP15|val|recorded_exness": {
+   "n": 133,
+   "pass_both_180": 0.5564,
+   "funded_90": 0.1729,
+   "funded_60": 0.0677,
+   "phase1_60": 0.4286,
+   "breach": 0.0,
+   "stalled_buffer": 0.6917,
+   "median_days_both": 111.5,
+   "median_days_funded": 118.5,
+   "p25_funded": 77,
+   "p75_funded": 134,
+   "eqdd_p50": 778.1,
+   "eqdd_p95": 1232.3,
+   "eqdd_max": 1389.0,
+   "day_p95": 202.1,
+   "day_max": 271.5,
+   "median_trades": 89
+  },
+  "BP15|val|fixed_cost_stress": {
+   "n": 133,
+   "pass_both_180": 0.4511,
+   "funded_90": 0.1203,
+   "funded_60": 0.0602,
+   "phase1_60": 0.2782,
+   "breach": 0.0,
+   "stalled_buffer": 0.6842,
+   "median_days_both": 110.5,
+   "median_days_funded": 117.5,
+   "p25_funded": 89,
+   "p75_funded": 129,
+   "eqdd_p50": 849.4,
+   "eqdd_p95": 1502.1,
+   "eqdd_max": 1687.3,
+   "day_p95": 224.2,
+   "day_max": 238.9,
+   "median_trades": 87
+  },
+  "BP15|oos|recorded_exness": {
+   "n": 394,
+   "pass_both_180": 0.9518,
+   "funded_90": 0.703,
+   "funded_60": 0.3299,
+   "phase1_60": 0.8223,
+   "breach": 0.0,
+   "stalled_buffer": 0.2157,
+   "median_days_both": 64,
+   "median_days_funded": 71,
+   "p25_funded": 51,
+   "p75_funded": 92,
+   "eqdd_p50": 606.9,
+   "eqdd_p95": 1320.1,
+   "eqdd_max": 1396.9,
+   "day_p95": 294.9,
+   "day_max": 294.9,
+   "median_trades": 76.0
+  },
+  "BP15|oos|fixed_cost_stress": {
+   "n": 394,
+   "pass_both_180": 0.9467,
+   "funded_90": 0.6523,
+   "funded_60": 0.2817,
+   "phase1_60": 0.7589,
+   "breach": 0.0,
+   "stalled_buffer": 0.2741,
+   "median_days_both": 69,
+   "median_days_funded": 76,
+   "p25_funded": 56,
+   "p75_funded": 97,
+   "eqdd_p50": 631.5,
+   "eqdd_p95": 1361.7,
+   "eqdd_max": 1491.9,
+   "day_p95": 325.5,
+   "day_max": 325.5,
+   "median_trades": 81.0
+  },
+  "BP15|all|recorded_exness": {
+   "n": 1176,
+   "pass_both_180": 0.6301,
+   "funded_90": 0.3427,
+   "funded_60": 0.1565,
+   "phase1_60": 0.4609,
+   "breach": 0.0,
+   "stalled_buffer": 0.4413,
+   "median_days_both": 78,
+   "median_days_funded": 85,
+   "p25_funded": 61,
+   "p75_funded": 114,
+   "eqdd_p50": 686.5,
+   "eqdd_p95": 1471.4,
+   "eqdd_max": 1977.2,
+   "day_p95": 271.6,
+   "day_max": 294.9,
+   "median_trades": 84.5
+  },
+  "BP15|all|fixed_cost_stress": {
+   "n": 1176,
+   "pass_both_180": 0.5417,
+   "funded_90": 0.2951,
+   "funded_60": 0.125,
+   "phase1_60": 0.4048,
+   "breach": 0.0,
+   "stalled_buffer": 0.5119,
+   "median_days_both": 78,
+   "median_days_funded": 85,
+   "p25_funded": 63,
+   "p75_funded": 125,
+   "eqdd_p50": 778.7,
+   "eqdd_p95": 1461.7,
+   "eqdd_max": 1780.5,
+   "day_p95": 297.0,
+   "day_max": 325.5,
+   "median_trades": 84.0
+  }
+ },
+ "continuous": {
+  "BP9|dev|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 11,
+   "per_month": 0.46,
+   "per_day": 0.021,
+   "net": -741.46,
+   "return_pct": -7.41,
+   "pf": 0.069,
+   "win_rate": 9.1,
+   "max_closed_dd": 741.46,
+   "max_sampled_equity_dd": 745.8,
+   "worst_day": 206.95,
+   "breached": false,
+   "ending_balance": 9258.54,
+   "positive_months": "0/1",
+   "months": {
+    "2021-10": -741.46
+   },
+   "by_ea": {
+    "xau-rsi-vwap": {
+     "trades": 1,
+     "net": -95.14
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 5,
+     "net": -300.22
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 5,
+     "net": -346.1
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 1,
+    "soft_total_buffer9200": 1089
+   }
+  },
+  "BP9|dev|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 754,
+   "per_month": 31.48,
+   "per_day": 1.447,
+   "net": 1049.4,
+   "return_pct": 10.49,
+   "pf": 1.029,
+   "win_rate": 48.4,
+   "max_closed_dd": 4029.2,
+   "max_sampled_equity_dd": 4071.17,
+   "worst_day": 255.96,
+   "breached": false,
+   "ending_balance": 11049.4,
+   "positive_months": "9/21",
+   "months": {
+    "2021-10": -693.19,
+    "2022-03": 107.82,
+    "2022-04": 1295.57,
+    "2022-05": 1542.83,
+    "2022-06": 110.11,
+    "2022-07": -346.2,
+    "2022-08": 812.59,
+    "2022-09": -295.17,
+    "2022-10": 973.0,
+    "2022-11": 133.89,
+    "2022-12": -193.44,
+    "2023-01": 238.34,
+    "2023-02": -270.73,
+    "2023-03": -370.47,
+    "2023-04": -119.23,
+    "2023-05": -403.73,
+    "2023-06": -642.24,
+    "2023-07": -1081.86,
+    "2023-08": 1348.04,
+    "2023-09": -611.92,
+    "2023-10": -484.61
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 145,
+     "net": 1443.24
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 374,
+     "net": 714.16
+    },
+    "us100-selective-orb-v3": {
+     "trades": 6,
+     "net": 133.21
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 7,
+     "net": 62.8
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 56,
+     "net": 8.08
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 8,
+     "net": -16.1
+    },
+    "xau-rsi-vwap": {
+     "trades": 98,
+     "net": -164.89
+    },
+    "us100-month-end-flow": {
+     "trades": 34,
+     "net": -529.49
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 26,
+     "net": -601.61
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 111,
+    "soft_total_buffer9200": 232,
+    "entry_reconciliation3s": 3,
+    "proxy_shared_margin": 1
+   }
+  },
+  "BP9|val|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 437,
+   "per_month": 36.34,
+   "per_day": 1.674,
+   "net": 4854.19,
+   "return_pct": 48.54,
+   "pf": 1.261,
+   "win_rate": 51.7,
+   "max_closed_dd": 2708.14,
+   "max_sampled_equity_dd": 2763.79,
+   "worst_day": 223.07,
+   "breached": false,
+   "ending_balance": 14854.19,
+   "positive_months": "8/13",
+   "months": {
+    "2023-10": -184.62,
+    "2023-11": 1010.63,
+    "2023-12": 268.67,
+    "2024-01": 615.88,
+    "2024-02": -283.88,
+    "2024-03": -158.96,
+    "2024-04": 1298.51,
+    "2024-05": 1298.37,
+    "2024-06": 464.84,
+    "2024-07": 1779.48,
+    "2024-08": -1253.81,
+    "2024-09": -669.18,
+    "2024-10": 668.26
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 89,
+     "net": 3486.68
+    },
+    "xau-rsi-vwap": {
+     "trades": 33,
+     "net": 1104.78
+    },
+    "us100-month-end-flow": {
+     "trades": 21,
+     "net": 246.4
+    },
+    "us100-selective-orb-v3": {
+     "trades": 6,
+     "net": 145.51
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 5,
+     "net": 95.42
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 12,
+     "net": 90.45
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 33,
+     "net": -23.51
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 16,
+     "net": -42.22
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 222,
+     "net": -249.32
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 51,
+    "entry_reconciliation3s": 1
+   }
+  },
+  "BP9|val|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 437,
+   "per_month": 36.34,
+   "per_day": 1.674,
+   "net": 3006.54,
+   "return_pct": 30.07,
+   "pf": 1.156,
+   "win_rate": 50.8,
+   "max_closed_dd": 2931.24,
+   "max_sampled_equity_dd": 2981.46,
+   "worst_day": 237.35,
+   "breached": false,
+   "ending_balance": 13006.54,
+   "positive_months": "8/13",
+   "months": {
+    "2023-10": -323.68,
+    "2023-11": 792.02,
+    "2023-12": 114.64,
+    "2024-01": 397.85,
+    "2024-02": -450.28,
+    "2024-03": -272.74,
+    "2024-04": 1155.22,
+    "2024-05": 1096.36,
+    "2024-06": 316.75,
+    "2024-07": 1684.29,
+    "2024-08": -1377.13,
+    "2024-09": -766.88,
+    "2024-10": 640.12
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 89,
+     "net": 3085.6
+    },
+    "xau-rsi-vwap": {
+     "trades": 33,
+     "net": 999.53
+    },
+    "us100-month-end-flow": {
+     "trades": 21,
+     "net": 137.67
+    },
+    "us100-selective-orb-v3": {
+     "trades": 6,
+     "net": 131.47
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 5,
+     "net": 75.65
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 12,
+     "net": 53.04
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 33,
+     "net": -116.93
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 16,
+     "net": -149.41
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 222,
+     "net": -1210.08
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 51,
+    "entry_reconciliation3s": 1
+   }
+  },
+  "BP9|oos|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 908,
+   "per_month": 37.86,
+   "per_day": 1.743,
+   "net": 17079.75,
+   "return_pct": 170.8,
+   "pf": 1.517,
+   "win_rate": 56.8,
+   "max_closed_dd": 1291.81,
+   "max_sampled_equity_dd": 1374.55,
+   "worst_day": 256.71,
+   "breached": false,
+   "ending_balance": 27079.42,
+   "positive_months": "21/25",
+   "months": {
+    "2024-10": -215.07,
+    "2024-11": 1564.55,
+    "2024-12": 1717.17,
+    "2025-01": 362.04,
+    "2025-02": 761.72,
+    "2025-03": -367.4,
+    "2025-04": 3402.68,
+    "2025-05": 864.37,
+    "2025-06": -143.03,
+    "2025-07": 551.64,
+    "2025-08": 1124.8,
+    "2025-09": 793.07,
+    "2025-10": 1161.98,
+    "2025-11": 1324.01,
+    "2025-12": 480.13,
+    "2026-01": -284.37,
+    "2026-02": 768.42,
+    "2026-03": 549.28,
+    "2026-04": 1175.37,
+    "2026-05": 522.47,
+    "2026-06": 144.76,
+    "2026-07": 164.44,
+    "2026-08": 542.67,
+    "2026-09": 19.95,
+    "2026-10": 94.1
+   },
+   "by_ea": {
+    "nasdaq-5m-candle-momentum": {
+     "trades": 425,
+     "net": 10301.01
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 181,
+     "net": 2655.97
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 94,
+     "net": 1728.53
+    },
+    "us100-month-end-flow": {
+     "trades": 44,
+     "net": 1030.32
+    },
+    "xau-rsi-vwap": {
+     "trades": 89,
+     "net": 725.18
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 39,
+     "net": 320.16
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 16,
+     "net": 232.35
+    },
+    "us100-selective-orb-v3": {
+     "trades": 2,
+     "net": 98.53
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 18,
+     "net": -12.3
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 155,
+    "entry_reconciliation3s": 2,
+    "minimum_lot_over50_or_source_request": 5
+   }
+  },
+  "BP9|oos|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 19,
+   "per_month": 0.79,
+   "per_day": 0.036,
+   "net": -766.19,
+   "return_pct": -7.66,
+   "pf": 0.296,
+   "win_rate": 36.8,
+   "max_closed_dd": 766.19,
+   "max_sampled_equity_dd": 786.8,
+   "worst_day": 204.07,
+   "breached": false,
+   "ending_balance": 9233.81,
+   "positive_months": "1/3",
+   "months": {
+    "2024-10": -712.86,
+    "2025-04": 25.46,
+    "2025-05": -78.79
+   },
+   "by_ea": {
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 1,
+     "net": 41.48
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 4,
+     "net": 32.03
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 3,
+     "net": -10.36
+    },
+    "xau-rsi-vwap": {
+     "trades": 3,
+     "net": -147.51
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 8,
+     "net": -681.83
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 1,
+    "soft_total_buffer9200": 1046,
+    "minimum_lot_over50_or_source_request": 5
+   }
+  },
+  "BP9|all|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 11,
+   "per_month": 0.18,
+   "per_day": 0.008,
+   "net": -741.46,
+   "return_pct": -7.41,
+   "pf": 0.069,
+   "win_rate": 9.1,
+   "max_closed_dd": 741.46,
+   "max_sampled_equity_dd": 745.8,
+   "worst_day": 206.95,
+   "breached": false,
+   "ending_balance": 9258.54,
+   "positive_months": "0/1",
+   "months": {
+    "2021-10": -741.46
+   },
+   "by_ea": {
+    "xau-rsi-vwap": {
+     "trades": 1,
+     "net": -95.14
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 5,
+     "net": -300.22
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 5,
+     "net": -346.1
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 1,
+    "soft_total_buffer9200": 2644,
+    "minimum_lot_over50_or_source_request": 5
+   }
+  },
+  "BP9|all|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 2097,
+   "per_month": 34.97,
+   "per_day": 1.609,
+   "net": 18648.03,
+   "return_pct": 186.48,
+   "pf": 1.209,
+   "win_rate": 52.4,
+   "max_closed_dd": 4029.2,
+   "max_sampled_equity_dd": 4071.17,
+   "worst_day": 271.22,
+   "breached": false,
+   "ending_balance": 28647.17,
+   "positive_months": "37/57",
+   "months": {
+    "2021-10": -693.19,
+    "2022-03": 107.82,
+    "2022-04": 1295.57,
+    "2022-05": 1542.83,
+    "2022-06": 110.11,
+    "2022-07": -346.2,
+    "2022-08": 812.59,
+    "2022-09": -295.17,
+    "2022-10": 973.0,
+    "2022-11": 133.89,
+    "2022-12": -193.44,
+    "2023-01": 238.34,
+    "2023-02": -270.73,
+    "2023-03": -370.47,
+    "2023-04": -119.23,
+    "2023-05": -403.73,
+    "2023-06": -642.24,
+    "2023-07": -1081.86,
+    "2023-08": 1348.04,
+    "2023-09": -611.92,
+    "2023-10": -810.06,
+    "2023-11": 805.17,
+    "2023-12": 114.64,
+    "2024-01": 397.85,
+    "2024-02": -450.28,
+    "2024-03": -272.74,
+    "2024-04": 1160.67,
+    "2024-05": 1096.36,
+    "2024-06": 316.75,
+    "2024-07": 1684.29,
+    "2024-08": -1377.13,
+    "2024-09": -766.88,
+    "2024-10": 361.3,
+    "2024-11": 1421.83,
+    "2024-12": 1579.45,
+    "2025-01": 212.29,
+    "2025-02": 649.53,
+    "2025-03": -459.32,
+    "2025-04": 3320.69,
+    "2025-05": 782.98,
+    "2025-06": -264.64,
+    "2025-07": 404.98,
+    "2025-08": 1002.07,
+    "2025-09": 688.51,
+    "2025-10": 1042.28,
+    "2025-11": 1217.47,
+    "2025-12": 354.79,
+    "2026-01": -373.29,
+    "2026-02": 681.13,
+    "2026-03": 459.7,
+    "2026-04": 1068.84,
+    "2026-05": 520.4,
+    "2026-06": 59.78,
+    "2026-07": 61.33,
+    "2026-08": 459.7,
+    "2026-09": -114.96,
+    "2026-10": 78.54
+   },
+   "by_ea": {
+    "nasdaq-5m-candle-momentum": {
+     "trades": 1021,
+     "net": 8493.06
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 415,
+     "net": 6525.4
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 182,
+     "net": 1545.62
+    },
+    "xau-rsi-vwap": {
+     "trades": 220,
+     "net": 1454.19
+    },
+    "us100-month-end-flow": {
+     "trades": 99,
+     "net": 528.25
+    },
+    "us100-selective-orb-v3": {
+     "trades": 14,
+     "net": 360.21
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 35,
+     "net": 315.2
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 31,
+     "net": 7.83
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 80,
+     "net": -581.73
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 319,
+    "soft_total_buffer9200": 232,
+    "entry_reconciliation3s": 6,
+    "proxy_shared_margin": 1,
+    "minimum_lot_over50_or_source_request": 5
+   }
+  },
+  "BP15|dev|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 50,
+   "per_month": 2.09,
+   "per_day": 0.096,
+   "net": -763.48,
+   "return_pct": -7.63,
+   "pf": 0.613,
+   "win_rate": 44.0,
+   "max_closed_dd": 763.48,
+   "max_sampled_equity_dd": 889.45,
+   "worst_day": 201.8,
+   "breached": false,
+   "ending_balance": 9236.52,
+   "positive_months": "1/5",
+   "months": {
+    "2021-10": -443.44,
+    "2021-11": 146.99,
+    "2021-12": -292.6,
+    "2022-01": -98.3,
+    "2022-02": -76.13
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 12,
+     "net": 261.11
+    },
+    "3-way-gold#930930101": {
+     "trades": 4,
+     "net": 131.61
+    },
+    "3-way-gold#930930100": {
+     "trades": 2,
+     "net": 61.82
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 2,
+     "net": 42.11
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 1,
+     "net": 36.56
+    },
+    "dmc-current-xau": {
+     "trades": 3,
+     "net": -26.79
+    },
+    "3-way-gold#930930102": {
+     "trades": 2,
+     "net": -27.39
+    },
+    "gold-overnight-value-area": {
+     "trades": 9,
+     "net": -79.59
+    },
+    "ema3": {
+     "trades": 3,
+     "net": -281.09
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 6,
+     "net": -440.82
+    },
+    "xau-rsi-vwap": {
+     "trades": 6,
+     "net": -441.01
+    }
+   },
+   "blocked": {
+    "entry_reconciliation3s": 4,
+    "soft_daily_reserve300": 101,
+    "soft_total_buffer9200": 1829
+   }
+  },
+  "BP15|dev|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 37,
+   "per_month": 1.54,
+   "per_day": 0.071,
+   "net": -771.73,
+   "return_pct": -7.72,
+   "pf": 0.499,
+   "win_rate": 40.5,
+   "max_closed_dd": 771.73,
+   "max_sampled_equity_dd": 797.33,
+   "worst_day": 223.93,
+   "breached": false,
+   "ending_balance": 9228.27,
+   "positive_months": "1/5",
+   "months": {
+    "2021-10": -595.35,
+    "2021-11": 99.82,
+    "2021-12": -100.97,
+    "2022-01": -98.7,
+    "2022-02": -76.53
+   },
+   "by_ea": {
+    "3-way-gold#930930101": {
+     "trades": 3,
+     "net": 216.9
+    },
+    "3-way-gold#930930100": {
+     "trades": 2,
+     "net": 57.53
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 1,
+     "net": 18.7
+    },
+    "dmc-current-xau": {
+     "trades": 2,
+     "net": 17.89
+    },
+    "3-way-gold#930930102": {
+     "trades": 1,
+     "net": -2.58
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 7,
+     "net": -83.7
+    },
+    "gold-overnight-value-area": {
+     "trades": 9,
+     "net": -96.17
+    },
+    "xau-rsi-vwap": {
+     "trades": 3,
+     "net": -151.23
+    },
+    "ema3": {
+     "trades": 3,
+     "net": -301.31
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 6,
+     "net": -447.76
+    }
+   },
+   "blocked": {
+    "entry_reconciliation3s": 5,
+    "soft_daily_reserve300": 50,
+    "soft_total_buffer9200": 1892
+   }
+  },
+  "BP15|val|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 319,
+   "per_month": 26.53,
+   "per_day": 1.222,
+   "net": 5658.58,
+   "return_pct": 56.59,
+   "pf": 1.548,
+   "win_rate": 59.9,
+   "max_closed_dd": 1072.86,
+   "max_sampled_equity_dd": 1193.55,
+   "worst_day": 215.02,
+   "breached": false,
+   "ending_balance": 15658.19,
+   "positive_months": "8/13",
+   "months": {
+    "2023-10": 535.21,
+    "2023-11": 955.42,
+    "2023-12": -90.55,
+    "2024-01": -451.51,
+    "2024-02": -194.59,
+    "2024-03": 567.49,
+    "2024-04": 697.53,
+    "2024-05": 1678.13,
+    "2024-06": -305.55,
+    "2024-07": 2107.75,
+    "2024-08": -262.36,
+    "2024-09": 375.29,
+    "2024-10": 46.32
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 39,
+     "net": 2447.57
+    },
+    "3-way-gold#930930101": {
+     "trades": 24,
+     "net": 867.09
+    },
+    "xau-rsi-vwap": {
+     "trades": 20,
+     "net": 793.38
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 38,
+     "net": 590.76
+    },
+    "dmc-current-xau": {
+     "trades": 39,
+     "net": 341.06
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 6,
+     "net": 251.44
+    },
+    "us100-month-end-flow": {
+     "trades": 9,
+     "net": 232.0
+    },
+    "gold-overnight-value-area": {
+     "trades": 65,
+     "net": 168.48
+    },
+    "us100-selective-orb-v3": {
+     "trades": 3,
+     "net": 110.35
+    },
+    "ema3": {
+     "trades": 22,
+     "net": 89.82
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 1,
+     "net": 49.44
+    },
+    "3-way-gold#930930100": {
+     "trades": 20,
+     "net": 4.56
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 6,
+     "net": -14.06
+    },
+    "3-way-gold#930930102": {
+     "trades": 5,
+     "net": -15.49
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 5,
+     "net": -54.21
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 6,
+     "net": -76.42
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 11,
+     "net": -127.19
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 596,
+    "entry_reconciliation3s": 23,
+    "aggregate_initial_risk225": 1
+   }
+  },
+  "BP15|val|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 317,
+   "per_month": 26.36,
+   "per_day": 1.215,
+   "net": 4534.88,
+   "return_pct": 45.35,
+   "pf": 1.429,
+   "win_rate": 57.4,
+   "max_closed_dd": 1316.13,
+   "max_sampled_equity_dd": 1422.15,
+   "worst_day": 224.16,
+   "breached": false,
+   "ending_balance": 14533.79,
+   "positive_months": "8/13",
+   "months": {
+    "2023-10": 426.97,
+    "2023-11": 766.42,
+    "2023-12": -149.15,
+    "2024-01": -606.82,
+    "2024-02": -290.66,
+    "2024-03": 461.02,
+    "2024-04": 581.98,
+    "2024-05": 1553.6,
+    "2024-06": -186.17,
+    "2024-07": 2005.5,
+    "2024-08": -352.5,
+    "2024-09": 281.38,
+    "2024-10": 43.31
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 38,
+     "net": 2377.74
+    },
+    "3-way-gold#930930101": {
+     "trades": 24,
+     "net": 792.02
+    },
+    "xau-rsi-vwap": {
+     "trades": 20,
+     "net": 731.47
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 38,
+     "net": 385.6
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 6,
+     "net": 215.07
+    },
+    "us100-month-end-flow": {
+     "trades": 9,
+     "net": 197.52
+    },
+    "us100-selective-orb-v3": {
+     "trades": 3,
+     "net": 104.37
+    },
+    "dmc-current-xau": {
+     "trades": 39,
+     "net": 67.26
+    },
+    "gold-overnight-value-area": {
+     "trades": 64,
+     "net": 54.1
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 1,
+     "net": 46.62
+    },
+    "3-way-gold#930930100": {
+     "trades": 19,
+     "net": 36.13
+    },
+    "3-way-gold#930930102": {
+     "trades": 5,
+     "net": -23.07
+    },
+    "ema3": {
+     "trades": 22,
+     "net": -45.3
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 7,
+     "net": -60.11
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 5,
+     "net": -66.22
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 6,
+     "net": -118.21
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 11,
+     "net": -160.11
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 599,
+    "entry_reconciliation3s": 22,
+    "aggregate_initial_risk225": 1
+   }
+  },
+  "BP15|oos|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 1032,
+   "per_month": 43.03,
+   "per_day": 1.981,
+   "net": 19018.69,
+   "return_pct": 190.19,
+   "pf": 1.608,
+   "win_rate": 61.1,
+   "max_closed_dd": 869.64,
+   "max_sampled_equity_dd": 1320.13,
+   "worst_day": 294.89,
+   "breached": false,
+   "ending_balance": 29018.69,
+   "positive_months": "22/25",
+   "months": {
+    "2024-10": -272.68,
+    "2024-11": 1315.08,
+    "2024-12": 1736.28,
+    "2025-01": 343.33,
+    "2025-02": 968.0,
+    "2025-03": 581.22,
+    "2025-04": -417.66,
+    "2025-05": 273.95,
+    "2025-06": 989.97,
+    "2025-07": 255.2,
+    "2025-08": 1265.34,
+    "2025-09": 1757.76,
+    "2025-10": 1776.62,
+    "2025-11": 764.21,
+    "2025-12": 462.74,
+    "2026-01": 820.83,
+    "2026-02": 229.2,
+    "2026-03": 1360.65,
+    "2026-04": 2521.01,
+    "2026-05": 606.58,
+    "2026-06": 485.61,
+    "2026-07": 475.32,
+    "2026-08": 97.31,
+    "2026-09": 771.37,
+    "2026-10": -148.55
+   },
+   "by_ea": {
+    "nasdaq-5m-candle-momentum": {
+     "trades": 177,
+     "net": 5036.74
+    },
+    "dmc-current-xau": {
+     "trades": 165,
+     "net": 3054.46
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 133,
+     "net": 1975.51
+    },
+    "gold-overnight-value-area": {
+     "trades": 193,
+     "net": 1453.71
+    },
+    "ema3": {
+     "trades": 53,
+     "net": 1189.25
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 48,
+     "net": 1065.85
+    },
+    "3-way-gold#930930101": {
+     "trades": 52,
+     "net": 825.22
+    },
+    "us100-month-end-flow": {
+     "trades": 26,
+     "net": 694.6
+    },
+    "xau-rsi-vwap": {
+     "trades": 76,
+     "net": 649.03
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 17,
+     "net": 645.36
+    },
+    "3-way-gold#930930100": {
+     "trades": 33,
+     "net": 632.86
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 5,
+     "net": 606.37
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 25,
+     "net": 514.51
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 11,
+     "net": 314.81
+    },
+    "3-way-gold#930930102": {
+     "trades": 6,
+     "net": 221.5
+    },
+    "us100-selective-orb-v3": {
+     "trades": 2,
+     "net": 98.53
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 10,
+     "net": 40.38
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 816,
+    "entry_reconciliation3s": 89,
+    "same_symbol_initial_risk150": 14,
+    "aggregate_initial_risk225": 4,
+    "proxy_shared_margin": 1,
+    "minimum_lot_over50_or_source_request": 94,
+    "daily_3_closed_loss_limit": 2
+   }
+  },
+  "BP15|oos|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 1029,
+   "per_month": 42.9,
+   "per_day": 1.975,
+   "net": 16573.57,
+   "return_pct": 165.74,
+   "pf": 1.517,
+   "win_rate": 60.4,
+   "max_closed_dd": 910.47,
+   "max_sampled_equity_dd": 1361.67,
+   "worst_day": 325.52,
+   "breached": false,
+   "ending_balance": 26573.57,
+   "positive_months": "22/25",
+   "months": {
+    "2024-10": -356.34,
+    "2024-11": 785.71,
+    "2024-12": 1684.31,
+    "2025-01": 201.69,
+    "2025-02": 870.1,
+    "2025-03": 485.89,
+    "2025-04": -477.07,
+    "2025-05": 204.0,
+    "2025-06": 902.02,
+    "2025-07": 159.2,
+    "2025-08": 1156.15,
+    "2025-09": 1655.47,
+    "2025-10": 1752.77,
+    "2025-11": 690.61,
+    "2025-12": 373.25,
+    "2026-01": 727.26,
+    "2026-02": 144.69,
+    "2026-03": 1272.81,
+    "2026-04": 2423.85,
+    "2026-05": 505.82,
+    "2026-06": 407.84,
+    "2026-07": 355.32,
+    "2026-08": 26.16,
+    "2026-09": 785.99,
+    "2026-10": -163.93
+   },
+   "by_ea": {
+    "nasdaq-5m-candle-momentum": {
+     "trades": 175,
+     "net": 4139.94
+    },
+    "dmc-current-xau": {
+     "trades": 166,
+     "net": 2717.78
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 133,
+     "net": 1498.75
+    },
+    "gold-overnight-value-area": {
+     "trades": 195,
+     "net": 1207.15
+    },
+    "ema3": {
+     "trades": 52,
+     "net": 1119.16
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 47,
+     "net": 1088.17
+    },
+    "3-way-gold#930930101": {
+     "trades": 51,
+     "net": 805.87
+    },
+    "us100-month-end-flow": {
+     "trades": 26,
+     "net": 630.74
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 17,
+     "net": 610.68
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 5,
+     "net": 581.42
+    },
+    "3-way-gold#930930100": {
+     "trades": 33,
+     "net": 570.2
+    },
+    "xau-rsi-vwap": {
+     "trades": 75,
+     "net": 520.01
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 25,
+     "net": 460.1
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 11,
+     "net": 296.81
+    },
+    "3-way-gold#930930102": {
+     "trades": 6,
+     "net": 211.87
+    },
+    "us100-selective-orb-v3": {
+     "trades": 2,
+     "net": 95.53
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 10,
+     "net": 19.39
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 809,
+    "entry_reconciliation3s": 89,
+    "same_symbol_initial_risk150": 14,
+    "soft_total_buffer9200": 7,
+    "aggregate_initial_risk225": 4,
+    "daily_300_latches": 1,
+    "daily_300_latch": 3,
+    "proxy_shared_margin": 1,
+    "minimum_lot_over50_or_source_request": 94,
+    "daily_3_closed_loss_limit": 2
+   }
+  },
+  "BP15|all|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 50,
+   "per_month": 0.83,
+   "per_day": 0.038,
+   "net": -763.48,
+   "return_pct": -7.63,
+   "pf": 0.613,
+   "win_rate": 44.0,
+   "max_closed_dd": 763.48,
+   "max_sampled_equity_dd": 889.45,
+   "worst_day": 201.8,
+   "breached": false,
+   "ending_balance": 9236.52,
+   "positive_months": "1/5",
+   "months": {
+    "2021-10": -443.44,
+    "2021-11": 146.99,
+    "2021-12": -292.6,
+    "2022-01": -98.3,
+    "2022-02": -76.13
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 12,
+     "net": 261.11
+    },
+    "3-way-gold#930930101": {
+     "trades": 4,
+     "net": 131.61
+    },
+    "3-way-gold#930930100": {
+     "trades": 2,
+     "net": 61.82
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 2,
+     "net": 42.11
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 1,
+     "net": 36.56
+    },
+    "dmc-current-xau": {
+     "trades": 3,
+     "net": -26.79
+    },
+    "3-way-gold#930930102": {
+     "trades": 2,
+     "net": -27.39
+    },
+    "gold-overnight-value-area": {
+     "trades": 9,
+     "net": -79.59
+    },
+    "ema3": {
+     "trades": 3,
+     "net": -281.09
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 6,
+     "net": -440.82
+    },
+    "xau-rsi-vwap": {
+     "trades": 6,
+     "net": -441.01
+    }
+   },
+   "blocked": {
+    "entry_reconciliation3s": 4,
+    "soft_daily_reserve300": 101,
+    "soft_total_buffer9200": 4728,
+    "minimum_lot_over50_or_source_request": 94
+   }
+  },
+  "BP15|all|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 37,
+   "per_month": 0.62,
+   "per_day": 0.028,
+   "net": -771.73,
+   "return_pct": -7.72,
+   "pf": 0.499,
+   "win_rate": 40.5,
+   "max_closed_dd": 771.73,
+   "max_sampled_equity_dd": 797.33,
+   "worst_day": 223.93,
+   "breached": false,
+   "ending_balance": 9228.27,
+   "positive_months": "1/5",
+   "months": {
+    "2021-10": -595.35,
+    "2021-11": 99.82,
+    "2021-12": -100.97,
+    "2022-01": -98.7,
+    "2022-02": -76.53
+   },
+   "by_ea": {
+    "3-way-gold#930930101": {
+     "trades": 3,
+     "net": 216.9
+    },
+    "3-way-gold#930930100": {
+     "trades": 2,
+     "net": 57.53
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 1,
+     "net": 18.7
+    },
+    "dmc-current-xau": {
+     "trades": 2,
+     "net": 17.89
+    },
+    "3-way-gold#930930102": {
+     "trades": 1,
+     "net": -2.58
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 7,
+     "net": -83.7
+    },
+    "gold-overnight-value-area": {
+     "trades": 9,
+     "net": -96.17
+    },
+    "xau-rsi-vwap": {
+     "trades": 3,
+     "net": -151.23
+    },
+    "ema3": {
+     "trades": 3,
+     "net": -301.31
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 6,
+     "net": -447.76
+    }
+   },
+   "blocked": {
+    "entry_reconciliation3s": 5,
+    "soft_daily_reserve300": 50,
+    "soft_total_buffer9200": 4791,
+    "minimum_lot_over50_or_source_request": 94
+   }
+  }
+ },
+ "bootstrap": {
+  "BP9|recorded_exness": {
+   "n": 2000,
+   "pass_both_180": 0.555,
+   "funded_90": 0.389,
+   "funded_60": 0.214,
+   "phase1_60": 0.5395,
+   "breach": 0.0,
+   "stalled_buffer": 0.534,
+   "median_days_both": 64.0,
+   "median_days_funded": 71.0,
+   "p25_funded": 50,
+   "p75_funded": 96,
+   "eqdd_p50": 847.0,
+   "eqdd_p95": 1459.7,
+   "eqdd_max": 1860.9,
+   "day_p95": 247.8,
+   "day_max": 270.1,
+   "median_trades": 69.0
+  },
+  "BP9|fixed_cost_stress": {
+   "n": 2000,
+   "pass_both_180": 0.426,
+   "funded_90": 0.298,
+   "funded_60": 0.1635,
+   "phase1_60": 0.443,
+   "breach": 0.0,
+   "stalled_buffer": 0.6505,
+   "median_days_both": 65.0,
+   "median_days_funded": 72.0,
+   "p25_funded": 50,
+   "p75_funded": 99,
+   "eqdd_p50": 903.4,
+   "eqdd_p95": 1549.5,
+   "eqdd_max": 1897.4,
+   "day_p95": 256.0,
+   "day_max": 271.5,
+   "median_trades": 67.0
+  },
+  "BP15|recorded_exness": {
+   "n": 2000,
+   "pass_both_180": 0.6105,
+   "funded_90": 0.303,
+   "funded_60": 0.149,
+   "phase1_60": 0.443,
+   "breach": 0.0,
+   "stalled_buffer": 0.488,
+   "median_days_both": 85,
+   "median_days_funded": 92,
+   "p25_funded": 61,
+   "p75_funded": 129,
+   "eqdd_p50": 769.9,
+   "eqdd_p95": 1287.1,
+   "eqdd_max": 1902.2,
+   "day_p95": 271.3,
+   "day_max": 374.8,
+   "median_trades": 93.0
+  },
+  "BP15|fixed_cost_stress": {
+   "n": 2000,
+   "pass_both_180": 0.4825,
+   "funded_90": 0.2365,
+   "funded_60": 0.119,
+   "phase1_60": 0.3725,
+   "breach": 0.0,
+   "stalled_buffer": 0.5905,
+   "median_days_both": 85,
+   "median_days_funded": 92,
+   "p25_funded": 61,
+   "p75_funded": 128,
+   "eqdd_p50": 824.7,
+   "eqdd_p95": 1396.5,
+   "eqdd_max": 2083.7,
+   "day_p95": 275.8,
+   "day_max": 378.0,
+   "median_trades": 91.5
+  }
+ },
+ "parity_vs_retest": {
+  "oos_challenge": true,
+  "continuous_oos": true,
+  "monte_carlo": true
+ },
+ "continuous_nobuffer_diagnostic": {
+  "BP9|dev|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 15,
+   "per_month": 0.63,
+   "per_day": 0.029,
+   "net": -1010.8,
+   "return_pct": -10.11,
+   "pf": 0.062,
+   "win_rate": 13.3,
+   "max_closed_dd": 1010.8,
+   "max_sampled_equity_dd": 1015.14,
+   "worst_day": 206.95,
+   "breached": true,
+   "ending_balance": 8989.2,
+   "positive_months": "0/1",
+   "months": {
+    "2021-10": -1010.8
+   },
+   "by_ea": {
+    "xau-rsi-vwap": {
+     "trades": 1,
+     "net": -95.14
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 7,
+     "net": -380.71
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 7,
+     "net": -534.95
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 3
+   }
+  },
+  "BP9|dev|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 14,
+   "per_month": 0.58,
+   "per_day": 0.027,
+   "net": -981.84,
+   "return_pct": -9.82,
+   "pf": 0.056,
+   "win_rate": 14.3,
+   "max_closed_dd": 988.38,
+   "max_sampled_equity_dd": 1034.04,
+   "worst_day": 226.24,
+   "breached": true,
+   "ending_balance": 9018.16,
+   "positive_months": "0/1",
+   "months": {
+    "2021-10": -981.84
+   },
+   "by_ea": {
+    "xau-rsi-vwap": {
+     "trades": 1,
+     "net": -97.74
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 6,
+     "net": -327.87
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 7,
+     "net": -556.23
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 2
+   }
+  },
+  "BP9|val|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 437,
+   "per_month": 36.34,
+   "per_day": 1.674,
+   "net": 4854.19,
+   "return_pct": 48.54,
+   "pf": 1.261,
+   "win_rate": 51.7,
+   "max_closed_dd": 2708.14,
+   "max_sampled_equity_dd": 2763.79,
+   "worst_day": 223.07,
+   "breached": false,
+   "ending_balance": 14854.19,
+   "positive_months": "8/13",
+   "months": {
+    "2023-10": -184.62,
+    "2023-11": 1010.63,
+    "2023-12": 268.67,
+    "2024-01": 615.88,
+    "2024-02": -283.88,
+    "2024-03": -158.96,
+    "2024-04": 1298.51,
+    "2024-05": 1298.37,
+    "2024-06": 464.84,
+    "2024-07": 1779.48,
+    "2024-08": -1253.81,
+    "2024-09": -669.18,
+    "2024-10": 668.26
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 89,
+     "net": 3486.68
+    },
+    "xau-rsi-vwap": {
+     "trades": 33,
+     "net": 1104.78
+    },
+    "us100-month-end-flow": {
+     "trades": 21,
+     "net": 246.4
+    },
+    "us100-selective-orb-v3": {
+     "trades": 6,
+     "net": 145.51
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 5,
+     "net": 95.42
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 12,
+     "net": 90.45
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 33,
+     "net": -23.51
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 16,
+     "net": -42.22
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 222,
+     "net": -249.32
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 51,
+    "entry_reconciliation3s": 1
+   }
+  },
+  "BP9|val|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 437,
+   "per_month": 36.34,
+   "per_day": 1.674,
+   "net": 3006.54,
+   "return_pct": 30.07,
+   "pf": 1.156,
+   "win_rate": 50.8,
+   "max_closed_dd": 2931.24,
+   "max_sampled_equity_dd": 2981.46,
+   "worst_day": 237.35,
+   "breached": false,
+   "ending_balance": 13006.54,
+   "positive_months": "8/13",
+   "months": {
+    "2023-10": -323.68,
+    "2023-11": 792.02,
+    "2023-12": 114.64,
+    "2024-01": 397.85,
+    "2024-02": -450.28,
+    "2024-03": -272.74,
+    "2024-04": 1155.22,
+    "2024-05": 1096.36,
+    "2024-06": 316.75,
+    "2024-07": 1684.29,
+    "2024-08": -1377.13,
+    "2024-09": -766.88,
+    "2024-10": 640.12
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 89,
+     "net": 3085.6
+    },
+    "xau-rsi-vwap": {
+     "trades": 33,
+     "net": 999.53
+    },
+    "us100-month-end-flow": {
+     "trades": 21,
+     "net": 137.67
+    },
+    "us100-selective-orb-v3": {
+     "trades": 6,
+     "net": 131.47
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 5,
+     "net": 75.65
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 12,
+     "net": 53.04
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 33,
+     "net": -116.93
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 16,
+     "net": -149.41
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 222,
+     "net": -1210.08
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 51,
+    "entry_reconciliation3s": 1
+   }
+  },
+  "BP9|oos|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 908,
+   "per_month": 37.86,
+   "per_day": 1.743,
+   "net": 17079.75,
+   "return_pct": 170.8,
+   "pf": 1.517,
+   "win_rate": 56.8,
+   "max_closed_dd": 1291.81,
+   "max_sampled_equity_dd": 1374.55,
+   "worst_day": 256.71,
+   "breached": false,
+   "ending_balance": 27079.42,
+   "positive_months": "21/25",
+   "months": {
+    "2024-10": -215.07,
+    "2024-11": 1564.55,
+    "2024-12": 1717.17,
+    "2025-01": 362.04,
+    "2025-02": 761.72,
+    "2025-03": -367.4,
+    "2025-04": 3402.68,
+    "2025-05": 864.37,
+    "2025-06": -143.03,
+    "2025-07": 551.64,
+    "2025-08": 1124.8,
+    "2025-09": 793.07,
+    "2025-10": 1161.98,
+    "2025-11": 1324.01,
+    "2025-12": 480.13,
+    "2026-01": -284.37,
+    "2026-02": 768.42,
+    "2026-03": 549.28,
+    "2026-04": 1175.37,
+    "2026-05": 522.47,
+    "2026-06": 144.76,
+    "2026-07": 164.44,
+    "2026-08": 542.67,
+    "2026-09": 19.95,
+    "2026-10": 94.1
+   },
+   "by_ea": {
+    "nasdaq-5m-candle-momentum": {
+     "trades": 425,
+     "net": 10301.01
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 181,
+     "net": 2655.97
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 94,
+     "net": 1728.53
+    },
+    "us100-month-end-flow": {
+     "trades": 44,
+     "net": 1030.32
+    },
+    "xau-rsi-vwap": {
+     "trades": 89,
+     "net": 725.18
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 39,
+     "net": 320.16
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 16,
+     "net": 232.35
+    },
+    "us100-selective-orb-v3": {
+     "trades": 2,
+     "net": 98.53
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 18,
+     "net": -12.3
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 155,
+    "entry_reconciliation3s": 2,
+    "minimum_lot_over50_or_source_request": 5
+   }
+  },
+  "BP9|oos|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 906,
+   "per_month": 37.78,
+   "per_day": 1.739,
+   "net": 14553.88,
+   "return_pct": 145.54,
+   "pf": 1.428,
+   "win_rate": 56.5,
+   "max_closed_dd": 1384.1,
+   "max_sampled_equity_dd": 1468.97,
+   "worst_day": 271.22,
+   "breached": false,
+   "ending_balance": 24553.02,
+   "positive_months": "20/25",
+   "months": {
+    "2024-10": -286.67,
+    "2024-11": 1408.3,
+    "2024-12": 1579.45,
+    "2025-01": 212.29,
+    "2025-02": 649.53,
+    "2025-03": -459.32,
+    "2025-04": 3320.69,
+    "2025-05": 782.98,
+    "2025-06": -264.64,
+    "2025-07": 404.98,
+    "2025-08": 1002.07,
+    "2025-09": 688.51,
+    "2025-10": 1042.28,
+    "2025-11": 1217.47,
+    "2025-12": 354.79,
+    "2026-01": -373.29,
+    "2026-02": 681.13,
+    "2026-03": 459.7,
+    "2026-04": 1068.84,
+    "2026-05": 520.4,
+    "2026-06": 59.78,
+    "2026-07": 61.33,
+    "2026-08": 459.7,
+    "2026-09": -114.96,
+    "2026-10": 78.54
+   },
+   "by_ea": {
+    "nasdaq-5m-candle-momentum": {
+     "trades": 425,
+     "net": 8966.19
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 181,
+     "net": 1990.87
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 93,
+     "net": 1651.12
+    },
+    "us100-month-end-flow": {
+     "trades": 44,
+     "net": 915.01
+    },
+    "xau-rsi-vwap": {
+     "trades": 89,
+     "net": 619.55
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 16,
+     "net": 199.36
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 38,
+     "net": 169.29
+    },
+    "us100-selective-orb-v3": {
+     "trades": 2,
+     "net": 95.53
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 18,
+     "net": -53.04
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 157,
+    "entry_reconciliation3s": 2,
+    "minimum_lot_over50_or_source_request": 5
+   }
+  },
+  "BP9|all|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 15,
+   "per_month": 0.25,
+   "per_day": 0.012,
+   "net": -1010.8,
+   "return_pct": -10.11,
+   "pf": 0.062,
+   "win_rate": 13.3,
+   "max_closed_dd": 1010.8,
+   "max_sampled_equity_dd": 1015.14,
+   "worst_day": 206.95,
+   "breached": true,
+   "ending_balance": 8989.2,
+   "positive_months": "0/1",
+   "months": {
+    "2021-10": -1010.8
+   },
+   "by_ea": {
+    "xau-rsi-vwap": {
+     "trades": 1,
+     "net": -95.14
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 7,
+     "net": -380.71
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 7,
+     "net": -534.95
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 3,
+    "minimum_lot_over50_or_source_request": 5
+   }
+  },
+  "BP9|all|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 14,
+   "per_month": 0.23,
+   "per_day": 0.011,
+   "net": -981.84,
+   "return_pct": -9.82,
+   "pf": 0.056,
+   "win_rate": 14.3,
+   "max_closed_dd": 988.38,
+   "max_sampled_equity_dd": 1034.04,
+   "worst_day": 226.24,
+   "breached": true,
+   "ending_balance": 9018.16,
+   "positive_months": "0/1",
+   "months": {
+    "2021-10": -981.84
+   },
+   "by_ea": {
+    "xau-rsi-vwap": {
+     "trades": 1,
+     "net": -97.74
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 6,
+     "net": -327.87
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 7,
+     "net": -556.23
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 2,
+    "minimum_lot_over50_or_source_request": 5
+   }
+  },
+  "BP15|dev|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 80,
+   "per_month": 3.34,
+   "per_day": 0.154,
+   "net": -882.46,
+   "return_pct": -8.82,
+   "pf": 0.701,
+   "win_rate": 47.5,
+   "max_closed_dd": 999.35,
+   "max_sampled_equity_dd": 1152.69,
+   "worst_day": 201.8,
+   "breached": true,
+   "ending_balance": 9117.54,
+   "positive_months": "2/5",
+   "months": {
+    "2021-10": -443.44,
+    "2021-11": 146.99,
+    "2021-12": -265.28,
+    "2022-01": -330.32,
+    "2022-02": 9.59
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 20,
+     "net": 544.61
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 2,
+     "net": 94.23
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 3,
+     "net": 78.35
+    },
+    "3-way-gold#930930101": {
+     "trades": 5,
+     "net": 39.91
+    },
+    "3-way-gold#930930102": {
+     "trades": 3,
+     "net": -37.66
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 2,
+     "net": -53.68
+    },
+    "ema3": {
+     "trades": 3,
+     "net": -88.07
+    },
+    "3-way-gold#930930100": {
+     "trades": 7,
+     "net": -107.02
+    },
+    "dmc-current-xau": {
+     "trades": 4,
+     "net": -117.07
+    },
+    "gold-overnight-value-area": {
+     "trades": 13,
+     "net": -154.83
+    },
+    "xau-rsi-vwap": {
+     "trades": 8,
+     "net": -496.91
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 10,
+     "net": -584.32
+    }
+   },
+   "blocked": {
+    "entry_reconciliation3s": 4,
+    "soft_daily_reserve300": 257
+   }
+  },
+  "BP15|dev|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 58,
+   "per_month": 2.42,
+   "per_day": 0.111,
+   "net": -1100.56,
+   "return_pct": -11.01,
+   "pf": 0.521,
+   "win_rate": 39.7,
+   "max_closed_dd": 1100.56,
+   "max_sampled_equity_dd": 1126.16,
+   "worst_day": 223.93,
+   "breached": true,
+   "ending_balance": 8899.44,
+   "positive_months": "1/4",
+   "months": {
+    "2021-10": -608.42,
+    "2021-11": 22.48,
+    "2021-12": -315.53,
+    "2022-01": -199.09
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 16,
+     "net": 147.07
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 1,
+     "net": 18.7
+    },
+    "3-way-gold#930930101": {
+     "trades": 5,
+     "net": 14.96
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 2,
+     "net": 4.87
+    },
+    "3-way-gold#930930100": {
+     "trades": 3,
+     "net": -43.69
+    },
+    "3-way-gold#930930102": {
+     "trades": 3,
+     "net": -45.24
+    },
+    "dmc-current-xau": {
+     "trades": 3,
+     "net": -73.18
+    },
+    "gold-overnight-value-area": {
+     "trades": 10,
+     "net": -89.09
+    },
+    "ema3": {
+     "trades": 2,
+     "net": -224.78
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 7,
+     "net": -351.47
+    },
+    "xau-rsi-vwap": {
+     "trades": 6,
+     "net": -458.71
+    }
+   },
+   "blocked": {
+    "entry_reconciliation3s": 4,
+    "soft_daily_reserve300": 172
+   }
+  },
+  "BP15|val|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 319,
+   "per_month": 26.53,
+   "per_day": 1.222,
+   "net": 5658.58,
+   "return_pct": 56.59,
+   "pf": 1.548,
+   "win_rate": 59.9,
+   "max_closed_dd": 1072.86,
+   "max_sampled_equity_dd": 1193.55,
+   "worst_day": 215.02,
+   "breached": false,
+   "ending_balance": 15658.19,
+   "positive_months": "8/13",
+   "months": {
+    "2023-10": 535.21,
+    "2023-11": 955.42,
+    "2023-12": -90.55,
+    "2024-01": -451.51,
+    "2024-02": -194.59,
+    "2024-03": 567.49,
+    "2024-04": 697.53,
+    "2024-05": 1678.13,
+    "2024-06": -305.55,
+    "2024-07": 2107.75,
+    "2024-08": -262.36,
+    "2024-09": 375.29,
+    "2024-10": 46.32
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 39,
+     "net": 2447.57
+    },
+    "3-way-gold#930930101": {
+     "trades": 24,
+     "net": 867.09
+    },
+    "xau-rsi-vwap": {
+     "trades": 20,
+     "net": 793.38
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 38,
+     "net": 590.76
+    },
+    "dmc-current-xau": {
+     "trades": 39,
+     "net": 341.06
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 6,
+     "net": 251.44
+    },
+    "us100-month-end-flow": {
+     "trades": 9,
+     "net": 232.0
+    },
+    "gold-overnight-value-area": {
+     "trades": 65,
+     "net": 168.48
+    },
+    "us100-selective-orb-v3": {
+     "trades": 3,
+     "net": 110.35
+    },
+    "ema3": {
+     "trades": 22,
+     "net": 89.82
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 1,
+     "net": 49.44
+    },
+    "3-way-gold#930930100": {
+     "trades": 20,
+     "net": 4.56
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 6,
+     "net": -14.06
+    },
+    "3-way-gold#930930102": {
+     "trades": 5,
+     "net": -15.49
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 5,
+     "net": -54.21
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 6,
+     "net": -76.42
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 11,
+     "net": -127.19
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 596,
+    "entry_reconciliation3s": 23,
+    "aggregate_initial_risk225": 1
+   }
+  },
+  "BP15|val|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 317,
+   "per_month": 26.36,
+   "per_day": 1.215,
+   "net": 4534.88,
+   "return_pct": 45.35,
+   "pf": 1.429,
+   "win_rate": 57.4,
+   "max_closed_dd": 1316.13,
+   "max_sampled_equity_dd": 1422.15,
+   "worst_day": 224.16,
+   "breached": false,
+   "ending_balance": 14533.79,
+   "positive_months": "8/13",
+   "months": {
+    "2023-10": 426.97,
+    "2023-11": 766.42,
+    "2023-12": -149.15,
+    "2024-01": -606.82,
+    "2024-02": -290.66,
+    "2024-03": 461.02,
+    "2024-04": 581.98,
+    "2024-05": 1553.6,
+    "2024-06": -186.17,
+    "2024-07": 2005.5,
+    "2024-08": -352.5,
+    "2024-09": 281.38,
+    "2024-10": 43.31
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 38,
+     "net": 2377.74
+    },
+    "3-way-gold#930930101": {
+     "trades": 24,
+     "net": 792.02
+    },
+    "xau-rsi-vwap": {
+     "trades": 20,
+     "net": 731.47
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 38,
+     "net": 385.6
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 6,
+     "net": 215.07
+    },
+    "us100-month-end-flow": {
+     "trades": 9,
+     "net": 197.52
+    },
+    "us100-selective-orb-v3": {
+     "trades": 3,
+     "net": 104.37
+    },
+    "dmc-current-xau": {
+     "trades": 39,
+     "net": 67.26
+    },
+    "gold-overnight-value-area": {
+     "trades": 64,
+     "net": 54.1
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 1,
+     "net": 46.62
+    },
+    "3-way-gold#930930100": {
+     "trades": 19,
+     "net": 36.13
+    },
+    "3-way-gold#930930102": {
+     "trades": 5,
+     "net": -23.07
+    },
+    "ema3": {
+     "trades": 22,
+     "net": -45.3
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 7,
+     "net": -60.11
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 5,
+     "net": -66.22
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 6,
+     "net": -118.21
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 11,
+     "net": -160.11
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 599,
+    "entry_reconciliation3s": 22,
+    "aggregate_initial_risk225": 1
+   }
+  },
+  "BP15|oos|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 1032,
+   "per_month": 43.03,
+   "per_day": 1.981,
+   "net": 19018.69,
+   "return_pct": 190.19,
+   "pf": 1.608,
+   "win_rate": 61.1,
+   "max_closed_dd": 869.64,
+   "max_sampled_equity_dd": 1320.13,
+   "worst_day": 294.89,
+   "breached": false,
+   "ending_balance": 29018.69,
+   "positive_months": "22/25",
+   "months": {
+    "2024-10": -272.68,
+    "2024-11": 1315.08,
+    "2024-12": 1736.28,
+    "2025-01": 343.33,
+    "2025-02": 968.0,
+    "2025-03": 581.22,
+    "2025-04": -417.66,
+    "2025-05": 273.95,
+    "2025-06": 989.97,
+    "2025-07": 255.2,
+    "2025-08": 1265.34,
+    "2025-09": 1757.76,
+    "2025-10": 1776.62,
+    "2025-11": 764.21,
+    "2025-12": 462.74,
+    "2026-01": 820.83,
+    "2026-02": 229.2,
+    "2026-03": 1360.65,
+    "2026-04": 2521.01,
+    "2026-05": 606.58,
+    "2026-06": 485.61,
+    "2026-07": 475.32,
+    "2026-08": 97.31,
+    "2026-09": 771.37,
+    "2026-10": -148.55
+   },
+   "by_ea": {
+    "nasdaq-5m-candle-momentum": {
+     "trades": 177,
+     "net": 5036.74
+    },
+    "dmc-current-xau": {
+     "trades": 165,
+     "net": 3054.46
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 133,
+     "net": 1975.51
+    },
+    "gold-overnight-value-area": {
+     "trades": 193,
+     "net": 1453.71
+    },
+    "ema3": {
+     "trades": 53,
+     "net": 1189.25
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 48,
+     "net": 1065.85
+    },
+    "3-way-gold#930930101": {
+     "trades": 52,
+     "net": 825.22
+    },
+    "us100-month-end-flow": {
+     "trades": 26,
+     "net": 694.6
+    },
+    "xau-rsi-vwap": {
+     "trades": 76,
+     "net": 649.03
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 17,
+     "net": 645.36
+    },
+    "3-way-gold#930930100": {
+     "trades": 33,
+     "net": 632.86
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 5,
+     "net": 606.37
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 25,
+     "net": 514.51
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 11,
+     "net": 314.81
+    },
+    "3-way-gold#930930102": {
+     "trades": 6,
+     "net": 221.5
+    },
+    "us100-selective-orb-v3": {
+     "trades": 2,
+     "net": 98.53
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 10,
+     "net": 40.38
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 816,
+    "entry_reconciliation3s": 89,
+    "same_symbol_initial_risk150": 14,
+    "aggregate_initial_risk225": 4,
+    "proxy_shared_margin": 1,
+    "minimum_lot_over50_or_source_request": 94,
+    "daily_3_closed_loss_limit": 2
+   }
+  },
+  "BP15|oos|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 1031,
+   "per_month": 42.99,
+   "per_day": 1.979,
+   "net": 16868.18,
+   "return_pct": 168.68,
+   "pf": 1.526,
+   "win_rate": 60.5,
+   "max_closed_dd": 910.47,
+   "max_sampled_equity_dd": 1361.67,
+   "worst_day": 325.52,
+   "breached": false,
+   "ending_balance": 26868.18,
+   "positive_months": "22/25",
+   "months": {
+    "2024-10": -356.34,
+    "2024-11": 1080.32,
+    "2024-12": 1684.31,
+    "2025-01": 201.69,
+    "2025-02": 870.1,
+    "2025-03": 485.89,
+    "2025-04": -477.07,
+    "2025-05": 204.0,
+    "2025-06": 902.02,
+    "2025-07": 159.2,
+    "2025-08": 1156.15,
+    "2025-09": 1655.47,
+    "2025-10": 1752.77,
+    "2025-11": 690.61,
+    "2025-12": 373.25,
+    "2026-01": 727.26,
+    "2026-02": 144.69,
+    "2026-03": 1272.81,
+    "2026-04": 2423.85,
+    "2026-05": 505.82,
+    "2026-06": 407.84,
+    "2026-07": 355.32,
+    "2026-08": 26.16,
+    "2026-09": 785.99,
+    "2026-10": -163.93
+   },
+   "by_ea": {
+    "nasdaq-5m-candle-momentum": {
+     "trades": 176,
+     "net": 4391.77
+    },
+    "dmc-current-xau": {
+     "trades": 166,
+     "net": 2717.78
+    },
+    "usdjpy-london-open-momentum": {
+     "trades": 133,
+     "net": 1498.75
+    },
+    "gold-overnight-value-area": {
+     "trades": 195,
+     "net": 1207.15
+    },
+    "ema3": {
+     "trades": 52,
+     "net": 1119.16
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 47,
+     "net": 1088.17
+    },
+    "3-way-gold#930930101": {
+     "trades": 51,
+     "net": 805.87
+    },
+    "us100-month-end-flow": {
+     "trades": 26,
+     "net": 630.74
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 17,
+     "net": 610.68
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 5,
+     "net": 581.42
+    },
+    "3-way-gold#930930100": {
+     "trades": 33,
+     "net": 570.2
+    },
+    "xau-rsi-vwap": {
+     "trades": 76,
+     "net": 562.79
+    },
+    "xau-orb-london-ny-overlap-m30": {
+     "trades": 25,
+     "net": 460.1
+    },
+    "xau-orb-new-york-m30": {
+     "trades": 11,
+     "net": 296.81
+    },
+    "3-way-gold#930930102": {
+     "trades": 6,
+     "net": 211.87
+    },
+    "us100-selective-orb-v3": {
+     "trades": 2,
+     "net": 95.53
+    },
+    "us100-orb-new-york-m30": {
+     "trades": 10,
+     "net": 19.39
+    }
+   },
+   "blocked": {
+    "soft_daily_reserve300": 814,
+    "entry_reconciliation3s": 89,
+    "same_symbol_initial_risk150": 14,
+    "aggregate_initial_risk225": 4,
+    "daily_300_latches": 1,
+    "daily_300_latch": 3,
+    "proxy_shared_margin": 1,
+    "minimum_lot_over50_or_source_request": 94,
+    "daily_3_closed_loss_limit": 2
+   }
+  },
+  "BP15|all|recorded_exness": {
+   "cost": "recorded_exness",
+   "trades": 80,
+   "per_month": 1.33,
+   "per_day": 0.061,
+   "net": -882.46,
+   "return_pct": -8.82,
+   "pf": 0.701,
+   "win_rate": 47.5,
+   "max_closed_dd": 999.35,
+   "max_sampled_equity_dd": 1152.69,
+   "worst_day": 201.8,
+   "breached": true,
+   "ending_balance": 9117.54,
+   "positive_months": "2/5",
+   "months": {
+    "2021-10": -443.44,
+    "2021-11": 146.99,
+    "2021-12": -265.28,
+    "2022-01": -330.32,
+    "2022-02": 9.59
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 20,
+     "net": 544.61
+    },
+    "us100-h1-orb-13utc": {
+     "trades": 2,
+     "net": 94.23
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 3,
+     "net": 78.35
+    },
+    "3-way-gold#930930101": {
+     "trades": 5,
+     "net": 39.91
+    },
+    "3-way-gold#930930102": {
+     "trades": 3,
+     "net": -37.66
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 2,
+     "net": -53.68
+    },
+    "ema3": {
+     "trades": 3,
+     "net": -88.07
+    },
+    "3-way-gold#930930100": {
+     "trades": 7,
+     "net": -107.02
+    },
+    "dmc-current-xau": {
+     "trades": 4,
+     "net": -117.07
+    },
+    "gold-overnight-value-area": {
+     "trades": 13,
+     "net": -154.83
+    },
+    "xau-rsi-vwap": {
+     "trades": 8,
+     "net": -496.91
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 10,
+     "net": -584.32
+    }
+   },
+   "blocked": {
+    "entry_reconciliation3s": 4,
+    "soft_daily_reserve300": 257,
+    "minimum_lot_over50_or_source_request": 94
+   }
+  },
+  "BP15|all|fixed_cost_stress": {
+   "cost": "fixed_cost_stress",
+   "trades": 58,
+   "per_month": 0.97,
+   "per_day": 0.045,
+   "net": -1100.56,
+   "return_pct": -11.01,
+   "pf": 0.521,
+   "win_rate": 39.7,
+   "max_closed_dd": 1100.56,
+   "max_sampled_equity_dd": 1126.16,
+   "worst_day": 223.93,
+   "breached": true,
+   "ending_balance": 8899.44,
+   "positive_months": "1/4",
+   "months": {
+    "2021-10": -608.42,
+    "2021-11": 22.48,
+    "2021-12": -315.53,
+    "2022-01": -199.09
+   },
+   "by_ea": {
+    "usdjpy-london-open-momentum": {
+     "trades": 16,
+     "net": 147.07
+    },
+    "dmc-fresh-reaction-xau": {
+     "trades": 1,
+     "net": 18.7
+    },
+    "3-way-gold#930930101": {
+     "trades": 5,
+     "net": 14.96
+    },
+    "dmc-fresh-reaction-us100": {
+     "trades": 2,
+     "net": 4.87
+    },
+    "3-way-gold#930930100": {
+     "trades": 3,
+     "net": -43.69
+    },
+    "3-way-gold#930930102": {
+     "trades": 3,
+     "net": -45.24
+    },
+    "dmc-current-xau": {
+     "trades": 3,
+     "net": -73.18
+    },
+    "gold-overnight-value-area": {
+     "trades": 10,
+     "net": -89.09
+    },
+    "ema3": {
+     "trades": 2,
+     "net": -224.78
+    },
+    "nasdaq-5m-candle-momentum": {
+     "trades": 7,
+     "net": -351.47
+    },
+    "xau-rsi-vwap": {
+     "trades": 6,
+     "net": -458.71
+    }
+   },
+   "blocked": {
+    "entry_reconciliation3s": 4,
+    "soft_daily_reserve300": 172,
+    "minimum_lot_over50_or_source_request": 94
+   }
+  }
+ }
+}

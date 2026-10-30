@@ -678,7 +678,21 @@ of what is currently attached to a live terminal.
   Reaction wrapper + catalog preset 21, converted like the FTMO US100 SET). Best Prop 9 guard limits unchanged (1% / 4.5% / 3% per symbol,
   7 entries / 3 losses a day), own state key BP15; every InpRiskPercent 1.0; Nasdaq DI OFF default; ORBs 0.5R; 3WG market entries. Installer
   generated from Install-BestProp.ps1 by asserted substitutions. 15/15 compiled 0/0, magics unique, sources unchanged, -ValidateOnly PASS
-  (BP9 too). 8 of 15 EAs trade gold (shared 3% cap). NOT backtested as a 15-EA mix; not installed.
+  (BP9 too). 8 of 15 EAs trade gold (shared 3% cap). Not installed. Installer later asks risk type (% / fixed) + value and Nasdaq + USDJPY DI
+  (prompt block tested with typed answers; regenerate with `python build.py installer`, no recompile).
+- 2026-10-29: `Best Prop 15 Backtest 2026-10-29/` (bp15.py; frozen retest engine, exact BP9 parity with the retest). FTMO 2-step $10k, every
+  weekday start: BP15 / BP9 pass both <=180 d dev 2021-23 36 / 52%, val 56 / 53%, OOS 95 / 90%, all 63 / 61%, MC 61 / 56%; median days to
+  funded all 85 / 70, MC 92 / 71; funded <=90 d all 34 / 43%. Continuous: val +56.6% PF 1.55 closed DD 10.7% vs +48.5% PF 1.26 DD 27.1%;
+  OOS +190.2% PF 1.61 (43 trades/month) vs +170.8% PF 1.52. Runs from 2021-10-07 freeze at the 92% buffer (without it, both hit the -10%
+  floor in weeks). OOS previously viewed (3WG fitted 2021-26). Verdict: not a clear upgrade (more return, slower, worse in 2021-23).
+  1-step addendum (`onestep.py`, FundedNext Stellar 1-Step +10% / 3% daily / 6% static / 2 days, MC 1,000): installed guards BP15 73% pass,
+  25% breach, median 51 d; BP9 66% / 33% / 36 d (2-step: 92 / 71 d to funded). Installed $9,200 buffer is below the 6% floor. Hypothetical
+  1-step guard (buffer $9,550, latch $250, NOT built): 0% breach but 44-54% frozen at 1%; at 0.5% BP15 70% pass, 75 d.
+- 2026-10-29: `US100 CRT Three Candle Raw 2026-10-29/` (pasted "Nitro Trades" CRT clip: C2 sweeps C1 and closes inside, C3 breaks C2, TP C1
+  extreme, 1.5R, NY 09:30-12:00 first trigger, rebreak / H1 bias) — REJECTED at the raw gate. USTEC M1, native Model 4, 1%, end 2026-10-27.
+  Addendum 1: Model 1 fills +3-4 pts past the level (RR 1.5 -> ~1.0) -> Model 1 grid INVALID, Model 4 only (fills 0.04-0.42 pts, RR 1.45).
+  MAIN (first TF, rebreak, bias) dev / val / OOS PF 0.70 / 0.70 / 1.03, 5y -63.6% PF 0.79 n843 (14/month), win 40% (claim 70-80%);
+  SIMPLE 5y -72.5% PF 0.81; M15 / M30 / H1 5y -45 / -18 / -31%; random-direction PF 0.57-0.74 (beaten, but all lose). No optimisation.
 - 2026-10-26: `VWAP EMA Reel Raw 2026-10-26/` (owner reel: close below / above VWAP & EMA, reverse) — REJECTED.
   - 64 native runs. 5y PF 0.79–0.99 on USTEC / US500 / US30 / XAU M5 / M15; M5 US500 / US30 wiped.
   - Best: XAU M15 −7%, USTEC M15 −12%.

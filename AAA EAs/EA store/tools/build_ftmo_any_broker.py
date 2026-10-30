@@ -15,7 +15,7 @@ from tools.build_live_profiles import R, read, sha, save, write, compile_ea
 SOURCE = R / 'Packages/FTMO'
 NEUTRAL = R / 'Packages/PropReady'
 TARGET = R / 'Packages/FTMO-AnyBroker'
-VERSION = 'FTMO17-ANY-BROKER-TEST-20261022'
+VERSION = 'FTMO17-ANY-BROKER-TEST-20261030'
 
 
 def installer(slugs):
@@ -113,7 +113,7 @@ def main():
         version=VERSION, purpose='Owner test build: the 17 FTMO-guarded EAs on any MT5 hedging account/broker.',
         entries=entries, orb_keys=manifest['orb_keys'], news_enabled=False, currency_mode='ACCOUNT_CURRENCY',
         hedging_required=True, reference_mode='PERSISTED_FIRST_INSTALL_BALANCE', default_phase='Funded',
-        risk_cap_fraction=.005, guard_sha=sha(TARGET / 'CalyxFTMOGuard.mqh'),
+        risk_cap_fraction=.005, risk_cap_input='FTMORiskCapPercent (installer = chosen risk, max 2%; 0.005 is the default)', guard_sha=sha(TARGET / 'CalyxFTMOGuard.mqh'),
         guard_source='Packages/PropReady/CalyxFTMOGuard.mqh', source_version=manifest['version'],
         source_guard_sha=manifest['guard_sha'], neutral_installer_source_sha=sha(NEUTRAL / 'Install-Portfolio.ps1'),
         files={str(p.relative_to(package)).replace('\\', '/'): sha(p)
