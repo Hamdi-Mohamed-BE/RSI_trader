@@ -179,3 +179,39 @@ def test_close_headlines_and_html_escape(env):
     w.cfg.risk_note = ''
     mt5.positions[91] = Pos(91, 'XAUUSDm', 0, 777, '', 0, 0, 0.1, 2000.0, mt5.t); mt5.deal(910, 91, 0, 0, 2000.0, 0.1, magic=777, symbol='XAUUSDm'); w.poll()
     assert '⚠️' not in texts(out)[-1]
+
+
+def test_new_york_clock_dst():
+    from datetime import datetime, timezone
+    ts = lambda *a: datetime(*a, tzinfo=timezone.utc).timestamp()  # noqa: E731
+    assert S.new_york(ts(2026, 10, 30, 21, 0)).hour == 17            # EDT (UTC-4) before 1 Nov 2026
+    assert S.new_york(ts(2026, 11, 2, 22, 0)).hour == 17             # EST (UTC-5) after the switch
+    assert S.new_york(ts(2026, 3, 9, 21, 0)).hour == 17              # EDT again from the 2nd Sunday of March
+
+
+def test_daily_recap(env):
+    from datetime import datetime, timezone
+    mt5, out, w, tmp = env
+    clock = [datetime(2026, 11, 2, 17, 0, tzinfo=timezone.utc).timestamp()]      # Mon 2 Nov, 12:00 New York
+    w.clock = lambda: clock[0]
+    w.cfg.show_money = True
+    w.poll()                                                         # first run arms the recap; nothing sent
+    n0 = len(out.sent)
+    mt5.positions[10] = Pos(10, 'USTEC', 0, 862020, '', 25000.0, 25300.0, 1.0, 25100.0, mt5.t); mt5.deal(100, 10, 0, 0, 25100.0, 1.0); w.poll()
+    del mt5.positions[10]; mt5.deal(101, 10, 1, 1, 25300.0, 1.0, reason=5, profit=200.0); w.poll()
+    mt5.positions[11] = Pos(11, 'XAUUSDm', 1, 926400006, '', 2010.0, 1990.0, 0.5, 2000.0, mt5.t); mt5.deal(110, 11, 1, 0, 2000.0, 0.5, magic=926400006, symbol='XAUUSDm'); w.poll()
+    del mt5.positions[11]; mt5.deal(111, 11, 0, 1, 2010.0, 0.5, reason=4, magic=926400006, symbol='XAUUSDm', profit=-100.0); w.poll()
+    assert not any('DAILY RECAP' in t for t in texts(out))
+    clock[0] = datetime(2026, 11, 2, 22, 1, tzinfo=timezone.utc).timestamp()     # 17:01 New York (EST)
+    w.poll()
+    t = texts(out)[-1]
+    assert t.startswith('📊 <b>DAILY RECAP</b> · Mon 02 Nov 2026') and '✅ 1 won · ❌ 1 lost' in t
+    assert 'Net: <b>+1.00R / +99.00 </b>' in t or 'Net: <b>+1.00R / +99.00</b>' in t
+    assert '✅ US100 BUY · nasdaq 5m: +2.00R / +199.50 · take profit hit' in t and '❌ XAUUSD SELL · gold RSI VWAP: -1.00R / -100.50 · stop loss hit' in t
+    assert '<b>By bot</b>' in t and 'Win rate: <b>50%</b>' in t
+    n = len(out.sent); w.poll(); assert len(out.sent) == n            # once per day
+    clock[0] = datetime(2026, 11, 3, 22, 5, tzinfo=timezone.utc).timestamp(); w.poll()
+    assert texts(out)[-1].startswith('📊 <b>DAILY RECAP</b> · Tue 03 Nov 2026') and 'No trades closed today.' in texts(out)[-1]
+    n = len(out.sent); clock[0] = datetime(2026, 11, 7, 22, 5, tzinfo=timezone.utc).timestamp(); w.poll()
+    assert len(out.sent) == n                                         # Saturday: no recap
+    assert n0 <= len(out.sent)

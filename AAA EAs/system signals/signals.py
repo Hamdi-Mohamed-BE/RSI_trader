@@ -85,6 +85,9 @@ class Config:
         self.announce_open = flag(env, 'SIGNALS_ANNOUNCE_OPEN_ON_START', False)
         self.poll = float(env.get('SIGNALS_POLL_SECONDS', '1') or 1)
         self.catchup_h = float(env.get('SIGNALS_CATCHUP_HOURS', '24') or 24)
+        self.recap = flag(env, 'SIGNALS_DAILY_RECAP', True)                    # one summary message at the New York daily close
+        hh, _, mm = (env.get('SIGNALS_RECAP_TIME', '17:00') or '17:00').partition(':')
+        self.recap_minute = int(hh) * 60 + int(mm or 0)                        # New York time (17:00 = FX / CFD daily close)
         self.only_magics = {int(x) for x in re.split(r'[,\s]+', env.get('SIGNALS_ONLY_MAGICS', '')) if x.strip().isdigit()}
         self.ignore_magics = {int(x) for x in re.split(r'[,\s]+', env.get('SIGNALS_IGNORE_MAGICS', '')) if x.strip().isdigit()}
         self.aliases = dict(DEFAULT_ALIASES)
@@ -207,12 +210,24 @@ def esc(v) -> str: return html.escape(str(v), quote=False)
 def mask(login) -> str: return f"****{str(login)[-4:]}"
 
 
+def _nth_sunday(year, month, n):
+    d = datetime(year, month, 1); return d + timedelta(days=(6 - d.weekday()) % 7 + 7 * (n - 1))
+
+
+def new_york(utc_ts: float) -> datetime:
+    """US Eastern time without a tz database (Windows has none by default): DST from the 2nd Sunday of March 02:00 to the 1st Sunday of November 02:00."""
+    u = datetime.fromtimestamp(utc_ts, timezone.utc).replace(tzinfo=None)
+    on, off = _nth_sunday(u.year, 3, 2) + timedelta(hours=7), _nth_sunday(u.year, 11, 1) + timedelta(hours=6)
+    return u - timedelta(hours=4 if on <= u < off else 5)
+
+
 class Watcher:
     def __init__(self, mt5, cfg: Config, sender, bots: dict[int, str], state_path: Path, log_dir: Path = LOG_DIR):
         self.mt5, self.cfg, self.sender, self.bots, self.state_path, self.log_dir = mt5, cfg, sender, bots, state_path, log_dir
         self.digits: dict[str, int] = {}
         self.state = json.loads(state_path.read_text(encoding='utf-8')) if state_path.is_file() else None
         self.connected = True
+        self.clock = time.time                                              # injectable for tests
 
     # ---- helpers
     def save(self):
@@ -311,7 +326,7 @@ class Watcher:
                               last_deal_time=max([d.time for d in deals], default=int(time.time())), positions={}, orders={}, msgs={}, order_msgs={},
                               initial_sl={}, outbox=[], seen_deals=[], filled={})
             self.state['positions'] = self.snap_positions(); self.state['orders'] = self.snap_orders()
-            for k, p in self.state['positions'].items(): self.state['initial_sl'][k] = p['sl']
+            for k, p in self.state['positions'].items(): self.state['initial_sl'][k] = p['sl']; self.state.setdefault('init_vol', {})[k] = p['volume']
             self.log('baseline', f"{len(self.state['positions'])} open positions, {len(self.state['orders'])} pending orders")
             if self.cfg.announce_open:
                 for k, p in self.state['positions'].items():
@@ -319,7 +334,7 @@ class Watcher:
                         self.state['msgs'][k] = self.post('open', self.open_text(p, p['price'], header='📌 <b>ALREADY OPEN</b>'), position=k)
             self.save()
         else:
-            for k, v in (('filled', {}), ('order_msgs', {}), ('outbox', []), ('seen_deals', [])): self.state.setdefault(k, v)
+            for k, v in (('filled', {}), ('order_msgs', {}), ('outbox', []), ('seen_deals', []), ('init_vol', {}), ('day_log', [])): self.state.setdefault(k, v)
             self.log('restart', 'resuming from saved state'); self.poll(catchup=True)
 
     def poll(self, catchup=False):
@@ -359,10 +374,11 @@ class Watcher:
         for k in [k for k in s['positions'] if k not in cur]:               # closed: the OUT deal already posted; drop the record
             s['positions'].pop(k); changed = True
         changed |= self.diff_orders()
+        changed |= self.maybe_recap()
         if changed: self.save()
 
     def announce_open(self, pos_key: str, p: dict, deal, delayed: bool, from_order: str | None = None):
-        s = self.state; s['positions'][pos_key] = p; s['initial_sl'].setdefault(pos_key, p['sl'])
+        s = self.state; s['positions'][pos_key] = p; s['initial_sl'].setdefault(pos_key, p['sl']); s.setdefault('init_vol', {}).setdefault(pos_key, p['volume'])
         if not self.wanted(p['magic']): return
         header = None
         if from_order:
@@ -426,8 +442,66 @@ class Watcher:
             lines.append(f"ℹ️ {esc(reason[0].upper() + reason[1:])}")
             if delayed: lines += ['', '🕒 <i>Sent late: closed while the forwarder was offline.</i>']
             self.post('close' if still is None else 'partial', '\n'.join(lines), reply_to=s['msgs'].get(key), position=key, deal=d.ticket)
+            init = s.get('init_vol', {}).get(key) or d.volume
+            s.setdefault('day_log', []).append(dict(t=self.clock(), symbol=self.sym(p['symbol']), side=p['side'], bot=self.bot(p['magic'], p['comment']),
+                                                    R=round(pts / risk * d.volume / init, 3) if pts is not None and risk > 0 else None, money=round(money, 2),
+                                                    reason=reason, partial=still is not None and d.entry != ENTRY_INOUT))
             if still is None:
-                s['positions'].pop(key, None); s['msgs'].pop(key, None); s['initial_sl'].pop(key, None)
+                s['positions'].pop(key, None); s['msgs'].pop(key, None); s['initial_sl'].pop(key, None); s.get('init_vol', {}).pop(key, None)
+
+    def maybe_recap(self) -> bool:
+        """At the New York daily close (Mon-Fri) post one summary of everything closed since the previous recap."""
+        s = self.state
+        if not self.cfg.recap: return False
+        now = self.clock(); ny = new_york(now); day = ny.date().isoformat()
+        if 'last_recap' not in s:                                          # first run: events from now on, no partial-day recap today
+            s['last_recap'] = day if ny.hour * 60 + ny.minute >= self.cfg.recap_minute else ''; s['last_recap_ts'] = now; return True
+        if ny.weekday() >= 5 or ny.hour * 60 + ny.minute < self.cfg.recap_minute or s['last_recap'] == day: return False
+        since = s.get('last_recap_ts', 0)
+        rows = [e for e in s.get('day_log', []) if e['t'] >= since]
+        self.post('recap', self.recap_text(ny, rows))
+        s['last_recap'] = day; s['last_recap_ts'] = now + 1e-6               # strictly after this recap
+        s['day_log'] = [e for e in s.get('day_log', []) if e['t'] > now - 3 * 86400]
+        return True
+
+    def recap_text(self, ny: datetime, rows: list) -> str:
+        cur = self.state.get('currency', '')
+        full = [r for r in rows if not r['partial']]
+        wins = sum(1 for r in full if r['money'] > 0); losses = sum(1 for r in full if r['money'] < 0); flat = len(full) - wins - losses
+        net_r = sum(r['R'] for r in rows if r['R'] is not None); money = sum(r['money'] for r in rows)
+        lines = [f"📊 <b>DAILY RECAP</b> · {ny:%a %d %b %Y}" + (' · week close' if ny.weekday() == 4 else ''), '']
+        if not rows:
+            lines.append('No trades closed today.')
+        else:
+            lines.append(f"✅ {wins} won · ❌ {losses} lost" + (f" · ⚪ {flat} breakeven" if flat else '')
+                         + (f" · {len(rows) - len(full)} partial close(s)" if len(rows) > len(full) else ''))
+            total = ([f"{net_r:+.2f}R"] if self.cfg.show_r else []) + ([f"{money:+,.2f} {cur}".strip()] if self.cfg.show_money else [])
+            if total: lines.append(f"{'📈' if money >= 0 else '📉'} Net: {self.b(' / '.join(total))}")
+            if full: lines.append(f"🎯 Win rate: {self.b(f'{100 * wins / len(full):.0f}%')}")
+            lines += ['', '<b>Closed today</b>']
+            for r in rows:
+                icon = '✅' if r['money'] > 0 else '❌' if r['money'] < 0 else '⚪'
+                res = ([f"{r['R']:+.2f}R"] if self.cfg.show_r and r['R'] is not None else []) + ([f"{r['money']:+,.2f}"] if self.cfg.show_money else [])
+                lines.append(f"{icon} {esc(r['symbol'])} {esc(r['side'].upper())} · {esc(r['bot'])}" + (f": {esc(' / '.join(res))}" if res else '')
+                             + f" · {esc(r['reason'])}" + (' (partial)' if r['partial'] else ''))
+            per = {}
+            for r in rows:
+                v = per.setdefault(r['bot'], [0, 0.0, 0.0]); v[0] += 0 if r['partial'] else 1; v[1] += r['R'] or 0; v[2] += r['money']
+            if len(per) > 1:
+                lines += ['', '<b>By bot</b>']
+                for k, v in sorted(per.items(), key=lambda kv: -kv[1][2]):
+                    parts = ([f"{v[1]:+.2f}R"] if self.cfg.show_r else []) + ([f"{v[2]:+,.2f}"] if self.cfg.show_money else [])
+                    lines.append(f"🤖 {esc(k)}: {esc(' / '.join(parts))} ({v[0]} trade{'s' if v[0] != 1 else ''})")
+        open_ = {k: p for k, p in self.state.get('positions', {}).items() if self.wanted(p['magic'])}
+        if open_:
+            lines += ['', f"📂 <b>Still open: {len(open_)}</b>"]
+            live = {str(p.ticket): p for p in (self.mt5.positions_get() or [])} if self.cfg.show_money else {}
+            for k, p in open_.items():
+                fl = live.get(k)
+                extra = f" · floating {getattr(fl, 'profit', 0.0) + getattr(fl, 'swap', 0.0):+,.2f}" if fl is not None else ''
+                lines.append(f"{self.dot(p['side'])} {esc(self.sym(p['symbol']))} {esc(p['side'].upper())} · {esc(self.bot(p['magic'], p['comment']))} · "
+                             f"entry {self.px(p['symbol'], p['price'])}, SL {self.px(p['symbol'], p['sl'])}{extra}")
+        return '\n'.join(lines)
 
     @staticmethod
     def close_head(reason: int, pts, risk: float, money: float) -> str:

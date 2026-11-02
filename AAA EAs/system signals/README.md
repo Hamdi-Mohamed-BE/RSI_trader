@@ -91,6 +91,20 @@ Updates and closes are **replies** to the original signal:
   - `🚫 ORDER CANCELLED`, `EXPIRED` or `REJECTED`.
 - **Positions without a TP** show `🎯 TP: open (the bot manages the exit)`.
 
+## Daily recap (2026-11-02)
+At the New York daily close (**17:00 ET**, Monday to Friday; `SIGNALS_RECAP_TIME`), one message sums up everything closed since the previous recap:
+- the count of wins, losses and breakevens, and the win rate;
+- **net R** and, with `SIGNALS_SHOW_PROFIT=true`, the **net money**;
+- each closed trade (symbol, side, bot, R / money, reason), partial closes included;
+- a per-bot breakdown;
+- positions still open, with entry, SL and floating P&L.
+
+**Details:**
+- Friday's recap is marked "week close". A day with no closes still gets a short recap.
+- Turn it off with `SIGNALS_DAILY_RECAP=false`.
+- The first start never sends a partial-day recap.
+- Trades closed while the forwarder was offline are counted when it catches up.
+
 ## Bot names
 `bots.json` maps each magic number to a name (48 entries):
 - the catalog EAs;
