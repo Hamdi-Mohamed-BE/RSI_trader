@@ -166,7 +166,7 @@ SELECTED_CONFIGS: dict[str, tuple[str, str, str]] = {
     "AAA Final EMA3": ("ema3-xau", "dynamic-only", "Dynamic 60/20 only"),
     "AAA Final XAU Weakness": ("weakness-xau", "dynamic-only", "Dynamic 50/20"),
     "Nasdaq Overnight": ("overnight-ustec", "current", "Current EA exits"),
-    "Nasdaq 5M Candle Momentum": ("momentum-ustec", "current", "0.60% price stop / ATR6 from +1R / no TP"),
+    "Nasdaq 5M Candle Momentum": ("momentum-ustec", "current", "ATR14 x6 stop / ATR6 trail from +1R / no TP"),
     "Sell Nasdaq 15min": ("sell-nasdaq-15min", "current", "Fixed 2.22R / no trailing"),
     "USDJPY London Open Momentum": ("london-open-momentum-usdjpy", "current", "Time exit / BE at 0.75R"),
     "XAU Squeeze Momentum Standard": ("squeeze-momentum-xau-standard", "current", "3.5 ATR stop / 1.5R / ATR ratchet"),
@@ -961,20 +961,20 @@ CORE_META: dict[str, dict[str, Any]] = {
     },
     "Nasdaq 5M Candle Momentum": {
         "strategy": "US-open five-minute momentum",
-        "tagline": "Opening momentum with DI agreement, a wider price stop and an ATR-managed exit.",
-        "description": "After the 09:30-09:35 New York M5 candle closes, this EA buys above EMA12 with +DI14 > -DI14, or sells below EMA12 with -DI14 > +DI14. The selected version uses a 0.60%-of-price initial stop, no take profit, and a 6x ATR trail starting at +1R. It may hold overnight and over weekends; Standard and Full Safe are archived comparisons, not current BAT settings.",
+        "tagline": "Opening momentum with DI agreement, a volatility-scaled ATR stop and an ATR-managed exit.",
+        "description": "After the 09:30-09:35 New York M5 candle closes, this EA buys above EMA12 with +DI14 > -DI14, or sells below EMA12 with -DI14 > +DI14. The selected version (2026-11-02) uses an initial stop of 6x M5 ATR(14), no take profit, and a 6x ATR trail starting at +1R. It may hold overnight and over weekends; Standard and Full Safe are archived comparisons, not current BAT settings.",
         "session": "09:30 New York",
         "logic_audit": "Source-code verified",
-        "logic_audit_note": "Selected QL_ATR management uses the exact tested binary and settings. Native Model 4 windows end 2026-09-25 with 150 ms delay; real ticks begin January 2026, earlier ticks are generated. This is retrospective selection, not an untouched validation or an FTMO pass forecast.",
+        "logic_audit_note": "Selected ATR6-stop management (owner choice 2026-11-02) uses the exact tested binary and settings. Native Model 4 windows end 2026-11-01 (exclusive) with 150 ms delay; real ticks begin January 2026, earlier ticks are generated. This is retrospective selection, not an untouched validation or an FTMO pass forecast.",
         "logic": [
             {"title": "Wait for the opening candle to finish", "detail": "The signal is evaluated only when the closed M5 candle is timestamped 09:30 New York, meaning entry occurs just after the 09:30-09:35 bar has completed. Weekends are rejected and New York DST is calculated automatically."},
             {"title": "Require EMA and DI agreement", "detail": "Buy above EMA12 only when +DI(14) exceeds -DI(14); sell below EMA12 only when -DI exceeds +DI. Indicators use the closed signal bar. Equality produces no entry."},
-            {"title": "Set the wider price stop", "detail": "Initial stop distance is 0.60% of entry price, subject to broker stop constraints. This is price distance, not account risk. Ordinary launchers retain selected risk and upward lot rounding; actual risk can exceed the target."},
+            {"title": "Set the ATR stop", "detail": "Initial stop distance is 6x the M5 ATR(14) at entry, subject to broker stop constraints. It adapts to volatility: over 2019-2026 losing stop-outs had a median distance of 0.61% of price (p10 0.28%, p90 1.20%). This is price distance, not account risk. Ordinary launchers retain selected risk and upward lot rounding; actual risk can exceed the target."},
             {"title": "Leave take profit unset", "detail": "There is no fixed profit target. The old 2.5R target is disabled; a larger winner may continue while the protective stop tightens."},
             {"title": "Trail with ATR after +1R", "detail": "Once open profit reaches one original stop distance, the stop follows the running favorable extreme at six times current M5 ATR(14), never loosening. This is tick-driven ATR management, not the separate completed-M15 Dynamic 50/20 overlay. Break-even and MA trailing are off."},
             {"title": "Allow overnight holding", "detail": "The 15:55 close is disabled. One position at a time; an existing position suppresses the next daily signal. Overnight/weekend holding adds swap and gap risk. Stops cannot guarantee a cash loss cap."},
         ],
-        "risk_note": "Normal BAT risk policies are unchanged; Recommended Adaptive retains its 0.25x Nasdaq multiplier. FTMO uses its separate guarded $50 maximum planned stop risk, News OFF. Five-year standalone equity drawdown was 24.07% at 1% risk. Prior fixed-target FTMO pass estimates do not apply to this changed portfolio.",
+        "risk_note": "Normal BAT risk policies are unchanged; Recommended Adaptive retains its 0.25x Nasdaq multiplier. FTMO uses its separate guarded $50 maximum planned stop risk, News OFF. Five-year standalone equity drawdown was 20.49% at 1% risk (MT5 maximal; 2021-11 to 2026-11); the 2019-2026 Model 4 run closed-balance drawdown was 24.0%. Prior fixed-target FTMO pass estimates do not apply to this changed portfolio.",
         "price": 499,
         "accent": "cyan",
         "featured": True,
@@ -1477,14 +1477,14 @@ def _nasdaq_open_one_year_evidence() -> Evidence | None:
 
 
 def _nasdaq_di_evidence() -> Evidence | None:
-    """User-selected DI + wider price stop + ATR management (2026-09-28)."""
+    """User-selected DI + ATR6 initial stop + ATR trail management (2026-11-02; was 0.60% price stop from 2026-09-28)."""
     cache = STORE_ROOT / "data" / "evidence-cache" / "v1" / "products" / "nasdaq-5m-candle-momentum" / "dynamic" / "3y.json"
     if not cache.exists():
         return None
     cached = _load_json(cache)
     row = cached["stats"]
     return Evidence(
-        label="Three-year DI + wide stop + ATR native backtest (retrospective)",
+        label="Three-year DI + ATR6 stop + ATR trail native backtest (retrospective)",
         period=str(cached["period"]),
         return_pct=float(row["return_pct"]),
         profit_factor=float(row["profit_factor"]),
@@ -1496,12 +1496,12 @@ def _nasdaq_di_evidence() -> Evidence | None:
         history_quality=str(row.get("history_quality", "")),
         source_note=(
             "Exness USTEC, native Model 4, 150 ms delay and recorded commission/swap. DI14 + EMA12 entry; "
-            "0.60% price stop, no TP, 6 ATR trail from +1R, overnight/weekend holding. Real ticks start January 2026; older ticks are generated."
+            "ATR(14) x 6 initial stop, no TP, 6 ATR trail from +1R, overnight/weekend holding. Real ticks start January 2026; older ticks are generated."
         ),
         status=_status_for(float(row["profit_factor"]), float(row["return_pct"]), float(row["max_drawdown_pct"]), int(row["trades"])),
         caution=(
             "ATR management was selected after comparing three alternatives on these same years, on top of prior DI selection. "
-            "Not an untouched holdout or proof of FTMO suitability. Five-year equity DD was 24.07% at 1% risk. "
+            "Not an untouched holdout or proof of FTMO suitability. The ATR6 stop was picked by the owner on 2026-11-02 from a 124-version search over 2019-2026 that viewed every year shown; its development PF on real-tick fills was 1.10, below the 1.15 gate. Five-year equity DD 20.49% at 1% risk. "
             "Historical results are not a guarantee."
         ),
     )
@@ -3080,11 +3080,11 @@ def get_catalog() -> list[Product]:
                 ),
                 dynamic_mode_supported=bool(item["label"] == "Sell Nasdaq 15min" and sell_nasdaq_15m_dynamic) or is_nasdaq_di or item['label'] == 'XAU Slow Trend',
                 recommended_dynamic_mode=recommended_dynamic_mode,
-                dynamic_mode_label="FTMO target 0.5R" if item['label'] == 'XAU Slow Trend' else "DI + Wide Stop + ATR" if is_nasdaq_di else "Dynamic London",
+                dynamic_mode_label="FTMO target 0.5R" if item['label'] == 'XAU Slow Trend' else "DI + ATR6 Stop + ATR Trail" if is_nasdaq_di else "Dynamic London",
                 standard_mode_label='Normal target 1R' if item['label'] == 'XAU Slow Trend' else 'Target 0.6R' if item['label'] == 'XAU Trend Progression' else 'Standard mode',
                 dynamic_mode_note=(
                     '0.5R target comparison: separate $10k account, nominal 1% risk. NOT guarded $50 FTMO results or pass forecasts. Normal BATs use 1R.' if item['label'] == 'XAU Slow Trend' else
-                    "DI14 + EMA12; 0.60%-of-price SL; no TP; 6x ATR14 trailing from +1R; overnight/weekend holding. "
+                    "DI14 + EMA12; 6x ATR14 initial SL; no TP; 6x ATR14 trailing from +1R; overnight/weekend holding. "
                     "All maintained launchers use this management with their existing risk policies."
                     if is_nasdaq_di else
                     "Saved research preset: bearish London confirmation, ATR(14) × 2.5 stop and 3R target. "
@@ -3095,7 +3095,7 @@ def get_catalog() -> list[Product]:
                     if is_nasdaq_di else "This is the Best Recommended BAT default."
                 ),
                 dynamic_default_standard_note=(
-                    "Standard and Full Safe retain archived fixed-target comparisons. Current BATs use DI + Wide Stop + ATR."
+                    "Standard and Full Safe retain archived fixed-target comparisons. Current BATs use DI + ATR6 Stop + ATR Trail."
                     if is_nasdaq_di else
                     "Standard mode is available for comparison; the Best Recommended BAT defaults this EA to Dynamic mode."
                 ),

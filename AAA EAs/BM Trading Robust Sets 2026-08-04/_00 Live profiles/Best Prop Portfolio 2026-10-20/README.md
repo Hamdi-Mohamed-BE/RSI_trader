@@ -82,7 +82,7 @@ Magic numbers are unique per EA. "R" is one unit of the trade's planned risk.
 - **Setup:** `BP9-nasdaq-5m-candle-momentum` · USTEC · M5 · magic 862020.
 - **Entry:** when the 09:30–09:35 New York 5-minute candle closes, buy if price is above EMA(12), or sell if it is below.
 - **DI filter:** OFF by default (`InpRequireDIAgreement=false`). When ON, a buy also needs +DI(14) > −DI(14), and a sell the reverse.
-- **Stop:** 0.60% of price (`InpInitialStopPercent=0.60`).
+- **Stop:** ATR(14) x 6 on M5 (`InpStopMode=0`, `InpInitialStopATR=6.0`) since 2026-11-02; previously 0.60% of price.
 - **Target:** none (`InpUseFixedTarget=false`).
 - **Trailing:** ATR(14) × 6 trail starting at +1R (`InpTrailingATR=6`, `InpTrailStartR=1`).
 - **Holding:** no session close, so it can hold overnight and over weekends.

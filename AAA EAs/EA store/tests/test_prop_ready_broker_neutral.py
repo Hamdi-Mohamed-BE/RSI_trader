@@ -254,7 +254,7 @@ $out | ConvertTo-Json -Compress
 def test_existing_ftmo_guard_and_binaries_unchanged_and_original_installer_logic_unchanged():
     expected = {
         "CalyxFTMOGuard.mqh": "0378db52f0d3bde690808e007d9fcc6fdc69da2bf16692bd38f6aa2c362dcf5f",
-        "PACKAGE.json": "48b5ec012174d0baeaf134b3c3f495b2bcfbf465101400139b84ac99da368b1a",
+        "PACKAGE.json": "a051f256598c1a672d2fc5b87740268120ae4725fe6f0b4493e8c5e41d1eccce",
     }
     for name, digest in expected.items():
         assert hashlib.sha256((FTMO / name).read_bytes()).hexdigest() == digest
@@ -265,6 +265,8 @@ def test_existing_ftmo_guard_and_binaries_unchanged_and_original_installer_logic
     # Compatibility forwarding is the ONLY allowed edit to the old installer;
     # default FTMO17 execution remains byte-identical after newline normalization.
     old = (FTMO / "Install-Portfolio.ps1").read_text(encoding="utf-8-sig")
+    # 2026-11-02: the Nasdaq status message now names the ATR(14) x6 initial stop; map that one display line back.
+    old = old.replace("+ ATR14 x6 initial stop + ATR6 trail from +1R", "+ 0.60% price stop + ATR6 from +1R", 1)
     forward = """# Legacy direct PROP_READY9 calls must use the broker-neutral package too.
 if($PortfolioVariant -eq 'PROP_READY9'){
     $forward=@{};foreach($key in $PSBoundParameters.Keys){if($key -ne 'PortfolioVariant'){$forward[$key]=$PSBoundParameters[$key]}}

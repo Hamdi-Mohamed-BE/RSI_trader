@@ -127,7 +127,7 @@ def test_only_requested_bats_add_prompt_and_baseline_stays_di_on():
     assert profile['di_parameters']==['NasdaqDIFilter','UsdJpyDIFilter']
     wrapper = (live/'Start-LiveProfile.ps1').read_text()
     assert "DI filter ON or OFF [ON]" in wrapper and "if($ValidateOnly){'ON'}" in wrapper
-    preset = PACKAGE_ROOT/'Selected Portfolio Settings 2026-09-01/11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set'
+    preset = PACKAGE_ROOT/'Selected Portfolio Settings 2026-09-01/11 Nasdaq 5M - DI ATR6 STOP ATR6 TRAIL NO TP - 1PCT.set'
     assert 'InpRequireDIAgreement=true' in preset.read_text()
 
 

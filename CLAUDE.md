@@ -706,6 +706,36 @@ of what is currently attached to a live terminal.
     - At 2–3%: worse on both.
   - Guarded portfolios are identical from 1.5% up (guard binds; 45–56% stuck at the buffer).
   - Suggested (not simulated end-to-end): challenge unguarded 1%, then funded on the guarded FTMO 17 at 0.5%.
+- 2026-11-02 (SUPERSEDES the 2026-09-28 0.60% price stop): Nasdaq 5M initial stop = ATR(14) x 6 (`InpStopMode=0`,
+  `InpInitialStopATR=6.0`) in EVERY maintained launcher/package (owner: "apply everywhere ... push").
+  - Same EX5 fe9f391db5af, DI choice, no TP, ATR6 trail from +1R and risk policies.
+  - New canonical SET `Selected Portfolio Settings 2026-09-01/11 Nasdaq 5M - DI ATR6 STOP ATR6 TRAIL NO TP - 1PCT.set`
+    (sha 35783fc7a48d; old SET kept). See `AAA EAs/BM Trading Robust Sets 2026-08-04/Nasdaq 5M ATR6 Stop Deployment 2026-11-02/README.md`
+    (deploy.py prepare|pins|publish).
+  - Owner choice, NOT pipeline-qualified. Source: `Nasdaq 5M Wide Stop Pipeline 2026-11-02/` (124 Model-1 versions 2019-01→2026-11,
+    dev / val / OOS split at 2023-11 / 2024-11; Model 4 confirmation matched 100% of trades).
+    - A6: dev PF 1.10 (< 1.15 gate), val 1.03, OOS 1.28 +70%; 2019-26 +164% PF 1.16, closed DD 24.0%, 3.2/week; MC P(losing year) 20%.
+    - Old 0.60% stop: 2019-26 +162%, DD 39.2%, but OOS +213% and BETTER on every recent website window (1y +48% vs +31%, 5y +219% vs +113%).
+  - Website Nasdaq dynamic caches republished (end 2026-11-01): 6m +14.27% / 1y +30.77% / 3y +76.2% / 5y +113.49%; mode label
+    "DI + ATR6 Stop + ATR Trail".
+  - Combined portfolio cache NOT rebuilt: precompute refuses on stale News Pulse XAU 6m evidence (not bypassed).
+  - Portfolio library histories NOT re-simulated (the site shows its manifest-changed warning). Old FTMO / prop / income results used the 0.60% stop.
+  - clients/top 5, Ava and research snapshots untouched.
+  - Pre-existing: `reviwed_Eas.bat -ValidateOnly` fails (selection has 27 live vs policy 25 since 2026-10-13).
+  - No MT5 chart / account touched; VPS not updated.
+- 2026-11-02: `October 2026 EA Check 2026-11-02/` (Oct 1 → Nov 1, Model 4, 100% real ticks, 1% each):
+  - EMA3 +4.82% (6); Nasdaq DI ON +3.42% (17) / DI OFF +3.41% (19); XAU ORB LNY +0.49%; Gold Overnight +0.38% (21); RSI VWAP +0.36% (7).
+  - Selective V3 −0.06%; US100 NY M30 −0.51%; 3WG −0.80% (9); XAU ORB NY −1.37%; US100 H1 ORB −1.99%.
+  - Nasdaq ATR6 (A6) October +4.40% (same 17 signals, PF 1.60).
+- 2026-11-02: `UK100 Loss Streak Defense 2026-11-02/` (QuantLab "loss streak defense"; sizing replay of the FTSE native ledgers,
+  rules declared first) — REJECTED.
+  - Raw clip bot D0 −60.9% DD 76%; best D2 (x0.5 after 2 losses) −18.0%.
+  - The optimised final still loses val / OOS under every rule.
+- 2026-11-02: `Gold 3Way QuantLab Q4 2026-11-02/` (Q4 / H1 breakout variants G0–G4, PLAN frozen).
+  - The first parity run failed only the harness input check: the report prints InpTradeFrom as Unix seconds. Fixed to 1559347200.
+  - Parity + main NOT yet run.
+- 2026-11-02: Telegram signals daily recap (`AAA EAs/system signals/`; SIGNALS_DAILY_RECAP / SIGNALS_RECAP_TIME, default 17:00 New York;
+  DST computed without a tz database; 9 tests pass). Pushed in `6a83f84f6` on `new-telegram-copy`.
 
 ## Main locations
 

@@ -27,7 +27,7 @@ Full EA portfolio - Recommended Adaptive - 37 EAs - installs from _Auto Deploy/I
   17. AAA Final EMA3                         XAUUSD  H4   AAA Final EMA3 EA.ex5  |  ema3.set
   18. AAA Final XAU Weakness                 XAUUSD  M30  AAA Final XAU Weakness EA.ex5  |  09 XAU Weakness - M30 STRUCTURE 4R - DYNAMIC 50-20.set
   19. Nasdaq Overnight                       USTEC   M1   Nasdaq Overnight Negative Day EA.ex5  |  10 Nasdaq Overnight - CURRENT - ALL DAY.set
-  20. Nasdaq 5M Candle Momentum              USTEC   M5   Nasdaq 5M DI Wide ATR EA.ex5  |  11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set
+  20. Nasdaq 5M Candle Momentum              USTEC   M5   Nasdaq 5M DI Wide ATR EA.ex5  |  11 Nasdaq 5M - DI ATR6 STOP ATR6 TRAIL NO TP - 1PCT.set
   21. Sell Nasdaq 15min                      USTEC   M15  Sell Nasdaq 15min Dynamic Exit Research EA.ex5  |  Sell Nasdaq 15min - london-safe dynamic exit candidate - 1pct.set
   22. USDJPY London Open Momentum            USDJPY  M15  Calyx London Open FX Momentum Pipeline EA.ex5  |  usdjpy-london-open-momentum.set
   23. XAU Squeeze Momentum Standard          XAUUSD  H1   Calyx XAU Squeeze Momentum Research EA.ex5  |  23S XAU Squeeze Momentum Safe - ATR3P5 1P5R - 1PCT.set

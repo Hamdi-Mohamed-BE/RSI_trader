@@ -174,7 +174,7 @@ Write-Host ('{0} EAs; ALL five ORBs at 0.5R; News Pulse and Gold News V9 OFF. $5
 Write-Host 'Limits: $225 open risk; $150 per symbol; $300 daily reserved loss; $9,200 equity buffer.'
 Write-Host 'Seven entries/day maximum; no new entries after three net losing positions; 80% margin cap.'
 Write-Host 'These are entry guards, not guaranteed protection from gaps, outages or FTMO rule breaches.'
-Write-Host ("Nasdaq: DI14 {0} + 0.60% price stop + ATR6 from +1R, no TP; overnight/weekend holding." -f $NasdaqDIFilter)
+Write-Host ("Nasdaq: DI14 {0} + ATR14 x6 initial stop + ATR6 trail from +1R, no TP; overnight/weekend holding." -f $NasdaqDIFilter)
 Write-Host 'Historical screens are not future pass guarantees. Custom risk/DI choices do not inherit the screened results.'
 $portfolio | Select-Object Label,BrokerSymbol,Period | Format-Table -AutoSize
 if($PreflightOnly){Write-Host 'Preflight complete. Nothing installed or restarted.';exit 0}

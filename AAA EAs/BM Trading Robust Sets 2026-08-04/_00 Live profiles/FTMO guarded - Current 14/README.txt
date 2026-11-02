@@ -29,7 +29,7 @@ FTMO account build - 17 EAs - installs from _00 Live profiles/Packages/FTMO (FTM
   16. US100 Selective ORB V3                 USTEC   M5   FTMO13-us100-selective-orb-v3.ex5  |  FTMO13-us100-selective-orb-v3.set
   17. XAU ORB New York M30                   XAUUSD  M30  FTMO13-xau-orb-new-york-m30.ex5  |  FTMO13-xau-orb-new-york-m30.set
 
-Any broker test build - 17 EAs - installs from _00 Live profiles/Packages/FTMO-AnyBroker (FTMO17-ANY-BROKER-TEST-20261022)
+Any broker test build - 17 EAs - installs from _00 Live profiles/Packages/FTMO-AnyBroker (FTMO17-ANY-BROKER-TEST-20261030)
   Any broker test build\EAs\ and Any broker test build\Sets\ are exact copies of what is installed (hashes in PORTFOLIO.json).
   The installer applies your risk/DI choices and the account binding; the copies are the base presets.
    1. XAU RSI VWAP                           XAUUSD  H1   FTMO13-xau-rsi-vwap.ex5  |  FTMO13-xau-rsi-vwap.set

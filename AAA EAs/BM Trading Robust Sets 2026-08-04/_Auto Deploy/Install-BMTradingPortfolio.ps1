@@ -209,10 +209,10 @@ function Get-PortfolioItems {
             Label = 'Nasdaq 5M Candle Momentum'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
             Period = 5; Expert = 'Nasdaq 5M Open EMA ATR EA.ex5'
             ExpertSource = 'Nasdaq 5M DI ATR Deployment 2026-09-28\EA\Nasdaq 5M DI Wide ATR EA.ex5'
-            SetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $false
-            # User-selected for all launchers: DI14, 0.60% price SL, no TP, ATR6 from +1R; overnight/weekend holding.
+            SetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M - DI ATR6 STOP ATR6 TRAIL NO TP - 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $false
+            # User-selected for all launchers (2026-11-02): DI14, ATR14 x6 initial SL, no TP, ATR6 trail from +1R; overnight/weekend holding.
             ClaudeExpertSource = 'Nasdaq 5M DI ATR Deployment 2026-09-28\EA\Nasdaq 5M DI Wide ATR EA.ex5'
-            ClaudeSetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set'
+            ClaudeSetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M - DI ATR6 STOP ATR6 TRAIL NO TP - 1PCT.set'
         },
         [pscustomobject]@{
             Label = 'Sell Nasdaq 15min'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
@@ -989,7 +989,7 @@ if ($UseClaudeSelections) {
     $claudeItems = @($portfolio | Where-Object { $_.ClaudeByDesign })
     Write-Host ('CLAUDE EAS: Best Recommended settings plus {0} Claude-selected change(s): {1}.' -f $claudeItems.Count, (($claudeItems | ForEach-Object { $_.Label }) -join ', ')) -ForegroundColor Green
 }
-Write-Host ("Nasdaq 5M: DI14 {0}, 0.60% price stop, no TP, ATR6 trail from +1R; overnight/weekend holding." -f $NasdaqDIFilter) -ForegroundColor Green
+Write-Host ("Nasdaq 5M: DI14 {0}, ATR14 x6 initial stop, no TP, ATR6 trail from +1R; overnight/weekend holding." -f $NasdaqDIFilter) -ForegroundColor Green
 if ($NasdaqDIFilter -eq 'OFF') { Write-Host 'DI OFF is a custom selection; published DI-ON evidence does not apply.' -ForegroundColor Yellow }
 if ($UseReviewedSelections) {
     Write-Host 'REVIWED EAS: 25 owner-selected entries only. Passed to live trading phase is a user decision, NOT research qualification.' -ForegroundColor Cyan

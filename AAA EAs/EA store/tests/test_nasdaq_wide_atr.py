@@ -10,12 +10,12 @@ SLUG = 'nasdaq-5m-candle-momentum'
 
 def test_selected_management_and_archive_sources():
     p = get_product(SLUG)
-    assert p.recommended_dynamic_mode and p.dynamic_mode_label == 'DI + Wide Stop + ATR'
+    assert p.recommended_dynamic_mode and p.dynamic_mode_label == 'DI + ATR6 Stop + ATR Trail'
     assert 'DI ATR Deployment 2026-09-28' in p.dynamic_expert_source
     assert 'OPTIMIZED 2P5R - HARD' in p.set_source
     values = dict(l.split('=',1) for l in (PACKAGE_ROOT/p.dynamic_set_source).read_text().splitlines() if '=' in l)
     expected = dict(InpRequireDIAgreement='true', InpDIPeriod='14', InpEMAPeriod='12',
-                    InpStopMode='2', InpInitialStopPercent='0.60', InpUseFixedTarget='false',
+                    InpStopMode='0', InpInitialStopATR='6.0', InpUseFixedTarget='false',
                     InpUseATRTrailing='true', InpTrailingATR='6.0', InpTrailStartR='1.0',
                     InpCloseAtSessionEnd='false', InpUseMATrailing='false')
     assert all(values[k] == v for k,v in expected.items())
@@ -23,25 +23,25 @@ def test_selected_management_and_archive_sources():
 def test_each_period_uses_exact_selected_binary_and_ledger():
     p = get_product(SLUG)
     sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
-    for period,n,ret in [('6m',89,18.97),('1y',179,55.45),('3y',536,162.16),('5y',923,212.72)]:
+    for period,n,ret in [('6m',87,14.27),('1y',173,30.77),('3y',539,76.2),('5y',887,113.49)]:
         folder = STORE/'data/evidence-cache/v1/products'/SLUG/'dynamic'
         cache = json.loads((folder/f'{period}.json').read_text())
         trades = json.loads((folder/f'{period}.trades.json').read_text())
         assert cache['stats']['trades'] == len(trades) == n
         assert cache['stats']['return_pct'] == ret
-        assert cache['available_to'] == '2026-09-25'
+        assert cache['available_to'] == '2026-11-01'
         assert cache['source_fingerprint']['expert_sha256'] == sha(PACKAGE_ROOT/p.dynamic_expert_source)
         assert cache['source_fingerprint']['settings_sha256'] == sha(PACKAGE_ROOT/p.dynamic_set_source)
         assert abs(sum(t['net_profit'] for t in trades)-cache['stats']['net_profit']) < .02
-        assert 'Retrospective' in cache['notice'] and 'generated' in cache['notice']
+        assert 'retrospective' in cache['notice'] and 'generated' in cache['notice']
 
 def test_public_page_explains_new_default_without_old_launcher_claim():
     response = TestClient(app).get(f'/eas/{SLUG}?period=1y')
     assert response.status_code == 200
-    assert 'DI + Wide Stop + ATR' in response.text
-    assert '0.60%' in response.text and 'overnight' in response.text
+    assert 'DI + ATR6 Stop + ATR Trail' in response.text
+    assert 'ATR(14)' in response.text and 'overnight' in response.text
     assert 'keep the original Standard EA' not in response.text
-    assert '51.4' in response.text
+    assert '50.29' in response.text
 
 def test_ftmo_guarded_package_keeps_risk_and_news_policy():
     root = PACKAGE_ROOT/'FTMO Thirteen EA Deployment 2026-09-27'

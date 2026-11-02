@@ -93,7 +93,7 @@ if ($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilt
 }
 
 Write-Host "`nDynamic configuration" -ForegroundColor Green
-Write-Host ("  Nasdaq 5M DI14 filter: {0}; EMA12, 0.60% stop, ATR6 from +1R and no TP unchanged." -f $NasdaqDIFilter)
+Write-Host ("  Nasdaq 5M DI14 filter: {0}; EMA12, ATR14 x6 initial stop (2026-11-02), ATR6 trail from +1R and no TP unchanged." -f $NasdaqDIFilter)
 if ($NasdaqDIFilter -eq 'OFF') { Write-Host '  DI OFF is a custom selection; the published DI-ON results do not describe this selection.' -ForegroundColor Yellow }
 Write-Host ('  Non-News risk: {0} {1}' -f $RiskValue, $(if ($RiskMode -eq 'PERCENT') { '%' } else { 'USD per EA trade' }))
 if ($riskWasSelected -and $RiskMode -eq 'PERCENT') { $HourlyRiskPercent = $RiskValue }

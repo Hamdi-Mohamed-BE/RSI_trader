@@ -60,6 +60,18 @@ def test_six_months_honestly_archived(slug):
     assert p and not p['is_current_configuration'] and p['evidence_status']=='Archived configuration'
     assert 'Archived previous configuration' in p['evidence_label'] and 'not a result for the final selection' in p['notice']
 
+def _undo_nasdaq_atr6(old, row):
+    """2026-11-02 owner deployment: Nasdaq 5M initial stop 0.60% of price -> ATR(14) x 6 (two inputs + its SET hash).
+    Map exactly that change back so the historical roster/guard comparison still checks everything else."""
+    if row['slug'] != 'nasdaq-5m-candle-momentum' or row['inputs'].get('InpStopMode') != '0': return row
+    deploy = json.loads((PACKAGE_ROOT/'Nasdaq 5M ATR6 Stop Deployment 2026-11-02/PREPARE.json').read_text())
+    back = {v: k for k, v in deploy['hash_map'].items()}
+    assert row['inputs']['InpInitialStopATR'] == '6.0' and old['inputs']['InpStopMode'] == '2'
+    row = dict(row, inputs={**row['inputs'], 'InpStopMode': old['inputs']['InpStopMode'], 'InpInitialStopATR': old['inputs']['InpInitialStopATR']})
+    if row.get('settings_sha') in back: row['settings_sha'] = back[row['settings_sha']]
+    return row
+
+
 def test_ftmo_guard_risk_roster_and_other_binaries_preserved():
     folder=PACKAGE_ROOT/'FTMO Thirteen EA Deployment 2026-09-27'
     after=json.loads((folder/'PACKAGE.json').read_text());before=BEFORE['ftmo_manifest']
@@ -68,6 +80,7 @@ def test_ftmo_guard_risk_roster_and_other_binaries_preserved():
     assert after['guard_sha']==before['guard_sha']==BEFORE['guard_sha']==sha(folder/'CalyxFTMOGuard.mqh')
     changed=set()
     for old,row in zip(before['entries'],after['entries']):
+        row=_undo_nasdaq_atr6(old,row)
         assert old['slug']==row['slug'] and row['inputs']['InpRiskPercent']=='0.5' and row['inputs']['FTMOExpectedLogin']=='0'
         if old['expert_sha']!=row['expert_sha']:changed.add(row['slug'])
         if row['slug']=='usdjpy-london-open-momentum':

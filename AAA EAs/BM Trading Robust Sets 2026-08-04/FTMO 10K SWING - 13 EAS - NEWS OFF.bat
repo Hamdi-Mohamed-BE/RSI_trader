@@ -5,7 +5,7 @@ echo Selected-preset evidence is retrospective: 1, 3 and 5 years. Previous FTMO 
 setlocal
 title Calyx FTMO 10K Swing - 17 EAs - All five ORBs 0.5R - News OFF
 echo FTMO 2-Step Swing ONLY. 17 EAs, ALL five ORBs 0.5R. Fixed $50 maximum planned stop risk per trade. News OFF.
-echo Nasdaq 5M: DI14 selectable ON/OFF, default ON. 0.60%% stop, no TP, ATR6 from +1R unchanged.
+echo Nasdaq 5M: DI14 selectable ON/OFF, default ON. ATR14 x6 initial stop (2026-11-02), no TP, ATR6 trail from +1R.
 echo Previous fixed-target portfolio pass estimates are NOT validated for this new management.
 echo No terminal is armed automatically. Start with Algo Trading OFF and a flat account.
 echo.

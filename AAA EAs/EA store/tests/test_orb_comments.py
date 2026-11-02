@@ -23,6 +23,18 @@ def test_compiled_distributions_match_release():
         assert build.sha(PACKAGE_ROOT/item['expert'])==item['expert_sha']
         assert item['compile']=='0 errors, 0 warnings'
 
+def _undo_nasdaq_atr6(old, row):
+    """2026-11-02 owner deployment: Nasdaq 5M initial stop 0.60% of price -> ATR(14) x 6 (two inputs + its SET hash).
+    Map exactly that change back so the historical roster/guard comparison still checks everything else."""
+    if row['slug'] != 'nasdaq-5m-candle-momentum' or row['inputs'].get('InpStopMode') != '0': return row
+    deploy = json.loads((PACKAGE_ROOT/'Nasdaq 5M ATR6 Stop Deployment 2026-11-02/PREPARE.json').read_text())
+    back = {v: k for k, v in deploy['hash_map'].items()}
+    assert row['inputs']['InpInitialStopATR'] == '6.0' and old['inputs']['InpStopMode'] == '2'
+    row = dict(row, inputs={**row['inputs'], 'InpStopMode': old['inputs']['InpStopMode'], 'InpInitialStopATR': old['inputs']['InpInitialStopATR']})
+    if row.get('settings_sha') in back: row['settings_sha'] = back[row['settings_sha']]
+    return row
+
+
 def test_ftmo_only_orb_binaries_changed_and_guards_unchanged():
     folder=PACKAGE_ROOT/'FTMO Thirteen EA Deployment 2026-09-27'
     before=json.loads(build.baseline(folder/'PACKAGE.json'))
@@ -34,6 +46,7 @@ def test_ftmo_only_orb_binaries_changed_and_guards_unchanged():
     assert after['entries'][13]['inputs']['InpMarketEntries']=='true' and after['entries'][13]['inputs']['InpRiskPercent']=='0.5'
     admission=json.loads((PACKAGE_ROOT/'ADX DI Final Selection 2026-10-03/SELECTION.json').read_text())
     for old,new in zip(before['entries'],after['entries']):
+        new=_undo_nasdaq_atr6(old,new)
         if new['slug'] in admission['profiles']:
             profile=admission['profiles'][new['slug']]
             gates={k:profile['inputs'][k] for k in ('InpUseADXFilter','InpADXMinimum','InpRequireDIAgreement','InpADXTimeframe')} if profile['filter_status']=='kept' else {}

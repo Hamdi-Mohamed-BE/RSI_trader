@@ -8,7 +8,7 @@ Run: Codex_Best_FTMO.bat
 
 Check files offline (no MT5): append -ValidateOnly to the BAT.
 
-Prop ready - 9 EAs - installs from _00 Live profiles/Packages/PropReady (PROP-READY9-BROKER-NEUTRAL-20261017)
+Prop ready - 9 EAs - installs from _00 Live profiles/Packages/PropReady (PROP-READY9-BROKER-NEUTRAL-20261030)
   EAs\ and Sets\ are exact copies of what is installed (hashes in PORTFOLIO.json).
   The installer applies your risk/DI choices and the account binding; the copies are the base presets.
    1. XAU RSI VWAP                           XAUUSD  H1   FTMO13-xau-rsi-vwap.ex5  |  FTMO13-xau-rsi-vwap.set
