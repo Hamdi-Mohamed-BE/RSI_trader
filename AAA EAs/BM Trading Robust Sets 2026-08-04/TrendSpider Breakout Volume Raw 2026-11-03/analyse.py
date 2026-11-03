@@ -1,0 +1,133 @@
+"""TrendSpider "QLD Claude AI Scalper" raw study: windows, development / validation / OOS split, controls, sensitivities,
+best-day dependence, raw gate (RULES.md) and balance graph. -> RESULTS.md / RESULTS.json / balance.png
+python analyse.py  (needs matplotlib for the graph)"""
+import gzip, json, math, statistics, sys
+from collections import defaultdict
+from datetime import date, datetime, timedelta
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT.parents[1] / 'Calyx Research Pipeline'))
+from robustness import dependence  # noqa: E402
+
+SYMS = ['USTEC', 'US30', 'US500', 'XAUUSD']; NAME = {'USTEC': 'US100', 'US30': 'US30', 'US500': 'S&P 500', 'XAUUSD': 'Gold'}
+END = date(2026, 11, 3)
+WIN = {'Last 6 months': date(2026, 5, 3), 'Last 1 year': date(2025, 11, 3), 'Last 3 years': date(2023, 11, 3), 'Last 5 years': date(2021, 11, 3),
+       'Development 2019-23': (date(2019, 1, 1), date(2023, 11, 3)), 'Validation 2023-24': (date(2023, 11, 3), date(2024, 11, 3)),
+       'OOS 2024-26': (date(2024, 11, 3), END), 'All 2019-26': date(2019, 1, 1)}
+
+
+def load(sym, v):
+    d = ROOT / 'native' / f'nw-{sym}-{v}-full'
+    if not (d / 'run.json').exists(): return None
+    m = json.loads((d / 'run.json').read_text()); t = json.loads(gzip.decompress((d / 'trades.json.gz').read_bytes()))
+    for x in t: x['o'] = datetime.fromisoformat(x['open_time']); x['c'] = datetime.fromisoformat(x['close_time'])
+    t.sort(key=lambda x: x['c']); return dict(meta=m, trades=t)
+
+
+def streaks(p):
+    w, l, cur, sign = [], [], 0, 0
+    for v in p:
+        s = 1 if v > 0 else -1
+        if s == sign: cur += 1
+        else:
+            if sign == 1: w.append(cur)
+            elif sign == -1: l.append(cur)
+            sign, cur = s, 1
+    if sign == 1: w.append(cur)
+    elif sign == -1: l.append(cur)
+    return (round(statistics.mean(w), 2) if w else 0, max(w) if w else 0, round(statistics.mean(l), 2) if l else 0, max(l) if l else 0)
+
+
+def stats(t, a, b):
+    ts = [x for x in t if a <= x['o'].date() < b]; days = (b - a).days
+    wk = sum(1 for i in range(days) if (a + timedelta(days=i)).weekday() < 5)
+    p = [x['net_profit'] for x in ts]; gp, gl = sum(v for v in p if v > 0), -sum(v for v in p if v < 0)
+    dep = 100000.0 * (1 + sum(x['net_profit'] for x in t if x['o'].date() < a) / 100000.0)    # balance at window start
+    bal = peak = dep; dd = 0.0; daily = defaultdict(float); monthly = defaultdict(float)
+    for x in ts:
+        bal += x['net_profit']; peak = max(peak, bal); dd = max(dd, (peak - bal) / peak * 100)
+        daily[x['c'].date()] += x['net_profit']; monthly[(x['c'].year, x['c'].month)] += x['net_profit']
+    # Sharpe: annualised, daily closed P&L over every weekday of the window (0 on days with no close)
+    r = [daily.get(a + timedelta(days=i), 0.0) / dep for i in range(days) if (a + timedelta(days=i)).weekday() < 5]
+    sh = round(statistics.mean(r) / statistics.pstdev(r) * math.sqrt(252), 2) if len(r) > 1 and statistics.pstdev(r) > 0 else None
+    months = max(1, round(days / 30.4375)); cons = round(100 * sum(v > 0 for v in monthly.values()) / months, 1)
+    aw, mw, al, ml = streaks(p)
+    return dict(n=len(ts), per_month=round(len(ts) / (days / 30.4375), 2), per_day=round(len(ts) / wk, 3) if wk else None,
+                ret=round((bal / dep - 1) * 100, 2), pf=round(gp / gl, 2) if gl else None, win=round(100 * sum(v > 0 for v in p) / len(p), 1) if p else None,
+                consistency=cons, avg_win_streak=aw, max_win_streak=mw, avg_loss_streak=al, max_loss_streak=ml, sharpe=sh, balance_dd=round(dd, 2),
+                swap=round(sum(x['swap'] for x in ts), 0), commission=round(sum(x['commission'] for x in ts), 0))
+
+
+def window(t, k):
+    w = WIN[k]; a, b = (w if isinstance(w, tuple) else (w, END)); return stats(t, a, b)
+
+
+res = {}
+for s in SYMS:
+    for v in ('MAIN', 'RND1', 'RND2', 'RND3', 'S_SESS', 'S_NOVOL', 'S_2X'):
+        r = load(s, v)
+        if r: res[(s, v)] = dict(meta=r['meta']['metrics'], windows={k: window(r['trades'], k) for k in WIN}, trades=r['trades'])
+
+gate = {}
+for s in SYMS:
+    m = res.get((s, 'MAIN'))
+    if not m: continue
+    w3, w5 = m['windows']['Last 3 years'], m['windows']['Last 5 years']
+    rnd = [res[(s, f'RND{i}')]['windows']['Last 5 years']['ret'] for i in (1, 2, 3) if (s, f'RND{i}') in res]
+    five = [x for x in m['trades'] if x['o'].date() >= WIN['Last 5 years']]
+    dep = dependence([dict(net_profit=x['net_profit'], close_time=x['close_time']) for x in five])
+    checks = dict(positive_3y_5y=w3['ret'] > 0 and w5['ret'] > 0, pf_3y_5y=(w3['pf'] or 0) >= 1.15 and (w5['pf'] or 0) >= 1.15,
+                  trades=w5['n'] >= 30, beats_random=bool(rnd) and w5['ret'] > statistics.mean(rnd), best_day=dep.get('verdict') == 'PASS')
+    gate[s] = dict(checks=checks, verdict='PASS' if all(checks.values()) else 'FAIL', random_5y=rnd, dependence=dep)
+
+md = ['# TrendSpider "QLD Claude AI Scalper" on US100 / US30 / S&P 500 / Gold: raw results (generated by analyse.py)', '',
+      'M30, long only, native MT5 Model 4 (real ticks from 2026-01, generated before), $100,000 per asset, 1x notional (position = equity), '
+      '150 ms, recorded commission + swap. Indices trade the New York regular session; gold every bar. Rules in RULES.md.', '',
+      'Metrics: consistency = % of calendar months with a profit; Sharpe = annualised daily closed P&L; balance DD = closed-trade drawdown; '
+      'equity DD = MT5 report (full run only); trades/day over weekdays.', '']
+for s in SYMS:
+    m = res.get((s, 'MAIN'))
+    if not m: continue
+    g = gate[s]; nm = m['meta']
+    md += [f"## {NAME[s]} ({s}) — raw gate **{g['verdict']}**",
+           f"Full native run 2019-01-01 → 2026-11-03: {nm['return_pct']:+}%, PF {nm['profit_factor']}, {nm['trades']} trades, equity DD {nm['max_drawdown_pct']}% (MT5 maximal), "
+           f"balance DD {nm.get('balance_dd_pct')}%, {nm['history_quality']}.", '',
+           '| Window | Return | PF | Win % | Trades | /month | /day | Consistency | Avg / max win streak | Avg / max loss streak | Sharpe | Balance DD | Swap $ |',
+           '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|']
+    for k, x in m['windows'].items():
+        md.append(f"| {k} | {x['ret']:+}% | {x['pf']} | {x['win']} | {x['n']} | {x['per_month']} | {x['per_day']} | {x['consistency']}% | "
+                  f"{x['avg_win_streak']} / {x['max_win_streak']} | {x['avg_loss_streak']} / {x['max_loss_streak']} | {x['sharpe']} | {x['balance_dd']}% | {x['swap']:,.0f} |")
+    d = g['dependence']
+    md += ['', '| Last 5 years: comparison | Return | PF | Trades | Balance DD |', '|---|---:|---:|---:|---:|']
+    for v, lab in (('MAIN', 'Published rules'), ('RND1', 'Random entries, seed 1'), ('RND2', 'Random entries, seed 2'), ('RND3', 'Random entries, seed 3'),
+                   ('S_SESS', 'Session flipped'), ('S_NOVOL', 'No volume filter'), ('S_2X', '2x notional (QLD-like)')):
+        if (s, v) in res:
+            x = res[(s, v)]['windows']['Last 5 years']; md.append(f"| {lab} | {x['ret']:+}% | {x['pf']} | {x['n']} | {x['balance_dd']}% |")
+    md += ['', f"Gate: positive 3y+5y {g['checks']['positive_3y_5y']}, PF ≥ 1.15 3y+5y {g['checks']['pf_3y_5y']}, ≥ 30 trades {g['checks']['trades']}, "
+           f"beats random mean {g['checks']['beats_random']}, best-day check {d.get('verdict')}."]
+    if d.get('applicable'):
+        md.append(f"Best-day check (5y, $): total {d['total']:+,.0f}; without best day {d['without_best_day']:+,.0f}; without best trade {d['without_best_trade']:+,.0f}; "
+                  f"without 5 best days {d['without_top5_days']:+,.0f}.")
+    md.append('')
+md += ['## Survivors for optimisation', ', '.join(NAME[s] for s, g in gate.items() if g['verdict'] == 'PASS') or 'None: every asset failed the raw gate, so no optimisation.', '',
+       'Published claim (QLD, period unstated): +127% vs buy & hold +105%, 62% winners, max DD −12.3%.']
+(ROOT / 'RESULTS.md').write_text('\n'.join(md) + '\n', encoding='utf-8')
+(ROOT / 'RESULTS.json').write_text(json.dumps(dict(gate=gate, results={f'{s}|{v}': dict(meta=r['meta'], windows=r['windows']) for (s, v), r in res.items()}),
+                                              indent=1, default=str), encoding='utf-8')
+print('\n'.join(md))
+try:
+    import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt
+    fig, axes = plt.subplots(2, 2, figsize=(13, 8), sharex=True)
+    for ax, s in zip(axes.flat, SYMS):
+        for v, st in (('MAIN', dict(lw=1.8, color='#2a6fdb')), ('RND1', dict(lw=.8, color='#999')), ('RND2', dict(lw=.8, color='#bbb')), ('RND3', dict(lw=.8, color='#ccc'))):
+            if (s, v) not in res: continue
+            t = res[(s, v)]['trades']; bal = 100000; xs, ys = [datetime(2019, 1, 1)], [bal]
+            for x in t: bal += x['net_profit']; xs.append(x['c']); ys.append(bal)
+            ax.step(xs, ys, where='post', label='published rules' if v == 'MAIN' else ('random entries' if v == 'RND1' else None), **st)
+        ax.axvspan(datetime(2023, 11, 3), datetime(2024, 11, 3), color='#e6eef7', zorder=0); ax.axvspan(datetime(2024, 11, 3), datetime(2026, 11, 3), color='#e8f5e9', zorder=0)
+        ax.set_title(f'{NAME[s]} ({s}) M30 · gate {gate.get(s, {}).get("verdict", "?")}', fontsize=10); ax.legend(fontsize=8)
+    fig.suptitle('TrendSpider breakout + volume · closed balance from $100k · validation (blue) / OOS (green) shaded', fontsize=11)
+    fig.tight_layout(); fig.savefig(ROOT / 'balance.png', dpi=120)
+except ImportError:
+    print('matplotlib not installed: no graph')

@@ -739,6 +739,29 @@ of what is currently attached to a live terminal.
     - G2 (QuantLab structure: Q4-only, H1): all +16.3% PF 1.14. G3 (H1 all year): +1.5%. G4 (breakout off): +17.8%.
     - MC 1y: G0 P(loss) 20%, median +7.0%; G1 24%, median +3.7%.
     - QuantLab claim (+210%, PF 1.26) not reproduced. Keep production; nothing changed.
+- 2026-11-03: `TrendSpider Breakout Volume Raw 2026-11-03/` (owner link: TrendSpider "QLD Claude AI Scalper").
+  - Rules: M30 long only; close > prior-30-bar high; tick volume ≥ 1.75 x SMA20; bullish bar; exit after 16 bars if PnL < 0.5%, else at 60;
+    no stop. Translation: 1x notional, $100k; indices on the NY regular session, gold on every bar.
+  - 28 native Model-4 runs, 2019-01 → 2026-11-03. Addendum 1 (pre-main smoke): exit retry + $100k; no rule change.
+  - Indices FAIL the raw gate:
+    - USTEC: all −5.3%, PF 0.88, 77 trades (0.8/month); 5y −4.9%.
+    - US30: −12.2%, PF 0.76.
+    - US500: −24.7%, PF 0.48.
+    - All three lose to random entries; 2x notional is worse.
+  - XAUUSD formally PASSES:
+    - all +33.6%, PF 1.17, 641 trades (6.8/month); 5y +26.2% PF 1.19; 3y +21.3% PF 1.24; OOS +18.8% PF 1.30.
+    - But random entries PF 0.85–1.25 (mean +9%; seed 3 +23%); without the 5 best days ≈ $0.
+    - Flat 2020-25; most of the profit comes from the 2026 gold rally.
+    - Only weak evidence for the signal; Bear review not run; no optimisation yet. Nothing installed or pushed.
+- 2026-11-03: `Portfolio October 2026 ATR6 2026-11-03/` (owner: October only, every profile, news EAs removed).
+  - Method: 53 native Model-4 member runs (Oct 1 → Nov 1, 100% real ticks, 1% each):
+    - Current14 wrapper EX5s; Full EA members via the installer's own Get-EffectiveInputs (`resolve_full.ps1`), adaptive off;
+    - plus Nasdaq old/new × DI ON/OFF and funded_v1's ORB VP VC 0.5R.
+  - The R-replay (`replay.py`) uses closed-balance guards; it is not the website engine. Results new ATR6 vs old 0.60%:
+    - FTMO +2.42 / +0.98%; Current14 +3.69 / +3.26%; ORB-only −1.71%;
+    - Prop ready −0.06 / −0.52%; Best Prop 9 +0.07 / −1.04%; Best Prop 15 +13.34 / +15.55% (guard admission differs);
+    - funded_v1 +3.60 / +3.20%; Turbo 5 +2.81 / +2.28%; Full EA no news +4.31 / +4.10% (407 trades, 208 from the hourly profiles).
+  - Not published to the website.
 - 2026-11-02: Telegram signals daily recap (`AAA EAs/system signals/`; SIGNALS_DAILY_RECAP / SIGNALS_RECAP_TIME, default 17:00 New York;
   DST computed without a tz database; 9 tests pass). Pushed in `6a83f84f6` on `new-telegram-copy`.
 
