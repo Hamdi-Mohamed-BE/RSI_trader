@@ -7,11 +7,13 @@ param(
     [ValidateSet('ON','OFF')][string]$UsdJpyDIFilter='ON',
     [ValidateSet('Challenge','Verification','Funded')][string]$Phase='Challenge',
     [ValidateSet('ON','OFF')][string]$NasdaqDIFilter='ON',
+    [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [switch]$PromptNasdaqDIFilter,
     [switch]$ValidateOnly,
     [switch]$PreflightOnly
 )
 Set-StrictMode -Version Latest
+. (Join-Path $PSScriptRoot '..\..\Calyx-InstallChoices.ps1')
 $ErrorActionPreference='Stop'
 # Legacy direct PROP_READY9 calls must use the broker-neutral package too.
 if($PortfolioVariant -eq 'PROP_READY9'){
@@ -47,6 +49,7 @@ function Get-FTMOPresetInputs([object]$Entry, [ValidateSet('ON','OFF')][string]$
     if($Entry.slug -eq 'nasdaq-5m-candle-momentum'){
         if(-not $inputs.Contains('InpRequireDIAgreement')){throw 'Nasdaq preset does not support DI selection.'}
         $inputs['InpRequireDIAgreement']=if($DIChoice -eq 'OFF'){'false'}else{'true'}
+        Set-CalyxNasdaqVersion $inputs $NasdaqStopVersion
     }
     if($Entry.slug -eq 'usdjpy-london-open-momentum'){
         if(-not $inputs.Contains('InpRequireDIAgreement')){throw 'USDJPY does not support DI selection'}
@@ -99,6 +102,8 @@ if($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilte
     if($diChoice -notin @('ON','OFF')){throw 'Nasdaq DI filter must be ON or OFF.'}
     $NasdaqDIFilter=$diChoice
 }
+$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
+Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))
 Write-Host ("Nasdaq 5M DI14 filter: {0}; wider stop and ATR trailing unchanged." -f $NasdaqDIFilter)
 Write-Host ("USDJPY London DI filter: {0}; ADX >=20 stays enabled." -f $UsdJpyDIFilter)
 if($NasdaqDIFilter -eq 'OFF'){Write-Host 'DI OFF is a custom selection; published DI-ON results do not describe it.' -ForegroundColor Yellow}

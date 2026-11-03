@@ -213,8 +213,10 @@ def main():
 
 
 def installer_only():
-    """Regenerate only the installer (it is not part of the hashed package); no compile, EX5/SETs untouched."""
-    (HERE / 'Install-BestProp15.ps1').write_bytes(installer_text().encode('utf-8')); print('installer regenerated')
+    """Regenerate only the installer and its helpers (not part of the hashed package); no compile, EX5/SETs untouched."""
+    (HERE / 'Install-BestProp15.ps1').write_bytes(installer_text().encode('utf-8'))
+    helpers = sub1(read(BP9 / 'Account-Helpers.ps1'), "throw 'Best Prop 9 requires a hedging MT5 account", "throw 'Best Prop 15 requires a hedging MT5 account")
+    (HERE / 'Account-Helpers.ps1').write_bytes(helpers.replace('\n', '\r\n').encode('utf-8')); print('installer + helpers regenerated')
 
 
 if __name__ == '__main__':

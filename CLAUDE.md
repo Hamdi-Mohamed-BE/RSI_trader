@@ -762,6 +762,32 @@ of what is currently attached to a live terminal.
     - Prop ready −0.06 / −0.52%; Best Prop 9 +0.07 / −1.04%; Best Prop 15 +13.34 / +15.55% (guard admission differs);
     - funded_v1 +3.60 / +3.20%; Turbo 5 +2.81 / +2.28%; Full EA no news +4.31 / +4.10% (407 trades, 208 from the hourly profiles).
   - Not published to the website.
+- 2026-11-03 IN PROGRESS (uncommitted): install-time choices (owner: "ask old or new Nasdaq 5M, enable/disable every guard, full descriptions").
+  - Phase 1 DONE: shared `_00 Live profiles/Calyx-InstallChoices.ps1` (Nasdaq NEW ATR6 / OLD 0.60% question; Recommended Adaptive governor
+    single ON/OFF switch, owner chose no recompile). Wired via `Install Choices 2026-11-03/wire_phase1.py` (backups in before/) into the
+    canonical installer, Start-LiveProfile, PropReady (+ regenerated AnyBroker), FTMO, BP9 (+ BP15 `build.py installer`, now also writes
+    helpers), funded_v1, Turbo5, and Current14 (Build-Package.py transform, rebuilt --no-compile, Verify-Release PASS). Defaults = NEW / ON.
+    All BATs -ValidateOnly PASS (reviwed_Eas pre-existing fail); OLD forced through the launcher PASSES for 6 profiles.
+  - Phase 2 NOT STARTED: per-guard ON/OFF inputs (owner chose one question per guard). Plan: 11 switches in the Prop Ready guard family
+    (PropReady=AnyBroker copy dccd01b2df60, BP9 1a728ed1c936, BP15 c92754ab772a) + FTMO-only guard (consts) + funded_v1 + Turbo guards;
+    recompile wrappers; the Prop Ready guard refuses the tester, so parity = default-path source review + 0/0 compiles.
+  - `Prop Portfolio Selection 2026-11-03/` (PLAN.md frozen): native ATR6 DI ON/OFF + ORB VP VC 0.5R runs done; 10 streams built (parity
+    PASS); 20 challenge runs were running (`prop_select.py challenge`, logs/); then `table.py`, funded stage for the top 3.
+- 2026-11-03: `Live 2K Three EA 2026-11-03/` (owner: ~$2k real funds in 2 months; Nasdaq 5M + RSI VWAP + EMA3, $80/trade).
+  - Method: Python replay of the five-year long-history native ledgers, with filled stops and floating marks.
+  - $80 fixed, DI ON: +$198/month mean (median +$232); last 2 years +$300/month; 2021-23 +$123/month (median +$2).
+  - Risk: 34% losing months; worst month −$965; 5y closed DD $2,025 (> account).
+  - MC 1 year: median +$2,436; losing year 6%; equity < $1,000 in 13% of years.
+  - $40 per trade: +$114/month, < $1,000 in 2.1% of years.
+  - The Nasdaq 5M EX5 caps risk at 1% of equity (≈ $20 on $2k), so $80 needs a code change; RSI VWAP / EMA3 are % of equity, uncapped.
+  - 4-EA version (+ Gold Overnight VA, which has a real fixed-$ mode; `sim4.py`): $80 +$212/month (last 2 years +$375; 2021-24 ~ +$95),
+    39 trades/month, 34% losing months, MC < $1,000 in 13.7% of years. Gold Overnight itself adds only +$14/month (PF 1.05).
+- 2026-11-03: `Topstep 50K Plan 2026-11-03/` (owner bought a Topstep 50K Combine: +$3k target, $2k EOD-trailing MLL, $1k DLL, 50%
+  consistency, flat 15:10 CT; RSI VWAP + Nasdaq 5M at ~$400; MNQ / MGC; replay of the 5y native ledgers with marks).
+  - Recommended plan: RSI + Nasdaq ATR6, forced flat 15:10 CT, $400.
+    - Pass within 2 weeks 3%, within 3 weeks 8% (last 2 years 11%), fail 15%.
+    - Within 12 weeks: pass 39% (2021-23 24%, last 2 years 64%), fail 46%; median 29 trading days.
+  - $500 / $600 raise fails more than passes. RSI-only cannot pass. Topstep is futures, not MT5 (copy the signals).
 - 2026-11-02: Telegram signals daily recap (`AAA EAs/system signals/`; SIGNALS_DAILY_RECAP / SIGNALS_RECAP_TIME, default 17:00 New York;
   DST computed without a tz database; 9 tests pass). Pushed in `6a83f84f6` on `new-telegram-copy`.
 

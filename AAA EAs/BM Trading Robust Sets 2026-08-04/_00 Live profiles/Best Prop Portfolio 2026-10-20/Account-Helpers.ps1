@@ -64,7 +64,7 @@ function Assert-PropReadyConfirmation([object]$Original,[object]$Confirmation) {
 
 function Get-PropReadyPresetInputs([object]$Entry) {
     $inputs=Read-SetInputs (Join-Path $Package $Entry.settings)
-    if($Entry.slug -eq 'nasdaq-5m-candle-momentum'){$inputs['InpRequireDIAgreement']=if($NasdaqDIFilter -eq 'OFF'){'false'}else{'true'}}
+    if($Entry.slug -eq 'nasdaq-5m-candle-momentum'){$inputs['InpRequireDIAgreement']=if($NasdaqDIFilter -eq 'OFF'){'false'}else{'true'};Set-CalyxNasdaqVersion $inputs $NasdaqStopVersion}
     if($Entry.slug -eq 'usdjpy-london-open-momentum'){$inputs['InpRequireDIAgreement']=if($UsdJpyDIFilter -eq 'OFF'){'false'}else{'true'}}
     $inputs['FTMOAllocationMode']=if($RiskMode -eq 'FIXED_USD'){'0'}else{'1'}
     $inputs['FTMOAllocationValue']=$RiskValue.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)

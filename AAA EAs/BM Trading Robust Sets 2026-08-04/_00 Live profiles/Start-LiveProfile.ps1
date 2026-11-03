@@ -7,6 +7,8 @@ param(
     [string[]]$NewsOff=@(),
     [ValidateSet('','ON','OFF')][string]$NasdaqDIFilter='',
     [ValidateSet('','ON','OFF')][string]$UsdJpyDIFilter='',
+    [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
+    [ValidateSet('','ON','OFF')][string]$AdaptiveControls='',
     [ValidateSet('Challenge','Verification','Funded')][string]$Phase='Challenge',
     [string]$GoldSymbol='',
     [string]$NasdaqSymbol='',
@@ -83,6 +85,9 @@ foreach($field in @('NasdaqDIFilter','UsdJpyDIFilter')){
     }
 }
 if(-not $NasdaqDIFilter){$NasdaqDIFilter='ON'};if(-not $UsdJpyDIFilter){$UsdJpyDIFilter='ON'}
+. (Join-Path $PSScriptRoot 'Calyx-InstallChoices.ps1')
+if($Portfolio -ne 'orbs-only'){$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)}
+if($Portfolio -eq 'full-eas'){$AdaptiveControls=Read-CalyxAdaptiveControls $AdaptiveControls ([bool]$ValidateOnly)}
 if($Portfolio -eq 'codex-best-ftmo' -and -not $PSBoundParameters.ContainsKey('Phase') -and -not $ValidateOnly){
     Write-Host '1 = Challenge (+10% target); 2 = Verification (+5% target); 3 = continuous demo/live (no profit-target entry stop)'
     $phaseChoice=(Read-Host 'Account mode [1]').Trim();if(-not $phaseChoice){$phaseChoice='1'}
@@ -101,6 +106,8 @@ if($Portfolio -notin @('codex-best-ftmo','ftmo-any-broker') -and ($GoldSymbol -o
 }
 Write-Host "Selected risk: $RiskValue $RiskMode per trade; DI choices change the published tested preset."
 $arguments=@{RiskMode=$RiskMode;RiskValue=$RiskValue;NasdaqDIFilter=$NasdaqDIFilter;UsdJpyDIFilter=$UsdJpyDIFilter}
+if($Portfolio -ne 'orbs-only'){$arguments['NasdaqStopVersion']=$NasdaqStopVersion}
+if($Portfolio -eq 'full-eas'){$arguments['AdaptiveControls']=$AdaptiveControls}
 $global:LASTEXITCODE=0
 if($ValidateOnly){$arguments.ValidateOnly=$true}
 if($PreflightOnly){$arguments.PreflightOnly=$true}

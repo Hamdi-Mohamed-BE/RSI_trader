@@ -6,6 +6,8 @@ Native MT5 Model 4 member runs, 2026-10-01 → 2026-11-01 (100% real ticks), eac
 |---|---|---|---:|---:|---:|---:|---:|---:|---|
 | FTMO guarded - Current 14 + ORB 0.5R (17); the any-broker test build is identical in this model | $50/trade, guard | **new ATR6** | +2.42% | +242 | 1.12 | 47.8 | 92 (4.18) | 4.29% | total open risk 15, losses per day 12, symbol open risk 1 |
 | FTMO guarded - Current 14 + ORB 0.5R (17); the any-broker test build is identical in this model | $50/trade, guard | old 0.60% | +0.98% | +98 | 1.05 | 46.5 | 86 (3.91) | 3.59% | total open risk 12, losses per day 19, symbol open risk 3 |
+| FTMO guarded 17 at 1% (prop selection pick; ANY BROKER TEST BAT with 1% chosen) | $100/trade, guard | **new ATR6** | +2.97% | +297 | 1.08 | 46.1 | 89 (4.05) | 8.59% | total open risk 15, daily loss reserve 2, losses per day 10, equity buffer 3, symbol open risk 1 |
+| FTMO guarded 17 at 1% (prop selection pick; ANY BROKER TEST BAT with 1% chosen) | $100/trade, guard | old 0.60% | +1.96% | +196 | 1.05 | 46.5 | 86 (3.91) | 7.18% | total open risk 12, daily loss reserve 1, losses per day 18, symbol open risk 3 |
 | Current 14 + ORB 0.5R (17) | 0.5% of balance | **new ATR6** | +3.69% | +369 | 1.16 | 50.8 | 120 (5.45) | 5.57% | no guard |
 | Current 14 + ORB 0.5R (17) | 0.5% of balance | old 0.60% | +3.26% | +326 | 1.14 | 50.0 | 120 (5.45) | 4.94% | no guard |
 | ORB-only - all five at 0.5R (5) | 0.5% of balance | no Nasdaq 5M | -1.71% | -171 | 0.47 | 37.5 | 16 (0.73) | 2.43% | no guard |
@@ -21,6 +23,16 @@ Native MT5 Model 4 member runs, 2026-10-01 → 2026-11-01 (100% real ticks), eac
 | Turbo 50k - Custom 5 Guarded (5) | 0.75% (≤0.3%), trailing-floor guard | old 0.60% DI OFF | +2.28% | +228 | 1.34 | 60.7 | 61 (2.77) | 1.61% | daily profit cap 1 |
 | Full EA portfolio - Recommended Adaptive, news removed (32) | 0.25% of balance | **new ATR6** | +4.31% | +431 | 1.16 | 43.7 | 407 (18.5) | 7.22% | no guard |
 | Full EA portfolio - Recommended Adaptive, news removed (32) | 0.25% of balance | old 0.60% | +4.10% | +410 | 1.15 | 43.5 | 407 (18.5) | 7.19% | no guard |
+| Custom 7 | 0.25% of balance | **new ATR6** | +4.80% | +480 | 1.63 | 59.2 | 71 (3.23) | 1.72% | no guard |
+| Custom 7 | 0.25% of balance | old 0.60% | +4.58% | +458 | 1.58 | 57.7 | 71 (3.23) | 1.71% | no guard |
+| Custom 7 | 0.5% of balance | **new ATR6** | +9.63% | +963 | 1.62 | 59.2 | 71 (3.23) | 3.43% | no guard |
+| Custom 7 | 0.5% of balance | old 0.60% | +9.21% | +921 | 1.58 | 57.7 | 71 (3.23) | 3.4% | no guard |
+| Custom 7 | $50/trade, guard | **new ATR6** | +9.95% | +995 | 1.71 | 58.5 | 65 (2.95) | 2.73% | total open risk 4, symbol open risk 2 |
+| Custom 7 | $50/trade, guard | old 0.60% | +9.50% | +950 | 1.65 | 56.9 | 65 (2.95) | 2.68% | total open risk 4, symbol open risk 2 |
+| Custom 7 | $100/trade, guard | **new ATR6** | +19.90% | +1,990 | 1.71 | 58.5 | 65 (2.95) | 5.26% | total open risk 4, symbol open risk 2 |
+| Custom 7 | $100/trade, guard | old 0.60% | +18.99% | +1,899 | 1.65 | 56.9 | 65 (2.95) | 5.14% | total open risk 4, symbol open risk 2 |
+| Custom 7 | 0.5%, trailing-floor guard | **new ATR6** | +6.03% | +603 | 1.96 | 61.4 | 57 (2.59) | 1.09% | daily profit cap 14 |
+| Custom 7 | 0.5%, trailing-floor guard | old 0.60% | +5.16% | +516 | 1.75 | 59.3 | 59 (2.68) | 1.1% | daily profit cap 12 |
 
 ## Members, October standalone at 1% (native report)
 | Member | Return | PF | Trades | Win % | Equity DD |

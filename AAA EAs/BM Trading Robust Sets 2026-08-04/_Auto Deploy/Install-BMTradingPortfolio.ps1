@@ -28,6 +28,9 @@ param(
     [switch]$NasdaqChosenRisk,
     # 2026-10-27 owner: news bots the user switched OFF in the launcher are not installed at all.
     [string[]]$SkipNewsBots = @(),
+    # 2026-11-03 owner: Nasdaq 5M stop version and the governor switch are asked at install (defaults = tested NEW / ON).
+    [ValidateSet('', 'NEW', 'OLD')][string]$NasdaqStopVersion = '',
+    [ValidateSet('', 'ON', 'OFF')][string]$AdaptiveControls = '',
     [switch]$ValidateOnly,
     [switch]$PreflightOnly,
     [switch]$Yes
@@ -68,6 +71,10 @@ $GoldNewsRoot = [IO.Path]::GetFullPath((Join-Path $PackageRoot '..\..\AI news'))
 $GoldNewsRuntimeInstaller = Join-Path $GoldNewsRoot 'Install-GoldNewsV9EA.ps1'
 . (Join-Path $PSScriptRoot 'News-Launcher-Policy.ps1')
 . (Join-Path $PSScriptRoot 'Reviewed-Portfolio-Policy.ps1')
+. (Join-Path (Split-Path -Parent $PSScriptRoot) '_00 Live profiles\Calyx-InstallChoices.ps1')
+$NasdaqStopVersion = Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]($ValidateOnly -or $PreflightOnly -or $Yes))
+if ($UseAdaptiveProfile) { $AdaptiveControls = Read-CalyxAdaptiveControls $AdaptiveControls ([bool]($ValidateOnly -or $PreflightOnly -or $Yes)) } elseif (-not $AdaptiveControls) { $AdaptiveControls = 'OFF' }
+Write-Host ('Nasdaq 5M: ' + (Get-CalyxNasdaqVersionText $NasdaqStopVersion) + $(if ($UseAdaptiveProfile) { '; portfolio risk governor ' + $AdaptiveControls } else { '' }))
 $Unicode = New-Object System.Text.UnicodeEncoding($false, $true)
 
 function Write-Stage([string]$Message) {
@@ -558,12 +565,13 @@ function Get-EffectiveInputs([object]$Item) {
         $inputs['InpSizingMode'] = if ($UsesDynamicRisk -and $RiskMode -eq 'FIXED_USD') { '2' } else { '1' }
         $inputs['InpRiskPercent'] = ([double]$Item.EffectiveRiskPercent).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
         $inputs['InpFixedRiskMoney'] = ([double]$Item.EffectiveRisk).ToString('0.########', [Globalization.CultureInfo]::InvariantCulture)
-        $inputs['InpAdaptivePortfolioControls'] = if ($UseAdaptiveProfile) { 'true' } else { 'false' }
+        $inputs['InpAdaptivePortfolioControls'] = if ($UseAdaptiveProfile -and $AdaptiveControls -ne 'OFF') { 'true' } else { 'false' }
         return $inputs
     }
     if ($Item.Label -eq 'Nasdaq 5M Candle Momentum') {
         if (-not $inputs.Contains('InpRequireDIAgreement')) { Stop-WithMessage 'Nasdaq preset does not support the requested DI selection.' }
         $inputs['InpRequireDIAgreement'] = if ($NasdaqDIFilter -eq 'OFF') { 'false' } else { 'true' }
+        Set-CalyxNasdaqVersion $inputs $NasdaqStopVersion
     }
     # All Standard/Safe/Dynamic/Recommended Adaptive BATs share this guard.
     if ($Item.Label -eq 'News Pulse XAU') {
@@ -587,7 +595,7 @@ function Get-EffectiveInputs([object]$Item) {
     if (Test-NewsAdaptiveExemption $Item) {
         $inputs['InpAdaptivePortfolioControls'] = 'false'
     } elseif ($UseAdaptiveProfile) {
-        $inputs['InpAdaptivePortfolioControls'] = 'true'
+        $inputs['InpAdaptivePortfolioControls'] = if ($AdaptiveControls -eq 'OFF') { 'false' } else { 'true' }
     }
     if ([bool]$Item.ForceEnable -and $inputs.Contains('InpEnableTrading')) {
         $inputs['InpEnableTrading'] = 'true'

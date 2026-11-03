@@ -49,6 +49,16 @@ def transform_installer(count):
     s=s.replace('RiskValue=$RiskValue; Profile=', 'RiskValue=$RiskValue; NasdaqDI=$NasdaqDIFilter; UsdJpyDI=$UsdJpyDIFilter; Profile=')
     s=s.replace('Percentage per trade [1]','Percentage per trade [0.5]').replace("{ $answer='1' }","{ $answer='0.5' }")
     s=s.replace('default: 1%', 'default: 0.5%')
+    # 2026-11-03 owner: Nasdaq 5M NEW/OLD stop question. The shared helper is inlined because the single-file BAT extracts
+    # this installer on its own; the parameter stays in the declaration the bootstrap splits off.
+    def sub1(text,old,new):
+        assert text.count(old)==1,old[:80];return text.replace(old,new)
+    choices=read(B/'_00 Live profiles'/'Calyx-InstallChoices.ps1')
+    s=sub1(s,"    [ValidateSet('', 'ON', 'OFF')][string]$UsdJpyDIFilter = '',","    [ValidateSet('', 'ON', 'OFF')][string]$UsdJpyDIFilter = '',\n    [ValidateSet('', 'NEW', 'OLD')][string]$NasdaqStopVersion = '',")
+    assert s.count("$ErrorActionPreference = 'Stop'\n")>=1;s=s.replace("$ErrorActionPreference = 'Stop'\n","$ErrorActionPreference = 'Stop'\n"+choices+"\n",1)
+    nas="if ($Item.Key -eq 'nasdaq-5m-candle-momentum') { $inputs['InpRequireDIAgreement']=if ($NasdaqDIFilter -eq 'OFF') { 'false' } else { 'true' } }"
+    s=sub1(s,nas,nas[:-1]+"; Set-CalyxNasdaqVersion $inputs $NasdaqStopVersion }")
+    s=sub1(s,"$candidates=@(Get-Mt5Candidates | Where-Object { $_.Running })","$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion $false\n    $candidates=@(Get-Mt5Candidates | Where-Object { $_.Running })")
     assert 'FTMOExpected' not in s
     return s
 

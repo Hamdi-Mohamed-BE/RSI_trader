@@ -3,6 +3,7 @@ param(
     [string]$TargetTerminal,
     [switch]$UseDefaults,                # accept every default without prompting (account size, guard limits, DI ON)
     [ValidateSet('','ON','OFF')][string]$NasdaqDIFilter='',
+    [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [string]$GoldSymbol='',
     [string]$NasdaqSymbol='',
     [switch]$ValidateOnly,
@@ -16,6 +17,7 @@ $ErrorActionPreference='Stop'
 $PackageRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..'))
 $Package=Join-Path $PSScriptRoot 'package'
 . (Join-Path $PSScriptRoot 'Account-Helpers.ps1')
+. (Join-Path $PSScriptRoot '..\..\Calyx-InstallChoices.ps1')
 $inv=[Globalization.CultureInfo]::InvariantCulture
 
 $tokens=$null;$parseErrors=$null
@@ -139,6 +141,8 @@ $buffer=Read-Number 'Buffer above the max-loss level % (close ALL trades if equi
 $news=[int](Read-Number 'No new entries this many minutes either side of high-impact USD news (0 = off)' 5 0 120)
 $newsPending=Read-Choice 'Delete pending orders inside news windows? Y/N (strategies may not re-place them)' 'N' @('Y','N')
 if(-not $NasdaqDIFilter){$NasdaqDIFilter=Read-Choice 'Nasdaq 5M DI filter ON or OFF' 'ON' @('ON','OFF')}
+$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
+Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))
 if($risk -gt $maxOpen){throw 'Risk per trade cannot exceed max open risk.'}
 if($dailyLoss -gt $firmDaily){throw 'Max daily loss cannot exceed the firm daily loss.'}
 if($buffer -ge $maxLoss){throw 'Buffer must be smaller than the max loss.'}
@@ -164,7 +168,7 @@ $portfolio=@()
 foreach($entry in $manifest.entries){
     $inputs=Read-SetInputs (Join-Path $Package $entry.settings)
     $inputs['InpRiskPercent']=$eaRisk.ToString('G',$inv)
-    if($entry.slug -eq 'nasdaq-5m-candle-momentum'){$inputs['InpRequireDIAgreement']=if($NasdaqDIFilter -eq 'ON'){'true'}else{'false'}}
+    if($entry.slug -eq 'nasdaq-5m-candle-momentum'){$inputs['InpRequireDIAgreement']=if($NasdaqDIFilter -eq 'ON'){'true'}else{'false'};Set-CalyxNasdaqVersion $inputs $NasdaqStopVersion}
     $guard=[ordered]@{FundedAccountSize=$size;FundedRiskPercent=$risk;FundedRoomTaperPercent=$taper;FundedMaxOpenRiskPercent=$maxOpen;FundedMaxSymbolRiskPercent=$maxSym;
         FundedMaxDailyLossPercent=$dailyLoss;FundedMaxDailyWinPercent=$dailyWin;FundedMaxLossPercent=$maxLoss;FundedBufferPercent=$buffer;FundedFirmDailyPercent=$firmDaily;
         FundedReferenceBalance=[double]$reference.reference_balance;FundedKnownFloor=[double]$reference.known_floor}

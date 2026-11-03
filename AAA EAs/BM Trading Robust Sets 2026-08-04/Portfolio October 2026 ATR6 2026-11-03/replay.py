@@ -33,10 +33,12 @@ FUNDED = [(NAS, 'NEW'), ('ema3', 'NEW'), ('3-way-gold', 'FULL'), ('orb-volume-pr
           ('dmc-fresh-reaction-us100', 'NEW'), ('dmc-current-xau', 'NEW'), ('xau-rsi-vwap', 'NEW'), ('gold-overnight-value-area', 'NEW')]
 TURBO = [('gold-overnight-value-area', 'NEW'), ('ema3', 'NEW'), (NAS, 'NEW'), ('xau-rsi-vwap', 'NEW'), ('3-way-gold', 'FULL')]
 FULL = [(p['key'], 'FULL') for p in PLAN if p['tag'] == 'FULL']
+CUSTOM7 = [(k, 'NEW') for k in ('ema3', 'dmc-current-xau', 'dmc-fresh-reaction-us100', NAS, 'gold-overnight-value-area', 'xau-rsi-vwap')] + [('dmc-fresh-reaction-xau', 'FULL')]
 PROP = lambda b: dict(kind='prop', budget=b)  # noqa: E731
 TRAIL = lambda base, cap=None: dict(kind='trail', base=base, cap=cap)  # noqa: E731
 PROFILES = {  # slug: (label, members, sizing, Nasdaq DI)
     'ftmo': ('FTMO guarded - Current 14 + ORB 0.5R (17); the any-broker test build is identical in this model', C14, PROP(50.0), 'ON'),
+    'ftmo-1pct': ('FTMO guarded 17 at 1% (prop selection pick; ANY BROKER TEST BAT with 1% chosen)', C14, PROP(100.0), 'ON'),
     'current14-orb05': ('Current 14 + ORB 0.5R (17)', C14, dict(kind='pct', pct=0.5), 'ON'),
     'orbs-only': ('ORB-only - all five at 0.5R (5)', ORBS, dict(kind='pct', pct=0.5), None),
     'prop-ready': ('Prop ready / Codex_Best_FTMO (9)', PR9, PROP(50.0), 'ON'),
@@ -44,7 +46,13 @@ PROFILES = {  # slug: (label, members, sizing, Nasdaq DI)
     'best-prop-15': ('Best Prop 15', BP15, PROP(100.0), 'OFF'),
     'funded-v1': ('funded_v1 (9)', FUNDED, TRAIL(0.5), 'ON'),
     'turbo5': ('Turbo 50k - Custom 5 Guarded (5)', TURBO, TRAIL(0.75, 0.3), 'OFF'),
-    'full-eas': ('Full EA portfolio - Recommended Adaptive, news removed (32)', FULL, dict(kind='pct', pct=0.25), 'ON')}
+    'full-eas': ('Full EA portfolio - Recommended Adaptive, news removed (32)', FULL, dict(kind='pct', pct=0.25), 'ON'),
+    # owner 2026-11-03: custom 7 (EMA3, all three DMCs, Nasdaq 5M, Gold Overnight VA, XAU RSI VWAP) under each sizing used above
+    'custom7-0.25': ('Custom 7', CUSTOM7, dict(kind='pct', pct=0.25), 'ON'),
+    'custom7-0.5': ('Custom 7', CUSTOM7, dict(kind='pct', pct=0.5), 'ON'),
+    'custom7-50': ('Custom 7', CUSTOM7, PROP(50.0), 'ON'),
+    'custom7-100': ('Custom 7', CUSTOM7, PROP(100.0), 'ON'),
+    'custom7-trail': ('Custom 7', CUSTOM7, TRAIL(0.5), 'ON')}
 
 
 def ledger(key, tag):

@@ -5,6 +5,7 @@ param(
     [double]$RiskValue=1.0,
     [ValidateSet('ON','OFF')][string]$UsdJpyDIFilter='ON',
     [ValidateSet('ON','OFF')][string]$NasdaqDIFilter='OFF',
+    [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [ValidateSet('Challenge','Verification','Funded')][string]$Phase='Challenge',
     [switch]$Interactive,
     [switch]$ValidateOnly,
@@ -17,6 +18,7 @@ $ErrorActionPreference='Stop'
 $PackageRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
 $Package=Join-Path $PSScriptRoot 'package'
 . (Join-Path $PSScriptRoot 'Account-Helpers.ps1')
+. (Join-Path $PSScriptRoot '..\Calyx-InstallChoices.ps1')
 
 # Import declarations only from the shared installer; never execute it or its news service.
 $tokens=$null;$parseErrors=$null
@@ -79,6 +81,8 @@ if($Interactive -and -not $ValidateOnly){
         $NasdaqDIFilter=$answer
     }
 }
+$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
+Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))
 if([double]::IsNaN($RiskValue) -or [double]::IsInfinity($RiskValue) -or $RiskValue -le 0 -or ($RiskMode -eq 'PERCENT' -and $RiskValue -gt 10)){throw 'Invalid risk selection.'}
 Write-Host 'BEST PROP PORTFOLIO: nine EAs / five ORBs at 0.5R / broker-neutral MT5 hedging profile.' -ForegroundColor Cyan
 Write-Host 'Each trade risks the amount you chose (at most 2% of the saved starting balance) and never more than the strategy request; lots round DOWN.' -ForegroundColor Yellow

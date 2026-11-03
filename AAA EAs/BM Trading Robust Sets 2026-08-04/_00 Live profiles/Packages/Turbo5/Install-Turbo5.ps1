@@ -4,6 +4,7 @@ param(
     [double]$AccountSize=0,
     [double]$KnownFloor=-1,
     [ValidateSet('','Y','N')][string]$TrailEquity='',
+    [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [switch]$ValidateOnly,
     [switch]$PreflightOnly
 )
@@ -14,6 +15,7 @@ $ErrorActionPreference='Stop'
 $PackageRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..'))
 $Package=Join-Path $PSScriptRoot 'package'
 . (Join-Path $PSScriptRoot 'Account-Helpers.ps1')
+. (Join-Path $PSScriptRoot '..\..\Calyx-InstallChoices.ps1')
 
 # Import declarations, never execute the ordinary installer.
 $tokens=$null;$parseErrors=$null
@@ -90,6 +92,8 @@ if(-not $TrailEquity){
     $TrailEquity=if($answer){$answer}else{'N'}
     if($TrailEquity -notin @('Y','N')){throw 'Answer Y or N.'}
 }
+$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
+Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))
 $serverHasher=[Security.Cryptography.SHA256]::Create()
 try{$serverHash=([BitConverter]::ToString($serverHasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($server)))).Replace('-','').Substring(0,16)}finally{$serverHasher.Dispose()}
 # Reruns must not reset the retained baseline (the guard rebuilds the trailing floor from deals after start_utc).
@@ -115,6 +119,7 @@ foreach($entry in $manifest.entries){
     $inputs['TurboExpectedLogin']=$login;$inputs['TurboExpectedServer']=$server;$inputs['TurboExpectedSymbol']=$resolved[$entry.symbol]
     $inputs['TurboExpectedCurrency']=$currency;$inputs['TurboAccountSize']=$AccountSize.ToString('G17',$inv)
     $inputs['TurboReferenceBalance']=([double]$reference.reference_balance).ToString('G17',$inv);$inputs['TurboStartUtcTime']=[string]$reference.start_utc
+    if($entry.slug -eq 'nasdaq-5m-candle-momentum'){Set-CalyxNasdaqVersion $inputs $NasdaqStopVersion}
     $inputs['TurboKnownFloor']=([double]$reference.known_floor).ToString('G17',$inv);$inputs['TurboTrailEquity']=if($TrailEquity -eq 'Y'){'true'}else{'false'}
     $tf=[string]$entry.timeframe
     $minutes=if($tf.StartsWith('H')){60*[int]$tf.Substring(1)}elseif($tf.StartsWith('M')){[int]$tf.Substring(1)}else{throw 'Unsupported timeframe.'}

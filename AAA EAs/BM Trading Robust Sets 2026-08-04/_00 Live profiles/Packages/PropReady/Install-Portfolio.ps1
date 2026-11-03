@@ -5,6 +5,7 @@ param(
     [double]$RiskValue=50,
     [ValidateSet('ON','OFF')][string]$UsdJpyDIFilter='ON',
     [ValidateSet('ON','OFF')][string]$NasdaqDIFilter='ON',
+    [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [ValidateSet('Challenge','Verification','Funded')][string]$Phase='Funded',
     [ValidateSet('PropReady','Codex_Best_FTMO')][string]$ProfileVariant='PropReady',
     [string]$GoldSymbol,
@@ -19,6 +20,7 @@ $ErrorActionPreference='Stop'
 $PackageRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..'))
 $Package=Join-Path $PSScriptRoot 'package'
 . (Join-Path $PSScriptRoot 'Account-Helpers.ps1')
+. (Join-Path $PSScriptRoot '..\..\Calyx-InstallChoices.ps1')
 $isCodexProfile=$ProfileVariant -eq 'Codex_Best_FTMO'
 $profileDisplay=if($isCodexProfile){'Codex_Best_FTMO'}else{'PROP READY'}
 $profileFolderPrefix=if($isCodexProfile){'Codex_Best_FTMO'}else{'Calyx-PropReady9'}
@@ -114,6 +116,8 @@ if($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilte
     if($answer -notin @('ON','OFF')){throw 'DI choice must be ON or OFF.'}
     $NasdaqDIFilter=$answer
 }
+$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
+Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))
 Write-Host "${profileDisplay}: nine EAs / five ORBs at 0.5R / broker-neutral MT5 hedging profile." -ForegroundColor Cyan
 Write-Host 'Fixed cash is in ACCOUNT CURRENCY (USD on a USD account); % uses current equity. Legacy parameter name: FIXED_USD.'
 Write-Host 'Each trade risks the amount you chose (at most 2% of the saved starting balance) and never more than the original strategy volume; lots round DOWN.' -ForegroundColor Yellow
