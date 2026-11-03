@@ -733,7 +733,12 @@ of what is currently attached to a live terminal.
   - The optimised final still loses val / OOS under every rule.
 - 2026-11-02: `Gold 3Way QuantLab Q4 2026-11-02/` (Q4 / H1 breakout variants G0–G4, PLAN frozen).
   - The first parity run failed only the harness input check: the report prints InpTradeFrom as Unix seconds. Fixed to 1559347200.
-  - Parity + main NOT yet run.
+  - Parity exact (92/92 trades vs production EX5). Model 4, 0.75%, 2019-06 → 2026-11 (RESULTS.md):
+    - G0 production: all +62.2%, PF 1.25, closed DD 18.0%, 9.6 trades/month; dev +18.1% PF 1.15; val +18.4%; OOS +16.0% PF 1.25.
+    - Plan pick G1 (Q4-only, M15): dev +18.2% PF 1.26 DD 9.5%; val +9.6% (PASS); OOS +0.8% PF 1.02; all +30.6%.
+    - G2 (QuantLab structure: Q4-only, H1): all +16.3% PF 1.14. G3 (H1 all year): +1.5%. G4 (breakout off): +17.8%.
+    - MC 1y: G0 P(loss) 20%, median +7.0%; G1 24%, median +3.7%.
+    - QuantLab claim (+210%, PF 1.26) not reproduced. Keep production; nothing changed.
 - 2026-11-02: Telegram signals daily recap (`AAA EAs/system signals/`; SIGNALS_DAILY_RECAP / SIGNALS_RECAP_TIME, default 17:00 New York;
   DST computed without a tz database; 9 tests pass). Pushed in `6a83f84f6` on `new-telegram-copy`.
 

@@ -88,4 +88,11 @@ if __name__ == '__main__':
         assert all(canon[k] == v for k, v in VARS['A6_M1_DION'].items())
         b.CONFIG['common_inputs'] = canon; b.CONFIG['variants']['DEPLOY'] = {'label': 'Nasdaq 5M DI ATR6 stop (deployed preset)', 'inputs': {}}
         for per in ('6m', '1y', '3y', '5y'): b.run_case('USTEC', 'DEPLOY', per)
+    elif stage == 'current':                      # owner 2026-11-02: the previous production preset (0.60% stop) on the same windows, unchanged SET
+        b.CONFIG['model'] = 4
+        old = PACKAGE / 'Selected Portfolio Settings 2026-09-01' / '11 Nasdaq 5M - DI WIDE 0P60PCT ATR6 NO TP - 1PCT.set'
+        canon = dict(l.split('=', 1) for l in old.read_text().splitlines() if '=' in l)
+        assert canon['InpStopMode'] == '2' and canon['InpInitialStopPercent'] == '0.60'
+        b.CONFIG['common_inputs'] = canon; b.CONFIG['variants']['CURRENT'] = {'label': 'Nasdaq 5M 0.60% stop (previous production preset)', 'inputs': {}}
+        for per in ('oct', '6m', '1y', '3y', '5y'): b.run_case('USTEC', 'CURRENT', per)
     b.status(event='STAGE DONE ' + stage)
