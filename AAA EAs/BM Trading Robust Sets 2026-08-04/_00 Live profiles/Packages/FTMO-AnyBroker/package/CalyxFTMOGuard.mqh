@@ -6,7 +6,9 @@
 // liquidation, asynchronous execution or permission to use netting accounts.
 input int FTMOAllocationMode=0; // 0=fixed account-currency amount, 1=current equity %
 input double FTMOAllocationValue=50.0;
-input double FTMORiskCapPercent=0.5; // per-entry cap, % of the saved reference balance; the installer sets it to the chosen risk (2026-10-30). Totals scale: 4.5x open, 3x per symbol
+input double FTMORiskCapPercent=0.5; // per-entry cap, % of the saved reference balance; the installer sets it to the chosen risk (2026-10-30). Totals: the two multiples below
+input double FTMOTotalRiskMultiple=4.5; // total open stop risk = this x the per-entry cap; 0 = no total cap (installer: 4.5 / 6 / 8 / none, 2026-11-03)
+input double FTMOSymbolRiskMultiple=3.0; // same-symbol open stop risk = this x the per-entry cap; 0 = no per-symbol cap (installer: 3 / none)
 input long   FTMOExpectedLogin=0;
 input string FTMOExpectedServer="";
 input string FTMOExpectedSymbol="";
@@ -16,17 +18,19 @@ input long FTMOStartUtcTime=0; // UTC Unix seconds; frozen, never reset on reins
 input int    FTMOPhase=3; // 1=10% target, 2=5% target, 3=no challenge target stop
 
 double FTMORiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent/100.0;}
-double FTMOTotalRiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent*0.045;}
-double FTMOSymbolRiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent*0.03;}
+double FTMOTotalRiskCap(){return FTMOTotalRiskMultiple<=0?DBL_MAX:FTMOReferenceBalance*FTMORiskCapPercent*(FTMOTotalRiskMultiple/100.0);}
+double FTMOSymbolRiskCap(){return FTMOSymbolRiskMultiple<=0?DBL_MAX:FTMOReferenceBalance*FTMORiskCapPercent*(FTMOSymbolRiskMultiple/100.0);}
 double FTMODailyReserve(){return FTMOReferenceBalance*0.03;}
 double FTMOEquityBuffer(){return FTMOReferenceBalance*0.92;}
 double FTMOHardFloor(){return FTMOReferenceBalance*0.90;}
 double FTMODailyHardLoss(){return FTMOReferenceBalance*0.05;}
 
+bool FTMOCapMultipleValid(const double m){return MathIsValidNumber(m) && (m==0 || (m>=1 && m<=20));}   // 0 = that cap OFF
 bool FTMOAllocationValid() {
    return FTMOAllocationMode>=0 && FTMOAllocationMode<=1 && MathIsValidNumber(FTMOAllocationValue)
       && FTMOAllocationValue>0 && (FTMOAllocationMode==0 || FTMOAllocationValue<=10)
-      && MathIsValidNumber(FTMORiskCapPercent) && FTMORiskCapPercent>0 && FTMORiskCapPercent<=2.0;   // 3% daily reserve admits at most ~2.4% per entry
+      && MathIsValidNumber(FTMORiskCapPercent) && FTMORiskCapPercent>0 && FTMORiskCapPercent<=2.0
+      && FTMOCapMultipleValid(FTMOTotalRiskMultiple) && FTMOCapMultipleValid(FTMOSymbolRiskMultiple);   // 3% daily reserve admits at most ~2.4% per entry
 }
 double FTMOAllocationBudget() {
    if(!FTMOAllocationValid())return 0;

@@ -72,8 +72,8 @@ def guard_text():
              '// Best Prop 15 Portfolio 2026-10-29: the Best Prop 9 guard (same limits) with its own state key BP15.\n'
              '// Best Prop Portfolio 2026-10-20: derived from the Prop Ready guard.')
     g = sub1(g, 'return "BP9"+IntegerToString(FTMOExpectedLogin)', 'return "BP15"+IntegerToString(FTMOExpectedLogin)')
-    for unchanged in ('input double FTMORiskCapPercent=1.0;', 'FTMOReferenceBalance*FTMORiskCapPercent/100.0;', 'FTMOReferenceBalance*FTMORiskCapPercent*0.045;',
-                      'FTMOReferenceBalance*FTMORiskCapPercent*0.03;', 'FTMOReferenceBalance*0.03;', 'FTMOReferenceBalance*0.92;',
+    for unchanged in ('input double FTMORiskCapPercent=1.0;', 'FTMOReferenceBalance*FTMORiskCapPercent/100.0;', 'FTMOReferenceBalance*FTMORiskCapPercent*(FTMOTotalRiskMultiple/100.0);',
+                      'FTMOReferenceBalance*FTMORiskCapPercent*(FTMOSymbolRiskMultiple/100.0);', 'FTMOReferenceBalance*0.03;', 'FTMOReferenceBalance*0.92;',
                       'FTMOReferenceBalance*0.90;', 'FTMOReferenceBalance*0.05;', 'ftmo_entries>=7 || losses>=3', 'FTMOLotsDown('):
         assert unchanged in g, unchanged
     return g

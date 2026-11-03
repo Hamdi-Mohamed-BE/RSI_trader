@@ -26,3 +26,19 @@ Frozen engine of Portfolio Prop Comparison 2026-10-22; rules, candidates and cho
 | Custom 7, guarded | 0.50% | 0% (0%) | – | 41% (0%) | 70% (0%) | 33% | 19% | 0% | 142 | 23% | 217 |
 | Custom 7, no guard | 0.50% | 0% (5%) | – | 64% (0%) | 73% (15%) | 39% | 29% | 8% | 131 | 0% | 263 |
 | Custom 7, no guard | 0.75% | 0% (40%) | – | 67% (18%) | 74% (26%) | 40% | 48% | 25% | 109.5 | 0% | 174.5 |
+
+## Addendum: 6x total open-risk cap (`cap6.py` → `CH6-*.json`, 2026-11-03)
+Only change: total open risk 4.5x → 6x the per-trade cap. Same frozen engine, streams and MC seed; FTMO 2-step at $100k.
+
+| Candidate | Cap | MC pass both ≤180 d | Breach | Stuck at buffer | Median days to funded | History pass dev / val / OOS / all |
+|---|---|---:|---:|---:|---:|---|
+| FTMO17 1% | 4.5x | 58% | 0% | 50% | 95 | 35 / 80 / 70 / 57% |
+| FTMO17 1% | 6x | 58% | 0% | 50% | 95 | identical |
+| FTMO17 0.5% | 4.5x | 61% | 0% | 13% | 123 | 22 / 95 / 85 / 59% |
+| FTMO17 0.5% | 6x | 61% | 0% | 16% | 122 | 8 / 88 / 85 / 52% |
+| PR9 1% | 4.5x / 6x | 63% | 0% | 42% | 86 | identical (52 / 52 / 76 / 60%) |
+| BP9 1% | 4.5x / 6x | 53% | 0% | 54% | 78 | identical (46 / 56 / 73 / 57%) |
+
+At 1% the 6x cap changes nothing: the 3% daily reserve (each trade reserves 1.25x its risk) stops new entries at roughly 2.4% open risk,
+before the 4.5% total cap is reached. At 0.5% the 6x cap only lets more risk open at once; MC is unchanged and history is worse
+(dev 22% → 8%). Verdict: keep 4.5x. In-sample; OOS previously viewed.

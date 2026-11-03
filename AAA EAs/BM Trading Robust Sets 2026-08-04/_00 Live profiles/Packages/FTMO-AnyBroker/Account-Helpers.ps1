@@ -42,7 +42,11 @@ function Select-PropReadyReference([object]$Probe,[object]$Existing,[bool]$Ask) 
     $saved=Get-PropReadyReference $Probe $Existing
     if($null -eq $Existing){return [pscustomobject]@{reference=$saved;write=$true}}
     $was=[double]$saved.reference_balance;$now=[double]$Probe.account.balance
-    if(-not $Ask -or [math]::Abs($now-$was) -le 0.005*$was){return [pscustomobject]@{reference=$saved;write=$false}}
+    if(-not $Ask){return [pscustomobject]@{reference=$saved;write=$false}}   # -ValidateOnly: read only
+    # 2026-11-03 owner: every rerun starts FRESH from the current balance, so the per-trade cap and every limit follow today's account
+    # size (an old saved baseline, e.g. 10,000 on a 100,000 account, made 1% = 100). Latched breach / day stops stay latched.
+    Write-Host ("Rerun: new starting balance {0:N2} (previous saved {1:N2}). Every risk cap and loss limit is measured from the new value." -f $now,$was) -ForegroundColor Yellow
+    return [pscustomobject]@{reference=(Get-PropReadyReference $Probe $null);write=$true}
     Write-Host ("Saved starting balance for this login: {0:N2}; current balance: {1:N2}." -f $was,$now) -ForegroundColor Yellow
     Write-Host 'Every risk cap and loss limit is measured from the SAVED starting balance.'
     Write-Host '1 = keep the saved starting balance (loss limits stay where they are)'

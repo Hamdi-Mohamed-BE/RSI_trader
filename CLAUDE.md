@@ -788,6 +788,29 @@ of what is currently attached to a live terminal.
     - Pass within 2 weeks 3%, within 3 weeks 8% (last 2 years 11%), fail 15%.
     - Within 12 weeks: pass 39% (2021-23 24%, last 2 years 64%), fail 46%; median 29 trading days.
   - $500 / $600 raise fails more than passes. RSI-only cannot pass. Topstep is futures, not MT5 (copy the signals).
+- 2026-11-03 RISK BUG FIX (owner: ANY BROKER TEST on $100k at 1% opened $100 risk): Prop Ready guard family (Prop ready / Codex,
+  FTMO any-broker, Best Prop 9, Best Prop 15). Two causes:
+  (1) the saved baseline from an earlier install on the same login was kept, so 1% was taken of the old balance;
+  (2) strategy presets pinned InpRiskPercent (0.5 / 1.0), and the guard never exceeds the strategy's own volume.
+  Fix (`Install Choices 2026-11-03/wire_riskfix.py`, backups in `before-riskfix/`):
+  - EVERY rerun now starts a fresh baseline from the current balance (owner choice). Latched breach / day stops are not
+    cleared. On a prop account that is already down, the firm's limits still use the ORIGINAL balance (the installer warns).
+  - The strategy request is 1.5x the chosen risk (max 5%), as in funded_v1. The guard cuts each entry to the chosen risk;
+    Nasdaq 5M keeps its 1% code cap.
+  Any-broker and BP15 were regenerated from their generators; Profiles.json wording was updated. All 11 BATs pass -ValidateOnly,
+  and the functions were tested on a fake $100k / old $10k state. Not tested on a terminal; not pushed.
+  funded_v1 / Turbo5 (typed account size) and FTMO-only ($10k by design) were unaffected.
+- 2026-11-03 OPEN-RISK CAP CHOICE (owner: "ask for cap option ... 4.5, 6, 8 and no cap and 3x, no cap per symbol"). Same Prop Ready
+  family. `Install Choices 2026-11-03/wire_capchoice.py` (patch | compile <pkg> | finish; backups in `before-capchoice/`,
+  sha map in capchoice-sha-map.json).
+  - Guard inputs: FTMOTotalRiskMultiple 4.5 (6 / 8 / 0 = none) and FTMOSymbolRiskMultiple 3 (0 = none). Defaults are bit-identical to
+    the old constants.
+  - The installers ask after the Nasdaq question (Enter = 4.5 / 3; -ValidateOnly never asks; params -TotalRiskCap / -SymbolRiskCap).
+  - 50 wrappers recompiled 0/0. PACKAGE.json / PORTFOLIO.json / EAs copies rehashed; any-broker + BP15 regenerated; BP9 / BP15
+    build.py asserts updated. All 11 BATs -ValidateOnly OK.
+  - The guard refuses the tester, so there is no native run of the new options. 8x / none are untested; the 3% daily reserve
+    still limits open risk to about 2.4% of the balance.
+  - Not installed; not pushed. Website portfolio manifests not rebuilt.
 - 2026-11-02: Telegram signals daily recap (`AAA EAs/system signals/`; SIGNALS_DAILY_RECAP / SIGNALS_RECAP_TIME, default 17:00 New York;
   DST computed without a tz database; 9 tests pass). Pushed in `6a83f84f6` on `new-telegram-copy`.
 

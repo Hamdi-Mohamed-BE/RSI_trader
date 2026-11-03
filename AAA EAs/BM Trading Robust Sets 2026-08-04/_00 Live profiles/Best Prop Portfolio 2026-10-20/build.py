@@ -36,14 +36,14 @@ def guard_text():
     g = read(SOURCE / 'CalyxFTMOGuard.mqh')
     g = sub1(g, '#define CALYX_PROP_READY_GUARD\n', '#define CALYX_PROP_READY_GUARD\n'
              '// Best Prop Portfolio 2026-10-20: derived from the Prop Ready guard. Per-entry cap = the chosen risk (default 1%),\n'
-             '// total open 4.5x and same-symbol 3x that cap, of the frozen reference balance; daily reserve 3%, 92% buffer, 90% floor,\n'
+             '// total open 4.5x (or 6x / 8x / none) and same-symbol 3x (or none) that cap, of the frozen reference balance; daily reserve 3%, 92% buffer, 90% floor,\n'
              '// 5% daily loss unchanged.\n')
     g = sub1(g, 'input int FTMOAllocationMode=0;', 'input int FTMOAllocationMode=1;')
     g = sub1(g, 'input double FTMOAllocationValue=50.0;', 'input double FTMOAllocationValue=1.0;')
     g = sub1(g, 'input int    FTMOPhase=3;', 'input int    FTMOPhase=1;')
     # 2026-10-30: the caps follow the input FTMORiskCapPercent (installer = chosen risk); only its default moves 0.5% -> 1%.
     g = sub1(g, 'input double FTMORiskCapPercent=0.5;', 'input double FTMORiskCapPercent=1.0;')
-    assert 'FTMOReferenceBalance*FTMORiskCapPercent*0.045;' in g and 'FTMOReferenceBalance*FTMORiskCapPercent*0.03;' in g
+    assert 'FTMOReferenceBalance*FTMORiskCapPercent*(FTMOTotalRiskMultiple/100.0);' in g and 'FTMOSymbolRiskMultiple=3.0;' in g   # 2026-11-03 cap choice
     g = sub1(g, 'return "PR9"+IntegerToString(FTMOExpectedLogin)', 'return "BP9"+IntegerToString(FTMOExpectedLogin)')
     assert g.count('Prop ready') >= 6
     g = g.replace('Prop ready', 'Best Prop 9')              # journal / reject messages only

@@ -4,7 +4,7 @@ Run: FTMO guarded - Current 14.bat
   FTMO USD 10K Swing hedging only. Requested risk is capped at USD50 per trade. Existing daily/exposure/phase guards stay unchanged. No news or hourly EAs.
 
 Run: FTMO guarded - Current 14 - ANY BROKER TEST.bat
-  Owner test build (2026-10-22): the same 17 FTMO-guarded EAs and settings with the broker-neutral Prop Ready guard. Any MT5 hedging account, broker and currency; risk capped at 0.5% of saved initial balance with scaled daily/exposure guards. Asks Challenge/Verification/continuous mode (default continuous). Not the tested FTMO build: no FTMO pass rate or firm compliance is inherited.
+  Owner test build (2026-10-22): the same 17 FTMO-guarded EAs and settings with the broker-neutral Prop Ready guard. Any MT5 hedging account, broker and currency; risk = the % or cash you choose, of the balance at install (refreshed on every run) with scaled daily/exposure guards. Asks Challenge/Verification/continuous mode (default continuous). Not the tested FTMO build: no FTMO pass rate or firm compliance is inherited.
 
 Check files offline (no MT5): append -ValidateOnly to the BAT.
 
