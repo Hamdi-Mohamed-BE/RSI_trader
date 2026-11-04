@@ -1,0 +1,588 @@
+{
+ "excluded_open_at_end": [
+  "ema3|416",
+  "nasdaq-5m-candle-momentum|1766"
+ ],
+ "source": "BM Trading Robust Sets 2026-08-04\\Prop Portfolio Selection 2026-11-03\\INPUTS-FTMO17.json",
+ "window": [
+  "2021-10-07",
+  "2026-10-06"
+ ],
+ "trades": 5128,
+ "years": 4.997,
+ "trades_per_month": 85.5,
+ "trades_per_weekday": 3.94,
+ "mean_r": 0.0917,
+ "total_r": 470.44,
+ "recorded_commission_r_mean": 0.0051,
+ "win_pct": 58.17,
+ "pf": 1.261,
+ "full": {
+  "rule": "Stage 6 three-way Monte Carlo on per-trade results in time order (R or money): RESHUFFLE = same trades, random order (total fixed; tests order luck: where the real drawdown ranks among shuffled ones); RESAMPLE = draw trades with replacement (tests trade luck: share of runs that end <= 0); RANDOMIZE = drop each trade with probability drop_fraction and charge every kept trade an extra cost drawn uniformly from [0, 2 x extra_cost] (tests the broker; drop-only and cost-only runs are reported separately so the two causes are not mixed).",
+  "trades": 5128,
+  "horizon_trades": 5128,
+  "runs": 1000,
+  "seed": 20261104,
+  "real": {
+   "total": 470.4423,
+   "max_drawdown": 24.3454,
+   "losing_streak": 11
+  },
+  "reshuffle": {
+   "max_drawdown": {
+    "p05": 18.0759,
+    "p50": 23.9945,
+    "p95": 35.9188,
+    "p99": 42.8144
+   },
+   "losing_streak": {
+    "p05": 7,
+    "p50": 9,
+    "p95": 12,
+    "p99": 14
+   },
+   "real_drawdown_worse_than_pct": 52.4,
+   "real_streak_longer_than_pct": 82.4
+  },
+  "resample": {
+   "red_pct": 0.0,
+   "total": {
+    "p05": 359.7925,
+    "p50": 471.4924,
+    "p95": 599.9604,
+    "p99": 650.7996
+   },
+   "max_drawdown": {
+    "p05": 17.0378,
+    "p50": 24.1369,
+    "p95": 38.0649,
+    "p99": 44.5095
+   }
+  },
+  "randomize": {
+   "drop_fraction": 0.1,
+   "extra_cost": 0.05,
+   "both": {
+    "red_pct": 0.0,
+    "total": {
+     "p05": 156.8647,
+     "p50": 192.2104,
+     "p95": 227.4144,
+     "p99": 243.7764
+    },
+    "max_drawdown": {
+     "p05": 39.7274,
+     "p50": 53.9513,
+     "p95": 74.2115,
+     "p99": 85.0434
+    }
+   },
+   "drop_only": {
+    "red_pct": 0.0,
+    "total": {
+     "p05": 390.9751,
+     "p50": 424.2003,
+     "p95": 457.7073,
+     "p99": 470.3897
+    },
+    "max_drawdown": {
+     "p05": 20.3353,
+     "p50": 24.8357,
+     "p95": 31.737,
+     "p99": 35.022
+    }
+   },
+   "cost_only": {
+    "red_pct": 0.0,
+    "total": {
+     "p05": 210.5669,
+     "p50": 213.9913,
+     "p95": 217.5356,
+     "p99": 218.9431
+    },
+    "max_drawdown": {
+     "p05": 54.436,
+     "p50": 56.5801,
+     "p95": 58.6062,
+     "p99": 59.4075
+    }
+   }
+  }
+ },
+ "one_year": {
+  "rule": "Stage 6 three-way Monte Carlo on per-trade results in time order (R or money): RESHUFFLE = same trades, random order (total fixed; tests order luck: where the real drawdown ranks among shuffled ones); RESAMPLE = draw trades with replacement (tests trade luck: share of runs that end <= 0); RANDOMIZE = drop each trade with probability drop_fraction and charge every kept trade an extra cost drawn uniformly from [0, 2 x extra_cost] (tests the broker; drop-only and cost-only runs are reported separately so the two causes are not mixed).",
+  "trades": 5128,
+  "horizon_trades": 1026,
+  "runs": 1000,
+  "seed": 20261104,
+  "real": null,
+  "reshuffle": null,
+  "resample": {
+   "red_pct": 0.0,
+   "total": {
+    "p05": 40.4961,
+    "p50": 93.5142,
+    "p95": 144.1368,
+    "p99": 158.8923
+   },
+   "max_drawdown": {
+    "p05": 10.5462,
+    "p50": 16.7527,
+    "p95": 29.5326,
+    "p99": 37.6533
+   }
+  },
+  "randomize": {
+   "drop_fraction": 0.1,
+   "extra_cost": 0.05,
+   "both": {
+    "red_pct": 8.2,
+    "total": {
+     "p05": -8.0628,
+     "p50": 38.3408,
+     "p95": 92.8889,
+     "p99": 117.5781
+    },
+    "max_drawdown": {
+     "p05": 13.3775,
+     "p50": 22.3999,
+     "p95": 40.7697,
+     "p99": 52.2032
+    }
+   },
+   "drop_only": {
+    "red_pct": 0.1,
+    "total": {
+     "p05": 37.4055,
+     "p50": 84.5277,
+     "p95": 139.7734,
+     "p99": 166.6764
+    },
+    "max_drawdown": {
+     "p05": 9.9478,
+     "p50": 16.0389,
+     "p95": 27.9569,
+     "p99": 35.7953
+    }
+   },
+   "cost_only": {
+    "red_pct": 9.1,
+    "total": {
+     "p05": -9.9106,
+     "p50": 42.2557,
+     "p95": 101.9993,
+     "p99": 130.2413
+    },
+    "max_drawdown": {
+     "p05": 13.7304,
+     "p50": 23.541,
+     "p95": 44.8456,
+     "p99": 54.1701
+    }
+   }
+  }
+ },
+ "cost_ladder": {
+  "0.02": {
+   "full": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.02,
+    "both": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 295.8876,
+      "p50": 330.487,
+      "p95": 365.6231,
+      "p99": 381.5128
+     },
+     "max_drawdown": {
+      "p05": 24.7814,
+      "p50": 30.8206,
+      "p95": 38.9105,
+      "p99": 42.7549
+     }
+    },
+    "drop_only": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 390.9751,
+      "p50": 424.2003,
+      "p95": 457.7073,
+      "p99": 470.3897
+     },
+     "max_drawdown": {
+      "p05": 20.3353,
+      "p50": 24.8357,
+      "p95": 31.737,
+      "p99": 35.022
+     }
+    },
+    "cost_only": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 366.4921,
+      "p50": 367.8619,
+      "p95": 369.2796,
+      "p99": 369.8426
+     },
+     "max_drawdown": {
+      "p05": 30.833,
+      "p50": 31.1879,
+      "p95": 31.55,
+      "p99": 31.6838
+     }
+    }
+   },
+   "one_year": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.02,
+    "both": {
+     "red_pct": 1.1,
+     "total": {
+      "p05": 19.6135,
+      "p50": 66.123,
+      "p95": 119.9568,
+      "p99": 143.9037
+     },
+     "max_drawdown": {
+      "p05": 11.324,
+      "p50": 17.9691,
+      "p95": 31.5325,
+      "p99": 39.6815
+     }
+    },
+    "drop_only": {
+     "red_pct": 0.1,
+     "total": {
+      "p05": 37.4055,
+      "p50": 84.5277,
+      "p95": 139.7734,
+      "p99": 166.6764
+     },
+     "max_drawdown": {
+      "p05": 9.9478,
+      "p50": 16.0389,
+      "p95": 27.9569,
+      "p99": 35.7953
+     }
+    },
+    "cost_only": {
+     "red_pct": 1.0,
+     "total": {
+      "p05": 21.2084,
+      "p50": 72.7428,
+      "p95": 132.6133,
+      "p99": 161.5777
+     },
+     "max_drawdown": {
+      "p05": 11.7057,
+      "p50": 18.4828,
+      "p95": 34.2741,
+      "p99": 41.5258
+     }
+    }
+   }
+  },
+  "0.05": {
+   "full": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.05,
+    "both": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 156.8647,
+      "p50": 192.2104,
+      "p95": 227.4144,
+      "p99": 243.7764
+     },
+     "max_drawdown": {
+      "p05": 39.7274,
+      "p50": 53.9513,
+      "p95": 74.2115,
+      "p99": 85.0434
+     }
+    },
+    "drop_only": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 390.9751,
+      "p50": 424.2003,
+      "p95": 457.7073,
+      "p99": 470.3897
+     },
+     "max_drawdown": {
+      "p05": 20.3353,
+      "p50": 24.8357,
+      "p95": 31.737,
+      "p99": 35.022
+     }
+    },
+    "cost_only": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 210.5669,
+      "p50": 213.9913,
+      "p95": 217.5356,
+      "p99": 218.9431
+     },
+     "max_drawdown": {
+      "p05": 54.436,
+      "p50": 56.5801,
+      "p95": 58.6062,
+      "p99": 59.4075
+     }
+    }
+   },
+   "one_year": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.05,
+    "both": {
+     "red_pct": 8.2,
+     "total": {
+      "p05": -8.0628,
+      "p50": 38.3408,
+      "p95": 92.8889,
+      "p99": 117.5781
+     },
+     "max_drawdown": {
+      "p05": 13.3775,
+      "p50": 22.3999,
+      "p95": 40.7697,
+      "p99": 52.2032
+     }
+    },
+    "drop_only": {
+     "red_pct": 0.1,
+     "total": {
+      "p05": 37.4055,
+      "p50": 84.5277,
+      "p95": 139.7734,
+      "p99": 166.6764
+     },
+     "max_drawdown": {
+      "p05": 9.9478,
+      "p50": 16.0389,
+      "p95": 27.9569,
+      "p99": 35.7953
+     }
+    },
+    "cost_only": {
+     "red_pct": 9.1,
+     "total": {
+      "p05": -9.9106,
+      "p50": 42.2557,
+      "p95": 101.9993,
+      "p99": 130.2413
+     },
+     "max_drawdown": {
+      "p05": 13.7304,
+      "p50": 23.541,
+      "p95": 44.8456,
+      "p99": 54.1701
+     }
+    }
+   }
+  },
+  "0.10": {
+   "full": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.1,
+    "both": {
+     "red_pct": 96.0,
+     "total": {
+      "p05": -75.0703,
+      "p50": -38.9535,
+      "p95": -3.3199,
+      "p99": 14.4035
+     },
+     "max_drawdown": {
+      "p05": 123.7851,
+      "p50": 146.4694,
+      "p95": 170.8281,
+      "p99": 182.6696
+     }
+    },
+    "drop_only": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 390.9751,
+      "p50": 424.2003,
+      "p95": 457.7073,
+      "p99": 470.3897
+     },
+     "max_drawdown": {
+      "p05": 20.3353,
+      "p50": 24.8357,
+      "p95": 31.737,
+      "p99": 35.022
+     }
+    },
+    "cost_only": {
+     "red_pct": 100.0,
+     "total": {
+      "p05": -49.3085,
+      "p50": -42.4596,
+      "p95": -35.3711,
+      "p99": -32.556
+     },
+     "max_drawdown": {
+      "p05": 157.4069,
+      "p50": 162.2057,
+      "p95": 166.7785,
+      "p99": 169.026
+     }
+    }
+   },
+   "one_year": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.1,
+    "both": {
+     "red_pct": 60.6,
+     "total": {
+      "p05": -54.4323,
+      "p50": -7.9364,
+      "p95": 46.2368,
+      "p99": 70.6088
+     },
+     "max_drawdown": {
+      "p05": 18.5604,
+      "p50": 37.397,
+      "p95": 69.6199,
+      "p99": 86.1694
+     }
+    },
+    "drop_only": {
+     "red_pct": 0.1,
+     "total": {
+      "p05": 37.4055,
+      "p50": 84.5277,
+      "p95": 139.7734,
+      "p99": 166.6764
+     },
+     "max_drawdown": {
+      "p05": 9.9478,
+      "p50": 16.0389,
+      "p95": 27.9569,
+      "p99": 35.7953
+     }
+    },
+    "cost_only": {
+     "red_pct": 59.7,
+     "total": {
+      "p05": -60.7836,
+      "p50": -8.795,
+      "p95": 50.672,
+      "p99": 78.0141
+     },
+     "max_drawdown": {
+      "p05": 19.7475,
+      "p50": 39.9434,
+      "p95": 76.1848,
+      "p99": 93.2744
+     }
+    }
+   }
+  },
+  "0.20": {
+   "full": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.2,
+    "both": {
+     "red_pct": 100.0,
+     "total": {
+      "p05": -538.2215,
+      "p50": -500.718,
+      "p95": -462.3083,
+      "p99": -443.9878
+     },
+     "max_drawdown": {
+      "p05": 463.0355,
+      "p50": 501.4739,
+      "p95": 538.9698,
+      "p99": 556.1573
+     }
+    },
+    "drop_only": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 390.9751,
+      "p50": 424.2003,
+      "p95": 457.7073,
+      "p99": 470.3897
+     },
+     "max_drawdown": {
+      "p05": 20.3353,
+      "p50": 24.8357,
+      "p95": 31.737,
+      "p99": 35.022
+     }
+    },
+    "cost_only": {
+     "red_pct": 100.0,
+     "total": {
+      "p05": -569.0592,
+      "p50": -555.3615,
+      "p95": -541.1846,
+      "p99": -535.5543
+     },
+     "max_drawdown": {
+      "p05": 542.1683,
+      "p50": 556.4045,
+      "p95": 570.1114,
+      "p99": 575.0969
+     }
+    }
+   },
+   "one_year": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.2,
+    "both": {
+     "red_pct": 99.9,
+     "total": {
+      "p05": -147.1396,
+      "p50": -100.2795,
+      "p95": -46.0497,
+      "p99": -22.5403
+     },
+     "max_drawdown": {
+      "p05": 58.4876,
+      "p50": 108.2554,
+      "p95": 152.9816,
+      "p99": 174.9744
+     }
+    },
+    "drop_only": {
+     "red_pct": 0.1,
+     "total": {
+      "p05": 37.4055,
+      "p50": 84.5277,
+      "p95": 139.7734,
+      "p99": 166.6764
+     },
+     "max_drawdown": {
+      "p05": 9.9478,
+      "p50": 16.0389,
+      "p95": 27.9569,
+      "p99": 35.7953
+     }
+    },
+    "cost_only": {
+     "red_pct": 100.0,
+     "total": {
+      "p05": -162.4816,
+      "p50": -111.2779,
+      "p95": -51.2759,
+      "p99": -26.4404
+     },
+     "max_drawdown": {
+      "p05": 66.585,
+      "p50": 119.773,
+      "p95": 168.2984,
+      "p99": 190.0657
+     }
+    }
+   }
+  }
+ },
+ "break_even_extra_cost_r": 0.0917
+}

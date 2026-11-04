@@ -36,3 +36,24 @@ def test_bootstrap_is_deterministic_and_ordered():
     assert a == b and a['source_days'] == 28
     assert a['max_drawdown']['p50'] <= a['max_drawdown']['p95'] <= a['max_drawdown']['p99']
     assert a['losing_streak']['p95'] >= a['losing_streak']['p50']
+
+
+def test_three_monte_carlo_reshuffle_keeps_total_and_ranks_clumped_losses():
+    from robustness import three_monte_carlo
+    vals = [1.0] * 30 + [-1.0] * 15 + [1.0] * 30          # all losses in one clump: the worst possible order
+    mc = three_monte_carlo(vals, runs=300, seed=3)
+    assert mc['real'] == {'total': 45.0, 'max_drawdown': 15.0, 'losing_streak': 15}
+    assert mc['reshuffle']['real_drawdown_worse_than_pct'] > 95 and mc['reshuffle']['max_drawdown']['p99'] <= 15
+    assert mc['resample']['red_pct'] == 0.0
+    assert three_monte_carlo(vals, runs=300, seed=3) == mc
+
+
+def test_three_monte_carlo_randomize_separates_drop_and_cost():
+    from robustness import three_monte_carlo
+    vals = [0.1] * 200                                     # thin edge: +0.1 per trade
+    mc = three_monte_carlo(vals, runs=200, seed=5, drop_fraction=0.1, extra_cost=0.2)
+    r = mc['randomize']
+    assert r['drop_only']['red_pct'] == 0.0                # dropping trades cannot turn an all-winner red
+    assert r['cost_only']['red_pct'] == 100.0 and r['both']['red_pct'] == 100.0   # mean cost 0.2 > edge 0.1
+    h = three_monte_carlo(vals, runs=50, seed=5, horizon=20)
+    assert h['horizon_trades'] == 20 and h['reshuffle'] is None

@@ -810,7 +810,63 @@ of what is currently attached to a live terminal.
     build.py asserts updated. All 11 BATs -ValidateOnly OK.
   - The guard refuses the tester, so there is no native run of the new options. 8x / none are untested; the 3% daily reserve
     still limits open risk to about 2.4% of the balance.
-  - Not installed; not pushed. Website portfolio manifests not rebuilt.
+  - Not installed. Pushed in b752f07d6. Website portfolio manifests not rebuilt.
+- 2026-11-03: `XAU Weakness Market Fill 2026-11-03/` — REJECTED; keep production.
+  - Problem: October had 0 trades because both signals failed with "Invalid price" (the stop level was already passed).
+  - Research copy adds `InpWeaknessMarketIfPast`; parity OFF = PROD on 248 / 248 trades.
+  - 5y 2021-11 → 2026-11, Full preset, 1%: production +123.9% PF 1.56 eqDD 9.1%; market fill +101.7% PF 1.50 eqDD 11.2%; same 248 trades.
+    The 124 market entries are positive but displace better trades (one position at a time).
+  - October: market fill 2 trades, −1.02%.
+  - Addendum (run_split.py / mc.py, 2019-01 → 2026-11 data_split windows, fresh $10k each):
+    - PRODUCTION FAILS dev 2019-23: −28.5% PF 0.75; val +18.9% PF 1.40; OOS (viewed) +97.4% PF 1.87; all +70.6% PF 1.29 eqDD 30%.
+    - MC 2019-26: P(losing year) 29%, 12 m DD p95 19.8%. Profit comes from 2024-26 (gold bull).
+    - Market fill is worse again: dev −42.3%, OOS +68.4%, MC P(losing year) 37%.
+    - Roster membership (Full EA, Turbo) NOT changed; owner review needed.
+- 2026-11-03: Prop Portfolio Selection funded stage done (`RESULTS.md`): FTMO17 0.5% MC $2,446/month, median life 1,036 d,
+  total median $72k vs 1% $3,034/month, 171 d, $17k. Suggested: challenge at 1%, funded at 0.5%.
+- 2026-11-04: BUILT `_00 Live profiles/ftmo 1_step/` (`ftmo 1_step.bat`, build.py, package FTMO-1STEP-17EA-20261104).
+  - EAs: the 17 FTMO-AnyBroker EAs, unchanged.
+  - Guard = Prop Ready guard + FTMO 1-Step rules: 10% max loss trailing the EOD Prague-midnight balance (ledger HWM global per
+    start), 3% daily from the midnight balance, best day ≤ 50%.
+  - Guard margins: entries need floor + 2%; daily reserve / latch 2.5%; no entries after a +4.5% day; target stops entries only when
+    the best-day rule holds. State key F1S.
+  - 17/17 compiled 0/0; -ValidateOnly PASS. Not installed; no native guard test (the guard refuses the tester).
+  - Sim (`Prop Portfolio Selection 2026-11-03/f1_profile.py`, FTMO17 $100k MC): 0.5% pass 79% / breach 0% / stuck 16% / 85 d;
+    0.75% 67% / 0% / 32% / 68 d; 1% 56% / 2.3% / 41% / 67 d.
+  - Open issue: a mid-challenge rerun re-bases the guard below FTMO's trailing floor (installer does not ask for the FTMO HWM).
+  - Earlier FTMO 1-Step models (`nobuffer.py` F1-*, static 92% buffer) gave 0.5% 82% pass / 2% breach.
+- 2026-11-04: PIPELINE stage 6 amended (owner, pasted clip): three-way Monte Carlo `robustness.three_monte_carlo` (+2 tests, 7/7) and
+  policy `three_way_monte_carlo`: RESHUFFLE (order luck, diagnostic; CLUMPED flag if real DD > 95% of shuffles; plan DD = max(real, p95)),
+  RESAMPLE (gate full-sample red <= 5%), RANDOMIZE (drop 10% + extra cost U[0, 2 x 0.05R] declared assumption; gate red <= 10%;
+  drop-only / cost-only + cost ladder reported). 1,000 runs, seed 20261104, full sample + one-year horizons.
+  First run `Three Way Monte Carlo 2026-11-04/` on the pick FTMO17 (5,128 trades, 85.5/month, PF 1.26, +0.092R/trade, no guard):
+  full red 0% / 0% / 0% (PASS); real DD 24.3R worse than 52.4% of shuffles (not clumped), shuffle p95 35.9R; one year resample 0%,
+  randomize 8.2% (cost-only 9.1%, drop-only 0.1%); +0.10R extra cost -> 96% red over 5 years. Break-even extra cost 0.092R. Nothing deployed.
+- 2026-11-04: `Portfolio 5 vs FTMO17 2026-11-04/` (owner: FTMO17 vs EMA3 + Nasdaq 5M ATR6 DI ON + Gold Overnight VA + XAU RSI VWAP + 3 Way Gold;
+  G5 = FTMO17 stream filtered, frozen engines): FTMO17 better everywhere. 2-step 0.5% MC 61% vs 20%, 1% 58% vs 49% (95 vs 108 d);
+  1-Step guard 0.5% 79% vs 51% (85 vs 108 d), 0.75% 67% vs 60%, 1% 57% vs 56%; funded 1% $3,034 vs $2,364/month. G5 weak in 2021-24.
+- 2026-11-04: `USDJPY London MC OOS 2026-11-04/` (production EX5 c36eb37aa963, Full EA preset, 1%, native Model 4, data_split windows to
+  2026-11-01): dev +49.4% PF 1.28 n455 / val +44.7% PF 2.48 n91 / OOS (viewed) +25.5% PF 1.44 n185 / all +170.4% PF 1.50 n731 (7.8/month),
+  closed DD 9.7%; 7/8 years positive (2019 -7.9R). Three-way MC PASS (resample 0%, OOS 4.2%; randomize 0%); 1-year resample 11% red,
+  randomize 24%; 12 m block bootstrap 11.5% lose. Profit = 16:00 time exits. Nothing changed.
+  Addendum Mon/Tue (run_days.py/days.py, 4 native runs, Wed-Fri parity exact): Mon-Fri all +130% PF 1.23 n1215 R-DD 19.7 vs Wed-Fri +170%
+  PF 1.46 R-DD 10.1; Monday +2.0R PF 1.03, Tuesday -16.6R PF 0.80 (Mon+Tue negative in dev, val and OOS). Keep Mon/Tue OFF.
+- 2026-11-04: `Edge Scan 2026-11-04/` (scan.py, rules declared first, 5y native streams, in-sample): all 6 rules pass = USDJPY London, EMA3,
+  ORB VP, ORB VP Volume Confirmed, Sell Nasdaq 15min, XAU Regime Switch, XAU Elliott Wave (dev flat), 3WG B module (but 3WG failed the
+  2019-21 holdout). MAYBE: XAU Squeeze, Selective V3, XAU ORB NY (n<100), Asia Breakout, Month-End Flow, XAU Weakness (2019-23 fails).
+  NOT PROVEN: Gold Overnight (PF 1.03, +0.007R), LTA VP, Nasdaq Overnight, XAU LNY ORB, US100 NY / H1 ORB, DMCs, Slow Trend, Trend
+  Progression, RSI VWAP, Nasdaq 5M (val negative, +0.09R). News / hourly / crypto bots not scored. Nothing changed.
+- 2026-11-04: `Edge Portfolio E10 2026-11-04/` (Edge Scan list + Nasdaq 5M + RSI VWAP, 10 bots, 3,098 trades, frozen engines) vs FTMO17:
+  2-step 0.5% 55% vs 61%, 1% 58% vs 58%; 1-Step guard 0.5% 74% vs 79% (2021-23 starts 28% vs 64%), 0.75% 66% vs 67%; funded 0.5% $2,641
+  vs $2,446/month but 736 vs 1,036 d. Edge per trade +0.174R vs +0.092R, 1y randomize +0.10R red 10% vs 61%. FTMO17 narrowly better
+  for passing; E10 more cost-robust. Selection-biased, in-sample. No E10 installer (5 bots lack guarded wrappers).
+- 2026-11-04: BUILT `_00 Live profiles/Edge 10 - no guard/` (`Edge 10 - no guard.bat`, build.py -> `Packages/Edge10` EDGE10-NOGUARD-20261104):
+  E10's 10 EAs, Full EA presets (= tested long-history inputs), 3 Way Gold breakout-only market entries, RiskSupport sizing (% or fixed
+  USD, NO guard / daily stop / governor), Current14 installer adapted to 10. 10/10 compiled 0/0, -ValidateOnly PASS, native parity 10/10
+  identical vs production (6 m, real ticks). Not installed; not pushed.
+  Funded income (`Edge Portfolio E10 2026-11-04/funded_u.py`, INCOME.md; FTMO standard funded rules 10% static / 5% daily, NOT the 1-Step
+  funded rules): E10 no guard 0.25% $1,782/month, 1% breach in 36 m; 0.5% $3,580/month, 33% breach, 36 m total median $120k; 1% $6,503/month
+  but 100% breach (median 155 d). FTMO17 no guard 0.5% $3,214/month, 45% breach; guarded FTMO17 0.5% $2,446/month, 0% breach, 51% frozen.
 - 2026-11-02: Telegram signals daily recap (`AAA EAs/system signals/`; SIGNALS_DAILY_RECAP / SIGNALS_RECAP_TIME, default 17:00 New York;
   DST computed without a tz database; 9 tests pass). Pushed in `6a83f84f6` on `new-telegram-copy`.
 

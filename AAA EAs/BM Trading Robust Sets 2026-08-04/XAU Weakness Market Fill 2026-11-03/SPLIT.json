@@ -1,0 +1,40 @@
+{
+ "split": {
+  "policy_version": "2026-10-06",
+  "boundary_convention": "start-inclusive, end-exclusive; UTC dates",
+  "development": {
+   "start": "2019-01-01",
+   "end_exclusive": "2023-11-01"
+  },
+  "validation": {
+   "start": "2023-11-01",
+   "end_exclusive": "2024-11-01"
+  },
+  "oos": {
+   "start": "2024-11-01",
+   "end_exclusive": "2026-11-01",
+   "calendar_years": 2
+  },
+  "selection_must_end_before_oos": true,
+  "recent_subwindows_are_diagnostic_only": true,
+  "untouched_status": "not asserted; study must disclose prior inspection and selection provenance"
+ },
+ "windows": {
+  "dev": [
+   "2019-01-01",
+   "2023-11-01"
+  ],
+  "val": [
+   "2023-11-01",
+   "2024-11-01"
+  ],
+  "oos": [
+   "2024-11-01",
+   "2026-11-01"
+  ],
+  "all": [
+   "2019-01-01",
+   "2026-11-01"
+  ]
+ }
+}

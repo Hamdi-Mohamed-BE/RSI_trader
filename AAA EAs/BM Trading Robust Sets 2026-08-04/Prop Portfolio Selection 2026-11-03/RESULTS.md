@@ -42,3 +42,78 @@ Only change: total open risk 4.5x → 6x the per-trade cap. Same frozen engine, 
 At 1% the 6x cap changes nothing: the 3% daily reserve (each trade reserves 1.25x its risk) stops new entries at roughly 2.4% open risk,
 before the 4.5% total cap is reached. At 0.5% the 6x cap only lets more risk open at once; MC is unchanged and history is worse
 (dev 22% → 8%). Verdict: keep 4.5x. In-sample; OOS previously viewed.
+
+## Funded $100k income (`prop_select.py funded` → `FU-*.json`, 2026-11-03)
+FTMO First Payout income model. A reward is taken whenever the account is in profit, at most every 14 days, with an 80% split; the
+balance then returns to $100k and the guard is assumed re-baselined. An account ends when the guard freezes it (no entry for 30 days
+below the 92% buffer). Breaches were 0 in every run. MC = 2,000 paths over 36 months; history = 1,043 weekday starts, 12 months each.
+
+| Candidate | Test | $ / month while alive (median) | ≈ $ / week | Median life | Ended by 6 / 12 months | Total income median (mean) | No payout | Trades / month (/ day) |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| FTMO17 0.5% | MC | $2,446 | $563 | 1,036 d (49% still alive at 36 m) | 9 / 20% | $72,284 ($65,207) | 3% | 60.5 (2.78) |
+| FTMO17 0.5% | History | $2,826 | $650 | 78% alive at 12 m | 12 / 22% | $33,884 ($30,606) in 12 m | 5% | 58.9 (2.71) |
+| FTMO17 1% | MC | $3,034 | $698 | 171 d | 53 / 81% | $16,996 ($26,360) | 11% | 33.3 (1.53) |
+| FTMO17 1% | History | $2,155 | $496 | 172 d | 53 / 77% | $13,509 ($20,949) | 13% | 31.5 (1.45) |
+| PR9 1% | MC | $3,512 | $808 | 135 d | 61 / 86% | $16,348 ($25,260) | 11% | 33.9 (1.56) |
+| BP9 1% | MC | $3,503 | $806 | 93 d | 75 / 95% | $11,355 ($18,237) | 14% | 36.7 (1.69) |
+
+At 0.5% the account lasts years instead of months, so total income is about 4x higher despite lower monthly income. In-sample;
+OOS previously viewed.
+
+## One-step challenge at $100k (`onestep_select.py` → `OS-*.json`, 2026-11-03)
+Rules: FundedNext Stellar 1-Step as modelled in Best Prop 15 Backtest. One phase to +10%; daily loss 3% of the initial balance; max
+loss 6% static (94% floor); at least 2 days; 180-day horizon. The same frozen engine, streams, starts and MC as the 2-step stage.
+- INSTALLED = the Prop Ready guard as installed (92% buffer, 3% daily reserve): it sits BELOW the 94% floor.
+- ONESTEP = a hypothetical guard (95.5% buffer, 2.5% daily); NOT built.
+- 1-step days are days to pass; the firm's account issue time is extra. 2-step "to funded" includes the 7-day handover.
+- FTMO's own 1-Step (10% EOD-trailing max loss, 50% best-day rule) is NOT modelled.
+
+| Portfolio / risk | 2-step MC pass, breach, median days to funded | 1-step INSTALLED MC pass, breach, median days | 1-step ONESTEP guard MC pass, breach, stuck, median days | 1-step INSTALLED history pass dev / val / OOS |
+|---|---|---|---|---|
+| FTMO17 0.5% | 61%, 0%, 123 | **81%, 8%, 79** | 75%, 0%, 21%, 81 | 68 / 98 / 96% |
+| FTMO17 1% | 58%, 0%, 95 | 71%, 26%, 52 | 49%, 2%, 48%, 59 | 66 / 87 / 77% |
+| PR9 0.5% | 43%, 0%, 137 | 74%, 5%, 99 | 70%, 0%, 17%, 96 | 42 / 98 / 89% |
+| PR9 1% | 63%, 0%, 86 | 76%, 23%, 46 | 51%, 0%, 47%, 53 | 61 / 62 / 90% |
+| BP9 0.5% | 39%, 0%, 135 | 67%, 8%, 95 | 62%, 0%, 23%, 94 | 47 / 80 / 84% |
+| BP9 1% | 53%, 0%, 78 | 67%, 32%, 39 | 47%, 0%, 53%, 47 | 57 / 61 / 80% |
+
+In-sample; OOS previously viewed.
+
+## Buffer OFF vs ON, FTMO 2-Step and FTMO 1-Step (`nobuffer.py` → `NB2-*.json`, `F1-*.json`, 2026-11-04)
+- Buffer OFF removes only the guard's 92% equity entry buffer; every other guard rule stays (3% daily reserve, 4.5x / 3x caps,
+  7 entries / 3 losses a day).
+- FTMO 1-Step model (ftmo.com, read 2026-11-03): +10% target; 3% daily loss from the midnight balance; max loss = highest end-of-day
+  balance − 10% (trails up only); best day ≤ 50% of total profit; minimum days modelled as 1.
+- MC 2,000 paths, $100k, 180-day horizon. 1-Step days are days to pass; FTMO's account issue time is extra.
+
+| Portfolio / risk | 2-Step buffer ON: pass / breach / stuck / median days to funded | 2-Step buffer OFF | 1-Step buffer ON: pass / breach / median days | 1-Step buffer OFF |
+|---|---|---|---|---|
+| FTMO17 0.5% | 61% / 0% / 13% / 123 | 61% / 2% / 0% / 124 | **82% / 2% / 80** | 83% / 4% / 80 |
+| FTMO17 1% | 58% / 0% / 50% / 95 | 65% / 14% / 0% / 102 | 69% / 14% / 57 | 73% / 23% / 59 |
+| PR9 0.5% | 43% / 0% / 4% / 137 | 43% / 0% / 0% / 137 | 75% / 1% / 100 | 75% / 2% / 100 |
+| PR9 1% | 63% / 0% / 42% / 86 | 72% / 17% / 0% / 89 | 75% / 11% / 50 | 78% / 20% / 52 |
+| BP9 0.5% | 39% / 0% / 7% / 135 | 39% / 2% / 0% / 135 | 68% / 3% / 96 | 68% / 4% / 99 |
+| BP9 1% | 53% / 0% / 54% / 78 | 64% / 26% / 0% / 85 | 65% / 16% / 45 | 70% / 29% / 47 |
+
+- At 0.5% the buffer barely matters: same pass rate, 0–2 points more breach.
+- At 1%, removing it adds 4–11 points of passes and 9–26 points of breaches; the formerly stuck accounts split between passing and
+  breaching.
+- The FTMO 1-Step history by period (FTMO17 0.5%, buffer ON) passes dev / val / OOS 69 / 100 / 96%. In-sample; OOS previously viewed.
+
+## ftmo 1_step profile guard on FTMO 1-Step (`f1_profile.py` → `F1P-*.json`, 2026-11-04)
+The guard is modelled exactly as built in `_00 Live profiles/ftmo 1_step/CalyxFTMOGuard.mqh`:
+- new entries need projected equity ≥ trailing floor + 2%;
+- 2.5% daily reserve / latch;
+- no new entries after a +4.5% day;
+- the target stops entries only once best day ≤ 50%;
+- caps 4.5x / 3x.
+
+FTMO17, $100k, MC 2,000 paths, 180 days. "Stuck" = not passed and the trailing-floor buffer blocked entries.
+
+| Risk | MC pass | Within 30 / 60 / 90 d | Breach | Stuck | Median days (p25–p75) | History all / dev / val / OOS pass | Best-day cap hit |
+|---|---:|---|---:|---:|---|---|---:|
+| 0.5% | **79.4%** | 3 / 22 / 44% | **0%** | 15.8% | 85 (58–117) | 78 / 64 / 82 / 92% | 9% |
+| 0.75% | 67.4% | 8 / 29 / 45% | 0% | 31.6% | 68 (45–102) | 65 / 46 / 92 / 73% | 15% |
+| 1% | 56.5% | 6 / 25 / 41% | 2.3% (daily) | 40.5% | 67 (44–95) | 54 / 53 / 39 / 66% | 24% |
+
+Median trades per challenge: 155 / 80 / 48. In-sample; OOS previously viewed.

@@ -3,6 +3,8 @@
 Added 2026-10-20 (owner request, from the AI Trading Library review):
 - best-day / best-trade / worst-day dependence, used as a raw-gate falsifier;
 - day-block bootstrap of drawdown and losing streaks, used for per-EA kill-switch thresholds.
+Added 2026-11-04 (owner request, from a pasted clip): `three_monte_carlo`, the stage-6 three-way Monte Carlo:
+reshuffle (order luck), resample (trade luck) and randomize (missed trades + worse costs).
 
 Trades are dicts with a close timestamp and a P&L value; both field names are configurable so the same code reads
 native ledgers (net_profit, close_time), evidence-cache rows (estimated_r) and live reconstructed trades.
@@ -141,3 +143,62 @@ def day_block_bootstrap(trades: list[dict], horizon_days: int, *, value: str = '
                 losing_streak=dict(p50=q(streaks, .50), p95=q(streaks, .95), p99=q(streaks, .99)),
                 worst_day=dict(p50=q(worst_days, .50), p05=q(worst_days, .05), p01=q(worst_days, .01)),
                 total=dict(p05=q(totals, .05), p50=q(totals, .50), p95=q(totals, .95)))
+
+
+THREE_MC_RULE = ("Stage 6 three-way Monte Carlo on per-trade results in time order (R or money): RESHUFFLE = same trades, random "
+                 "order (total fixed; tests order luck: where the real drawdown ranks among shuffled ones); RESAMPLE = draw trades "
+                 "with replacement (tests trade luck: share of runs that end <= 0); RANDOMIZE = drop each trade with probability "
+                 "drop_fraction and charge every kept trade an extra cost drawn uniformly from [0, 2 x extra_cost] (tests the "
+                 "broker; drop-only and cost-only runs are reported separately so the two causes are not mixed).")
+
+
+def _dist(arr: list[float]) -> dict:
+    arr = sorted(arr)
+    return dict(p05=round(_quantile(arr, .05), 4), p50=round(_quantile(arr, .50), 4), p95=round(_quantile(arr, .95), 4),
+                p99=round(_quantile(arr, .99), 4))
+
+
+def _red(totals: list[float]) -> float:
+    return round(100.0 * sum(1 for v in totals if v <= 0) / len(totals), 2) if totals else math.nan
+
+
+def three_monte_carlo(values: list[float], *, runs: int = 1000, seed: int = 20261104, drop_fraction: float = 0.10,
+                      extra_cost: float = 0.05, horizon: int | None = None) -> dict:
+    """values = per-trade results in time order. horizon=None uses the real sequence length (and, for RANDOMIZE, the real
+    order); horizon=k builds k-trade paths by resampling with replacement first (e.g. one year of trades)."""
+    vals = [float(v) for v in values]
+    n = len(vals)
+    if n == 0:
+        return dict(trades=0)
+    k = horizon or n
+    rng = random.Random(seed)
+    real = dict(total=round(sum(vals), 4), max_drawdown=round(max_drawdown(vals), 4), losing_streak=longest_losing_streak(vals))
+
+    sh_dd, sh_streak = [], []
+    for _ in range(runs):
+        path = vals[:]; rng.shuffle(path)
+        sh_dd.append(max_drawdown(path)); sh_streak.append(longest_losing_streak(path))
+    reshuffle = dict(max_drawdown=_dist(sh_dd), losing_streak=_dist(sh_streak),
+                     real_drawdown_worse_than_pct=round(100.0 * sum(1 for d in sh_dd if d < real['max_drawdown']) / runs, 2),
+                     real_streak_longer_than_pct=round(100.0 * sum(1 for s in sh_streak if s < real['losing_streak']) / runs, 2))
+
+    def draw() -> list[float]:
+        return [vals[rng.randrange(n)] for _ in range(k)] if horizon else vals
+
+    totals, dds = [], []
+    for _ in range(runs):
+        path = [vals[rng.randrange(n)] for _ in range(k)]
+        totals.append(sum(path)); dds.append(max_drawdown(path))
+    resample = dict(red_pct=_red(totals), total=_dist(totals), max_drawdown=_dist(dds))
+
+    def randomize(drop: float, cost: float) -> dict:
+        tot, dd = [], []
+        for _ in range(runs):
+            path = [v - (rng.uniform(0, 2 * cost) if cost else 0.0) for v in draw() if not (drop and rng.random() < drop)]
+            tot.append(sum(path)); dd.append(max_drawdown(path))
+        return dict(red_pct=_red(tot), total=_dist(tot), max_drawdown=_dist(dd))
+
+    return dict(rule=THREE_MC_RULE, trades=n, horizon_trades=k, runs=runs, seed=seed, real=real if not horizon else None,
+                reshuffle=reshuffle if not horizon else None, resample=resample,
+                randomize=dict(drop_fraction=drop_fraction, extra_cost=extra_cost, both=randomize(drop_fraction, extra_cost),
+                               drop_only=randomize(drop_fraction, 0.0), cost_only=randomize(0.0, extra_cost)))

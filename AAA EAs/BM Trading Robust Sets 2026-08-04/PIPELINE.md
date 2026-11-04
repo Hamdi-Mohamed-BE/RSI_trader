@@ -6,6 +6,9 @@ Amended **2026-10-20 (user: "do them all", AI Trading Library review)**, added w
 - **Kill switch and go-live checklist** in stage 9: `_Ops Monitor/` (kill_switch.py, go_live.py).
 - **Weekly live debrief** and **monthly EA review** while EAs run on demo: `_Ops Monitor/` (fetch_live.py, debrief_backtest.py, live_debrief.py).
 
+Amended **2026-11-04 (user)**: stage 6 now has the **three-way Monte Carlo**: reshuffle, resample and randomize
+(`robustness.three_monte_carlo`).
+
 Amended **2026-10-06 (user): final out-of-sample (OOS) is always the last TWO calendar years**
 ending at the frozen study end-exclusive date (normally through yesterday, UTC). All development and finalist
 selection must finish before that two-year window. Never shorten it to 6/12 months because data or trades are scarce.
@@ -114,9 +117,17 @@ plateau chart, the frozen final SET, holdout result, and the list of rejected al
 Run on the frozen final version's **native Model 4 trades** (development + validation + holdout):
 - **Block bootstrap** (10,000 paths, block length 5 — policy): distribution of return, PF, max DD; require return p05 > 0
   and PF p05 > 1 (policy thresholds).
-- **Trade-order reshuffle**: distribution of max drawdown and longest losing streak.
-- **Random trade removal** (skip 10–20% of trades): robustness to missed fills.
-- **Cost stress**: measured extra spread/slippage per trade (never invented) — must stay profitable.
+- **Three-way Monte Carlo** (amended 2026-11-04, owner request; `robustness.three_monte_carlo`, 1,000 runs, seed 20261104,
+  per-trade results in R in close-time order; run on the full sample AND on one-year horizons; policy `three_way_monte_carlo`):
+  1. **Reshuffle** (order luck): same trades, random order, so the total is fixed and only the pain changes. Report where the real
+     drawdown and losing streak rank among the shuffles. If the real drawdown is worse than 95% of them, flag **CLUMPED LOSSES**
+     (losses arrive together, not at random). Size and set kill switches from max(real drawdown, shuffled p95). Diagnostic, not a gate.
+  2. **Resample** (trade luck): draw trades with replacement. Gate: at most **5%** of full-sample runs end ≤ 0.
+  3. **Randomize** (the broker): drop each trade with 10% probability and charge every kept trade an extra cost drawn from
+     [0, 2 × 0.05R], on top of the recorded costs. Gate: at most **10%** of full-sample runs end ≤ 0. Drop-only and cost-only runs are
+     reported separately, so missed trades and costs are not mixed up. A cost ladder (0.02 / 0.05 / 0.10 / 0.20R) and the
+     break-even extra cost are also reported. The 0.05R level is a declared assumption; replace it with the measured broker
+     spread/slippage when available (never invent a "measured" cost).
 - **Prop-firm simulation** (FTMO rules): pass probability for phase 1/2, breach probability, days to pass, at the
   chosen risk — using the existing FTMO simulators; equity-path caveats stated.
 - **Portfolio overlap**: correlation with and marginal effect on the current portfolio.

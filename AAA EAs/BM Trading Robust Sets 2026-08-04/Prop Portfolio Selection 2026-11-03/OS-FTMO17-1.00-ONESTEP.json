@@ -1,0 +1,98 @@
+{
+ "candidate": "FTMO17",
+ "risk": 0.01,
+ "variant": "ONESTEP",
+ "guard": {
+  "buffer": 0.955,
+  "reserve": 0.025
+ },
+ "rules": {
+  "floor": 0.94,
+  "daily": 0.03,
+  "target": 1.1,
+  "min_days": 2
+ },
+ "hist": {
+  "dev": {
+   "n": 521,
+   "pass_180": 0.4549,
+   "pass_30": 0.023,
+   "pass_60": 0.1382,
+   "pass_90": 0.2438,
+   "breach": 0.0,
+   "breach_daily": 0.0,
+   "breach_static": 0.0,
+   "still_open": 0.5451,
+   "stuck_buffer": 0.5086,
+   "median_days": 84,
+   "p25_days": 55,
+   "p75_days": 108,
+   "median_trades": 31
+  },
+  "val": {
+   "n": 261,
+   "pass_180": 0.3065,
+   "pass_30": 0.046,
+   "pass_60": 0.1609,
+   "pass_90": 0.2682,
+   "breach": 0.0,
+   "breach_daily": 0.0,
+   "breach_static": 0.0,
+   "still_open": 0.6935,
+   "stuck_buffer": 0.6935,
+   "median_days": 58.0,
+   "p25_days": 44,
+   "p75_days": 78,
+   "median_trades": 27
+  },
+  "oos": {
+   "n": 394,
+   "pass_180": 0.5685,
+   "pass_30": 0.2183,
+   "pass_60": 0.5228,
+   "pass_90": 0.5558,
+   "breach": 0.0025,
+   "breach_daily": 0.0025,
+   "breach_static": 0.0,
+   "still_open": 0.4289,
+   "stuck_buffer": 0.4162,
+   "median_days": 35.0,
+   "p25_days": 27,
+   "p75_days": 47,
+   "median_trades": 28.0
+  },
+  "all": {
+   "n": 1176,
+   "pass_180": 0.46,
+   "pass_30": 0.0935,
+   "pass_60": 0.2721,
+   "pass_90": 0.3537,
+   "breach": 0.0009,
+   "breach_daily": 0.0009,
+   "breach_static": 0.0,
+   "still_open": 0.5391,
+   "stuck_buffer": 0.5187,
+   "median_days": 52,
+   "p25_days": 34,
+   "p75_days": 85,
+   "median_trades": 30.0
+  }
+ },
+ "mc": {
+  "n": 2000,
+  "pass_180": 0.4945,
+  "pass_30": 0.089,
+  "pass_60": 0.2645,
+  "pass_90": 0.367,
+  "breach": 0.016,
+  "breach_daily": 0.016,
+  "breach_static": 0.0,
+  "still_open": 0.4895,
+  "stuck_buffer": 0.476,
+  "median_days": 59,
+  "p25_days": 37,
+  "p75_days": 93,
+  "median_trades": 33.0
+ },
+ "seconds": 517
+}

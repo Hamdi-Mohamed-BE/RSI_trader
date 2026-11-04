@@ -1,0 +1,87 @@
+{
+ "prod_ex5": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ADX DI Deployment 2026-10-03\\EA\\london\\Calyx London Open FX Momentum Pipeline EA.ex5",
+ "prod_sha": "c36eb37aa9638099d02e47fb3947e056fa7cd1bb713475f2ecf4931e2fccf1d2",
+ "set_path": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ADX DI Final Selection 2026-10-03\\Sets\\usdjpy-london-open-momentum.set",
+ "inputs": {
+  "InpEnableTrading": "true",
+  "InpLondonOpenHour": "8.0",
+  "InpFormationMinutes": "60",
+  "InpExitLondonHour": "16.0",
+  "InpReverseSignal": "false",
+  "InpDirection": "0",
+  "InpTradeMonday": "false",
+  "InpTradeTuesday": "false",
+  "InpTradeWednesday": "true",
+  "InpTradeThursday": "true",
+  "InpTradeFriday": "true",
+  "InpMinimumSignalAtr": "0.2",
+  "InpMaximumSignalAtr": "0.0",
+  "InpMinimumVolumePctMedian": "25.0",
+  "InpVolumeLookbackDays": "20",
+  "InpMaximumSpreadAtrPct": "0.0",
+  "InpRiskPercent": "1.0",
+  "InpAtrPeriod": "14",
+  "InpStopMode": "0",
+  "InpStopAtrMultiple": "5.0",
+  "InpFormationRangeStopMultiple": "1.0",
+  "InpTargetMode": "0",
+  "InpTargetR": "1.0",
+  "InpAdaptiveBaseR": "0.5",
+  "InpAdaptiveSignalWeight": "1.0",
+  "InpAdaptiveMinimumR": "0.5",
+  "InpAdaptiveMaximumR": "3.0",
+  "InpBreakEvenAtR": "0.75",
+  "InpTrailStartAtR": "0.0",
+  "InpTrailDistanceR": "0.5",
+  "InpExitSecondsEarly": "30",
+  "InpMaxDeviationBrokerPoints": "20",
+  "InpMagic": "980908901",
+  "InpUseAutomaticLiveServerOffset": "true",
+  "InpTesterServerClock": "0",
+  "InpTesterManualUTCOffsetHours": "0",
+  "InpManualLiveServerUTCOffsetHours": "0",
+  "InpAdaptivePortfolioControls": "false",
+  "InpUseADXFilter": "true",
+  "InpADXMinimum": "20",
+  "InpRequireDIAgreement": "true",
+  "InpADXTimeframe": "15"
+ },
+ "split": {
+  "policy_version": "2026-10-06",
+  "boundary_convention": "start-inclusive, end-exclusive; UTC dates",
+  "development": {
+   "start": "2019-01-01",
+   "end_exclusive": "2023-11-01"
+  },
+  "validation": {
+   "start": "2023-11-01",
+   "end_exclusive": "2024-11-01"
+  },
+  "oos": {
+   "start": "2024-11-01",
+   "end_exclusive": "2026-11-01",
+   "calendar_years": 2
+  },
+  "selection_must_end_before_oos": true,
+  "recent_subwindows_are_diagnostic_only": true,
+  "untouched_status": "not asserted; study must disclose prior inspection and selection provenance"
+ },
+ "windows": {
+  "dev": [
+   "2019-01-01",
+   "2023-11-01"
+  ],
+  "val": [
+   "2023-11-01",
+   "2024-11-01"
+  ],
+  "oos": [
+   "2024-11-01",
+   "2026-11-01"
+  ],
+  "all": [
+   "2019-01-01",
+   "2026-11-01"
+  ]
+ }
+}

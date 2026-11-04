@@ -1,0 +1,1041 @@
+{
+ "plan": {
+  "prod_sha": "c36eb37aa9638099d02e47fb3947e056fa7cd1bb713475f2ecf4931e2fccf1d2",
+  "windows": {
+   "dev": [
+    "2019-01-01",
+    "2023-11-01"
+   ],
+   "val": [
+    "2023-11-01",
+    "2024-11-01"
+   ],
+   "oos": [
+    "2024-11-01",
+    "2026-11-01"
+   ],
+   "all": [
+    "2019-01-01",
+    "2026-11-01"
+   ]
+  },
+  "inputs": {
+   "InpEnableTrading": "true",
+   "InpLondonOpenHour": "8.0",
+   "InpFormationMinutes": "60",
+   "InpExitLondonHour": "16.0",
+   "InpReverseSignal": "false",
+   "InpDirection": "0",
+   "InpTradeMonday": "false",
+   "InpTradeTuesday": "false",
+   "InpTradeWednesday": "true",
+   "InpTradeThursday": "true",
+   "InpTradeFriday": "true",
+   "InpMinimumSignalAtr": "0.2",
+   "InpMaximumSignalAtr": "0.0",
+   "InpMinimumVolumePctMedian": "25.0",
+   "InpVolumeLookbackDays": "20",
+   "InpMaximumSpreadAtrPct": "0.0",
+   "InpRiskPercent": "1.0",
+   "InpAtrPeriod": "14",
+   "InpStopMode": "0",
+   "InpStopAtrMultiple": "5.0",
+   "InpFormationRangeStopMultiple": "1.0",
+   "InpTargetMode": "0",
+   "InpTargetR": "1.0",
+   "InpAdaptiveBaseR": "0.5",
+   "InpAdaptiveSignalWeight": "1.0",
+   "InpAdaptiveMinimumR": "0.5",
+   "InpAdaptiveMaximumR": "3.0",
+   "InpBreakEvenAtR": "0.75",
+   "InpTrailStartAtR": "0.0",
+   "InpTrailDistanceR": "0.5",
+   "InpExitSecondsEarly": "30",
+   "InpMaxDeviationBrokerPoints": "20",
+   "InpMagic": "980908901",
+   "InpUseAutomaticLiveServerOffset": "true",
+   "InpTesterServerClock": "0",
+   "InpTesterManualUTCOffsetHours": "0",
+   "InpManualLiveServerUTCOffsetHours": "0",
+   "InpAdaptivePortfolioControls": "false",
+   "InpUseADXFilter": "true",
+   "InpADXMinimum": "20",
+   "InpRequireDIAgreement": "true",
+   "InpADXTimeframe": "15"
+  }
+ },
+ "windows": {
+  "dev": {
+   "trades": 455,
+   "trades_per_month": 7.85,
+   "trades_per_weekday": 0.361,
+   "net_usd": 4944.34,
+   "net_pct": 49.44,
+   "pf": 1.282,
+   "win_pct": 45.71,
+   "mean_r": 0.0938,
+   "avg_win_r": 0.918,
+   "avg_loss_r": -0.6,
+   "closed_dd_pct": 9.68,
+   "losing_streak": 8,
+   "costs_usd": -504.56,
+   "swap_usd": 0.0,
+   "mt5": {
+    "initial_balance": 10000.0,
+    "final_balance": 14944.34,
+    "net_profit": 4944.34,
+    "return_pct": 49.44,
+    "profit_factor": 1.28,
+    "win_rate_pct": 52.31,
+    "max_drawdown_pct": 10.35,
+    "trades": 455,
+    "sharpe_ratio": 11.16,
+    "recovery_factor": 4.02,
+    "history_quality": "0% real ticks",
+    "balance_dd_pct": 9.68,
+    "expected_payoff": 10.87
+   },
+   "dependence": {
+    "trades": 455,
+    "days": 455,
+    "total": 4944.34,
+    "rule": "For a positive total, the result FAILS if removing the single best day or the single best trade leaves a total <= 0. Worst-day removal is reported as a diagnostic (mean-reversion shape), not a gate.",
+    "best_day": {
+     "date": "2022-08-10",
+     "value": 1069.02
+    },
+    "worst_day": {
+     "date": "2023-10-20",
+     "value": -187.28
+    },
+    "best_trade": 1069.02,
+    "worst_trade": -187.28,
+    "without_best_day": 3875.32,
+    "without_best_trade": 3875.32,
+    "without_worst_day": 5131.62,
+    "without_top5_days": 1879.69,
+    "best_day_share_of_total": 0.2162,
+    "applicable": true,
+    "best_day_sign_flip": false,
+    "best_trade_sign_flip": false,
+    "top5_days_sign_flip": false,
+    "verdict": "PASS"
+   }
+  },
+  "val": {
+   "trades": 91,
+   "trades_per_month": 7.57,
+   "trades_per_weekday": 0.347,
+   "net_usd": 4465.35,
+   "net_pct": 44.65,
+   "pf": 2.482,
+   "win_pct": 52.75,
+   "mean_r": 0.4213,
+   "avg_win_r": 1.309,
+   "avg_loss_r": -0.57,
+   "closed_dd_pct": 4.41,
+   "losing_streak": 6,
+   "costs_usd": -86.81,
+   "swap_usd": 0.0,
+   "mt5": {
+    "initial_balance": 10000.0,
+    "final_balance": 14465.35,
+    "net_profit": 4465.35,
+    "return_pct": 44.65,
+    "profit_factor": 2.46,
+    "win_rate_pct": 58.24,
+    "max_drawdown_pct": 8.81,
+    "trades": 91,
+    "sharpe_ratio": 31.58,
+    "recovery_factor": 3.48,
+    "history_quality": "0% real ticks",
+    "balance_dd_pct": 4.42,
+    "expected_payoff": 49.07
+   },
+   "dependence": {
+    "trades": 91,
+    "days": 91,
+    "total": 4465.35,
+    "rule": "For a positive total, the result FAILS if removing the single best day or the single best trade leaves a total <= 0. Worst-day removal is reported as a diagnostic (mean-reversion shape), not a gate.",
+    "best_day": {
+     "date": "2024-07-11",
+     "value": 1507.78
+    },
+    "worst_day": {
+     "date": "2024-10-18",
+     "value": -149.76
+    },
+    "best_trade": 1507.78,
+    "worst_trade": -149.76,
+    "without_best_day": 2957.57,
+    "without_best_trade": 2957.57,
+    "without_worst_day": 4615.11,
+    "without_top5_days": 970.21,
+    "best_day_share_of_total": 0.3377,
+    "applicable": true,
+    "best_day_sign_flip": false,
+    "best_trade_sign_flip": false,
+    "top5_days_sign_flip": false,
+    "verdict": "PASS"
+   }
+  },
+  "oos": {
+   "trades": 185,
+   "trades_per_month": 7.71,
+   "trades_per_weekday": 0.355,
+   "net_usd": 2547.57,
+   "net_pct": 25.48,
+   "pf": 1.444,
+   "win_pct": 45.95,
+   "mean_r": 0.1278,
+   "avg_win_r": 0.91,
+   "avg_loss_r": -0.537,
+   "closed_dd_pct": 4.84,
+   "losing_streak": 6,
+   "costs_usd": -150.54,
+   "swap_usd": 0.0,
+   "mt5": {
+    "initial_balance": 10000.0,
+    "final_balance": 12547.57,
+    "net_profit": 2547.57,
+    "return_pct": 25.48,
+    "profit_factor": 1.44,
+    "win_rate_pct": 50.27,
+    "max_drawdown_pct": 5.84,
+    "trades": 185,
+    "sharpe_ratio": 6.8,
+    "recovery_factor": 4.08,
+    "history_quality": "41% real ticks",
+    "balance_dd_pct": 3.73,
+    "expected_payoff": 13.77
+   },
+   "dependence": {
+    "trades": 185,
+    "days": 185,
+    "total": 2547.57,
+    "rule": "For a positive total, the result FAILS if removing the single best day or the single best trade leaves a total <= 0. Worst-day removal is reported as a diagnostic (mean-reversion shape), not a gate.",
+    "best_day": {
+     "date": "2026-04-30",
+     "value": 619.83
+    },
+    "worst_day": {
+     "date": "2026-08-07",
+     "value": -137.9
+    },
+    "best_trade": 619.83,
+    "worst_trade": -137.9,
+    "without_best_day": 1927.74,
+    "without_best_trade": 1927.74,
+    "without_worst_day": 2685.47,
+    "without_top5_days": 358.94,
+    "best_day_share_of_total": 0.2433,
+    "applicable": true,
+    "best_day_sign_flip": false,
+    "best_trade_sign_flip": false,
+    "top5_days_sign_flip": false,
+    "verdict": "PASS"
+   }
+  },
+  "all": {
+   "trades": 731,
+   "trades_per_month": 7.78,
+   "trades_per_weekday": 0.358,
+   "net_usd": 17042.59,
+   "net_pct": 170.43,
+   "pf": 1.497,
+   "win_pct": 46.65,
+   "mean_r": 0.1427,
+   "avg_win_r": 0.968,
+   "avg_loss_r": -0.579,
+   "closed_dd_pct": 9.68,
+   "losing_streak": 8,
+   "costs_usd": -954.77,
+   "swap_usd": 0.0,
+   "mt5": {
+    "initial_balance": 10000.0,
+    "final_balance": 27042.59,
+    "net_profit": 17042.59,
+    "return_pct": 170.43,
+    "profit_factor": 1.49,
+    "win_rate_pct": 52.53,
+    "max_drawdown_pct": 8.79,
+    "trades": 731,
+    "sharpe_ratio": 10.46,
+    "recovery_factor": 8.93,
+    "history_quality": "10% real ticks",
+    "balance_dd_pct": 5.31,
+    "expected_payoff": 23.31
+   },
+   "dependence": {
+    "trades": 731,
+    "days": 731,
+    "total": 17042.59,
+    "rule": "For a positive total, the result FAILS if removing the single best day or the single best trade leaves a total <= 0. Worst-day removal is reported as a diagnostic (mean-reversion shape), not a gate.",
+    "best_day": {
+     "date": "2024-07-11",
+     "value": 2242.33
+    },
+    "worst_day": {
+     "date": "2026-08-07",
+     "value": -295.98
+    },
+    "best_trade": 2242.33,
+    "worst_trade": -295.98,
+    "without_best_day": 14800.26,
+    "without_best_trade": 14800.26,
+    "without_worst_day": 17338.57,
+    "without_top5_days": 10109.19,
+    "best_day_share_of_total": 0.1316,
+    "applicable": true,
+    "best_day_sign_flip": false,
+    "best_trade_sign_flip": false,
+    "top5_days_sign_flip": false,
+    "verdict": "PASS"
+   }
+  }
+ },
+ "native_checks": {
+  "dev": {
+   "ok": true,
+   "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+   },
+   "input_mismatches": [],
+   "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 0,
+    "size_below_min": 0,
+    "critical": 0
+   },
+   "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00, every tick generation used"
+   ],
+   "report_sha256": "fa07a5ae529ff27fa26d78a2ccc62d2d0a41a5bd6b9613735a9e32e1f38fb2b4"
+  },
+  "val": {
+   "ok": true,
+   "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+   },
+   "input_mismatches": [],
+   "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 0,
+    "size_below_min": 0,
+    "critical": 0
+   },
+   "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00, every tick generation used"
+   ],
+   "report_sha256": "0c0b3f509946dd4b26ee070f2c294cc7194d1f73edab51c0285ba496e24414f8"
+  },
+  "oos": {
+   "ok": true,
+   "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+   },
+   "input_mismatches": [],
+   "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 0,
+    "size_below_min": 0,
+    "critical": 0
+   },
+   "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+   ],
+   "report_sha256": "92670dc454c85d6938c0ac634cfec7883b81bf493295832105f4e6e44c9fab05"
+  },
+  "all": {
+   "ok": true,
+   "report_checks": {
+    "expert_in_report": true,
+    "symbol_in_report": true,
+    "period_in_report": true,
+    "inputs_applied": true
+   },
+   "input_mismatches": [],
+   "journal_flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 0,
+    "size_below_min": 0,
+    "critical": 0
+   },
+   "real_tick_lines": [
+    "real ticks begin from 2026.01.01 00:00:00"
+   ],
+   "report_sha256": "14da571ab31fcd2a0c2985f19de811799756fd45507f4bd60e92c9030fc236bc"
+  }
+ },
+ "by_year": {
+  "2019": {
+   "trades": 89,
+   "net_usd": -795.56,
+   "sum_r": -7.87,
+   "pf": 0.763,
+   "win_pct": 32.6
+  },
+  "2020": {
+   "trades": 96,
+   "net_usd": 1693.41,
+   "sum_r": 17.37,
+   "pf": 1.643,
+   "win_pct": 50.0
+  },
+  "2021": {
+   "trades": 104,
+   "net_usd": 424.63,
+   "sum_r": 4.29,
+   "pf": 1.106,
+   "win_pct": 42.3
+  },
+  "2022": {
+   "trades": 81,
+   "net_usd": 2326.23,
+   "sum_r": 19.35,
+   "pf": 1.745,
+   "win_pct": 56.8
+  },
+  "2023": {
+   "trades": 99,
+   "net_usd": 1557.13,
+   "sum_r": 11.37,
+   "pf": 1.31,
+   "win_pct": 46.5
+  },
+  "2024": {
+   "trades": 93,
+   "net_usd": 5750.36,
+   "sum_r": 33.45,
+   "pf": 2.115,
+   "win_pct": 52.7
+  },
+  "2025": {
+   "trades": 99,
+   "net_usd": 1837.89,
+   "sum_r": 8.85,
+   "pf": 1.278,
+   "win_pct": 49.5
+  },
+  "2026": {
+   "trades": 70,
+   "net_usd": 4248.5,
+   "sum_r": 17.54,
+   "pf": 1.971,
+   "win_pct": 42.9
+  }
+ },
+ "by_weekday": {
+  "Fri": {
+   "trades": 234,
+   "net_usd": 2732.1,
+   "sum_r": 22.38,
+   "pf": 1.233,
+   "win_pct": 41.9
+  },
+  "Thu": {
+   "trades": 242,
+   "net_usd": 7396.48,
+   "sum_r": 38.71,
+   "pf": 1.631,
+   "win_pct": 47.9
+  },
+  "Wed": {
+   "trades": 255,
+   "net_usd": 6914.01,
+   "sum_r": 43.26,
+   "pf": 1.638,
+   "win_pct": 49.8
+  }
+ },
+ "by_side": {
+  "Long": {
+   "trades": 411,
+   "net_usd": 7876.21,
+   "sum_r": 51.83,
+   "pf": 1.412,
+   "win_pct": 49.4
+  },
+  "Short": {
+   "trades": 320,
+   "net_usd": 9166.38,
+   "sum_r": 52.52,
+   "pf": 1.605,
+   "win_pct": 43.1
+  }
+ },
+ "by_exit": {
+  "break-even stop": {
+   "trades": 71,
+   "net_usd": -132.31,
+   "sum_r": -0.97,
+   "pf": 0.0,
+   "win_pct": 0.0
+  },
+  "initial stop (loss)": {
+   "trades": 173,
+   "net_usd": -25657.8,
+   "sum_r": -172.9,
+   "pf": 0.0,
+   "win_pct": 0.0
+  },
+  "time exit / EA close": {
+   "trades": 487,
+   "net_usd": 42832.7,
+   "sum_r": 278.22,
+   "pf": 6.047,
+   "win_pct": 70.0
+  }
+ },
+ "months": {
+  "count": 94,
+  "positive": 59,
+  "worst": [
+   "2026-10",
+   {
+    "trades": 10,
+    "net_usd": -747.25,
+    "sum_r": -2.71,
+    "pf": 0.083,
+    "win_pct": 10.0
+   }
+  ],
+  "best": [
+   "2026-04",
+   {
+    "trades": 10,
+    "net_usd": 3081.01,
+    "sum_r": 12.23,
+    "pf": 9.522,
+    "win_pct": 70.0
+   }
+  ]
+ },
+ "three_mc": {
+  "all_full": {
+   "rule": "Stage 6 three-way Monte Carlo on per-trade results in time order (R or money): RESHUFFLE = same trades, random order (total fixed; tests order luck: where the real drawdown ranks among shuffled ones); RESAMPLE = draw trades with replacement (tests trade luck: share of runs that end <= 0); RANDOMIZE = drop each trade with probability drop_fraction and charge every kept trade an extra cost drawn uniformly from [0, 2 x extra_cost] (tests the broker; drop-only and cost-only runs are reported separately so the two causes are not mixed).",
+   "trades": 731,
+   "horizon_trades": 731,
+   "runs": 1000,
+   "seed": 20261104,
+   "real": {
+    "total": 104.3497,
+    "max_drawdown": 10.1007,
+    "losing_streak": 8
+   },
+   "reshuffle": {
+    "max_drawdown": {
+     "p05": 8.6268,
+     "p50": 12.4547,
+     "p95": 19.6153,
+     "p99": 23.5851
+    },
+    "losing_streak": {
+     "p05": 7,
+     "p50": 9,
+     "p95": 13,
+     "p99": 16
+    },
+    "real_drawdown_worse_than_pct": 16.6,
+    "real_streak_longer_than_pct": 7.6
+   },
+   "resample": {
+    "red_pct": 0.0,
+    "total": {
+     "p05": 56.7369,
+     "p50": 102.0545,
+     "p95": 154.0442,
+     "p99": 176.481
+    },
+    "max_drawdown": {
+     "p05": 8.1691,
+     "p50": 12.6079,
+     "p95": 21.5369,
+     "p99": 26.5988
+    }
+   },
+   "randomize": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.05,
+    "both": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 45.1696,
+      "p50": 61.2125,
+      "p95": 76.2673,
+      "p99": 80.2212
+     },
+     "max_drawdown": {
+      "p05": 10.4821,
+      "p50": 12.8587,
+      "p95": 17.6667,
+      "p99": 20.06
+     }
+    },
+    "drop_only": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 77.9119,
+      "p50": 94.7168,
+      "p95": 108.4773,
+      "p99": 113.3835
+     },
+     "max_drawdown": {
+      "p05": 8.2681,
+      "p50": 10.177,
+      "p95": 13.3282,
+      "p99": 14.6484
+     }
+    },
+    "cost_only": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 66.6279,
+      "p50": 67.8271,
+      "p95": 69.2289,
+      "p99": 69.6949
+     },
+     "max_drawdown": {
+      "p05": 12.2953,
+      "p50": 12.7503,
+      "p95": 13.2003,
+      "p99": 13.4289
+     }
+    }
+   }
+  },
+  "all_one_year": {
+   "rule": "Stage 6 three-way Monte Carlo on per-trade results in time order (R or money): RESHUFFLE = same trades, random order (total fixed; tests order luck: where the real drawdown ranks among shuffled ones); RESAMPLE = draw trades with replacement (tests trade luck: share of runs that end <= 0); RANDOMIZE = drop each trade with probability drop_fraction and charge every kept trade an extra cost drawn uniformly from [0, 2 x extra_cost] (tests the broker; drop-only and cost-only runs are reported separately so the two causes are not mixed).",
+   "trades": 731,
+   "horizon_trades": 93,
+   "runs": 1000,
+   "seed": 20261104,
+   "real": null,
+   "reshuffle": null,
+   "resample": {
+    "red_pct": 11.3,
+    "total": {
+     "p05": -4.4192,
+     "p50": 12.6548,
+     "p95": 32.5513,
+     "p99": 39.963
+    },
+    "max_drawdown": {
+     "p05": 3.2791,
+     "p50": 6.1328,
+     "p95": 12.352,
+     "p99": 16.6838
+    }
+   },
+   "randomize": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.05,
+    "both": {
+     "red_pct": 24.1,
+     "total": {
+      "p05": -9.0332,
+      "p50": 7.2603,
+      "p95": 26.4755,
+      "p99": 34.3853
+     },
+     "max_drawdown": {
+      "p05": 3.5349,
+      "p50": 7.0028,
+      "p95": 14.6725,
+      "p99": 18.5748
+     }
+    },
+    "drop_only": {
+     "red_pct": 11.2,
+     "total": {
+      "p05": -3.7097,
+      "p50": 11.3684,
+      "p95": 31.2999,
+      "p99": 39.4787
+     },
+     "max_drawdown": {
+      "p05": 3.2002,
+      "p50": 6.1151,
+      "p95": 11.7648,
+      "p99": 14.9866
+     }
+    },
+    "cost_only": {
+     "red_pct": 22.6,
+     "total": {
+      "p05": -8.3893,
+      "p50": 8.1158,
+      "p95": 26.8664,
+      "p99": 34.6257
+     },
+     "max_drawdown": {
+      "p05": 4.04,
+      "p50": 7.511,
+      "p95": 14.906,
+      "p99": 18.2868
+     }
+    }
+   }
+  },
+  "oos_full": {
+   "rule": "Stage 6 three-way Monte Carlo on per-trade results in time order (R or money): RESHUFFLE = same trades, random order (total fixed; tests order luck: where the real drawdown ranks among shuffled ones); RESAMPLE = draw trades with replacement (tests trade luck: share of runs that end <= 0); RANDOMIZE = drop each trade with probability drop_fraction and charge every kept trade an extra cost drawn uniformly from [0, 2 x extra_cost] (tests the broker; drop-only and cost-only runs are reported separately so the two causes are not mixed).",
+   "trades": 185,
+   "horizon_trades": 185,
+   "runs": 1000,
+   "seed": 20261104,
+   "real": {
+    "total": 23.6409,
+    "max_drawdown": 4.8392,
+    "losing_streak": 6
+   },
+   "reshuffle": {
+    "max_drawdown": {
+     "p05": 4.9749,
+     "p50": 7.3135,
+     "p95": 11.6799,
+     "p99": 13.9168
+    },
+    "losing_streak": {
+     "p05": 5,
+     "p50": 7,
+     "p95": 11,
+     "p99": 13
+    },
+    "real_drawdown_worse_than_pct": 3.6,
+    "real_streak_longer_than_pct": 7.3
+   },
+   "resample": {
+    "red_pct": 4.2,
+    "total": {
+     "p05": 2.0113,
+     "p50": 22.7999,
+     "p95": 47.2724,
+     "p99": 55.4415
+    },
+    "max_drawdown": {
+     "p05": 4.4488,
+     "p50": 7.752,
+     "p95": 13.7919,
+     "p99": 18.3594
+    }
+   },
+   "randomize": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.05,
+    "both": {
+     "red_pct": 0.3,
+     "total": {
+      "p05": 5.2537,
+      "p50": 13.4712,
+      "p95": 19.3325,
+      "p99": 21.2121
+     },
+     "max_drawdown": {
+      "p05": 5.2106,
+      "p50": 7.1705,
+      "p95": 10.2272,
+      "p99": 11.9444
+     }
+    },
+    "drop_only": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 14.1025,
+      "p50": 21.7274,
+      "p95": 27.9941,
+      "p99": 29.5494
+     },
+     "max_drawdown": {
+      "p05": 3.9394,
+      "p50": 5.1077,
+      "p95": 7.3778,
+      "p99": 8.4098
+     }
+    },
+    "cost_only": {
+     "red_pct": 0.0,
+     "total": {
+      "p05": 13.7817,
+      "p50": 14.4132,
+      "p95": 15.0413,
+      "p99": 15.2997
+     },
+     "max_drawdown": {
+      "p05": 6.953,
+      "p50": 7.2879,
+      "p95": 7.6457,
+      "p99": 7.8094
+     }
+    }
+   }
+  },
+  "oos_one_year": {
+   "rule": "Stage 6 three-way Monte Carlo on per-trade results in time order (R or money): RESHUFFLE = same trades, random order (total fixed; tests order luck: where the real drawdown ranks among shuffled ones); RESAMPLE = draw trades with replacement (tests trade luck: share of runs that end <= 0); RANDOMIZE = drop each trade with probability drop_fraction and charge every kept trade an extra cost drawn uniformly from [0, 2 x extra_cost] (tests the broker; drop-only and cost-only runs are reported separately so the two causes are not mixed).",
+   "trades": 185,
+   "horizon_trades": 93,
+   "runs": 1000,
+   "seed": 20261104,
+   "real": null,
+   "reshuffle": null,
+   "resample": {
+    "red_pct": 10.8,
+    "total": {
+     "p05": -4.0258,
+     "p50": 11.9408,
+     "p95": 29.1067,
+     "p99": 38.78
+    },
+    "max_drawdown": {
+     "p05": 3.1505,
+     "p50": 5.8684,
+     "p95": 11.6058,
+     "p99": 15.1305
+    }
+   },
+   "randomize": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.05,
+    "both": {
+     "red_pct": 25.9,
+     "total": {
+      "p05": -7.9928,
+      "p50": 5.6993,
+      "p95": 22.4076,
+      "p99": 30.6592
+     },
+     "max_drawdown": {
+      "p05": 3.491,
+      "p50": 6.7353,
+      "p95": 13.309,
+      "p99": 16.3968
+     }
+    },
+    "drop_only": {
+     "red_pct": 11.4,
+     "total": {
+      "p05": -3.9246,
+      "p50": 10.6831,
+      "p95": 27.1911,
+      "p99": 33.506
+     },
+     "max_drawdown": {
+      "p05": 2.8547,
+      "p50": 5.4687,
+      "p95": 11.1522,
+      "p99": 14.9676
+     }
+    },
+    "cost_only": {
+     "red_pct": 25.3,
+     "total": {
+      "p05": -9.5508,
+      "p50": 7.0064,
+      "p95": 25.1517,
+      "p99": 29.7795
+     },
+     "max_drawdown": {
+      "p05": 3.6672,
+      "p50": 6.9745,
+      "p95": 14.8719,
+      "p99": 18.4897
+     }
+    }
+   }
+  },
+  "cost_ladder_one_year": {
+   "0.02": {
+    "red_pct": 16.0,
+    "total": {
+     "p05": -6.5671,
+     "p50": 9.8009,
+     "p95": 29.0678,
+     "p99": 36.7148
+    },
+    "max_drawdown": {
+     "p05": 3.2819,
+     "p50": 6.3233,
+     "p95": 13.0294,
+     "p99": 17.2831
+    }
+   },
+   "0.05": {
+    "red_pct": 24.1,
+    "total": {
+     "p05": -9.0332,
+     "p50": 7.2603,
+     "p95": 26.4755,
+     "p99": 34.3853
+    },
+    "max_drawdown": {
+     "p05": 3.5349,
+     "p50": 7.0028,
+     "p95": 14.6725,
+     "p99": 18.5748
+    }
+   },
+   "0.10": {
+    "red_pct": 38.3,
+    "total": {
+     "p05": -13.3363,
+     "p50": 3.0616,
+     "p95": 22.2553,
+     "p99": 30.1871
+    },
+    "max_drawdown": {
+     "p05": 4.1874,
+     "p50": 8.6173,
+     "p95": 17.578,
+     "p99": 21.6131
+    }
+   },
+   "0.20": {
+    "red_pct": 68.2,
+    "total": {
+     "p05": -21.8535,
+     "p50": -5.2203,
+     "p95": 13.9417,
+     "p99": 21.2026
+    },
+    "max_drawdown": {
+     "p05": 5.9471,
+     "p50": 12.627,
+     "p95": 24.6374,
+     "p99": 29.7177
+    }
+   }
+  },
+  "break_even_extra_cost_r": 0.1427,
+  "trades_per_year": 93
+ },
+ "day_block_bootstrap": {
+  "all_65d": {
+   "paths": 10000,
+   "horizon_days": 65,
+   "block_days": 5,
+   "seed": 20261104,
+   "source_days": 2044,
+   "source_trades": 731,
+   "max_drawdown": {
+    "p50": 3.1405,
+    "p95": 6.8927,
+    "p99": 8.7983
+   },
+   "losing_streak": {
+    "p50": 4,
+    "p95": 8,
+    "p99": 10
+   },
+   "worst_day": {
+    "p50": -1.0386,
+    "p05": -1.0889,
+    "p01": -1.2364
+   },
+   "total": {
+    "p05": -4.8695,
+    "p50": 2.6414,
+    "p95": 13.5142
+   },
+   "red_pct": 29.34
+  },
+  "all_261d": {
+   "paths": 10000,
+   "horizon_days": 261,
+   "block_days": 5,
+   "seed": 20261104,
+   "source_days": 2044,
+   "source_trades": 731,
+   "max_drawdown": {
+    "p50": 6.2114,
+    "p95": 12.3178,
+    "p99": 16.0152
+   },
+   "losing_streak": {
+    "p50": 6,
+    "p95": 10,
+    "p99": 13
+   },
+   "worst_day": {
+    "p50": -1.0653,
+    "p05": -1.2364,
+    "p01": -1.2364
+   },
+   "total": {
+    "p05": -4.044,
+    "p50": 12.6112,
+    "p95": 32.7802
+   },
+   "red_pct": 11.52
+  },
+  "oos_65d": {
+   "paths": 10000,
+   "horizon_days": 65,
+   "block_days": 5,
+   "seed": 20261104,
+   "source_days": 521,
+   "source_trades": 185,
+   "max_drawdown": {
+    "p50": 2.9866,
+    "p95": 6.7191,
+    "p99": 8.7082
+   },
+   "losing_streak": {
+    "p50": 4,
+    "p95": 8,
+    "p99": 10
+   },
+   "worst_day": {
+    "p50": -1.0424,
+    "p05": -1.0928,
+    "p01": -1.0928
+   },
+   "total": {
+    "p05": -4.7343,
+    "p50": 2.4698,
+    "p95": 12.2305
+   },
+   "red_pct": 30.05
+  },
+  "oos_261d": {
+   "paths": 10000,
+   "horizon_days": 261,
+   "block_days": 5,
+   "seed": 20261104,
+   "source_days": 521,
+   "source_trades": 185,
+   "max_drawdown": {
+    "p50": 5.9683,
+    "p95": 12.157,
+    "p99": 16.0636
+   },
+   "losing_streak": {
+    "p50": 6,
+    "p95": 11,
+    "p99": 13
+   },
+   "worst_day": {
+    "p50": -1.0752,
+    "p05": -1.0928,
+    "p01": -1.0928
+   },
+   "total": {
+    "p05": -4.2222,
+    "p50": 11.5269,
+    "p95": 30.203
+   },
+   "red_pct": 12.01
+  }
+ }
+}

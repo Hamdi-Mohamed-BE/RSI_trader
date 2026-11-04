@@ -31,8 +31,14 @@
     "module": "robustness.dependence",
     "fail_if_positive_total_turns_non_positive_without_best_day": true,
     "fail_if_positive_total_turns_non_positive_without_best_trade": true,
-    "diagnostic_only": ["without_top5_days", "without_worst_day"],
-    "applies_to": ["raw gate 3y/5y", "stage 6 frozen candidate"]
+    "diagnostic_only": [
+      "without_top5_days",
+      "without_worst_day"
+    ],
+    "applies_to": [
+      "raw gate 3y/5y",
+      "stage 6 frozen candidate"
+    ]
   },
   "live_monitoring": {
     "added": "2026-10-20",
@@ -60,5 +66,36 @@
     "require_point_in_time_safe": true,
     "require_source_and_freshness_metadata": true,
     "reject_incomplete_history": true
+  },
+  "three_way_monte_carlo": {
+    "added": "2026-11-04",
+    "module": "robustness.three_monte_carlo",
+    "stage": 6,
+    "input": "per-trade net results of the frozen final version in close-time order, in R (net / initial stop risk) or money",
+    "runs": 1000,
+    "seed": 20261104,
+    "horizons": [
+      "full sample",
+      "one year of trades (trades / years)"
+    ],
+    "reshuffle": {
+      "tests": "order luck",
+      "gate": "diagnostic",
+      "flag_clumped_losses_if_real_drawdown_worse_than_pct": 95.0,
+      "sizing_rule": "plan drawdown = max(real drawdown, reshuffle p95 drawdown)"
+    },
+    "resample": {
+      "tests": "trade luck",
+      "gate_full_sample_max_red_pct": 5.0,
+      "report": "red %, total and drawdown p05/p50/p95 for both horizons"
+    },
+    "randomize": {
+      "tests": "broker: missed trades + worse costs",
+      "drop_fraction": 0.1,
+      "extra_cost_r_mean": 0.05,
+      "extra_cost_note": "declared assumption, uniform [0, 2 x mean] per trade, ON TOP of the recorded costs; replace with measured broker cost when available",
+      "gate_full_sample_max_red_pct": 10.0,
+      "report": "both / drop-only / cost-only red %, plus a cost ladder 0.02 / 0.05 / 0.10 / 0.20 R and the break-even extra cost"
+    }
   }
 }
