@@ -867,6 +867,10 @@ of what is currently attached to a live terminal.
   Funded income (`Edge Portfolio E10 2026-11-04/funded_u.py`, INCOME.md; FTMO standard funded rules 10% static / 5% daily, NOT the 1-Step
   funded rules): E10 no guard 0.25% $1,782/month, 1% breach in 36 m; 0.5% $3,580/month, 33% breach, 36 m total median $120k; 1% $6,503/month
   but 100% breach (median 155 d). FTMO17 no guard 0.5% $3,214/month, 45% breach; guarded FTMO17 0.5% $2,446/month, 0% breach, 51% frozen.
+  Funded 0.75% (same rules): E10 no guard $5,444/month, 81% breach, 36 m median $88k; FTMO17 no guard $4,978, 88% breach, $63k; guarded FTMO17 $3,206, $44k, 87% frozen; E10 $3,415, $26k, 97% frozen.
+- 2026-11-04: `October E10 vs FTMO17 2026-11-04/` (replay of native October ledgers, 1%, closed-balance guards): no guard FTMO17 +6.95% n120 / E10 +16.49% n68;
+  Prop guard -3.16% n29 / +5.81% n19; 1-Step guard +2.86% n31 / -1.01% n15. All negative to Oct 29; profit = Oct 30 gold drop, E10 no guard includes +6.72% end-of-test marks.
+  No guard breaches on closed balance: FTMO17 -10.18% (Oct 16), both exceed the 1-Step 3% daily. At 1% the guards usually allow only 1-2 open trades. One month, noisy.
 - 2026-11-02: Telegram signals daily recap (`AAA EAs/system signals/`; SIGNALS_DAILY_RECAP / SIGNALS_RECAP_TIME, default 17:00 New York;
   DST computed without a tz database; 9 tests pass). Pushed in `6a83f84f6` on `new-telegram-copy`.
 

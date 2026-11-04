@@ -36,7 +36,11 @@ guarded wrapper yet.
 | FTMO17 no guard | 1% | $5,762 | $21k | 100% breach (median 107 d) |
 | E10 no guard | 1% | $6,503 | $33k | 100% breach (median 155 d) |
 
-- **0.75%:** still running at the time of this commit.
+- **0.75%:**
+  - FTMO17 guarded $3,206 / $44k, 87% stopped.
+  - E10 guarded $3,415 / $26k, 97% stopped.
+  - FTMO17 no guard $4,978 / $63k, 88% breach.
+  - E10 no guard $5,444 / $88k, 81% breach (median 479 d).
 - **Rules modelled:** FTMO standard funded rules (10% static max loss, 5% daily). FTMO 1-Step funded accounts use a 3% daily loss and a trailing
   max loss, so unguarded breaches would be higher there.
 - **Package parity:** `parity.py` → `PARITY.json` (10/10 identical).
