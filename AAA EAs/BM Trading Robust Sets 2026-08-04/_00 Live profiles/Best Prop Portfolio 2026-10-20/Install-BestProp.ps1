@@ -76,6 +76,7 @@ if($Interactive -and -not $ValidateOnly){
         $answer=(Read-Host 'Risk per trade, % of current equity, e.g. 0.5 / 1.0 / 2.0 (max 2) [1.0]').Trim()
         if($answer){$RiskValue=[double]::Parse($answer,[Globalization.CultureInfo]::InvariantCulture)}
     }
+    $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion $false
     if(-not $PSBoundParameters.ContainsKey('NasdaqDIFilter')){
         $answer=(Read-Host 'Nasdaq 5M DI filter ON or OFF [OFF]').Trim().ToUpperInvariant()
         if(-not $answer){$answer='OFF'}

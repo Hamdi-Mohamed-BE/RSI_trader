@@ -112,6 +112,7 @@ function Assert-PropReadyPackage {
 if([double]::IsNaN($RiskValue) -or [double]::IsInfinity($RiskValue) -or $RiskValue -le 0 -or ($RiskMode -eq 'PERCENT' -and $RiskValue -gt 10)){throw 'Invalid risk selection.'}
 $manifest=Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'PACKAGE.json') | ConvertFrom-Json
 Assert-PropReadyPackage
+$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
 if($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilter') -and -not $ValidateOnly){
     $answer=(Read-Host 'Nasdaq DI ON or OFF [ON]').Trim().ToUpperInvariant()
     if(-not $answer){$answer='ON'}

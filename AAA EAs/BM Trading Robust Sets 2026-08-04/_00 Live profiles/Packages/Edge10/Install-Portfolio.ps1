@@ -84,6 +84,51 @@ function Read-CalyxAdaptiveControls([string]$Current, [bool]$NoPrompt) {
     return Read-CalyxOnOff $Current $NoPrompt 'Portfolio risk governor'
 }
 
+# 2026-11-03 owner: "make ask for cap option when installing the bat ... 4.5, 6, 8 and no cap and 3x, no cap per symbol".
+# Prop Ready guard family only (Prop ready / Codex, FTMO any-broker, Best Prop 9 / 15). Enter keeps the tested 4.5 R / 3 R.
+function Write-CalyxRiskCapHelp {
+    Write-Host ''
+    Write-Host 'OPEN-RISK CAPS - how much stop-loss risk may be open at the same time?' -ForegroundColor Cyan
+    Write-Host '  R = your chosen risk per trade, measured on the starting balance. Every open trade counts its initial stop-loss risk.'
+    Write-Host '  TOTAL cap: a new entry waits while all open trades plus the new one would exceed this many R.'
+    Write-Host '    1 = 4.5 R (default, tested)   2 = 6 R   3 = 8 R   4 = no total cap'
+    Write-Host '  PER-SYMBOL cap: the same rule for the trades on one symbol (gold, Nasdaq or USDJPY).'
+    Write-Host '    1 = 3 R (default, tested)   2 = no per-symbol cap'
+    Write-Host '  All other guards stay ON. The 3% daily reserve counts each open trade at 1.25 x its risk, so open risk stops near'
+    Write-Host '  2.4% of the balance anyway (= 2.4 R at 1% risk, 4.8 R at 0.5%). At 1% risk 4.5 / 6 / 8 / none therefore behave the same.'
+    Write-Host '  FTMO $100k replay (2026-11-03): 6 R = same pass rate at 1%, same Monte Carlo but a worse 2021-23 history at 0.5%.' -ForegroundColor Yellow
+    Write-Host '  8 R and "no cap" were not tested. Bigger caps allow more trades (often several gold EAs) to lose at the same time.' -ForegroundColor Yellow
+}
+
+function Read-CalyxTotalRiskCap([string]$Current, [bool]$NoPrompt) {
+    if ($Current) { if ($Current -notin @('4.5', '6', '8', 'NONE')) { throw 'Total open-risk cap must be 4.5, 6, 8 or NONE.' }; return $Current }
+    if ($NoPrompt) { return '4.5' }
+    Write-CalyxRiskCapHelp
+    $answer = (Read-Host 'Total open-risk cap: 1 = 4.5 R, 2 = 6 R, 3 = 8 R, 4 = no cap [1]').Trim()
+    $choice = @{ '' = '4.5'; '1' = '4.5'; '2' = '6'; '3' = '8'; '4' = 'NONE' }[$answer]
+    if (-not $choice) { throw 'Choose 1, 2, 3 or 4.' }
+    return $choice
+}
+
+function Read-CalyxSymbolRiskCap([string]$Current, [bool]$NoPrompt) {
+    if ($Current) { if ($Current -notin @('3', 'NONE')) { throw 'Per-symbol cap must be 3 or NONE.' }; return $Current }
+    if ($NoPrompt) { return '3' }
+    $answer = (Read-Host 'Per-symbol open-risk cap: 1 = 3 R, 2 = no cap [1]').Trim()
+    $choice = @{ '' = '3'; '1' = '3'; '2' = 'NONE' }[$answer]
+    if (-not $choice) { throw 'Choose 1 or 2.' }
+    return $choice
+}
+
+# Guard input value: the multiple, or 0 = that cap OFF.
+function Get-CalyxCapMultiple([string]$Choice) { if ($Choice -eq 'NONE') { '0' } else { $Choice } }
+
+# "450.00 (4.5 R)" or "no cap"; $Unit = one R in account currency.
+function Get-CalyxCapText([string]$Choice, [double]$Unit) {
+    if ($Choice -eq 'NONE') { return 'no cap' }
+    $m = [double]::Parse($Choice, [Globalization.CultureInfo]::InvariantCulture)
+    return ('{0:N2} ({1} R)' -f ($Unit * $m), $Choice)
+}
+
 $PackageRoot = $PSScriptRoot
 
 function Assert-ChildPath([string]$Root, [string]$Path) {
@@ -272,6 +317,7 @@ function Main {
     Assert-Risk $RiskMode $RiskValue
     Write-Host 'PER TRADE / PER EA, not a portfolio cap. Broker minimum/rounding, gaps and costs can exceed the target.' -ForegroundColor Yellow
     Write-Host 'NO GUARD: no FTMO / prop limits, no shared daily stop, no adaptive governor. Risk is per trade per EA and stacks across open trades. 3 Way Gold runs its breakout module only.' -ForegroundColor Yellow
+    $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion $false
     foreach ($parameter in @('NasdaqDIFilter','UsdJpyDIFilter')) {
         if (-not (Get-Variable -Name $parameter -ValueOnly)) {
             $label=if ($parameter -eq 'NasdaqDIFilter') {'Nasdaq 5M'} else {'USDJPY London'}
@@ -280,7 +326,6 @@ function Main {
         }
     }
     Write-Host 'DI OFF changes the tested preset. USDJPY ADX20 remains enabled.' -ForegroundColor Yellow
-    $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion $false
     $candidates=@(Get-Mt5Candidates | Where-Object { $_.Running })
     if ($candidates.Count -eq 0) { throw 'Open your normal MT5 terminal and log into the target account first.' }
     if ($TargetTerminal -and -not @($candidates | Where-Object { [IO.Path]::GetFullPath($_.Path) -ieq [IO.Path]::GetFullPath($TargetTerminal) }).Count) { throw 'The requested target terminal is not running.' }

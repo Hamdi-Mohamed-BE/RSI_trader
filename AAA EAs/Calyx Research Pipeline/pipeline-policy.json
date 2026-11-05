@@ -97,5 +97,24 @@
       "gate_full_sample_max_red_pct": 10.0,
       "report": "both / drop-only / cost-only red %, plus a cost ladder 0.02 / 0.05 / 0.10 / 0.20 R and the break-even extra cost"
     }
+  },
+  "buy_hold_benchmark": {
+    "added": "2026-11-05",
+    "module": "buy_hold",
+    "expert": "Benchmarks/Calyx Buy Hold Benchmark EA.mq5",
+    "applies_to": [
+      "every new EA idea: stage 3, stage 4 and stage 6"
+    ],
+    "not_yet_applied_to": "EAs built before 2026-11-05; the owner will revisit them separately",
+    "method": "native Model 4 on the same asset, windows and deposit, one long position at 1x notional, held to the end of the window, real spread / commission / swap",
+    "report": [
+      "return",
+      "price return before financing",
+      "swap",
+      "equity drawdown (MT5 relative)",
+      "return / drawdown",
+      "verdict"
+    ],
+    "gate": "required comparison, not an automatic reject; the owner decides"
   }
 }

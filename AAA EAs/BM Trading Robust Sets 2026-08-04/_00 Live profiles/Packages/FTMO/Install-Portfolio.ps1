@@ -96,6 +96,7 @@ foreach($entry in $selectedEntries){
     $inputs=Get-FTMOPresetInputs $entry $NasdaqDIFilter
     if($entry.slug -match '-orb-' -and $inputs['InpRewardRisk'] -ne '0.5'){throw 'All selected ORBs must retain their 0.5R target.'}
 }
+$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
 if($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilter') -and -not $ValidateOnly){
     $diChoice=(Read-Host 'Nasdaq 5M DI14 filter ON or OFF [ON]').Trim().ToUpperInvariant()
     if(-not $diChoice){$diChoice='ON'}

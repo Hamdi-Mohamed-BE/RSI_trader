@@ -89,6 +89,7 @@ if($Interactive -and -not $ValidateOnly){
         $answer=(Read-Host $prompt).Trim()
         $RiskValue=if($answer){[double]::Parse($answer.Replace(',','.'),[Globalization.CultureInfo]::InvariantCulture)}elseif($RiskMode -eq 'PERCENT'){0.5}else{500.0}
     }
+    $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion $false
     if(-not $PSBoundParameters.ContainsKey('NasdaqDIFilter')){
         $answer=(Read-Host 'Nasdaq 5M DI filter ON or OFF [ON]').Trim().ToUpperInvariant()
         if(-not $answer){$answer='ON'}

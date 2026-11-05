@@ -9,6 +9,9 @@ Amended **2026-10-20 (user: "do them all", AI Trading Library review)**, added w
 Amended **2026-11-04 (user)**: stage 6 now has the **three-way Monte Carlo**: reshuffle, resample and randomize
 (`robustness.three_monte_carlo`).
 
+Amended **2026-11-05 (user)**: every **new EA idea** is always compared to **just buying and holding** the same asset (stage 3, 4 and 6;
+`Calyx Research Pipeline/buy_hold.py`). Older EAs are not compared yet; the owner will revisit them separately.
+
 Amended **2026-10-06 (user): final out-of-sample (OOS) is always the last TWO calendar years**
 ending at the frozen study end-exclusive date (normally through yesterday, UTC). All development and finalist
 selection must finish before that two-year window. Never shorten it to 6/12 months because data or trades are scarce.
@@ -45,9 +48,16 @@ switches** and must pass **parity** (switches off = production, trade for trade)
 ## Stage 3 — Raw native test (no tuning)
 6m / 1y / 3y / 5y windows (website windows). Fast screen = Model 1 on 3y/5y; confirmation = Model 4 real ticks with
 150 ms delay and broker costs on every period. The runner checks EA/symbol/dates/inputs in each report and journal flags.
+**Buy-and-hold benchmark (mandatory for every new idea, added 2026-11-05):** run `buy_hold.run(study, symbol, windows)` on the same asset, windows
+and deposit: `Benchmarks/Calyx Buy Hold Benchmark EA` buys once at 1x notional and holds, native Model 4, with real spread, commission and swap. Every results
+table shows beside the strategy: buy-and-hold return, its price return before financing, its swap cost, its equity drawdown (MT5 relative), and the
+`buy_hold.compare` verdict. For a multi-asset idea, show each asset. On an FX pair, long is an arbitrary direction: say so.
 
 ## Stage 4 — Raw gate
 Positive and PF ≥ 1.15 on 3y and 5y, ≥ 30 trades, better than the control. **FAIL → stop** (no optimizing a loser).
+Report the buy-and-hold comparison on 3y and 5y next to the gate. It is a **required comparison, not an automatic reject**: compare return AND return / drawdown, because
+a strategy can lag on return and still be worth having at far less risk, while a higher return at a much bigger drawdown is not a clean win. State plainly when the idea lags on both,
+and the owner decides.
 PASS or near-miss with a clear reason → report and ask the user whether to run stage 5.
 **Added 2026-10-20 — best-day falsifier.** Every report shows the 3y/5y totals without the best day, without the best trade, without the 5 best days, and without the worst day. A positive total that turns ≤ 0 without the single best day or best trade **fails** the gate (`robustness.dependence()`); the 5-best-days and worst-day figures are diagnostics.
 Before asking about stage 5, run a **Bear review** of the test design (`/bear-review`, fresh context) and put its unanswered points in the report.
@@ -131,6 +141,7 @@ Run on the frozen final version's **native Model 4 trades** (development + valid
 - **Prop-firm simulation** (FTMO rules): pass probability for phase 1/2, breach probability, days to pass, at the
   chosen risk — using the existing FTMO simulators; equity-path caveats stated.
 - **Portfolio overlap**: correlation with and marginal effect on the current portfolio.
+- **Buy-and-hold**: the frozen final version vs buy-and-hold on the development, validation and OOS windows and every calendar year.
 Tool: `calyx_pipeline.py --tested-configurations <count from 5.3>` plus the FTMO simulators.
 
 ## Stage 7 — Production build (needs approval)

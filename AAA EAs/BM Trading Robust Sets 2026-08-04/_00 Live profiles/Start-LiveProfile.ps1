@@ -75,6 +75,8 @@ if($Portfolio -eq 'full-eas'){
     if($NewsRiskPercent -eq 0){$NewsRiskPercent=if($ValidateOnly){[double]$selected.default_news_percent}else{Read-PositiveNumber 'Separate news percent per ORDER (two sides double one event risk)' ([double]$selected.default_news_percent)}}
     Assert-LiveProfileRisk 'PERCENT' $NewsRiskPercent
 }
+. (Join-Path $PSScriptRoot 'Calyx-InstallChoices.ps1')
+if($Portfolio -ne 'orbs-only'){$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)}
 foreach($field in @('NasdaqDIFilter','UsdJpyDIFilter')){
     if($field -notin $selected.di_parameters){continue}
     if(-not (Get-Variable -Name $field -ValueOnly)){
@@ -85,8 +87,6 @@ foreach($field in @('NasdaqDIFilter','UsdJpyDIFilter')){
     }
 }
 if(-not $NasdaqDIFilter){$NasdaqDIFilter='ON'};if(-not $UsdJpyDIFilter){$UsdJpyDIFilter='ON'}
-. (Join-Path $PSScriptRoot 'Calyx-InstallChoices.ps1')
-if($Portfolio -ne 'orbs-only'){$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)}
 if($Portfolio -eq 'full-eas'){$AdaptiveControls=Read-CalyxAdaptiveControls $AdaptiveControls ([bool]$ValidateOnly)}
 if($Portfolio -eq 'codex-best-ftmo' -and -not $PSBoundParameters.ContainsKey('Phase') -and -not $ValidateOnly){
     Write-Host '1 = Challenge (+10% target); 2 = Verification (+5% target); 3 = continuous demo/live (no profit-target entry stop)'

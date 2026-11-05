@@ -106,5 +106,11 @@ def installer(n):
     BL.write(TARGET / 'Install-Portfolio.ps1', text)
 
 
+def refresh_installer():
+    # python build.py installer: regenerate only the installer and the checksums; the compiled EAs and their parity evidence stay as they are.
+    installer(10); paths = [TARGET / n for n in ('Package.json', 'Install-Portfolio.ps1', 'Installer-Helpers.ps1', 'Probe-MT5.py')] + sorted((TARGET / 'Experts').glob('*.ex5')) + sorted((TARGET / 'Sets').glob('*.set'))
+    BL.save(TARGET / 'Checksums.json', {str(p.relative_to(TARGET)).replace(chr(92), '/'): BL.sha(p) for p in paths}); print('installer refreshed')
+
+
 if __name__ == '__main__':
-    build()
+    refresh_installer() if sys.argv[1:] == ['installer'] else build()

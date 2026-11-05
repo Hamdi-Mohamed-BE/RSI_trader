@@ -5,6 +5,7 @@ param(
     [double]$NewsRiskPercent=0.75,
     [ValidateSet('ON','OFF')][string]$NasdaqDIFilter='ON',
     [ValidateSet('ON','OFF')][string]$UsdJpyDIFilter='ON',
+    [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [string]$TargetTerminal='',
     [switch]$ValidateOnly,
     [switch]$Yes
@@ -12,6 +13,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
 $PackageRoot=Split-Path -Parent $PSScriptRoot
+. (Join-Path (Split-Path -Parent $PSScriptRoot) '_00 Live profiles\Calyx-InstallChoices.ps1')
 . (Join-Path $PSScriptRoot 'Reviewed-Portfolio-Policy.ps1')
 $manifest=Get-ReviewedManifest
 function Read-PositiveNumber([string]$Prompt, [string]$Default='') {
@@ -35,6 +37,7 @@ if ($ValidateOnly) {
         $RiskValue=if ($RiskMode -eq 'PERCENT') { Read-PositiveNumber 'Normal risk per trade in percent [1]' '1' } else { Read-PositiveNumber 'Normal USD risk target per trade (example 50)' }
     }
     if (-not $PSBoundParameters.ContainsKey('NewsRiskPercent')) { $NewsRiskPercent=Read-PositiveNumber 'SEPARATE news risk per ORDER in percent [0.75]' '0.75' }
+    $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion $false
     foreach ($entry in @($manifest.entries | Where-Object { $_.phase -eq 'live' -and $_.PSObject.Properties['di_input'] })) {
         $parameter=if ($entry.slug -eq 'nasdaq-5m-candle-momentum') {'NasdaqDIFilter'} else {'UsdJpyDIFilter'}
         if (-not $PSBoundParameters.ContainsKey($parameter)) {
@@ -45,6 +48,7 @@ if ($ValidateOnly) {
         }
     }
 }
+if (-not $NasdaqStopVersion) { $NasdaqStopVersion='NEW' }
 if ([double]::IsNaN($RiskValue) -or [double]::IsInfinity($RiskValue) -or $RiskValue -le 0 -or ($RiskMode -eq 'PERCENT' -and $RiskValue -gt 10)) { throw 'Normal risk must be positive and finite; percentage cannot exceed 10%.' }
 if ([double]::IsNaN($NewsRiskPercent) -or [double]::IsInfinity($NewsRiskPercent) -or $NewsRiskPercent -lt 0.00000001 -or $NewsRiskPercent -gt 10) { throw 'News percentage must be 0.00000001 through 10 per order.' }
 Write-Host "Normal risk: $RiskValue $RiskMode; separate news: $NewsRiskPercent% per order."
@@ -57,7 +61,7 @@ Write-Host 'Switching to this profile stops excluded EAs from managing their ope
 if (-not $ValidateOnly -and -not $Yes) {
     if ((Read-Host 'Install this reviewed profile into your chosen active MT5 terminal now? Y/N').Trim().ToUpperInvariant() -notin @('Y','YES')) { throw 'Cancelled; no terminal changed.' }
 }
-$invoke=@('-NoLogo','-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $PSScriptRoot 'Install-BMTradingPortfolio.ps1'),'-AccountProfile','AUTO','-RiskMode',$RiskMode,'-RiskValue',$RiskValue.ToString('R',[Globalization.CultureInfo]::InvariantCulture),'-NewsRiskPercent',$NewsRiskPercent.ToString('R',[Globalization.CultureInfo]::InvariantCulture),'-SafetyMode','STANDARD','-UseReviewedSelections','-NasdaqDIFilter',$NasdaqDIFilter,'-UsdJpyDIFilter',$UsdJpyDIFilter)
+$invoke=@('-NoLogo','-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $PSScriptRoot 'Install-BMTradingPortfolio.ps1'),'-AccountProfile','AUTO','-RiskMode',$RiskMode,'-RiskValue',$RiskValue.ToString('R',[Globalization.CultureInfo]::InvariantCulture),'-NewsRiskPercent',$NewsRiskPercent.ToString('R',[Globalization.CultureInfo]::InvariantCulture),'-SafetyMode','STANDARD','-UseReviewedSelections','-NasdaqStopVersion',$NasdaqStopVersion,'-NasdaqDIFilter',$NasdaqDIFilter,'-UsdJpyDIFilter',$UsdJpyDIFilter)
 if ($ValidateOnly) { $invoke+='-ValidateOnly' }
 if ($Yes) { $invoke+='-Yes' }
 if ($TargetTerminal) { $invoke+=@('-TargetTerminal',$TargetTerminal) }

@@ -58,7 +58,7 @@ def transform_installer(count):
     assert s.count("$ErrorActionPreference = 'Stop'\n")>=1;s=s.replace("$ErrorActionPreference = 'Stop'\n","$ErrorActionPreference = 'Stop'\n"+choices+"\n",1)
     nas="if ($Item.Key -eq 'nasdaq-5m-candle-momentum') { $inputs['InpRequireDIAgreement']=if ($NasdaqDIFilter -eq 'OFF') { 'false' } else { 'true' } }"
     s=sub1(s,nas,nas[:-1]+"; Set-CalyxNasdaqVersion $inputs $NasdaqStopVersion }")
-    s=sub1(s,"$candidates=@(Get-Mt5Candidates | Where-Object { $_.Running })","$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion $false\n    $candidates=@(Get-Mt5Candidates | Where-Object { $_.Running })")
+    s=sub1(s,"    foreach ($parameter in @('NasdaqDIFilter','UsdJpyDIFilter')) {","    $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion $false\n    foreach ($parameter in @('NasdaqDIFilter','UsdJpyDIFilter')) {")
     assert 'FTMOExpected' not in s
     return s
 

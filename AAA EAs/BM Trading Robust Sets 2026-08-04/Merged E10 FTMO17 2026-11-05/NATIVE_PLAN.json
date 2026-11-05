@@ -1,0 +1,252 @@
+{
+ "split": {
+  "policy_version": "2026-10-06",
+  "boundary_convention": "start-inclusive, end-exclusive; UTC dates",
+  "development": {
+   "start": "2019-01-01",
+   "end_exclusive": "2023-11-01"
+  },
+  "validation": {
+   "start": "2023-11-01",
+   "end_exclusive": "2024-11-01"
+  },
+  "oos": {
+   "start": "2024-11-01",
+   "end_exclusive": "2026-11-01",
+   "calendar_years": 2
+  },
+  "selection_must_end_before_oos": true,
+  "recent_subwindows_are_diagnostic_only": true,
+  "untouched_status": "not asserted; study must disclose prior inspection and selection provenance"
+ },
+ "windows": {
+  "dev": [
+   "2019-01-01",
+   "2023-11-01"
+  ],
+  "val": [
+   "2023-11-01",
+   "2024-11-01"
+  ],
+  "oos": [
+   "2024-11-01",
+   "2026-11-01"
+  ],
+  "all": [
+   "2019-01-01",
+   "2026-11-01"
+  ]
+ },
+ "years": {
+  "2019": [
+   "2019-01-01",
+   "2020-01-01"
+  ],
+  "2020": [
+   "2020-01-01",
+   "2021-01-01"
+  ],
+  "2021": [
+   "2021-01-01",
+   "2022-01-01"
+  ],
+  "2022": [
+   "2022-01-01",
+   "2023-01-01"
+  ],
+  "2023": [
+   "2023-01-01",
+   "2024-01-01"
+  ],
+  "2024": [
+   "2024-01-01",
+   "2025-01-01"
+  ],
+  "2025": [
+   "2025-01-01",
+   "2026-01-01"
+  ],
+  "2026": [
+   "2026-01-01",
+   "2026-11-01"
+  ]
+ },
+ "runs": [
+  {
+   "key": "xau-rsi-vwap",
+   "symbol": "XAUUSD",
+   "period": "H1",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - xau-rsi-vwap.ex5",
+   "ex5_sha": "76314e7e782491e54c439706ae1a8f2a3383deb6a30bacb332c975bf195ff4ef",
+   "case": "nw-XAUUSD-xau-rsi-vwap-all"
+  },
+  {
+   "key": "gold-overnight-value-area",
+   "symbol": "XAUUSD",
+   "period": "M5",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - gold-overnight-value-area.ex5",
+   "ex5_sha": "01fbd7f0579c41144abe7e577a0ba549c49e440c21be0da7ac734c33a10ef642",
+   "case": "nw-XAUUSD-gold-overnight-value-area-all"
+  },
+  {
+   "key": "xau-squeeze-momentum-standard",
+   "symbol": "XAUUSD",
+   "period": "H1",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - xau-squeeze-momentum-standard.ex5",
+   "ex5_sha": "1966d760ba00b957aa9ec1c036f22d4aada9bf551ddc403fdbfa115bf64e90a5",
+   "case": "nw-XAUUSD-xau-squeeze-momentum-standard-all"
+  },
+  {
+   "key": "dmc-fresh-reaction-us100",
+   "symbol": "USTEC",
+   "period": "H1",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - dmc-fresh-reaction-us100.ex5",
+   "ex5_sha": "3d827d6d95e1343cca2d8c0e7692975f5193746ff2bade8d8986fe89480641b8",
+   "case": "nw-USTEC-dmc-fresh-reaction-us100-all"
+  },
+  {
+   "key": "ema3",
+   "symbol": "XAUUSD",
+   "period": "H4",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - ema3.ex5",
+   "ex5_sha": "71b4a594322e647510d7ee72d0d685ea5ee1e711890a29affb3b30bd396e237d",
+   "case": "nw-XAUUSD-ema3-all"
+  },
+  {
+   "key": "xau-trend-progression",
+   "symbol": "XAUUSD",
+   "period": "H4",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - xau-trend-progression.ex5",
+   "ex5_sha": "45ce81031f9653eb24a7eea0b5d664b2eb78b7adb21422321828c6908f7a300a",
+   "case": "nw-XAUUSD-xau-trend-progression-all"
+  },
+  {
+   "key": "xau-orb-london-ny-overlap-m30",
+   "symbol": "XAUUSD",
+   "period": "M30",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - xau-orb-london-ny-overlap-m30.ex5",
+   "ex5_sha": "174e6cac128a13b1438adcb9984c97094fd9fa3ff94cb6c5c7b818546406558e",
+   "case": "nw-XAUUSD-xau-orb-london-ny-overlap-m30-all"
+  },
+  {
+   "key": "nasdaq-overnight",
+   "symbol": "USTEC",
+   "period": "M1",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - nasdaq-overnight.ex5",
+   "ex5_sha": "696dc1182d30e4ee17283c25fdaf7ee15befdb850d644ae31551f077cee6978a",
+   "case": "nw-USTEC-nasdaq-overnight-all"
+  },
+  {
+   "key": "us100-h1-orb-13utc",
+   "symbol": "USTEC",
+   "period": "M15",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - us100-h1-orb-13utc.ex5",
+   "ex5_sha": "1ed6f2aa76ed49ce2b2b79ef3c8ba855b85c63eb70c5e34ffafc6469e71ee9e1",
+   "case": "nw-USTEC-us100-h1-orb-13utc-all"
+  },
+  {
+   "key": "usdjpy-london-open-momentum",
+   "symbol": "USDJPY",
+   "period": "M15",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - usdjpy-london-open-momentum.ex5",
+   "ex5_sha": "41352e74fec1612dc4d4508a66f6fac52506999ed033010db3d79efb3cdcdb04",
+   "case": "nw-USDJPY-usdjpy-london-open-momentum-all"
+  },
+  {
+   "key": "us100-month-end-flow",
+   "symbol": "USTEC",
+   "period": "M30",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - us100-month-end-flow.ex5",
+   "ex5_sha": "8a31132b841e17a084054c9009e86748918c0c1314daea8155158e019693d722",
+   "case": "nw-USTEC-us100-month-end-flow-all"
+  },
+  {
+   "key": "dmc-current-xau",
+   "symbol": "XAUUSD",
+   "period": "H1",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - dmc-current-xau.ex5",
+   "ex5_sha": "298b627af942950977d2e8c6b411f1e7cf4b2fdd34f33c2090d3d71bf7ef3f20",
+   "case": "nw-XAUUSD-dmc-current-xau-all"
+  },
+  {
+   "key": "nasdaq-5m-candle-momentum",
+   "symbol": "USTEC",
+   "period": "M5",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - nasdaq-5m-candle-momentum.ex5",
+   "ex5_sha": "84484732da85a5200959b56e7c5753f968f147dec1eb255756fcaab316a279b8",
+   "case": "nw-USTEC-nasdaq-5m-candle-momentum-all"
+  },
+  {
+   "key": "3-way-gold",
+   "symbol": "XAUUSD",
+   "period": "M15",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - 3-way-gold.ex5",
+   "ex5_sha": "bf27785bbac2b9b1c851ff62fa9877cc313bd3caca716cb6419f4dc0f48403c1",
+   "case": "nw-XAUUSD-3-way-gold-all"
+  },
+  {
+   "key": "us100-orb-new-york-m30",
+   "symbol": "USTEC",
+   "period": "M30",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - us100-orb-new-york-m30.ex5",
+   "ex5_sha": "13f7c2554ba973b425314a576a51fe10f6f8bd8d7a7bf0616ac19a86d559bda9",
+   "case": "nw-USTEC-us100-orb-new-york-m30-all"
+  },
+  {
+   "key": "us100-selective-orb-v3",
+   "symbol": "USTEC",
+   "period": "M5",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - us100-selective-orb-v3.ex5",
+   "ex5_sha": "c0f4565a4ebbcd5a9e4dcfadb4d34a92a32e2412d817ba076740001e2f81a46b",
+   "case": "nw-USTEC-us100-selective-orb-v3-all"
+  },
+  {
+   "key": "xau-orb-new-york-m30",
+   "symbol": "XAUUSD",
+   "period": "M30",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Current14 Plus ORB05 Portfolio 2026-10-08\\Experts\\Calyx Current14 ORB05 - xau-orb-new-york-m30.ex5",
+   "ex5_sha": "9d7d7191e7e6c3eed35cf23f69c07389fdb91deaa6b7df5ce367439ba3052318",
+   "case": "nw-XAUUSD-xau-orb-new-york-m30-all"
+  },
+  {
+   "key": "orb-volume-profile",
+   "symbol": "XAUUSD",
+   "period": "M5",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\ORB Volume Data EA.ex5",
+   "ex5_sha": "67ee6976b45e2e1d1f034729c2edcb3a9e2fcdf1355c988fad1bf54e7ef319b9",
+   "case": "nw-XAUUSD-orb-volume-profile-all"
+  },
+  {
+   "key": "orb-volume-profile-volume-confirmed",
+   "symbol": "XAUUSD",
+   "period": "M5",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\ORB Volume Data EA\\ORB Volume Data EA.ex5",
+   "ex5_sha": "67ee6976b45e2e1d1f034729c2edcb3a9e2fcdf1355c988fad1bf54e7ef319b9",
+   "case": "nw-XAUUSD-orb-volume-profile-volume-confirmed-all"
+  },
+  {
+   "key": "sell-nasdaq-15min",
+   "symbol": "USTEC",
+   "period": "M15",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Sell Nasdaq 15min Research 2026-09-08\\Dynamic Exit Research\\EA\\Sell Nasdaq 15min Dynamic Exit Research EA.ex5",
+   "ex5_sha": "8c0b2967fdff6d058c72fcbaa588cbf8b31e1b5dda3531e20d1884ed6f99b2c7",
+   "case": "nw-USTEC-sell-nasdaq-15min-all"
+  },
+  {
+   "key": "xau-elliott-wave-1-2-3",
+   "symbol": "XAUUSD",
+   "period": "H4",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Elliott Wave Research 2026-09-05\\EA\\Elliott Wave 123 EA.ex5",
+   "ex5_sha": "56879af967a52dafc4c756c9ef48fa97e53e1a561f23a4461096efb4c2dca775",
+   "case": "nw-XAUUSD-xau-elliott-wave-1-2-3-all"
+  },
+  {
+   "key": "xau-regime-switch",
+   "symbol": "XAUUSD",
+   "period": "M5",
+   "expert": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Regime Switch Overlay Research 2026-09-06\\EA\\Calyx XAU Regime Switch EA.ex5",
+   "ex5_sha": "c7b819808ef303ee20315f51ea8a53c498cb852c7df64d79b49c06b9290ebc31",
+   "case": "nw-XAUUSD-xau-regime-switch-all"
+  }
+ ]
+}

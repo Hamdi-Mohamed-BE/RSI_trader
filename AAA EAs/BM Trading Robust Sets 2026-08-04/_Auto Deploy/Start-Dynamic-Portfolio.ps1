@@ -8,6 +8,7 @@ param(
     [double]$NewsRiskPercent = 0.75,
     [ValidateSet('ON', 'OFF')]
     [string]$NasdaqDIFilter = 'ON',
+    [ValidateSet('', 'NEW', 'OLD')][string]$NasdaqStopVersion = '',
     [switch]$PromptNasdaqDIFilter,
     [ValidateSet('', 'STANDARD', 'SAFE')]
     [string]$SafetyMode = '',
@@ -22,6 +23,7 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+. (Join-Path (Split-Path -Parent $PSScriptRoot) '_00 Live profiles\Calyx-InstallChoices.ps1')
 $installer = Join-Path $PSScriptRoot 'Install-BMTradingPortfolio.ps1'
 
 function Stop-Dynamic([string]$Message) {
@@ -85,7 +87,8 @@ if (-not $SafetyMode) {
     $SafetyMode = switch ($safe) { 'Y' { 'SAFE' } 'YES' { 'SAFE' } 'N' { 'STANDARD' } 'NO' { 'STANDARD' } default { Stop-Dynamic 'Safe-mode choice must be Y or N.' } }
 }
 
-if ($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilter') -and -not $ValidateOnly) {
+$NasdaqStopVersion = Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]($ValidateOnly -or $PreflightOnly -or $Yes))
+if (-not $PSBoundParameters.ContainsKey('NasdaqDIFilter') -and -not $ValidateOnly -and -not $PreflightOnly -and -not $Yes) {   # 2026-11-05 owner: always asked, after the stop
     $diChoice = (Read-Host 'Nasdaq 5M DI14 filter ON or OFF [ON]').Trim().ToUpperInvariant()
     if (-not $diChoice) { $diChoice = 'ON' }
     if ($diChoice -notin @('ON', 'OFF')) { Stop-Dynamic 'Nasdaq DI filter must be ON or OFF.' }
@@ -93,7 +96,7 @@ if ($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilt
 }
 
 Write-Host "`nDynamic configuration" -ForegroundColor Green
-Write-Host ("  Nasdaq 5M DI14 filter: {0}; EMA12, ATR14 x6 initial stop (2026-11-02), ATR6 trail from +1R and no TP unchanged." -f $NasdaqDIFilter)
+Write-Host ("  Nasdaq 5M DI14 filter: {0}; {1}; EMA12, ATR6 trail from +1R and no TP unchanged." -f $NasdaqDIFilter, (Get-CalyxNasdaqVersionText $NasdaqStopVersion))
 if ($NasdaqDIFilter -eq 'OFF') { Write-Host '  DI OFF is a custom selection; the published DI-ON results do not describe this selection.' -ForegroundColor Yellow }
 Write-Host ('  Non-News risk: {0} {1}' -f $RiskValue, $(if ($RiskMode -eq 'PERCENT') { '%' } else { 'USD per EA trade' }))
 if ($riskWasSelected -and $RiskMode -eq 'PERCENT') { $HourlyRiskPercent = $RiskValue }
@@ -113,6 +116,7 @@ if (-not $Yes -and -not $ValidateOnly) {
 }
 
 $arguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $installer, '-AccountProfile', 'AUTO', '-RiskMode', $RiskMode, '-RiskValue', $RiskValue.ToString('R', [Globalization.CultureInfo]::InvariantCulture), '-NewsRiskPercent', $NewsRiskPercent.ToString('R', [Globalization.CultureInfo]::InvariantCulture), '-SafetyMode', $SafetyMode)
+$arguments += @('-NasdaqStopVersion', $NasdaqStopVersion)
 $arguments += @('-NasdaqDIFilter', $NasdaqDIFilter)
 # A blank percentage answer keeps the existing 1% default for other EAs,
 # but must not silently override the new hourly default of 0.5%.

@@ -140,6 +140,7 @@ $dailyWin=Read-Number 'Max daily win % (close ALL trades and stop for the day; 0
 $buffer=Read-Number 'Buffer above the max-loss level % (close ALL trades if equity reaches it)' 0.25 0 50
 $news=[int](Read-Number 'No new entries this many minutes either side of high-impact USD news (0 = off)' 5 0 120)
 $newsPending=Read-Choice 'Delete pending orders inside news windows? Y/N (strategies may not re-place them)' 'N' @('Y','N')
+$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
 if(-not $NasdaqDIFilter){$NasdaqDIFilter=Read-Choice 'Nasdaq 5M DI filter ON or OFF' 'ON' @('ON','OFF')}
 $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
 Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))

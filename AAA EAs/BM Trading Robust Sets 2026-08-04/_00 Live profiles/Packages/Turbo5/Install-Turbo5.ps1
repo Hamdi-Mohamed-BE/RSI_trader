@@ -4,6 +4,7 @@ param(
     [double]$AccountSize=0,
     [double]$KnownFloor=-1,
     [ValidateSet('','Y','N')][string]$TrailEquity='',
+    [ValidateSet('','ON','OFF')][string]$NasdaqDIFilter='',
     [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [switch]$ValidateOnly,
     [switch]$PreflightOnly
@@ -94,6 +95,11 @@ if(-not $TrailEquity){
 }
 $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
 Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))
+if(-not $NasdaqDIFilter){   # 2026-11-05 owner: asked here too. OFF is what this profile was tested and packaged with.
+    $answer=(Read-Host 'Nasdaq 5M DI filter ON or OFF [OFF]').Trim().ToUpperInvariant();if(-not $answer){$answer='OFF'}
+    if($answer -notin @('ON','OFF')){throw 'DI choice must be ON or OFF.'};$NasdaqDIFilter=$answer
+}
+if($NasdaqDIFilter -eq 'ON'){Write-Host 'DI ON is a custom selection: the Turbo 5 tests used DI OFF.' -ForegroundColor Yellow}
 $serverHasher=[Security.Cryptography.SHA256]::Create()
 try{$serverHash=([BitConverter]::ToString($serverHasher.ComputeHash([Text.Encoding]::UTF8.GetBytes($server)))).Replace('-','').Substring(0,16)}finally{$serverHasher.Dispose()}
 # Reruns must not reset the retained baseline (the guard rebuilds the trailing floor from deals after start_utc).
@@ -119,7 +125,7 @@ foreach($entry in $manifest.entries){
     $inputs['TurboExpectedLogin']=$login;$inputs['TurboExpectedServer']=$server;$inputs['TurboExpectedSymbol']=$resolved[$entry.symbol]
     $inputs['TurboExpectedCurrency']=$currency;$inputs['TurboAccountSize']=$AccountSize.ToString('G17',$inv)
     $inputs['TurboReferenceBalance']=([double]$reference.reference_balance).ToString('G17',$inv);$inputs['TurboStartUtcTime']=[string]$reference.start_utc
-    if($entry.slug -eq 'nasdaq-5m-candle-momentum'){Set-CalyxNasdaqVersion $inputs $NasdaqStopVersion}
+    if($entry.slug -eq 'nasdaq-5m-candle-momentum'){$inputs['InpRequireDIAgreement']=if($NasdaqDIFilter -eq 'ON'){'true'}else{'false'};Set-CalyxNasdaqVersion $inputs $NasdaqStopVersion}
     $inputs['TurboKnownFloor']=([double]$reference.known_floor).ToString('G17',$inv);$inputs['TurboTrailEquity']=if($TrailEquity -eq 'Y'){'true'}else{'false'}
     $tf=[string]$entry.timeframe
     $minutes=if($tf.StartsWith('H')){60*[int]$tf.Substring(1)}elseif($tf.StartsWith('M')){[int]$tf.Substring(1)}else{throw 'Unsupported timeframe.'}
@@ -128,7 +134,7 @@ foreach($entry in $manifest.entries){
 }
 Write-Host "Account size $AccountSize; saved reference balance $($reference.reference_balance) $currency; trailing floor now $floor ($(if($TrailEquity -eq 'Y'){'equity'}else{'closed balance'}) trailing, re-based after withdrawals)."
 Write-Host ("Per-entry maximum {0}; open risk {1}; per symbol {2}; daily soft stop {3}; profit cap {4}; buffer {5}." -f (0.0075*$AccountSize),(0.02*$AccountSize),(0.015*$AccountSize),(0.02*$AccountSize),(0.0075*$AccountSize),(0.0025*$AccountSize))
-Write-Host 'Nasdaq 5M DI filter: OFF. News and hourly EAs: not included. No automatic liquidation. Gaps/slippage/costs can exceed planned stop risk.'
+Write-Host "Nasdaq 5M DI filter: $NasdaqDIFilter. News and hourly EAs: not included. No automatic liquidation. Gaps/slippage/costs can exceed planned stop risk."
 Write-Host 'CONFIRM WITH TURBO: balance vs equity trailing, lock at start balance, floor after payouts, daily-loss basis, EA/news/hedging permissions.' -ForegroundColor Yellow
 $portfolio | Select-Object Label,BrokerSymbol,Period | Format-Table -AutoSize
 if($PreflightOnly){Write-Host 'Preflight complete. Nothing installed or restarted.';exit 0}

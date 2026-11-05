@@ -47,3 +47,16 @@ and never places orders.
 
 **Evidence:** see `Edge Portfolio E10 2026-11-04/README.md`, `TABLES.md` and `INCOME.md`. It is in-sample, and the list was chosen after seeing the
 history.
+
+---
+
+# Mixed 22 — no guard (built 2026-11-05)
+
+Run `Mixed 22 - no guard.bat`. It installs FTMO17's 17 EAs plus the five E10-only bots (ORB VP Volume Confirmed, ORB VP, Sell Nasdaq 15min, XAU Regime Switch, XAU Elliott Wave) as a new 22-chart profile, with the same questions as Edge 10.
+**No guard.** 3 Way Gold keeps all three modules here, and its risk applies to each module. Many trades can be open at once.
+
+**Build:** `build_mixed.py` → `../Packages/Mixed22`, version MIXED22-NOGUARD-20261105. No recompile: the EX5s and SETs are copied from the Current 14 + ORB and Edge 10 packages, the same files tested in `Merged E10 FTMO17 2026-11-05`.
+
+**Checks:** `-ValidateOnly` PASS; 22 unique magics; same RiskSupport.mqh in both sources. **Not done:** installed on any terminal; a combined 22-EA native run; pushed.
+
+**Warning:** over 2019-2026 this has the largest drawdown of the three (162R vs FTMO17 110R and E10 65R). At 0.5% it breached a funded account on 2025-05-12 in the 2024 start test. At 1% it breached in 72 days.
