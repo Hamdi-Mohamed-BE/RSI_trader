@@ -215,10 +215,10 @@ function Get-PortfolioItems {
         [pscustomobject]@{
             Label = 'Nasdaq 5M Candle Momentum'; Canonical = 'USTEC'; Aliases = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ')
             Period = 5; Expert = 'Nasdaq 5M Open EMA ATR EA.ex5'
-            ExpertSource = 'Nasdaq 5M DI ATR Deployment 2026-09-28\EA\Nasdaq 5M DI Wide ATR EA.ex5'
+            ExpertSource = 'Nasdaq 5M Carry Replace Deployment 2026-11-09\EA\Nasdaq 5M DI Wide ATR EA.ex5'
             SetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M - DI ATR6 STOP ATR6 TRAIL NO TP - 1PCT.set'; SmallDynamicRisk = $false; PercentRisk = $true; FixedPercentRisk = 1.0; ForceEnable = $true; SupportsSafeFilter = $false
             # User-selected for all launchers (2026-11-02): DI14, ATR14 x6 initial SL, no TP, ATR6 trail from +1R; overnight/weekend holding.
-            ClaudeExpertSource = 'Nasdaq 5M DI ATR Deployment 2026-09-28\EA\Nasdaq 5M DI Wide ATR EA.ex5'
+            ClaudeExpertSource = 'Nasdaq 5M Carry Replace Deployment 2026-11-09\EA\Nasdaq 5M DI Wide ATR EA.ex5'
             ClaudeSetSource = 'Selected Portfolio Settings 2026-09-01\11 Nasdaq 5M - DI ATR6 STOP ATR6 TRAIL NO TP - 1PCT.set'
         },
         [pscustomobject]@{

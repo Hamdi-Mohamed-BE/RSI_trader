@@ -879,6 +879,20 @@ of what is currently attached to a live terminal.
 - 2026-11-05: `Merged E10 FTMO17 2026-11-05/core_pick.py` -> `CORE_PICK.json`: Core 8 = EAs positive with PF >= 1.15 in dev, val and OOS (selected on those same periods). All years 2019-01 -> 2026-11, no guard:
   Core 8 +475R PF 1.29 DD 33R, 40.7 trades/month, no clumped flag, 1-year randomize red 8.8%. Owner added XAU RSI VWAP (it fails the keep rule alone: PF 1.06, dev -18.3R) = Core 9: +484R PF 1.27 DD 33R, 45 trades/month, randomize 13.8%.
   Core 9 FTMO sims (`merged.py c9 5`, results CH/F1P/F1U/FU-C9*) were still running at this push. No Core installer built.
+- 2026-11-05: BUILT `_00 Live profiles/Core 9/` (build.py, README.md, CORE9-20261105): `Core 9 - FTMO 1-Step guard.bat` (1-Step/, state key C9O, default 0.5%), `Core 9 - FTMO 2-Step guard.bat` (2-Step/, Prop Ready guard, key C9T, default 0.75%), `Core 9 - no guard.bat` (Packages/Core9, tested EX5s, no recompile).
+  Guarded Sell Nasdaq holds its stop in the EA and sells at market because the guards refuse pending orders; production and no-guard keep the real sell stop. `parity/parity.py` PASS 2026-11-09: same 270 trade days as production 2021-10 to 2026-11, net -0.5%, max entry difference 5.77 points.
+  18 wrappers 0/0, -ValidateOnly PASS on all three, question flow tested with typed answers on both guarded installers. Not installed; guards have no native test. Per-phase breach stats: `Merged E10 FTMO17 2026-11-05/phase_stats.py`.
+- 2026-11-09: Telegram signals 1.3 (`AAA EAs/system signals/`): entries, exits (full + partial) and the daily recap only. SL / TP moves (SIGNALS_SHOW_UPDATES) and pending-order messages
+  (SIGNALS_SHOW_PENDING) are OFF by default and in the local .env; a filled pending order still posts as an entry; R still counts from the first stop. 10 tests pass. The running forwarder is not on
+  this PC: copy / pull the new signals.py where it runs and restart it. Making the channel public with a username is a Telegram setting for the owner to change.
+- 2026-11-09: Website RESEARCH ONLY (owner: remove all prices and offers). Templates: no prices, buy / WhatsApp buttons, Pricing nav, cart links or package offer; cards and detail pages say
+  "Research only · Not for sale"; /pricing redirects to /store (307) while the store switch is off; risk page "Sales" section replaced. tests/test_store_disabled.py rewritten for this,
+  the store-on price test skipped. Pre-existing portfolio manifest-changed warnings remain. LOCAL ONLY: the 8080 copy was not restarted and the public VPS site is not updated.
+- 2026-11-09: `Nasdaq 5M Carry Fix 2026-11-09/` (owner runs Edge 10 no guard, Nasdaq DI OFF; Monday 11-09 no trade because Friday's short was still open at the 09:35 NY check).
+  Research copy adds InpCarryMode (0 skip = production, parity 1,647/1,647; 1 LATE; 2 REPLACE; 3 FLIP_ONLY). Native Model 4 2019-07 -> 2026-11-10, Edge 10 inputs, 1%. RESULTS.md.
+  DI OFF: PROD +87.8R PF 1.10, MC randomize red 35.7% (fails); FLIP_ONLY +110.7R PF 1.12, better in dev / val / OOS but randomize 14.2% (fails); REPLACE +113.8R (dev worse).
+  DI ON: PROD +115.3R PF 1.17 MC pass; REPLACE +120.3R (dev ret/DD 1.66 vs 1.73), FLIP_ONLY +116.8R (val 10.0 vs 11.5). Frozen rule: none qualifies; PROD stays.
+  PROD skips 248 (DI OFF) / 197 (DI ON) days because a trade is still open. Nothing rebuilt or deployed. Video ideas, USDJPY search, phase stats and Nasdaq FTMO queue PAUSED (owner: focus on Nasdaq 5M).
 - 2026-11-05 IN PROGRESS: tester queue `tester_queue_20261105.sh`: `Nasdaq 5M Candle Rule 2026-11-05/` (13 versions, PLAN.md frozen) and `USDJPY London Optimization 2026-11-05/` (PLAN.md frozen, stage 5 + 6, owner approved). Not finished.
 - 2026-11-02: Telegram signals daily recap (`AAA EAs/system signals/`; SIGNALS_DAILY_RECAP / SIGNALS_RECAP_TIME, default 17:00 New York;
   DST computed without a tz database; 9 tests pass). Pushed in `6a83f84f6` on `new-telegram-copy`.

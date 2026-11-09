@@ -70,6 +70,10 @@ input group "Time conversion"
 input bool InpAutoServerUtcOffsetLive=true;
 input int  InpServerUtcOffsetHours=0;
 
+input group "Carry (2026-11-09: REPLACE by default)"
+input int    InpCarryMode=2;               // previous trade still open at the signal check: 0 skip the day, 1 late entry after it closes, 2 close it and take today's signal (default), 3 replace only if opposite
+input int    InpLateCutoffMinuteNY=930;    // mode 1 only: no late entry after this New York minute (15:30)
+
 input group "Risk and execution"
 input bool   InpEnableTrading=true;
 input double InpRiskPercent=1.00;
@@ -462,15 +466,36 @@ bool SignalQualityPasses(const int direction,const MqlRates &signal,const double
    return true;
   }
 
+int g_pending_dir=0,g_pending_key=0;
+
+bool TryLateEntry(const MqlRates &bar)
+  {
+   if(g_pending_dir==0) return false;
+   MqlDateTime ny; TimeToStruct(ServerToNewYork(bar.time),ny);
+   int key=ny.year*10000+ny.mon*100+ny.day,close_minute=ny.hour*60+ny.min+PeriodSeconds(InpSignalTimeframe)/60;
+   if(key!=g_pending_key || close_minute>InpLateCutoffMinuteNY || AlreadyTradedOnNewYorkDate(g_pending_key)) { g_pending_dir=0; return false; }
+   ulong ticket=0;
+   if(SelectOurPosition(ticket) || !InpEnableTrading) return false;
+   double ema=0.0,atr=0.0;
+   if(!ReadIndicatorValue(g_ema_handle,1,ema) || !ReadIndicatorValue(g_atr_handle,1,atr)) return false;
+   if((g_pending_dir>0 && bar.close<=ema) || (g_pending_dir<0 && bar.close>=ema)) return false;   // the signal side must still hold: wait
+   int direction=g_pending_dir; g_pending_dir=0;
+   SendEntry(direction,atr,bar,SelectedRewardRisk(bar,atr));
+   return true;
+  }
+
 void ProcessNewBar()
   {
    MqlRates rates[];
    ArraySetAsSeries(rates,true);
    if(CopyRates(_Symbol,InpSignalTimeframe,0,3,rates)!=3) return;
+   if(InpCarryMode==1 && TryLateEntry(rates[1])) return;
    if(!IsNewYorkTime(rates[1].time,InpSignalHourNY,InpSignalMinuteNY)) return;
    int date_key=NewYorkDateKey(rates[1].time);
    ulong ticket=0;
-   if(SelectOurPosition(ticket) || AlreadyTradedOnNewYorkDate(date_key) || !InpEnableTrading) return;
+   bool held=SelectOurPosition(ticket);
+   if((held && InpCarryMode==0) || AlreadyTradedOnNewYorkDate(date_key) || !InpEnableTrading) return;
+   int held_direction=(held ? (PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_BUY ? 1 : -1) : 0);
 
    double ema=0.0,previous_ema=0.0,atr=0.0;
    if(!ReadIndicatorValue(g_ema_handle,1,ema) || !ReadIndicatorValue(g_ema_handle,2,previous_ema) ||
@@ -480,6 +505,15 @@ void ProcessNewBar()
    if(direction==0 || (direction>0 && !InpAllowLong) || (direction<0 && !InpAllowShort)) return;
    if(!SignalQualityPasses(direction,rates[1],ema,previous_ema,atr)) return;
    if(!DIAgrees(direction)) return;
+   if(held)
+     {
+      if(InpCarryMode==1) { g_pending_dir=direction; g_pending_key=date_key; return; }
+      if(InpCarryMode==3 && held_direction==direction) return;
+      g_trade.SetExpertMagicNumber((ulong)InpMagic);
+      g_trade.SetDeviationInPoints(InpMaximumDeviationPoints);
+      if(!g_trade.PositionClose(ticket,(ulong)InpMaximumDeviationPoints)) { Print("N5EMA carry close failed: ",g_trade.ResultRetcodeDescription()); return; }
+      if(SelectOurPosition(ticket)) return;
+     }
    SendEntry(direction,atr,rates[1],SelectedRewardRisk(rates[1],atr));
   }
 
