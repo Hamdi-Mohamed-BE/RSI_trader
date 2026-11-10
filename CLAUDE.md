@@ -893,6 +893,23 @@ of what is currently attached to a live terminal.
   DI OFF: PROD +87.8R PF 1.10, MC randomize red 35.7% (fails); FLIP_ONLY +110.7R PF 1.12, better in dev / val / OOS but randomize 14.2% (fails); REPLACE +113.8R (dev worse).
   DI ON: PROD +115.3R PF 1.17 MC pass; REPLACE +120.3R (dev ret/DD 1.66 vs 1.73), FLIP_ONLY +116.8R (val 10.0 vs 11.5). Frozen rule: none qualifies; PROD stays.
   PROD skips 248 (DI OFF) / 197 (DI ON) days because a trade is still open. Nothing rebuilt or deployed. Video ideas, USDJPY search, phase stats and Nasdaq FTMO queue PAUSED (owner: focus on Nasdaq 5M).
+- 2026-11-09: Nasdaq 5M REPLACE deployed to EVERY portfolio BAT (owner): `Nasdaq 5M Carry Replace Deployment 2026-11-09/` (deploy.py prepare|patch|compile|finish, verify.py).
+  InpCarryMode default 2 = REPLACE (old trade still open at the 09:35 NY check + today signal -> close it, take today). New production EX5 2488443f62a8 (old fe9f391db5af kept as evidence);
+  canonical installer points to the new folder; 12 package wrappers recompiled 0/0; Current14 rebuilt (Verify-Release PASS). Native proof: deployed EX5 = tested REPLACE 1,882/1,882 (DI OFF)
+  and 1,449/1,449 (DI ON); Edge10 wrapper = production 136/136 (6 m). All BATs -ValidateOnly PASS except reviwed_Eas (pre-existing). Pushed c4c9ec784. VPS needs pull + BAT re-run.
+  Owner question "why no trade Monday": Friday short still open at the 09:35 check (code skips the day); replay confirms Friday 09:35 entry. Old 0.60% stop compared (RESULTS.md addendum): worse DD.
+- 2026-11-10: `Video ORB VWAP Ideas Raw 2026-11-09/` (two Matteo Conti interviews + reel, US100 native Model 4 2019-07 -> 2026-11-10, owner split 2024): DRIFT dropped (PF 0.99, -27%),
+  VAULT approved by owner despite failing the gate (PF 1.06, MC fail), VWAPADX dropped (PF 0.64, -96%), ONB (overnight-thirds ORB + ADX) PASSES (PF 1.35, +117.5R, eqDD 10.7%,
+  MC 0/0, controls no-bias PF 1.08 / random 0.96) and approved; REEL passes but dropped (same trades as ONB). Nothing built or deployed.
+- 2026-11-10: `Gold Band Wave Raw 2026-11-10/` (pasted clip; BBTrend 20/50 + SMA9 signal, SMA200, 2xATR stop, exit on cross): all +44.3R PF 1.22 +49.5% eqDD 19.3%, 4.8 trades/month;
+  dev 2019-23 flat (-0.4R), val +21.7R, OOS +23.1R; MC resample 6.2% (fails 5%); controls beaten. Clip best trade found: long 2026-01-22 -> 01-28 +8.75R (~$13.1k at $1,500).
+  Buy & hold gold +114% (DD 49%). Approved by owner. FTMO sims inside Portfolio P7.
+- 2026-11-10: `Nasdaq 5M Candle Rule 2026-11-05/` COMPLETE (analyze.py -> RESULTS.md): only EMA_ATR6_DION passes the frozen rule; candle-colour entry fails in all 6 versions.
+  FTMO 1-Step guard 1% 43% pass / 0% breach; 2-step guard 1% 30%; funded guard 0.5% $667/month. These runs are pre-REPLACE (skip-the-day).
+- 2026-11-10: BUILT `_00 Live profiles/P4/` (owner: keep only Overnight Bias ORB, Nasdaq 5M REPLACE DI OFF, EMA3, Gold Band Wave; P4-20261110). Three BATs: `P4 - FTMO 1-Step guard.bat` (key P4O, 0.5%), `P4 - FTMO 2-Step guard.bat` (Prop Ready guard, key P4T, 0.75%), `P4 - no guard.bat` (`Packages/P4`). Nasdaq DI default OFF; BATs pass -UsdJpyDIFilter OFF.
+  ONB and GBW are RESEARCH sources with asserted edits (live broker-clock offset for ONB, restart-safe GBW exit, unused InpAdaptivePortfolioControls; no guard: RiskSupport budget). 10 wrappers 0/0, -ValidateOnly PASS x3. NOT yet: native parity of the edited research wrappers, guard native test, any install. GBW H4 bars differ on non-UTC brokers. FTMO sim P4 (p7.py p4, 0.5-2%, guard / no guard) -> `Portfolio P7 2026-11-10/P4_RESULTS.md` (p4_table.py). Pushed on owner request.
+- 2026-11-10 IN PROGRESS: `Portfolio P7 2026-11-10/` (Vault Break, Overnight Bias ORB, Nasdaq 5M REPLACE DI OFF, EMA3, ORB VP, RSI VWAP, Gold Band Wave). Native all years +390.7R PF 1.16
+  63.8 trades/month, worst day -7.1R, MC 0/0.3 but clumped 95.7%. FTMO 2-step / 1-Step guard + no guard 0.5/0.75/1% and each EA alone: p7.py runall (48 jobs). USDJPY search resumed after it.
 - 2026-11-05 IN PROGRESS: tester queue `tester_queue_20261105.sh`: `Nasdaq 5M Candle Rule 2026-11-05/` (13 versions, PLAN.md frozen) and `USDJPY London Optimization 2026-11-05/` (PLAN.md frozen, stage 5 + 6, owner approved). Not finished.
 - 2026-11-02: Telegram signals daily recap (`AAA EAs/system signals/`; SIGNALS_DAILY_RECAP / SIGNALS_RECAP_TIME, default 17:00 New York;
   DST computed without a tz database; 9 tests pass). Pushed in `6a83f84f6` on `new-telegram-copy`.
