@@ -39,8 +39,11 @@ Known limits:
   - 10 wrappers compiled with 0 errors and 0 warnings.
   - `-ValidateOnly` passes on all three BATs.
   - The source packages (FTMO-AnyBroker, ftmo 1_step, Best Prop 15, Edge 10, Current 14, Core 9, both research folders) are byte-identical before and after the build.
+  - **Parity (2026-11-10, PASS):** `parity/parity.py`, native Model 4, 2026-05-01 to 2026-11-10, no-guard wrappers vs the tested research EX5s at 1%.
+    - Overnight Bias ORB: 54 / 54 trades with identical entries and exits, net $1,538.09 in both.
+    - Gold Band Wave: 24 / 24 identical, net $727.83 in both.
+    - Both Gold Band Wave runs log the same 12 "market closed" rejections: a signal on the Sunday 22:00 H4 bar before the gold market opens is skipped. This comes from the research EA, not the P4 edits.
 - **Not tested yet:**
-  - Native parity of the edited research wrappers against the research EX5.
   - A native run with a guard (the guards refuse the tester).
   - Any install on a terminal.
 - **Evidence:** in-sample and selection-biased; `../../Portfolio P7 2026-11-10/` (native all years: +320R, PF 1.19, 36 trades/month, 1.7/day, closed DD 42R; FTMO simulation `P4_RESULTS.md` when it finishes).
