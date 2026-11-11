@@ -960,7 +960,9 @@ of what is currently attached to a live terminal.
 - 2026-11-11: Best 1-Step now 11 EAs: Sell Nasdaq removed, UK100 Monday dip ADDED (owner) to both BATs (guard key B1O + Packages/Best1Step); UK100 aliases in both installers;
   no-guard wrapper parity 183/183 vs raw; both BATs -ValidateOnly PASS. Last two months native (Sep 11 -> Nov 10 opens, standalone 1%, no guard, no weekend close): 124 trades,
   +40.7R, PF 1.83, win 54%; USDJPY -4.2R and 3WG -1.0R the only losers. Not installed; not pushed.
-- 2026-11-11 (latest): Best 1-Step REDUCED to the owner's 7 approved EAs (Nasdaq 5M, Overnight Bias ORB, EMA3, Gold Band Wave, ORB VP VC, XAU RSI VWAP, UK100 Monday dip); USDJPY,
+- 2026-11-11 FINAL (supersedes the 7-EA line below): Best 1-Step package = all 11 EAs (Sell Nasdaq removed, UK100 Monday dip added); both BATs ask for EACH EA
+  (Calyx-SelectEAs.ps1 Select-CalyxEntries; -SkipEAs). Tested: selection function (prompt / skip / single / none), all BATs -ValidateOnly PASS except reviwed_Eas (pre-existing).
+- 2026-11-11 (superseded): Best 1-Step REDUCED to the owner's 7 approved EAs (Nasdaq 5M, Overnight Bias ORB, EMA3, Gold Band Wave, ORB VP VC, XAU RSI VWAP, UK100 Monday dip); USDJPY,
   3WG, XAU Squeeze, Selective V3 removed. Picked on the last two months (hindsight); weekend-flat stream: last year +87.8R PF 1.43 (11 EAs +116.8R PF 1.47), all years +258R PF 1.22
   (11: +419R PF 1.29), 2021-23 +28R PF 1.05. Builder backup build.before-seven.py. FTMO / funded stats: `Best 1-Step Seven 2026-11-11/` (study.py, RESULTS.json).
   Mid-session the 8081 dev preview worker was killed by mistake (process filter) and restarted via reload (HTTP 200).

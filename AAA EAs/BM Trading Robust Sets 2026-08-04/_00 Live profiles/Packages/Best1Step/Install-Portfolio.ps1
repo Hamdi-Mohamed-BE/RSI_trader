@@ -3,6 +3,7 @@ param(
     [double]$RiskValue = 0,
     [ValidateSet('', 'ON', 'OFF')][string]$NasdaqDIFilter = '',
     [ValidateSet('', 'ON', 'OFF')][string]$UsdJpyDIFilter = '',
+    [string[]]$SkipEAs = @(),
     [ValidateSet('', 'ON', 'OFF')][string]$WeekendFlat = '',
     [ValidateSet('', 'NEW', 'OLD')][string]$NasdaqStopVersion = '',
     [string]$TargetTerminal = '',
@@ -204,6 +205,32 @@ fixed_height=-1
 }
 # <<< Calyx Weekend Flat <<<
 
+# >>> Calyx EA selection (owner 2026-11-11: "make the bat ask me one by one to add or not") >>>
+# The package keeps every EA; the installer asks for each one (Enter = install). -SkipEAs slug1,slug2 skips without asking (scripted runs).
+# Integrity checks still cover the whole package; only the chosen EAs get charts, symbols and load checks.
+function Select-CalyxEntries([object[]]$Entries, [string[]]$Skip, [bool]$NoPrompt, [string]$KeyName = 'slug', [string]$LabelName = 'label', [string]$SymbolName = 'symbol') {
+    $skipSet = @(foreach ($s in @($Skip)) { foreach ($part in ([string]$s).Split(',')) { if ($part.Trim()) { $part.Trim().ToLowerInvariant() } } })
+    foreach ($s in $skipSet) { if (-not @($Entries | Where-Object { ([string]$_.$KeyName).ToLowerInvariant() -eq $s }).Count) { throw "Unknown EA to skip: $s (use the slug, e.g. uk100-monday-dip)" } }
+    $ask = (-not $NoPrompt) -and (-not $skipSet.Count)
+    if ($ask) { Write-Host ''; Write-Host 'CHOOSE THE EAs - press Enter (or Y) to install an EA, N to leave it out.' -ForegroundColor Cyan }
+    $out = @()
+    foreach ($e in $Entries) {
+        $key = ([string]$e.$KeyName).ToLowerInvariant(); $label = [string]$e.$LabelName; $symbol = [string]$e.$SymbolName
+        if ($skipSet -contains $key) { Write-Host ("  OFF  {0} ({1}) - skipped by -SkipEAs" -f $label, $symbol) -ForegroundColor Yellow; continue }
+        if ($ask) {
+            $answer = (Read-Host ("  Install {0} ({1})? Y or N [Y]" -f $label, $symbol)).Trim().ToUpperInvariant()
+            if ($answer -and $answer -notin @('Y', 'YES', 'N', 'NO')) { throw 'Answer Y or N.' }
+            if ($answer -in @('N', 'NO')) { Write-Host ("  OFF  {0}" -f $label) -ForegroundColor Yellow; continue }
+        }
+        $out += $e
+    }
+    if (-not $out.Count) { throw 'No EA selected. Nothing was installed.' }
+    if ($out.Count -lt $Entries.Count) { Write-Host ("EAs selected: {0} of {1}. The backtests and FTMO simulations were run with all {1}; a smaller set is untested." -f $out.Count, $Entries.Count) -ForegroundColor Yellow }
+    else { Write-Host ("EAs selected: all {0}." -f $out.Count) -ForegroundColor Green }
+    return $out   # callers collect with @(...)
+}
+# <<< Calyx EA selection <<<
+
 function Read-CalyxNasdaqVersion([string]$Current, [bool]$NoPrompt) {
     if ($Current) { if ($Current -notin @('NEW', 'OLD')) { throw 'Nasdaq 5M version must be NEW or OLD.' }; return $Current }
     if ($NoPrompt) { return 'NEW' }
@@ -329,13 +356,13 @@ function Test-Package {
         if ($digest -ine $property.Value) { throw "Package integrity check failed: $($property.Name). Extract the complete ZIP again." }
     }
     $package = Get-Content -LiteralPath (Join-Path $PackageRoot 'Package.json') -Raw | ConvertFrom-Json
-    if ($package.entries.Count -ne 7 -or @($package.entries.key | Sort-Object -Unique).Count -ne 7) { throw 'Portfolio roster is incomplete or duplicated.' }
+    if ($package.entries.Count -ne 11 -or @($package.entries.key | Sort-Object -Unique).Count -ne 11) { throw 'Portfolio roster is incomplete or duplicated.' }
     if (@($package.entries | Where-Object { $_.key -in $package.orb_keys -and [double]$_.inputs.InpRewardRisk -ne 0.5 }).Count -ne 0) { throw 'An ORB target is not 0.5R.' }
     foreach ($entry in $package.entries) {
         [void](Assert-ChildPath $PackageRoot (Join-Path $PackageRoot $entry.expert))
         [void](Assert-ChildPath $PackageRoot (Join-Path $PackageRoot $entry.settings))
     }
-    if (@($package.entries.magic | Sort-Object -Unique).Count -ne 7) { throw 'Duplicate portfolio magic numbers.' }
+    if (@($package.entries.magic | Sort-Object -Unique).Count -ne 11) { throw 'Duplicate portfolio magic numbers.' }
     return $package
 }
 function Assert-Risk([string]$Mode, [double]$Amount) {
@@ -387,7 +414,7 @@ function Assert-Account([object]$Probe, [object]$Candidate, [string]$Mode) {
 function Get-Portfolio([object]$Package, [object]$Probe) {
     $aliases = @{ USDJPY = @('USDJPY'); USTEC = @('USTEC', 'US100', 'NAS100', 'UT100', 'NDX100', 'NASDAQ', 'NQ100', 'NASDAQ100'); XAUUSD = @('XAUUSD', 'GOLD'); UK100 = @('UK100', 'UK100CASH', 'FTSE100', 'FTSE', 'UKX', 'UK100CFD', 'GBR100') }
     $mapping = @{}
-    foreach ($canonical in @('USDJPY', 'USTEC', 'XAUUSD', 'UK100')) {
+    foreach ($canonical in @(@('USDJPY', 'USTEC', 'XAUUSD', 'UK100') | Where-Object { $_ -in @($Package.entries | ForEach-Object { [string]$_.canonical }) })) {
         $symbol = Find-BrokerSymbol @($Probe.symbols | Where-Object { [int]$_.trade_mode -eq 4 }) $aliases[$canonical]
         if (-not $symbol -or [string]$symbol.name -match '[\r\n\t=<>]') { throw "No fully tradable CFD symbol was found for $canonical. No partial portfolio will be installed." }
         $mapping[$canonical] = [string]$symbol.name
@@ -458,7 +485,7 @@ function Test-Loaded([string]$CommonFiles, [object[]]$Items) {
             if ($parts.Count -eq 8 -and [Math]::Abs($now-[long]$parts[0]) -le 120 -and $parts[1] -ceq [string]$ActiveLogin -and $parts[2] -ceq $ActiveServer -and $parts[3] -ceq $item.BrokerSymbol -and $parts[4] -ceq [string]$item.Magic -and $parts[5] -ceq $InstallNonce -and $parts[6] -eq $mode -and [Math]::Abs([double]::Parse($parts[7],[Globalization.CultureInfo]::InvariantCulture)-$cash) -lt 0.00000001) { $ready++ }
         } catch { }
     }
-    return $ready -eq 7
+    return $ready -eq @($Items).Count
 }
 
 function Main {
@@ -494,6 +521,7 @@ function Main {
     Write-Host 'NO GUARD: no FTMO / prop limits, no shared daily stop, no adaptive governor. Risk is per trade per EA and stacks across open trades. 3 Way Gold runs its breakout module only.' -ForegroundColor Yellow
     $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion $false
     $WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat $false   # Calyx Weekend Flat (2026-11-11)
+    $package.entries=@(Select-CalyxEntries @($package.entries) $SkipEAs $false 'key' 'label' 'canonical')   # owner 2026-11-11: one by one
     foreach ($parameter in @('NasdaqDIFilter','UsdJpyDIFilter')) {
         if (-not (Get-Variable -Name $parameter -ValueOnly)) {
             $label=if ($parameter -eq 'NasdaqDIFilter') {'Nasdaq 5M'} else {'USDJPY London'}
@@ -516,7 +544,7 @@ function Main {
     Write-Host ("Active account: {0} / {1} / {2}" -f $ActiveLogin,$ActiveServer,$probe.account.currency) -ForegroundColor Cyan
     foreach ($item in $portfolio) { Write-Host ("  {0}: {1}, {2} minutes" -f $item.Label,$item.BrokerSymbol,$item.Period) }
     Write-Host ("Chosen risk: {0} {1} per trade. Nasdaq DI=$NasdaqDIFilter; USDJPY DI=$UsdJpyDIFilter." -f $RiskValue,$RiskMode)
-    Write-Host ("A separate 7-chart profile will replace current chart management, not delete it. {0} open position(s) will NOT be closed. EAs excluded from this profile will stop managing their trades." -f $probe.account.open_positions) -ForegroundColor Yellow
+    Write-Host ("A separate 11-chart profile will replace current chart management, not delete it. {0} open position(s) will NOT be closed. EAs excluded from this profile will stop managing their trades." -f $probe.account.open_positions) -ForegroundColor Yellow
     Write-Host 'MT5 will restart once. Algo Trading preferences stay unchanged; profile-change protection may switch it OFF. Check the toolbar afterwards.' -ForegroundColor Yellow
     if ($PreflightOnly) { Write-Host 'Preflight complete; no terminal restart or MT5 data-folder writes. Symbol inspection may subscribe Market Watch symbols.'; return }
     if (-not $Yes -and (Read-Host 'Apply these selected EAs to this account? [y/N]') -notin @('y','Y','yes','YES')) { Write-Host 'Cancelled. No portfolio installed.'; return }

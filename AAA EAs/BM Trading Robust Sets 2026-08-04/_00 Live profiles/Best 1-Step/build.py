@@ -29,11 +29,8 @@ BL = C9.BL; read, write, sub1, sha, compile_ea, set_values = C9.read, C9.write, 
 ANY, F1S, EDGE = C9.ANY, C9.F1S, C9.EDGE; NOGUARD = LIVE / 'Packages/Best1Step'; CORE9_NG = LIVE / 'Packages/Core9'; P4_NG = LIVE / 'Packages/P4'
 VERSION = 'BEST1STEP-20261111'; TAG = 'B1O'; SCRIPT = 'Install-Best1Step-1Step.ps1'
 RESEARCH = ['overnight-bias-orb', 'gold-band-wave', 'uk100-monday-dip']
-# 2026-11-11 owner ("update the profile now with the new approved EAs"): keep only Nasdaq 5M, EMA3, ORB VP Volume Confirmed, XAU RSI VWAP (from Core 9) +
-# Overnight Bias ORB, Gold Band Wave, UK100 Monday dip. Removed: USDJPY London, 3 Way Gold, XAU Squeeze, US100 Selective ORB V3 (and Sell Nasdaq earlier).
-KEEP = ['nasdaq-5m-candle-momentum', 'ema3', 'xau-rsi-vwap', 'orb-volume-profile-volume-confirmed']
-SLUGS = [s for s in C9.SLUGS if s in KEEP] + RESEARCH
-assert len(SLUGS) == 7 and len(set(SLUGS)) == 7
+SLUGS = C9.SLUGS + RESEARCH
+assert len(SLUGS) == 11 and len(set(SLUGS)) == 11   # 2026-11-11: Sell Nasdaq removed (Core 9 has 8); UK100 Monday dip added (owner)
 # UK100 Monday dip = FTSE Three Setup Raw 2026-10-27 S2, unchanged rules (Monday London day, close < SMA20, RSI < 40, long, 2.5 ATR stop, 2R, 24 h), one per Monday.
 FTSE_SRC = ROOT / 'FTSE Three Setup Raw 2026-10-27/EA/FTSE Three Setup Research EA.mq5'
 FTSE_INPUTS = dict(json.loads(read(ROOT / 'FTSE Three Setup Raw 2026-10-27/run-config.json'))['common_inputs'])
@@ -105,6 +102,7 @@ def build_guarded(anyb, edge):
         if slug == '3-way-gold':
             assert values['InpMarketEntries'] == 'true'; values.update(InpEnableMomentum='false', InpEnableBreakout='true', InpEnableTurnOfMonth='false')
         if slug == 'nasdaq-5m-candle-momentum': values['InpRequireDIAgreement'] = 'false'          # tested DI OFF (pool stream); the installer asks
+        if slug == 'usdjpy-london-open-momentum': assert values['InpRequireDIAgreement'] == 'true'    # tested DI ON (Core 9 stream)
         values.update(FTMOAllocationMode='1', FTMOAllocationValue='0.5', FTMOPhase='1', **C9.UNARMED); values.update(C9.RULES_1STEP)
         magic = values.get('InpMagic') or values.get('InpMagicBase'); assert magic and magic not in magics, ('magic clash', slug, magic); magics[magic] = slug
         write(pkg / f'{stem}.set', '\n'.join(f'{k}={v}' for k, v in values.items()) + '\n')
@@ -112,8 +110,8 @@ def build_guarded(anyb, edge):
         entries.append(dict(slug=slug, label=label, symbol=symbol, timeframe=timeframe, expert=f'{stem}.ex5', settings=f'{stem}.set', magic=magic, source_package=source[0], source_expert=source[1], source_settings=source[2], expert_sha=sha(pkg / f'{stem}.ex5'), settings_sha=sha(pkg / f'{stem}.set')))
     files = {p.name: sha(p) for p in pkg.iterdir() if p.is_file() and p.suffix != '.log'}
     out = dict(version=f'{VERSION}-1-Step', ruleset='FTMO_1STEP', entries=entries, news_enabled=False, currency_mode='ACCOUNT_CURRENCY', hedging_required=True, reference_mode='FRESH_BASELINE_EVERY_RUN', default_phase='Challenge',
-               risk_cap_fraction=0.005, total_risk_fraction=0.0225, symbol_risk_fraction=0.015, strategy_risk_percent='0.5 (installer: 1.5x the chosen risk, max 5)', nasdaq_di_default='OFF', usdjpy_di_default='n/a (no USDJPY EA)',
-               research_eas='overnight-bias-orb, gold-band-wave: research sources with the asserted P4 edits (../P4/build.py); uk100-monday-dip: FTSE S2 raw EA with the asserted edits in this build.py',
+               risk_cap_fraction=0.005, total_risk_fraction=0.0225, symbol_risk_fraction=0.015, strategy_risk_percent='0.5 (installer: 1.5x the chosen risk, max 5)', nasdaq_di_default='OFF', usdjpy_di_default='ON',
+               sell_nasdaq='stop held in the EA, sold at market (these guards refuse pending orders)', research_eas='overnight-bias-orb, gold-band-wave: research sources with the asserted P4 edits (../P4/build.py); uk100-monday-dip: FTSE S2 raw EA with the asserted edits in this build.py',
                guard_sha=sha(root / 'CalyxFTMOGuard.mqh'), guard_state_prefix=TAG, source_package=dict(name=ANY.name, version=anyb['version'], guard_sha=anyb['guard_sha']), files=files)
     write(root / 'PACKAGE.json', json.dumps(out, indent=2) + '\n'); print('Built 1-Step', len(entries), 'EAs', flush=True)
 
@@ -125,19 +123,26 @@ def installer():
     s = C9.installer_1step().replace('\r\n', '\n')
     s, n = re.subn(r"\$expected=@\('[^)]*\)", lambda m: '$expected=@(' + ROSTER + ')', s, count=1); assert n == 1
     for a, b in [("[ValidateSet('ON','OFF')][string]$NasdaqDIFilter='ON',", "[ValidateSet('ON','OFF')][string]$NasdaqDIFilter='OFF',"),
-                 ("# Core 9 2026-11-05: nine EAs with the FTMO 1-Step guard", "# Best 1-Step 2026-11-11: seven approved EAs (Nasdaq 5M, Overnight Bias ORB, EMA3, Gold Band Wave, ORB VP Volume Confirmed, XAU RSI VWAP, UK100 Monday dip) with the FTMO 1-Step guard"),
+                 ("# Core 9 2026-11-05: nine EAs with the FTMO 1-Step guard", "# Best 1-Step 2026-11-11: Core 9 + Overnight Bias ORB + Gold Band Wave + UK100 Monday dip, eleven EAs (Sell Nasdaq removed 2026-11-11) with the FTMO 1-Step guard"),
                  ("# GENERATED by Core 9/build.py from ftmo 1_step/Install-FTMO1Step.ps1; do not edit by hand.", "# GENERATED by Best 1-Step/build.py (via Core 9/build.py) from ftmo 1_step/Install-FTMO1Step.ps1; do not edit by hand."),
-                 ("if($manifest.entries.Count -ne 9 -or", f"if($manifest.entries.Count -ne {len(SLUGS)} -or"),
+                 ("if($manifest.entries.Count -ne 9 -or", "if($manifest.entries.Count -ne 11 -or"),
                  ("        $answer=(Read-Host 'Nasdaq 5M DI filter ON or OFF [ON]').Trim().ToUpperInvariant()\n        if(-not $answer){$answer='ON'}\n",
                   "        $answer=(Read-Host 'Nasdaq 5M DI filter ON or OFF (tested OFF) [OFF]').Trim().ToUpperInvariant()\n        if(-not $answer){$answer='OFF'}\n"),
-                 ("3 Way Gold breakout only", "Nasdaq 5M, Overnight Bias ORB, EMA3, Gold Band Wave, ORB VP Volume Confirmed, XAU RSI VWAP, UK100 Monday dip"),
+                 ("3 Way Gold breakout only", "3 Way Gold breakout only / Overnight Bias ORB + Gold Band Wave + UK100 Monday dip"),
                  ("USDJPY=@('USDJPY')}", "USDJPY=@('USDJPY');UK100=@(" + ','.join("'" + a + "'" for a in UK_ALIASES) + ")}"),
                  ("Nasdaq DI default ON.", "Nasdaq DI default OFF.")]:
         s = sub1(s, a, b)
     for a, b in [('Calyx-Core9-1Step-', 'Calyx-Best1Step-'), ('CORE9 1STEP', 'BEST1STEP'), ('.core9-1step-backup-', '.best1step-backup-'), ('CORE 9', 'BEST 1-STEP'), ('Core 9', 'Best 1-Step'),
-                 ('nine guarded EAs', 'seven guarded EAs'), ('nine EAs', 'seven EAs'), ('all nine charts', 'all seven charts'), ('PASS: 9 integrity', 'PASS: 7 integrity')]:
+                 ('nine guarded EAs', 'eleven guarded EAs'), ('nine EAs', 'eleven EAs'), ('all nine charts', 'all eleven charts'), ('PASS: 9 integrity', 'PASS: 11 integrity')]:
         assert a in s, a; s = s.replace(a, b)
     for bad in ('Core9', 'CORE9', 'core9', 'nine'): assert bad not in s, bad
+    # 2026-11-11 owner: ask for each EA (Select-CalyxEntries in Calyx-InstallChoices.ps1 / Calyx-SelectEAs.ps1)
+    s = sub1(s, "[ValidateSet('','ON','OFF')][string]$WeekendFlat='',", "[string[]]$SkipEAs=@(),\n    [ValidateSet('','ON','OFF')][string]$WeekendFlat='',")
+    s = sub1(s, "$WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat ([bool]$ValidateOnly)   # Calyx Weekend Flat (2026-11-11)\n",
+             "$WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat ([bool]$ValidateOnly)   # Calyx Weekend Flat (2026-11-11)\n"
+             "$selectedEntries=@(Select-CalyxEntries @($manifest.entries) $SkipEAs ([bool]($ValidateOnly -or -not $Interactive)) 'slug' 'label' 'symbol')   # owner 2026-11-11: one by one\n")
+    s = sub1(s, "foreach($symbol in $aliasMap.Keys){", "foreach($symbol in @($aliasMap.Keys | Where-Object { $_ -in @($selectedEntries | ForEach-Object { [string]$_.symbol }) })){")
+    s = sub1(s, "$portfolio=@()\nforeach($entry in $manifest.entries){", "$portfolio=@()\nforeach($entry in $selectedEntries){")
     return s.replace('\n', '\r\n')
 
 
@@ -157,7 +162,7 @@ def build_noguard():
     assert BL.sha(CORE9_NG / 'RiskSupport.mqh') == BL.sha(P4_NG / 'RiskSupport.mqh')
     if NOGUARD.exists(): shutil.rmtree(NOGUARD)          # generated package only
     (NOGUARD / 'Experts').mkdir(parents=True); (NOGUARD / 'Sets').mkdir(); entries = []
-    pick = [(CORE9_NG, e) for e in c9['entries'] if e['key'] in KEEP and e['key'] != 'nasdaq-5m-candle-momentum'] + [(P4_NG, e) for e in p4['entries'] if e['key'] in ('nasdaq-5m-candle-momentum', 'overnight-bias-orb', 'gold-band-wave')]
+    pick = [(CORE9_NG, e) for e in c9['entries'] if e['key'] != 'nasdaq-5m-candle-momentum'] + [(P4_NG, e) for e in p4['entries'] if e['key'] in ('nasdaq-5m-candle-momentum', 'overnight-bias-orb', 'gold-band-wave')]
     for root, e in pick:
         shutil.copy2(root / e['expert'], NOGUARD / e['expert']); shutil.copy2(root / e['settings'], NOGUARD / e['settings']); entries.append(dict(e, from_package=root.name))
     # UK100 Monday dip: new no-guard wrapper (RiskSupport sizing), the FTSE S2 inputs
@@ -175,6 +180,7 @@ def build_noguard():
     entries.sort(key=lambda e: SLUGS.index(e['key']))
     assert [e['key'] for e in entries] == SLUGS and len({e['magic'] for e in entries}) == len(SLUGS)
     assert next(e for e in entries if e['key'] == 'nasdaq-5m-candle-momentum')['inputs']['InpRequireDIAgreement'] == 'false'
+    assert next(e for e in entries if e['key'] == 'usdjpy-london-open-momentum')['inputs']['InpRequireDIAgreement'] == 'true'
     for name in ('RiskSupport.mqh', 'Installer-Helpers.ps1', 'Probe-MT5.py'): shutil.copy2(BL.CURRENT / name, NOGUARD / name)
     text = BL.read(BL.CURRENT / 'Install-Portfolio.ps1')
     for old, new, count in [('.Count -ne 17', f'.Count -ne {len(SLUGS)}', 3), ('return $ready -eq 17', f'return $ready -eq {len(SLUGS)}', 1), ('17-chart', f'{len(SLUGS)}-chart', 1), ("'CALYX - CURRENT14 + ORB05 PORTFOLIO'", "'CALYX - BEST 1-STEP PORTFOLIO (NO GUARD)'", 1),
@@ -188,9 +194,18 @@ def build_noguard():
                             ('CalyxCurrent14ORB05Setup', 'CalyxBest1StepSetup', None)]:
         found = text.count(old); assert found and (count is None or found == count), (old, found)
         text = text.replace(old, new)
+    sel = (LIVE / 'Calyx-SelectEAs.ps1').read_text(encoding='utf-8').replace('\r\n', '\n').rstrip('\n')
+    for old, new in [("    [ValidateSet('', 'ON', 'OFF')][string]$WeekendFlat = '',", "    [string[]]$SkipEAs = @(),\n    [ValidateSet('', 'ON', 'OFF')][string]$WeekendFlat = '',"),
+                     ("function Read-CalyxNasdaqVersion", sel + "\n\nfunction Read-CalyxNasdaqVersion"),
+                     ("    $WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat $false   # Calyx Weekend Flat (2026-11-11)\n",
+                      "    $WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat $false   # Calyx Weekend Flat (2026-11-11)\n"
+                      "    $package.entries=@(Select-CalyxEntries @($package.entries) $SkipEAs $false 'key' 'label' 'canonical')   # owner 2026-11-11: one by one\n"),
+                     ("foreach ($canonical in @('USDJPY', 'USTEC', 'XAUUSD', 'UK100')) {", "foreach ($canonical in @(@('USDJPY', 'USTEC', 'XAUUSD', 'UK100') | Where-Object { $_ -in @($Package.entries | ForEach-Object { [string]$_.canonical }) })) {"),
+                     (f"return $ready -eq {len(SLUGS)}", "return $ready -eq @($Items).Count")]:
+        assert text.count(old) == 1, (old[:60], text.count(old)); text = text.replace(old, new)
     BL.write(NOGUARD / 'Install-Portfolio.ps1', text)
-    BL.save(NOGUARD / 'Package.json', dict(version=f'{VERSION}-NOGUARD', profile='Calyx BEST1STEP NOGUARD', entries=entries, orb_keys=[], default_percent=0.5, required_margin_mode=2, news=False, ftmo_guard=False,
-                                           shared_daily_stop=False, adaptive_governor=False, selection='Owner 2026-11-11: Core 9 + P4 (Best 1-Step Search 2026-11-11, in-sample, selection-biased); Sell Nasdaq removed; UK100 Monday dip added; owner kept 7 approved EAs 2026-11-11 (picked on the last two months: hindsight selection).', compatibility=c9['compatibility'],
+    BL.save(NOGUARD / 'Package.json', dict(version=f'{VERSION}-NOGUARD', profile='Calyx BEST1STEP NOGUARD', entries=entries, orb_keys=['us100-selective-orb-v3'], default_percent=0.5, required_margin_mode=2, news=False, ftmo_guard=False,
+                                           shared_daily_stop=False, adaptive_governor=False, selection='Owner 2026-11-11: Core 9 + P4 (Best 1-Step Search 2026-11-11, in-sample, selection-biased); Sell Nasdaq removed; UK100 Monday dip added (Best 1-Step UK100 Monday 2026-11-11).', compatibility=c9['compatibility'],
                                            no_live_installation=True, sources=dict(core9=c9['version'], p4=p4['version'])))
     paths = [NOGUARD / n for n in ('Package.json', 'Install-Portfolio.ps1', 'Installer-Helpers.ps1', 'Probe-MT5.py')] + sorted((NOGUARD / 'Experts').glob('*.ex5')) + sorted((NOGUARD / 'Sets').glob('*.set'))
     BL.save(NOGUARD / 'Checksums.json', {str(p.relative_to(NOGUARD)).replace(chr(92), '/'): BL.sha(p) for p in paths}); print('Built no guard,', len(entries), 'EAs (UK100 wrapper compiled, the rest copied)', flush=True)

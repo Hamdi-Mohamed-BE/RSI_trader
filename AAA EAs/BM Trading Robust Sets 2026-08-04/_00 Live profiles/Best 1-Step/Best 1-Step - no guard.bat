@@ -2,13 +2,14 @@
 setlocal
 title Calyx - Best 1-Step (no guard)
 echo.
-echo  BEST 1-STEP - installs 7 EAs (Nasdaq 5M, ONB, EMA3, Gold Band Wave, ORB VP VC, RSI VWAP, UK100) on the MT5 account
-echo  that is open now. NO GUARD: no FTMO / prop limits, no shared daily stop, no adaptive governor.
-echo  Risk is per trade per EA and stacks across open trades. The installer asks risk type and amount,
-echo  the Nasdaq stop, the Nasdaq DI (tested OFF) and the weekend flat, shows everything, then
-echo  restarts that MT5 once into a new 7-chart profile. It never places orders.
+echo  BEST 1-STEP - up to 11 EAs: Nasdaq 5M, USDJPY London, 3 Way Gold, EMA3, XAU Squeeze, US100 Selective ORB V3,
+echo  XAU RSI VWAP, ORB VP Volume Confirmed, Overnight Bias ORB, Gold Band Wave, UK100 Monday dip, on the MT5 account that is
+echo  open now. NO GUARD: no FTMO / prop limits, no shared daily stop, no adaptive governor. Risk is per trade per EA and
+echo  stacks across open trades. The installer asks risk, Nasdaq stop, DI filters, weekend flat and then EACH EA (Enter =
+echo  install), shows everything, then restarts that MT5 once into a new profile. It never places orders.
+echo  Skip EAs without questions: -SkipEAs uk100-monday-dip,3-way-gold
 echo.
-powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0..\Packages\Best1Step\Install-Portfolio.ps1" -UsdJpyDIFilter OFF %*
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0..\Packages\Best1Step\Install-Portfolio.ps1" %*
 set "CALYX_EXIT=%ERRORLEVEL%"
 if /I not "%~1"=="-ValidateOnly" pause
 exit /b %CALYX_EXIT%

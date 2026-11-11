@@ -23,4 +23,8 @@ Sell Nasdaq (guarded) holds its stop in the EA and sells at market. Gold Band Wa
 - LATER 2026-11-11 (owner: "update the profile now with the new approved EAs"): Best 1-Step = 7 EAs: Nasdaq 5M (REPLACE, DI OFF), Overnight Bias ORB, EMA3, Gold Band Wave,
   ORB VP Volume Confirmed, XAU RSI VWAP, UK100 Monday dip. Removed USDJPY London, 3 Way Gold, XAU Squeeze, US100 Selective ORB V3. Chosen on the last two months
   (hindsight selection); over all years 2021-26 the 7 made +258R PF 1.22 vs the 11's +419R PF 1.29 (Best 1-Step Seven 2026-11-11). Both BATs pass -UsdJpyDIFilter OFF; -ValidateOnly PASS.
+- FINAL 2026-11-11 (owner: "keep all 11 ... just remove sell nasdaq" + "make the bat ask me one by one"): the package holds all 11 EAs (Core 9 without Sell Nasdaq = 8,
+  + Overnight Bias ORB, Gold Band Wave, UK100 Monday dip). Both installers ask for EACH EA (Enter = install; Select-CalyxEntries, `_00 Live profiles/Calyx-SelectEAs.ps1`,
+  dot-sourced via Calyx-InstallChoices.ps1, inline in the no-guard installer); `-SkipEAs slug1,slug2` skips without asking. Integrity checks cover all 11; symbols, charts and
+  load checks only the chosen ones (a broker without UK100 works if UK100 is skipped). The 7-EA builder is kept as build.seven.py (not used). A smaller set is untested.
 
