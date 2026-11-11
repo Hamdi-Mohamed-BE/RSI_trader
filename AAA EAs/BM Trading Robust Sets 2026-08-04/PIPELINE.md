@@ -12,6 +12,15 @@ Amended **2026-11-04 (user)**: stage 6 now has the **three-way Monte Carlo**: re
 Amended **2026-11-05 (user)**: every **new EA idea** is always compared to **just buying and holding** the same asset (stage 3, 4 and 6;
 `Calyx Research Pipeline/buy_hold.py`). Older EAs are not compared yet; the owner will revisit them separately.
 
+Amended **2026-11-11 (user: "add point 4 to the pipeline", ideas from the QuantLab research library)**, three stricter checks in
+`Calyx Research Pipeline/robustness.py` (policy keys `random_entry_control`, `cost_stress`, `walk_forward`):
+- **Random-entry control** (stage 4 and 6): 200 copies of the strategy's own trades on random days, same direction, clock time, stop, target,
+  holding time and cost; p ≤ 0.10 to pass the raw gate. Keeps the old random-direction controls too.
+- **Cost stress** (stage 4 and 6): results at 1×, 2× and 3× the recorded costs; the total must stay positive at 2×.
+- **Rolling walk-forward with blind runs** (stage 5): 3-year train / 1-year test folds inside the pre-OOS history, plateau selection,
+  2,000 blind runs on scrambled training scores; chained test total > 0 and p ≤ 0.10 against the blind runs. The fixed last-two-year OOS still
+  decides once afterwards.
+
 Amended **2026-10-06 (user): final out-of-sample (OOS) is always the last TWO calendar years**
 ending at the frozen study end-exclusive date (normally through yesterday, UTC). All development and finalist
 selection must finish before that two-year window. Never shorten it to 6/12 months because data or trades are scarce.
@@ -60,6 +69,10 @@ a strategy can lag on return and still be worth having at far less risk, while a
 and the owner decides.
 PASS or near-miss with a clear reason → report and ask the user whether to run stage 5.
 **Added 2026-10-20 — best-day falsifier.** Every report shows the 3y/5y totals without the best day, without the best trade, without the 5 best days, and without the worst day. A positive total that turns ≤ 0 without the single best day or best trade **fails** the gate (`robustness.dependence()`); the 5-best-days and worst-day figures are diagnostics.
+**Added 2026-11-11 — random-entry control and cost stress.** `robustness.random_entry_control(trades, bars)` (200 copies, seed 20261111):
+each copy keeps every trade's direction, clock time, stop, target and holding time and enters on a random day of the same price history; the
+raw gate needs **p ≤ 0.10** (screens out market drift; it does not prove an edge). `robustness.cost_stress(results, costs)`: the 5y total must
+stay **> 0 at 2× the recorded costs** (spread + commission + swap in R); 3× and the break-even multiple are reported.
 Before asking about stage 5, run a **Bear review** of the test design (`/bear-review`, fresh context) and put its unanswered points in the report.
 
 ---
@@ -116,6 +129,11 @@ Goal: find the best settings for the strategy, choosing a **stable plateau**, no
 3. Rank on development PF and return/drawdown, with minimum trade counts; never on return alone.
 4. **Count every configuration tried** (for the deflated Sharpe) and keep every result in `SEARCH RESULTS.json`.
 5. Older pre-OOS validation picks one final version; the **last-two-year OOS** confirms it **once**.
+6. **Rolling walk-forward with blind runs (added 2026-11-11).** Inside development + validation only: `robustness.rolling_folds` (3-year train,
+   1-year test) and `robustness.walk_forward(ledgers, neighbours, folds)`: each fold picks the best plateau (setting + one-step neighbours,
+   ≥ 30 training trades), trades it on the next year, and only test years are chained. 2,000 blind runs repeat the same selection on scrambled
+   training scores. Gate: chained test total > 0 and **p ≤ 0.10** against the blind runs; report every fold's choice and result. A search
+   that cannot beat its own blind runs found nothing, whatever its best single cell shows.
 
 ### 5.4 Stage-5 outputs
 Side-by-side tables per dimension (e.g. trailing vs static stop, 0.5R…6R, Asia vs London vs NY vs overlap), the
@@ -138,6 +156,8 @@ Run on the frozen final version's **native Model 4 trades** (development + valid
      reported separately, so missed trades and costs are not mixed up. A cost ladder (0.02 / 0.05 / 0.10 / 0.20R) and the
      break-even extra cost are also reported. The 0.05R level is a declared assumption; replace it with the measured broker
      spread/slippage when available (never invent a "measured" cost).
+- **Cost stress and random-entry control** on the frozen final version (2026-11-11): totals at 1× / 2× / 3× recorded costs (must stay > 0 at 2×)
+  and the random-entry p-value on development, validation and OOS.
 - **Prop-firm simulation** (FTMO rules): pass probability for phase 1/2, breach probability, days to pass, at the
   chosen risk — using the existing FTMO simulators; equity-path caveats stated.
 - **Portfolio overlap**: correlation with and marginal effect on the current portfolio.

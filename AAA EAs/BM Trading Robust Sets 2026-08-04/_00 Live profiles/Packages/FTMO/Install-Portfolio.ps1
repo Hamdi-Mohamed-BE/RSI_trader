@@ -7,6 +7,7 @@ param(
     [ValidateSet('ON','OFF')][string]$UsdJpyDIFilter='ON',
     [ValidateSet('Challenge','Verification','Funded')][string]$Phase='Challenge',
     [ValidateSet('ON','OFF')][string]$NasdaqDIFilter='ON',
+    [ValidateSet('','ON','OFF')][string]$WeekendFlat='',
     [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [switch]$PromptNasdaqDIFilter,
     [switch]$ValidateOnly,
@@ -104,6 +105,7 @@ if($PromptNasdaqDIFilter -and -not $PSBoundParameters.ContainsKey('NasdaqDIFilte
     $NasdaqDIFilter=$diChoice
 }
 $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
+$WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat ([bool]$ValidateOnly)   # Calyx Weekend Flat (2026-11-11)
 Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))
 Write-Host ("Nasdaq 5M DI14 filter: {0}; wider stop and ATR trailing unchanged." -f $NasdaqDIFilter)
 Write-Host ("USDJPY London DI filter: {0}; ADX >=20 stays enabled." -f $UsdJpyDIFilter)
@@ -223,6 +225,7 @@ for($i=0;$i -lt $portfolio.Count;$i++){
 $order=((1..$portfolio.Count | ForEach-Object {'chart{0:D2}.chr' -f $_}) -join "`r`n")+"`r`n"
 [IO.File]::WriteAllText((Join-Path $profile 'order.wnd'),$order,$Unicode)
 Test-ManagedProfile $profile $portfolio 'FTMO installed profile'
+Add-CalyxWeekendFlatChart $WeekendFlat $profile $dataRoot ([string]$portfolio[0].BrokerSymbol) ''   # Calyx Weekend Flat (2026-11-11)
 $commonIni=Join-Path $dataRoot 'config\common.ini'
 if(-not(Test-Path -LiteralPath $commonIni)){throw 'Cannot locate common.ini. Files installed, but terminal NOT restarted.'}
 Copy-Item -LiteralPath $commonIni -Destination ($commonIni+'.ftmo13-backup-'+(Get-Date -Format 'yyyyMMdd-HHmmss'))

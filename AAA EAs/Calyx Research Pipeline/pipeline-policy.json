@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-06",
+  "version": "2026-10-06 + 2026-11-11 random-entry / cost-stress / walk-forward",
   "data_split": {
     "final_out_of_sample_years": 2,
     "anchor": "frozen study end-exclusive date; normally start of today UTC, through yesterday",
@@ -116,5 +116,65 @@
       "verdict"
     ],
     "gate": "required comparison, not an automatic reject; the owner decides"
+  },
+  "random_entry_control": {
+    "added": "2026-11-11",
+    "source": "owner request (QuantLab research library: every idea vs random entries with the same times, stops and costs)",
+    "module": "robustness.random_entry_control",
+    "stage": [
+      4,
+      6
+    ],
+    "copies": 200,
+    "seed": 20261111,
+    "method": "each copy keeps every real trade direction, clock time of day, stop distance, target distance and holding time; entry on a random trading day of the same bar history; stop first when stop and target share a bar; same average cost in R charged",
+    "gate_raw_p_value_max": 0.1,
+    "gate_note": "lenient on purpose: removes market drift (an index that rose for years makes any long rule look good); it does not prove an edge. Keep the existing random-direction controls as well.",
+    "report": [
+      "real mean R",
+      "random mean R p05/p50/p95",
+      "p-value"
+    ]
+  },
+  "cost_stress": {
+    "added": "2026-11-11",
+    "module": "robustness.cost_stress",
+    "stage": [
+      4,
+      6
+    ],
+    "multiples": [
+      1,
+      2,
+      3
+    ],
+    "cost_definition": "per-trade recorded spread + commission + swap in R (spread = entry spread price distance / initial stop distance; use measured broker spreads, never invented ones)",
+    "gate": "total must stay > 0 at 2x costs",
+    "diagnostics": [
+      "3x total",
+      "break-even cost multiple"
+    ]
+  },
+  "walk_forward": {
+    "added": "2026-11-11",
+    "module": "robustness.walk_forward (+ rolling_folds)",
+    "stage": 5,
+    "where": "inside the pre-OOS history only (development + validation); the fixed last-two-year OOS is still evaluated once afterwards",
+    "train_days": 1095,
+    "test_days": 365,
+    "selection": "best plateau score = mean t-value of the setting and its one-step neighbours, minimum 30 training trades",
+    "blind_runs": 2000,
+    "blind_method": "same selection on scrambled training scores (per fold)",
+    "gate": {
+      "chained_test_total_positive": true,
+      "blind_p_value_max": 0.1
+    },
+    "report": [
+      "per-fold choice and test result",
+      "chained test trades / total / mean R / t-value",
+      "positive folds",
+      "real vs blind t-value and total percentiles"
+    ],
+    "note": "complements, does not replace, the 5.3 staged search and the validation pick"
   }
 }

@@ -274,19 +274,6 @@
           "source_settings": "Selected Portfolio Settings 2026-09-01/11 Nasdaq 5M - DI ATR6 STOP ATR6 TRAIL NO TP - 1PCT.set"
         },
         {
-          "n": 21,
-          "label": "Sell Nasdaq 15min",
-          "slug": null,
-          "symbol": "USTEC",
-          "timeframe": "M15",
-          "expert": "EAs/Sell Nasdaq 15min Dynamic Exit Research EA.ex5",
-          "expert_sha256": "8c0b2967fdff6d058c72fcbaa588cbf8b31e1b5dda3531e20d1884ed6f99b2c7",
-          "source_expert": "Sell Nasdaq 15min Research 2026-09-08/Dynamic Exit Research/EA/Sell Nasdaq 15min Dynamic Exit Research EA.ex5",
-          "settings": "Sets/Sell Nasdaq 15min - london-safe dynamic exit candidate - 1pct.set",
-          "settings_sha256": "92c219048e33f4e6c3dba368349520c1097e30ed20ac06cb113b95e2030515be",
-          "source_settings": "Sell Nasdaq 15min Research 2026-09-08/Dynamic Exit Research/Sets/Sell Nasdaq 15min - london-safe dynamic exit candidate - 1pct.set"
-        },
-        {
           "n": 22,
           "label": "USDJPY London Open Momentum",
           "slug": null,
@@ -494,7 +481,8 @@
           "settings_sha256": "19ea6bd13853a34fcb2732d650ef9d39a6d23723e6b57c64013c86dd3966a774",
           "source_settings": "Hourly Profiles Deployment 2026-10-04/Sets/US100.set"
         }
-      ]
+      ],
+      "note_2026_11_11": "Owner 2026-11-11: Sell Nasdaq 15min removed from every profile for now (low win rate); the canonical installer filters it out. Its EA/SET copies moved to Sell Nasdaq Once Per Day Fix 2026-11-11/before-removal."
     }
   ],
   "note": "EAs/ and Sets/ are exact copies (SHA-256 above) of what the launcher installs. The installer applies your risk and DI choices and binds the account at install time; these are the unarmed base presets. Installers read their own packages."

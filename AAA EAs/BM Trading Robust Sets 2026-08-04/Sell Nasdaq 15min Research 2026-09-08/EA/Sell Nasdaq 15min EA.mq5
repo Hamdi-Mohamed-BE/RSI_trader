@@ -47,6 +47,7 @@ input int    InpMaxDeviationBrokerPoints=30;
 
 input group "Identity"
 input long   InpMagic=980908150;
+input int    InpMaxAttemptsPerDay=1;          // 1 = tested rule (one sell stop per New York day); 2+ = re-arm after a stop-out (research only)
 
 input group "Broker clock"
 input bool   InpUseAutomaticLiveServerOffset=true;
@@ -278,18 +279,42 @@ bool HasPendingOrder()
    return false;
 }
 
+// 2026-11-11 once-per-day fix: live attempt counter per account / magic / New York day (GlobalVariable; survives history gaps and restarts).
+string AttemptKey(const MqlDateTime &now_ny)
+{
+   return StringFormat("CSN15_%I64d_%I64d_%04d%02d%02d",AccountInfoInteger(ACCOUNT_LOGIN),(long)InpMagic,now_ny.year,now_ny.mon,now_ny.day);
+}
+int AttemptLatch(const MqlDateTime &now_ny)
+{
+   string key=AttemptKey(now_ny);
+   return (GlobalVariableCheck(key) ? (int)GlobalVariableGet(key) : 0);
+}
+void RecordAttempt(const MqlDateTime &now_ny)
+{
+   if((bool)MQLInfoInteger(MQL_TESTER)) return;
+   GlobalVariableSet(AttemptKey(now_ny),AttemptLatch(now_ny)+1);
+   GlobalVariablesDeleteAll(StringFormat("CSN15_%I64d_%I64d_",AccountInfoInteger(ACCOUNT_LOGIN),(long)InpMagic),TimeCurrent()-5*86400);
+}
+
 bool AttemptedToday(const MqlDateTime &now_ny)
 {
+   int max_attempts=(InpMaxAttemptsPerDay<1 ? 1 : InpMaxAttemptsPerDay);
+   if(!(bool)MQLInfoInteger(MQL_TESTER) && AttemptLatch(now_ny)>=max_attempts) return true;
    MqlDateTime start=now_ny;
    start.hour=0; start.min=0; start.sec=0;
-   if(!HistorySelect(NewYorkToServer(start),TimeCurrent())) return false;
+   if(!HistorySelect(NewYorkToServer(start),TimeCurrent())) return true;      // 2026-11-11: fail safe (was: return false -> re-armed the day)
+   int attempts=0;
    for(int i=HistoryOrdersTotal()-1;i>=0;i--)
    {
       ulong ticket=HistoryOrderGetTicket(i);
       if(ticket>0 && HistoryOrderGetString(ticket,ORDER_SYMBOL)==_Symbol && HistoryOrderGetInteger(ticket,ORDER_MAGIC)==InpMagic)
-         return true;
+      {
+         if(max_attempts==1) return true;                                          // tested rule: any own order today blocks the day
+         ENUM_ORDER_TYPE type=(ENUM_ORDER_TYPE)HistoryOrderGetInteger(ticket,ORDER_TYPE);
+         if(type==ORDER_TYPE_SELL_STOP || type==ORDER_TYPE_SELL) attempts++;
+      }
    }
-   return false;
+   return attempts>=max_attempts;
 }
 
 void DeletePendingOrders()
@@ -444,7 +469,7 @@ void EvaluateSetup()
    double range_pips=range/PipSize();
    if(InpMinimumSetupRangePips>0.0 && range_pips<InpMinimumSetupRangePips) return;
    if(InpMaximumSetupRangePips>0.0 && range_pips>InpMaximumSetupRangePips) return;
-   PlaceSellStop(setup.low-InpEntryBufferPips*PipSize(),now_ny);
+   if(PlaceSellStop(setup.low-InpEntryBufferPips*PipSize(),now_ny)) RecordAttempt(now_ny);
 }
 
 int OnInit()

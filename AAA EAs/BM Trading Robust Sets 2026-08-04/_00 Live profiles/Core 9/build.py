@@ -27,9 +27,10 @@ ANY = LIVE / 'Packages/FTMO-AnyBroker'; F1S = LIVE / 'ftmo 1_step'; BP15 = LIVE 
 EDITOR = ROOT / '_Backtests/MT5-DMC-20260811/MetaEditor64.exe'
 VERSION = 'CORE9-20261105'
 FROM_ANY = ['nasdaq-5m-candle-momentum', 'usdjpy-london-open-momentum', '3-way-gold', 'ema3', 'xau-squeeze-momentum-standard', 'us100-selective-orb-v3', 'xau-rsi-vwap']
-FROM_EDGE = {'sell-nasdaq-15min': ('Sell Nasdaq 15min', 'USTEC', 'M15'), 'orb-volume-profile-volume-confirmed': ('ORB Volume Profile Volume Confirmed', 'XAUUSD', 'M5')}
+# 2026-11-11 owner: Sell Nasdaq 15min removed from every profile for now (low win rate); the rest of the build is unchanged.
+FROM_EDGE = {'orb-volume-profile-volume-confirmed': ('ORB Volume Profile Volume Confirmed', 'XAUUSD', 'M5')}
 FROM_CURRENT = ['nasdaq-5m-candle-momentum', 'usdjpy-london-open-momentum', 'ema3', 'xau-squeeze-momentum-standard', 'us100-selective-orb-v3', 'xau-rsi-vwap']   # no guard
-FROM_EDGE_NOGUARD = ['3-way-gold', 'sell-nasdaq-15min', 'orb-volume-profile-volume-confirmed']
+FROM_EDGE_NOGUARD = ['3-way-gold', 'orb-volume-profile-volume-confirmed']
 SLUGS = FROM_ANY + list(FROM_EDGE)
 UNARMED = dict(FTMOExpectedLogin='0', FTMOExpectedServer='', FTMOExpectedSymbol='', FTMOExpectedCurrency='', FTMOReferenceBalance='0', FTMOStartUtcTime='0')
 RULES_1STEP = dict(FTMO1TargetPercent='10.0', FTMO1MaxLossPercent='10.0', FTMO1DailyLossPercent='3.0', FTMO1FloorBufferPercent='2.0', FTMO1DailyReservePercent='2.5', FTMO1BestDayCapPercent='4.5')
@@ -231,8 +232,20 @@ def installer_2step():
     return s.replace('\n', '\r\n')
 
 
+WORDS = {7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven'}
+
+
+def core9_counts(s):
+    # installer_1step / installer_2step keep the 'nine EAs' template that P4 and Best 1-Step derive from; Core 9 itself has len(SLUGS) EAs since 2026-11-11.
+    n = len(SLUGS); w = WORDS[n]
+    for a, b in [('if($manifest.entries.Count -ne 9 -or', f'if($manifest.entries.Count -ne {n} -or'), ('nine guarded EAs', f'{w} guarded EAs'), ('nine EAs', f'{w} EAs'),
+                 ('all nine charts', f'all {w} charts'), ('PASS: 9 integrity', f'PASS: {n} integrity')]:
+        assert a in s, a; s = s.replace(a, b)
+    return s
+
+
 def write_installers():
-    (HERE / '1-Step' / VARIANTS['1-Step']['script']).write_bytes(installer_1step().encode('utf-8')); (HERE / '2-Step' / VARIANTS['2-Step']['script']).write_bytes(installer_2step().encode('utf-8'))
+    (HERE / '1-Step' / VARIANTS['1-Step']['script']).write_bytes(core9_counts(installer_1step()).encode('utf-8')); (HERE / '2-Step' / VARIANTS['2-Step']['script']).write_bytes(core9_counts(installer_2step()).encode('utf-8'))
     h1 = sub1(read(F1S / 'Account-Helpers.ps1'), "throw 'FTMO 1-Step requires a hedging MT5 account", "throw 'Core 9 requires a hedging MT5 account"); h2 = sub1(read(BP15 / 'Account-Helpers.ps1'), "throw 'Best Prop 15 requires a hedging MT5 account", "throw 'Core 9 requires a hedging MT5 account")
     (HERE / '1-Step/Account-Helpers.ps1').write_bytes(h1.replace('\n', '\r\n').encode('utf-8')); (HERE / '2-Step/Account-Helpers.ps1').write_bytes(h2.replace('\n', '\r\n').encode('utf-8'))
     shutil.copy2(F1S / 'probe_account.py', HERE / '1-Step/probe_account.py'); shutil.copy2(BP15 / 'probe_account.py', HERE / '2-Step/probe_account.py')
@@ -246,12 +259,12 @@ def build_noguard(cur, edge):
     for root, e in [(BL.CURRENT, next(x for x in cur['entries'] if x['key'] == k)) for k in FROM_CURRENT] + [(EDGE, next(x for x in edge['entries'] if x['key'] == k)) for k in FROM_EDGE_NOGUARD]:
         shutil.copy2(root / e['expert'], NOGUARD / e['expert']); shutil.copy2(root / e['settings'], NOGUARD / e['settings'])
         entries.append({k: v for k, v in e.items() if k not in ('source', 'production_source', 'production_sha256')})
-    assert sorted(e['key'] for e in entries) == sorted(SLUGS) and len({e['magic'] for e in entries}) == 9
+    assert sorted(e['key'] for e in entries) == sorted(SLUGS) and len({e['magic'] for e in entries}) == len(SLUGS)
     three = next(e for e in entries if e['key'] == '3-way-gold')['inputs']; assert three['InpMarketEntries'] == 'true' and three['InpEnableBreakout'] == 'true' and three['InpEnableMomentum'] == 'false' and three['InpEnableTurnOfMonth'] == 'false'
     assert next(e for e in entries if e['key'] == 'us100-selective-orb-v3')['inputs']['InpRewardRisk'] == '0.5'
     for name in ('RiskSupport.mqh', 'Installer-Helpers.ps1', 'Probe-MT5.py'): shutil.copy2(BL.CURRENT / name, NOGUARD / name)
     text = BL.read(BL.CURRENT / 'Install-Portfolio.ps1')
-    for old, new, count in [('.Count -ne 17', '.Count -ne 9', 3), ('return $ready -eq 17', 'return $ready -eq 9', 1), ('17-chart', '9-chart', 1), ("'CALYX - CURRENT14 + ORB05 PORTFOLIO'", "'CALYX - CORE 9 PORTFOLIO (NO GUARD)'", 1),
+    for old, new, count in [('.Count -ne 17', f'.Count -ne {len(SLUGS)}', 3), ('return $ready -eq 17', f'return $ready -eq {len(SLUGS)}', 1), ('17-chart', f'{len(SLUGS)}-chart', 1), ("'CALYX - CURRENT14 + ORB05 PORTFOLIO'", "'CALYX - CORE 9 PORTFOLIO (NO GUARD)'", 1),
                             ('No FTMO restrictions, no shared $400/$450 daily stop. This is NOT the previously simulated guarded portfolio. Three-Way Gold risk applies to each module.',
                              'NO GUARD: no FTMO / prop limits, no shared daily stop, no adaptive governor. Risk is per trade per EA and stacks across open trades. 3 Way Gold runs its breakout module only.', 1),
                             ('CalyxCurrent14ORB05Setup', 'CalyxCore9Setup', None)]:
@@ -275,7 +288,7 @@ def main():
     anyb = json.loads(read(ANY / 'PACKAGE.json')); edge = json.loads(read(EDGE / 'Package.json')); cur = json.loads(read(BL.CURRENT / 'Package.json'))
     for name, digest in anyb['files'].items(): assert sha(ANY / 'package' / name) == digest, ('package altered', name)
     sources = (ANY, F1S, BP15, EDGE, BL.CURRENT); before = {str(p): sha(p) for src in sources for p in src.rglob('*') if p.is_file()}
-    build_noguard(cur, edge); build_parity(edge)
+    build_noguard(cur, edge)          # 2026-11-11: no Sell Nasdaq held-stop parity EA (Sell Nasdaq removed)
     for v in VARIANTS: build_guarded(v, anyb, edge)
     write_installers()
     assert {str(p): sha(p) for src in sources for p in src.rglob('*') if p.is_file()} == before, 'source packages must stay unchanged'

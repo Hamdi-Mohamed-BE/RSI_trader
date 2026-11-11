@@ -5,6 +5,7 @@ param(
     [double]$RiskValue=1.0,
     [ValidateSet('ON','OFF')][string]$UsdJpyDIFilter='ON',
     [ValidateSet('ON','OFF')][string]$NasdaqDIFilter='OFF',
+    [ValidateSet('','ON','OFF')][string]$WeekendFlat='',
     [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [ValidateSet('','4.5','6','8','NONE')][string]$TotalRiskCap='',
     [ValidateSet('','3','NONE')][string]$SymbolRiskCap='',
@@ -85,6 +86,7 @@ if($Interactive -and -not $ValidateOnly){
     }
 }
 $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
+$WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat ([bool]$ValidateOnly)   # Calyx Weekend Flat (2026-11-11)
 Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))
 $TotalRiskCap=Read-CalyxTotalRiskCap $TotalRiskCap ([bool]$ValidateOnly)
 $SymbolRiskCap=Read-CalyxSymbolRiskCap $SymbolRiskCap ([bool]$ValidateOnly)
@@ -192,6 +194,7 @@ for($i=0;$i -lt $portfolio.Count;$i++){
 $order=((1..$portfolio.Count | ForEach-Object {'chart{0:D2}.chr' -f $_}) -join "`r`n")+"`r`n"
 [IO.File]::WriteAllText((Join-Path $profile 'order.wnd'),$order,$unicode)
 Test-ManagedProfile $profile $portfolio 'Best Prop installed profile'
+Add-CalyxWeekendFlatChart $WeekendFlat $profile $dataRoot ([string]$portfolio[0].BrokerSymbol) ''   # Calyx Weekend Flat (2026-11-11)
 if($chosen.write){                                       # first install or rerun: always a fresh baseline (owner 2026-11-03)
     [void](New-Item -ItemType Directory -Path (Split-Path -Parent $statePath) -Force)
     [IO.File]::WriteAllText($statePath,($reference | ConvertTo-Json),[Text.UTF8Encoding]::new($false))

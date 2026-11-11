@@ -18,7 +18,7 @@ B = BL.B; TARGET = BL.R / 'Packages/Edge10'; VERSION = 'EDGE10-NOGUARD-20261104'
 ITEMS = {i['label']: i for i in json.loads(BL.read(B / 'Portfolio October 2026 ATR6 2026-11-03/FULL_ITEMS.json'))}
 MEMBERS = [('usdjpy-london-open-momentum', 'USDJPY London Open Momentum'), ('ema3', 'AAA Final EMA3'),
            ('orb-volume-profile-volume-confirmed', 'ORB Volume Profile Volume Confirmed'), ('orb-volume-profile', 'ORB Volume Profile'),
-           ('sell-nasdaq-15min', 'Sell Nasdaq 15min'), ('xau-regime-switch', 'XAU Regime Switch'),
+           ('xau-regime-switch', 'XAU Regime Switch'),   # 2026-11-11 owner: Sell Nasdaq 15min removed for now (low win rate)
            ('xau-elliott-wave-1-2-3', 'XAU Elliott Wave 1-2-3'), ('nasdaq-5m-candle-momentum', 'Nasdaq 5M Candle Momentum'),
            ('xau-rsi-vwap', 'XAU RSI VWAP'), ('3-way-gold', '3 Way Gold')]
 OVERRIDES = {'3-way-gold': dict(InpEnableMomentum='false', InpEnableBreakout='true', InpEnableTurnOfMonth='false', InpMarketEntries='true')}
@@ -84,7 +84,7 @@ def build():
                     selection='Owner 2026-11-04: Edge Scan 2026-11-04 list + Nasdaq 5M + XAU RSI VWAP; tested in Edge Portfolio E10 2026-11-04 (in-sample, selection-biased).',
                     compatibility='MT5 demo/live hedging accounts; percentage in account currency, fixed USD with fresh direct currency conversion. Netting and MT4 not supported.',
                     no_live_installation=True, original_hashes=original)
-    assert len(entries) == 10 and len({e['magic'] for e in entries}) == 10 and len({e['key'] for e in entries}) == 10
+    assert len(entries) == len(MEMBERS) and len({e['magic'] for e in entries}) == len(MEMBERS) and len({e['key'] for e in entries}) == len(MEMBERS)
     BL.save(TARGET / 'Package.json', manifest)
     paths = [TARGET / n for n in ('Package.json', 'Install-Portfolio.ps1', 'Installer-Helpers.ps1', 'Probe-MT5.py')]
     paths += sorted((TARGET / 'Experts').glob('*.ex5')) + sorted((TARGET / 'Sets').glob('*.set'))
@@ -108,7 +108,7 @@ def installer(n):
 
 def refresh_installer():
     # python build.py installer: regenerate only the installer and the checksums; the compiled EAs and their parity evidence stay as they are.
-    installer(10); paths = [TARGET / n for n in ('Package.json', 'Install-Portfolio.ps1', 'Installer-Helpers.ps1', 'Probe-MT5.py')] + sorted((TARGET / 'Experts').glob('*.ex5')) + sorted((TARGET / 'Sets').glob('*.set'))
+    installer(len(json.loads(BL.read(TARGET / 'Package.json'))['entries'])); paths = [TARGET / n for n in ('Package.json', 'Install-Portfolio.ps1', 'Installer-Helpers.ps1', 'Probe-MT5.py')] + sorted((TARGET / 'Experts').glob('*.ex5')) + sorted((TARGET / 'Sets').glob('*.set'))
     BL.save(TARGET / 'Checksums.json', {str(p.relative_to(TARGET)).replace(chr(92), '/'): BL.sha(p) for p in paths}); print('installer refreshed')
 
 

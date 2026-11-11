@@ -244,7 +244,7 @@ fixed_height=-1
 }
 
 function Test-ManagedProfile([string]$ProfilePath, [object[]]$ExpectedPortfolio, [string]$Stage) {
-    $chartFiles = @(Get-ChildItem -LiteralPath $ProfilePath -Filter 'chart*.chr' -File -ErrorAction SilentlyContinue | Sort-Object Name)
+    $chartFiles = @(Get-ChildItem -LiteralPath $ProfilePath -Filter 'chart*.chr' -File -ErrorAction SilentlyContinue | Sort-Object Name | Where-Object { -not ([string](Get-Content -LiteralPath $_.FullName -Raw)).Contains('path=Experts\Calyx Weekend Flat\') })   # Calyx Weekend Flat helper chart is not a portfolio chart
     if ($chartFiles.Count -ne $ExpectedPortfolio.Count) {
         Stop-WithMessage ("{0}: profile contains {1} chart files, but {2} were expected." -f $Stage, $chartFiles.Count, $ExpectedPortfolio.Count)
     }

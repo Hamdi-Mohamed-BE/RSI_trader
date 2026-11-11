@@ -29,6 +29,7 @@ param(
     # 2026-10-27 owner: news bots the user switched OFF in the launcher are not installed at all.
     [string[]]$SkipNewsBots = @(),
     # 2026-11-03 owner: Nasdaq 5M stop version and the governor switch are asked at install (defaults = tested NEW / ON).
+    [ValidateSet('', 'ON', 'OFF')][string]$WeekendFlat = '',
     [ValidateSet('', 'NEW', 'OLD')][string]$NasdaqStopVersion = '',
     [ValidateSet('', 'ON', 'OFF')][string]$AdaptiveControls = '',
     [switch]$ValidateOnly,
@@ -73,6 +74,7 @@ $GoldNewsRuntimeInstaller = Join-Path $GoldNewsRoot 'Install-GoldNewsV9EA.ps1'
 . (Join-Path $PSScriptRoot 'Reviewed-Portfolio-Policy.ps1')
 . (Join-Path (Split-Path -Parent $PSScriptRoot) '_00 Live profiles\Calyx-InstallChoices.ps1')
 $NasdaqStopVersion = Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]($ValidateOnly -or $PreflightOnly -or $Yes))
+$WeekendFlat = Read-CalyxWeekendFlat $WeekendFlat ([bool]($ValidateOnly -or $PreflightOnly -or $Yes))   # Calyx Weekend Flat (2026-11-11)
 if ($UseAdaptiveProfile) { $AdaptiveControls = Read-CalyxAdaptiveControls $AdaptiveControls ([bool]($ValidateOnly -or $PreflightOnly -or $Yes)) } elseif (-not $AdaptiveControls) { $AdaptiveControls = 'OFF' }
 Write-Host ('Nasdaq 5M: ' + (Get-CalyxNasdaqVersionText $NasdaqStopVersion) + $(if ($UseAdaptiveProfile) { '; portfolio risk governor ' + $AdaptiveControls } else { '' }))
 $Unicode = New-Object System.Text.UnicodeEncoding($false, $true)
@@ -347,6 +349,8 @@ function Get-PortfolioItems {
         $items = @($items | Where-Object { [string]$_.Label -notin $skipNews })
         Write-Host ('News bots switched OFF and not installed: ' + ($skipNews -join ', '))
     }
+    # 2026-11-11 owner: Sell Nasdaq 15min removed from every profile for now (low win rate). Delete these two lines to restore it.
+    $items = @($items | Where-Object { [string]$_.Label -ne 'Sell Nasdaq 15min' })
     # Get-Variable keeps older static manifest tests compatible when this opt-in flag is absent.
     if (Get-Variable UseReviewedSelections -ValueOnly -ErrorAction SilentlyContinue) {
         $items = @(Select-ReviewedItems $items)
@@ -849,7 +853,7 @@ fixed_height=-1
 }
 
 function Test-ManagedProfile([string]$ProfilePath, [object[]]$ExpectedPortfolio, [string]$Stage) {
-    $chartFiles = @(Get-ChildItem -LiteralPath $ProfilePath -Filter 'chart*.chr' -File -ErrorAction SilentlyContinue | Sort-Object Name)
+    $chartFiles = @(Get-ChildItem -LiteralPath $ProfilePath -Filter 'chart*.chr' -File -ErrorAction SilentlyContinue | Sort-Object Name | Where-Object { -not ([string](Get-Content -LiteralPath $_.FullName -Raw)).Contains('path=Experts\Calyx Weekend Flat\') })   # Calyx Weekend Flat helper chart is not a portfolio chart
     if ($chartFiles.Count -ne $ExpectedPortfolio.Count) {
         Stop-WithMessage ("{0}: profile contains {1} chart files, but {2} were expected." -f $Stage, $chartFiles.Count, $ExpectedPortfolio.Count)
     }
@@ -1339,6 +1343,7 @@ $orderText = ((1..$portfolio.Count | ForEach-Object { 'chart{0:D2}.chr' -f $_ })
 [IO.File]::WriteAllText((Join-Path $profileTargetFull 'order.wnd'), $orderText, $Unicode)
 
 Test-ManagedProfile $profileTargetFull $portfolio 'Before MT5 start'
+Add-CalyxWeekendFlatChart $WeekendFlat $profileTargetFull $dataRoot ([string]$portfolio[0].BrokerSymbol) ''   # Calyx Weekend Flat (2026-11-11)
 
 if ($commonIni) {
     $commonBackup = $commonIni + '.bm-auto-backup-' + (Get-Date -Format 'yyyyMMdd-HHmmss')

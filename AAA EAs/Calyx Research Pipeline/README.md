@@ -94,3 +94,11 @@ The statistical additions implement the practical parts of the Quant Developers 
 - Quant Developers Resources: https://github.com/cybergeekgyan/Quant-Developers-Resources
 - FXMacroData MCP documentation: https://fxmacrodata.com/documentation/mcp-server
 - Codex MCP documentation: https://developers.openai.com/codex/mcp
+
+## 2026-11-11 additions (robustness.py)
+- `cost_stress(results, costs)`: totals at 1x / 2x / 3x recorded costs; gate > 0 at 2x (stage 4 and 6).
+- `random_entry_control(trades, bars, copies=200)`: copies with the same direction, clock time, stop, target and holding time on random days of the
+  same bar history; p-value; raw-gate screen p <= 0.10 (stage 4 and 6).
+- `rolling_folds(start, end, 1095, 365)` + `walk_forward(ledgers, neighbours, folds)`: rolling plateau selection inside the pre-OOS history with
+  2,000 blind runs on scrambled training scores; gate chained total > 0 and p <= 0.10 (stage 5).
+Policy keys: `random_entry_control`, `cost_stress`, `walk_forward`. Tests: test_robustness.py (10 tests).

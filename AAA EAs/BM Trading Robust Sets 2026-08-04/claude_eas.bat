@@ -21,7 +21,7 @@ echo Applying Claude EAs: the Best Recommended 2026-09-01 portfolio with one cha
 echo - CHANGED: Nasdaq 5M Candle Momentum requires +DI/-DI agreement with the 09:30 New York M5 signal (DI 14, ON by default)
 echo - 8 EAs use Dynamic 50-20 stop management
 echo - 1 EA uses its optimized Dynamic 60-20 stop management
-echo - Sell Nasdaq 15min now defaults to evidence-selected Dynamic London exits
+echo - Sell Nasdaq 15min: REMOVED from every profile on 2026-11-11 (owner: low win rate) - not installed
 echo - 21 EAs retain their optimized native exits
 echo - XAU New York, XAU overlap, US100 New York, US100 H1 and US100 Selective V3 standalone ORBs are included
 echo - BTC POC Fibonacci keeps its optimized New York session; no master session filter is added
@@ -31,13 +31,11 @@ echo - LTA Volume Profile, EMA3, XAU Weakness and XAU Squeeze Momentum default t
 echo - XAU Slow Trend uses H4 1/3/6-month momentum, EMA100, 1.5 ATR stop and fixed 6R
 echo - XAU Regime Switch is DEMO-STAGE: H4 6R slow trend in directional regimes and M5 3R overlap VWAP snapback in sideways regimes
 echo - US100 Month-End Flow uses M30, first 3 business days, NY first-hour entry, 1.5 ATR stop, fixed 2.5R and a 6-hour exit
-echo - Sell Nasdaq 15min defaults to Dynamic London: bearish London confirmation, ATR14 x2.5 stop, fixed 3R target and a 60-minute entry window
 echo - USDJPY London Open Momentum trades Wednesday-Friday after the 08:00-09:00 London move, uses a 5 ATR stop, breakeven at 0.75R and exits at 16:00 London
 echo - XAU Squeeze Momentum Standard uses BB24/KC24, momentum 28, SMA200, a 3.5 ATR stop, 1.5R target and 3.5 ATR ratchet; Best Recommended selects its Safe D1 gate
 echo - DMC Current XAU retains the H1 Asia baseline with fixed 22.5 stop, 3R and Dynamic 50-20
 echo - DMC Fresh Reaction XAU adds M15 freshness plus W1/MN1 proximity, fixed 30 stop, 3R and Dynamic 50-20
 echo - DMC Fresh Reaction US100 uses the same freshness logic in New York with 1.5 ATR stop, 2R and Dynamic 50-20
-echo - Full Safe switches Sell Nasdaq 15min to the original London-confirmed 600/1000 preset
 echo - XAU Weakness uses M30 structure stops, 4R and Dynamic 50-20 with its D1 Safe gate enabled
 echo - All News Pulse assets keep their event-specific exits/risk and both directions; fresh-quote order repair enabled.
 echo - Choose the news percentage separately below: PER ORDER, not per event; two triggers can double exposure

@@ -57,3 +57,53 @@ def test_three_monte_carlo_randomize_separates_drop_and_cost():
     assert r['cost_only']['red_pct'] == 100.0 and r['both']['red_pct'] == 100.0   # mean cost 0.2 > edge 0.1
     h = three_monte_carlo(vals, runs=50, seed=5, horizon=20)
     assert h['horizon_trades'] == 20 and h['reshuffle'] is None
+
+
+# ---- 2026-11-11: cost stress, random-entry control, walk-forward with blind runs ----
+import random as _random
+from robustness import cost_stress, random_entry_control, rolling_folds, walk_forward
+
+
+def test_cost_stress_multiplies_recorded_costs():
+    res = cost_stress([1.0, -1.0, 0.5], [0.1, 0.1, 0.2])
+    assert res['multiples']['1x']['total'] == 0.5
+    assert res['multiples']['2x']['total'] == 0.1 and res['verdict'] == 'PASS'
+    assert abs(res['multiples']['3x']['total'] + 0.3) < 1e-9
+    assert abs(res['breakeven_multiple'] - 2.25) < 1e-9
+    assert cost_stress([0.1, 0.1], [0.2, 0.2])['verdict'] == 'FAIL'
+
+
+def _bars(days=120, drift=0.0, seed=1):
+    rng = _random.Random(seed); out = []; p = 100.0; t0 = 1_700_000_000 - 1_700_000_000 % 86400
+    for d in range(days):
+        for m in range(0, 24 * 60, 15):
+            o = p; p = p + drift + rng.gauss(0, 0.2); hi = max(o, p) + 0.05; lo = min(o, p) - 0.05
+            out.append((t0 + d * 86400 + m * 60, o, hi, lo, p))
+    return out
+
+
+def test_random_entry_control_flags_lucky_and_skilled_trades():
+    bars = _bars()
+    skilled = [dict(open_epoch=bars[0][0] + 36000 + d * 86400, side=1, stop=1.0, target=1.0, hold_seconds=7200, r=1.0) for d in range(40)]
+    res = random_entry_control(skilled, bars, copies=100)
+    assert res['verdict'] == 'PASS' and res['p_value'] <= 0.02 and res['real_mean_r'] == 1.0
+    unskilled = [dict(t, r=-0.2) for t in skilled]
+    assert random_entry_control(unskilled, bars, copies=100)['verdict'] == 'FAIL'
+    again = random_entry_control(skilled, bars, copies=100)
+    assert again['random_mean_r'] == res['random_mean_r']          # deterministic for a seed
+
+
+def test_walk_forward_finds_the_real_setting_and_beats_blind_runs():
+    rng = _random.Random(7); day = 86400; start = 0; end = 6 * 365 * day
+    ledgers = {}
+    for k in range(10):
+        edge = 0.25 if k in (6, 7) else -0.05                         # settings 6 and 7 (neighbours) hold a real edge
+        ledgers[k] = [(e, edge + rng.gauss(0, 1)) for e in range(start, end, 2 * day)]
+    neighbours = {k: [x for x in (k - 1, k + 1) if 0 <= x < 10] for k in range(10)}
+    folds = rolling_folds(start, end, 1095, 365)
+    assert len(folds) == 3 and folds[0][1] == folds[0][2]
+    res = walk_forward(ledgers, neighbours, folds, min_trades=30, blind_runs=300)
+    assert all(f['choice'] in (6, 7) for f in res['folds'])
+    assert res['verdict'] == 'PASS' and res['blind']['p_value'] <= 0.05 and res['chained']['total'] > 0
+    noise = {k: [(e, rng.gauss(-0.02, 1)) for e in range(start, end, 2 * day)] for k in range(10)}
+    assert walk_forward(noise, neighbours, folds, min_trades=30, blind_runs=300)['verdict'] == 'FAIL'

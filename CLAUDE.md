@@ -30,6 +30,9 @@ of what is currently attached to a live terminal.
   date. Validation is the prior 12 months; development precedes validation. Use the shared `data_split.py` planner.
   Never shorten OOS, tune on recent subwindows, or relabel previously viewed history as untouched.
   Every results table shows trades, trades/month and trades/day.
+  Amended 2026-11-11 (user, "add point 4 to the pipeline"): random-entry control (200 same-time/stop/target copies on random days, p <= 0.10; stage 4/6),
+  cost stress (total > 0 at 2x recorded costs; stage 4/6), rolling walk-forward (3y train / 1y test, plateau pick, 2,000 blind runs, p <= 0.10; stage 5,
+  pre-OOS only). `Calyx Research Pipeline/robustness.py` + pipeline-policy.json; PIPELINE.md stages 4-6.
 - Native MT5, Python replay, ledger overlay and Monte Carlo are different evidence types.
 - Backtest return is not forecast return. Fitted parameters are not untouched validation.
 - Do not place/modify/close trades, attach EAs, replace SETs, restart MT5 or alter AutoTrading
@@ -920,6 +923,47 @@ of what is currently attached to a live terminal.
   both -ValidateOnly PASS. Evidence `Best 1-Step Search 2026-11-11/REPORT.md` (search.py copy, 4 forced, Addendum A). FTMO 1-Step $100k MC: guard 0.5% pass <=60/90/180 d 35/57/78%, 0% breach
   (val 59% / OOS 54% <=60 d); no guard 0.5% 46/68/90%, 7.4% breach (dev breach 28%). 60% <=60 d NOT reached by any forced portfolio. Rule pick (guard 0.75%, with Vault + ORB VP) MC 36/47/53%:
   Core 9 + P4 chosen post hoc (better val / OOS / MC; disclosed). Not installed; not pushed; no native guard test.
+- 2026-11-11: Best 1-Step FTMO sims (`Best 1-Step Search 2026-11-11/ftmo_b1.py`, frozen engines, $100k MC): 1-Step guard 0.5% pass <=60/90/180 d 35/57/78%, 0% breach, median 65 d;
+  2-step guard 0.75% 68% both <=180 d (Core 9 2-Step guard 74% stays the 2-step pick). Funded (engine = FTMO STANDARD funded rules, not 1-Step funded): guard 0.5% $3,095/month
+  while alive (median), 3-year total median $45.5k, median life 436 d (all end frozen at the buffer, 0 breach); guard 0.75% $4,020/month, life 161 d, total $20.9k; no guard 0.75%
+  $5,678/month, total $55.2k but 95% breach. Correlation (`corr.py`): avg daily 0.03 / monthly 0.06; gold-trend cluster monthly 0.31-0.39; worst days 4.6 EAs lose together.
+- 2026-11-11: `CRT Alpha Sweep Renko Raw 2026-11-11/` (NINZA video + product page) — REJECTED. USTEC M1, M15 C1 body>=50%, C2 sweep, C3 premium/discount on a Renko reversal brick
+  (4.5/0.75 pts), TP opposite boundary, SL beyond the wick. 12 native Model-4 runs: every version wiped out; MAIN 5y avg -0.34R (random -0.23 to -0.31R), 1y -0.065R PF 0.91,
+  NY-only -0.09R; ~8-10 trades/day, win 31-41% vs claimed 14/18. No optimisation. Nothing installed or pushed.
+- 2026-11-11: `Overnight Bias ORB Multi Asset Raw 2026-11-11/` (owner: same ONB rules on gold, BTC, EURUSD, GBPJPY; unchanged raw EA, NY clock): BTCUSD PASSES the raw gate
+  (2019-26 +72.5% PF 1.18 n881 9.3/month, DD 18.4%, beats no-bias +58.4R / random +4.1R, MC 2.8/8.3%) but 2019-22 flat (dev PF 1.04), profit 2023-26; XAUUSD FAIL (PF 1.01, last
+  year -11.3R, no-bias control better), EURUSD FAIL (PF 0.97), GBPJPY FAIL (PF 0.94). GBPJPY buy & hold benchmark failed. No optimisation; nothing installed.
+- 2026-11-11: `_00 Live profiles/Calyx Weekend Flat/` (owner: "update all profiles to go flat before weekend and holidays"; FTMO Standard / 1-Step FTMO Account forbid holding through
+  breaks > 2 h). Helper EA on one extra chart closes EA positions / deletes EA pendings 30 min before any >= 2 h session break and at 12:00 NY on US holiday halts / before
+  Good Friday, Christmas, New Year (+ optional Common\CalyxHolidayFlat.csv). Every maintained installer asks ON/OFF (default ON, -WeekendFlat); wired by wire_weekendflat.py (backups
+  in before/): shared Calyx-InstallChoices.ps1, 13 guarded, 7 no-guard packages (EX5 + Checksums), canonical installer. Ava unchanged. All BATs -ValidateOnly PASS (reviwed_Eas
+  pre-existing). Generators reproduce byte-identical. Backtests / FTMO sims / website were all run WITHOUT the weekend close. Not installed; not pushed.
+  Tester audit (test_weekendflat.py): 60/60 test trades closed by the helper, 0 weekend holds, Fridays 16:25-16:30 NY, holidays 12:00 NY; v1 missed summer Fridays (session table) -> fixed with a Friday 17:00 NY backstop.
+- 2026-11-11: Sell Nasdaq 15min — owner saw it re-place its sell stop after a stop-out. Cause: AttemptedToday() returned false when HistorySelect failed (fail-open), in BOTH
+  sources (Dynamic Exit Research EA + Sell Nasdaq 15min EA). Fixed (`Sell Nasdaq Once Per Day Fix 2026-11-11/fix.py`, backups in before/): fail-safe + live GlobalVariable day counter,
+  input InpMaxAttemptsPerDay (default 1 = tested). Native Model 4 2019-01 -> 2026-11-11 (compare.py, RESULTS.json): OLD = FIX_1 identical 369 trades +80.5R PF 1.37; re-arm after a
+  stop-out FIX_2 +73.2R PF 1.31 (20 extra trades, 20% win, -7.3R), FIX_3 +71.1R. THEN owner: "for now remove it ... low win rate" -> Sell Nasdaq REMOVED from every profile:
+  canonical installer filters label 'Sell Nasdaq 15min' (Full EA / dynamic / recommended / safe / 100K / 900 / claude / BEST RECOMMENDED / reviewed); Edge 10 -> 9 EAs, Mixed 22 -> 21,
+  Core 9 -> 8 (all 3 BATs; names kept), Best 1-Step -> 10 (builders parametrised; P4 installers regenerate byte-identical). Full EA PORTFOLIO.json 36 members (EA/SET copies moved to
+  before-removal/). Weekend-flat files restored; 33 BATs -ValidateOnly PASS (reviwed_Eas pre-existing). Earlier Core 9 / Best 1-Step / Edge 10 / Mixed 22 results INCLUDE Sell Nasdaq
+  (not re-simulated). To restore: delete the two canonical filter lines and revert the builders from before-removal/. Not installed; not pushed.
+- 2026-11-11: `Best 1-Step UK100 Monday 2026-11-11/` (owner "point 3"): Best 1-Step as installable now (10 EAs, no Sell Nasdaq, weekend flat) vs + UK100 Monday dip (FTSE S2 raw EA,
+  124 trades +22R, +0.18R/trade, daily corr -0.001; UK100 spec added to the frozen engines, risk at GBPUSD 1.30 approx). FTMO 1-Step guard 0.5% MC <=60/90/180 d: 30/53/82% (median 75 d)
+  vs 30/53/81% (74 d); no guard 36/60/87% breach 6.1% vs 38/62/88% breach 5.7%; 2-step guard 65% vs 68%; funded guard $2,550 vs $2,669/month (3y $52.2k vs $53.0k), no guard
+  $2,798 vs $2,929/month (3y $90.9k vs $97.1k, 3y breach 37% vs 33%). Monday dip not yet added to any BAT.
+- 2026-11-11: PIPELINE amended (owner "add point 4"): robustness.cost_stress / random_entry_control / rolling_folds + walk_forward (+3 tests, 33/33 pipeline tests pass), policy keys
+  random_entry_control / cost_stress / walk_forward, PIPELINE.md stages 4-6. Noise Band raw study drafted (`Noise Band Raw 2026-11-11/`, RULES + EA, study.py unfinished) - not run.
+- 2026-11-11: `UK100 Monday Dip QuantLab Check 2026-11-11/` (owner: our results look off vs QuantLab). Native Model 4 UK100 H1 2019-08 -> 2026-09-28, research copy with switches:
+  ours (one per London Monday) 183 trades +0.12R/trade PF 1.27; QuantLab rules (re-entry after close + UTC+2/+3 server-clock Monday + 0.3 sd condition) 262 trades +0.096R PF 1.21,
+  2019 -8.6R / 2023 -0.6R / 2024 -1.0R; QuantLab reports 285 trades +0.175R PF 1.4 positive every year on its broker. Gap = broker prices/hours (~45 Sunday 23:00 UTC entries
+  rejected at Exness), cost model, their in-sample tuning on 2018-26. Keep our raw version. Last two months (Sep 11 -> Nov 11): 3 trades +0.57% PF 1.71.
+- 2026-11-11: Best 1-Step now 11 EAs: Sell Nasdaq removed, UK100 Monday dip ADDED (owner) to both BATs (guard key B1O + Packages/Best1Step); UK100 aliases in both installers;
+  no-guard wrapper parity 183/183 vs raw; both BATs -ValidateOnly PASS. Last two months native (Sep 11 -> Nov 10 opens, standalone 1%, no guard, no weekend close): 124 trades,
+  +40.7R, PF 1.83, win 54%; USDJPY -4.2R and 3WG -1.0R the only losers. Not installed; not pushed.
+- 2026-11-11 (latest): Best 1-Step REDUCED to the owner's 7 approved EAs (Nasdaq 5M, Overnight Bias ORB, EMA3, Gold Band Wave, ORB VP VC, XAU RSI VWAP, UK100 Monday dip); USDJPY,
+  3WG, XAU Squeeze, Selective V3 removed. Picked on the last two months (hindsight); weekend-flat stream: last year +87.8R PF 1.43 (11 EAs +116.8R PF 1.47), all years +258R PF 1.22
+  (11: +419R PF 1.29), 2021-23 +28R PF 1.05. Builder backup build.before-seven.py. FTMO / funded stats: `Best 1-Step Seven 2026-11-11/` (study.py, RESULTS.json).
+  Mid-session the 8081 dev preview worker was killed by mistake (process filter) and restarted via reload (HTTP 200).
 - 2026-11-10 IN PROGRESS: `Portfolio P7 2026-11-10/` (Vault Break, Overnight Bias ORB, Nasdaq 5M REPLACE DI OFF, EMA3, ORB VP, RSI VWAP, Gold Band Wave). Native all years +390.7R PF 1.16
   63.8 trades/month, worst day -7.1R, MC 0/0.3 but clumped 95.7%. FTMO 2-step / 1-Step guard + no guard 0.5/0.75/1% and each EA alone: p7.py runall (48 jobs). USDJPY search resumed after it.
 - 2026-11-05 IN PROGRESS: tester queue `tester_queue_20261105.sh`: `Nasdaq 5M Candle Rule 2026-11-05/` (13 versions, PLAN.md frozen) and `USDJPY London Optimization 2026-11-05/` (PLAN.md frozen, stage 5 + 6, owner approved). Not finished.

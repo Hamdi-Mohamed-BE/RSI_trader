@@ -5,6 +5,7 @@ param(
     [double]$KnownFloor=-1,
     [ValidateSet('','Y','N')][string]$TrailEquity='',
     [ValidateSet('','ON','OFF')][string]$NasdaqDIFilter='',
+    [ValidateSet('','ON','OFF')][string]$WeekendFlat='',
     [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [switch]$ValidateOnly,
     [switch]$PreflightOnly
@@ -94,6 +95,7 @@ if(-not $TrailEquity){
     if($TrailEquity -notin @('Y','N')){throw 'Answer Y or N.'}
 }
 $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
+$WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat ([bool]$ValidateOnly)   # Calyx Weekend Flat (2026-11-11)
 Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))
 if(-not $NasdaqDIFilter){   # 2026-11-05 owner: asked here too. OFF is what this profile was tested and packaged with.
     $answer=(Read-Host 'Nasdaq 5M DI filter ON or OFF [OFF]').Trim().ToUpperInvariant();if(-not $answer){$answer='OFF'}
@@ -166,6 +168,7 @@ for($i=0;$i -lt $portfolio.Count;$i++){
 $order=((1..$portfolio.Count | ForEach-Object {'chart{0:D2}.chr' -f $_}) -join "`r`n")+"`r`n"
 [IO.File]::WriteAllText((Join-Path $profile 'order.wnd'),$order,$unicode)
 Test-ManagedProfile $profile $portfolio 'Turbo5 installed profile'
+Add-CalyxWeekendFlatChart $WeekendFlat $profile $dataRoot ([string]$portfolio[0].BrokerSymbol) ''   # Calyx Weekend Flat (2026-11-11)
 if(-not(Test-Path -LiteralPath $statePath)){
     [void](New-Item -ItemType Directory -Path (Split-Path -Parent $statePath) -Force)
     [IO.File]::WriteAllText($statePath,($reference | ConvertTo-Json),[Text.UTF8Encoding]::new($false))

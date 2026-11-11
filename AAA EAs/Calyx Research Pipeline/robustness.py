@@ -202,3 +202,152 @@ def three_monte_carlo(values: list[float], *, runs: int = 1000, seed: int = 2026
                 reshuffle=reshuffle if not horizon else None, resample=resample,
                 randomize=dict(drop_fraction=drop_fraction, extra_cost=extra_cost, both=randomize(drop_fraction, extra_cost),
                                drop_only=randomize(drop_fraction, 0.0), cost_only=randomize(0.0, extra_cost)))
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Added 2026-11-11 (owner: "add point 4 to the pipeline", ideas from the QuantLab research library): cost stress at 1x / 2x / 3x
+# (stage 4 and 6), a stronger random-entry control (stage 4) and rolling walk-forward with blind runs (stage 5).
+
+COST_STRESS_RULE = ("Recorded per-trade costs (spread + commission + swap, same unit as the results) are multiplied: "
+                    "net_k = net - (k - 1) * cost. Gate: the total must stay > 0 at 2x costs; 3x and the break-even multiple are diagnostics.")
+
+
+def _mean(v: list[float]) -> float:
+    return sum(v) / len(v) if v else math.nan
+
+
+def _tstat(v: list[float]) -> float:
+    n = len(v)
+    if n < 2:
+        return math.nan
+    m = _mean(v); var = sum((x - m) ** 2 for x in v) / (n - 1)
+    if var <= 0:
+        return math.inf if m > 0 else -math.inf if m < 0 else 0.0
+    return m / math.sqrt(var / n)
+
+
+def cost_stress(results: list[float], costs: list[float], multiples: tuple = (1, 2, 3)) -> dict:
+    """results = net per-trade results; costs = the (positive) cost each trade already paid, same unit."""
+    assert len(results) == len(costs), 'one cost per trade'
+    out = {}
+    for k in multiples:
+        v = [r - (k - 1) * abs(c) for r, c in zip(results, costs)]
+        gw = sum(x for x in v if x > 0); gl = -sum(x for x in v if x < 0)
+        out[f'{k}x'] = dict(total=round(sum(v), 4), mean=round(_mean(v), 5), pf=round(gw / gl, 3) if gl else None)
+    paid = sum(abs(c) for c in costs)
+    breakeven = (1 + sum(results) / paid) if paid > 0 else math.inf
+    return dict(rule=COST_STRESS_RULE, trades=len(results), costs_paid=round(paid, 4), multiples=out, breakeven_multiple=round(breakeven, 3),
+                verdict='PASS' if out.get('2x', {}).get('total', 0) > 0 else 'FAIL')
+
+
+RANDOM_ENTRY_RULE = ("Each copy keeps every real trade's direction, clock time of day, stop distance, target distance and holding time, "
+                     "but enters on a random trading day of the same price history (bars, entry at the bar open). Stop is assumed first "
+                     "when stop and target fall in the same bar. p = (copies with mean R >= real mean R + 1) / (copies + 1). "
+                     "Raw-gate screen: p <= 0.10 (lenient on purpose: it removes market drift, it does not prove an edge).")
+
+
+def random_entry_control(trades: list[dict], bars: list[tuple], *, copies: int = 200, seed: int = 20261111, cost_r: float = 0.0) -> dict:
+    """trades: dicts with open_epoch, side (+1 / -1), stop (price distance > 0), target (price distance or None), hold_seconds,
+    r (real net R). bars: (epoch, open, high, low, close) sorted, one timeframe (M1-M15 recommended). cost_r = cost charged per
+    random trade in R (use the real average cost so both sides pay the same)."""
+    import bisect
+    if not trades or not bars:
+        return dict(trades=len(trades), copies=0, verdict='NO_DATA')
+    epochs = [b[0] for b in bars]
+    days = sorted({e - e % 86400 for e in epochs})
+    rng = random.Random(seed)
+
+    def replay(entry_epoch: int, side: int, stop: float, target, hold: int):
+        i = bisect.bisect_left(epochs, entry_epoch)
+        if i >= len(bars) or bars[i][0] - entry_epoch > 3600:
+            return None                                   # no bar near that clock time on that day
+        entry = bars[i][1]; end = entry_epoch + max(hold, 60); last = entry
+        for j in range(i, len(bars)):
+            ep, _o, hi, lo, cl = bars[j]
+            if ep > end:
+                break
+            if (lo <= entry - stop) if side > 0 else (hi >= entry + stop):
+                return -1.0 - cost_r
+            if target is not None and ((hi >= entry + target) if side > 0 else (lo <= entry - target)):
+                return target / stop - cost_r
+            last = cl
+        return (last - entry) * side / stop - cost_r
+
+    real = [float(t['r']) for t in trades]
+    means = []
+    for _ in range(copies):
+        rs = []
+        for t in trades:
+            tod = int(t['open_epoch']) % 86400
+            for _attempt in range(20):
+                r = replay(rng.choice(days) + tod, int(t['side']), float(t['stop']), t.get('target'), int(t['hold_seconds']))
+                if r is not None:
+                    rs.append(r); break
+        means.append(_mean(rs))
+    m = _mean(real); s = sorted(means)
+    p = (sum(1 for x in means if x >= m) + 1) / (copies + 1)
+    return dict(rule=RANDOM_ENTRY_RULE, trades=len(trades), copies=copies, seed=seed, real_mean_r=round(m, 5),
+                random_mean_r=dict(p05=round(_quantile(s, .05), 5), p50=round(_quantile(s, .50), 5), p95=round(_quantile(s, .95), 5)),
+                p_value=round(p, 4), verdict='PASS' if p <= 0.10 else 'FAIL')
+
+
+WALK_FORWARD_RULE = ("Rolling walk-forward inside the pre-OOS history (development + validation): train on each fold's training window, "
+                     "pick the setting with the best PLATEAU score (mean t-value of the setting and its one-step neighbours, minimum trades), "
+                     "trade it on the following test window, step forward, and chain only the test windows. Blind runs repeat the same "
+                     "selection on scrambled training scores. Gate: chained test total > 0 and the real chained t-value beats the blind runs "
+                     "with p <= 0.10. The fixed last-two-year OOS is still evaluated once afterwards.")
+
+
+def rolling_folds(start_epoch: int, end_epoch: int, train_days: int = 1095, test_days: int = 365) -> list[tuple]:
+    """(train_start, train_end, test_start, test_end) epochs; the first test starts after train_days, steps of test_days."""
+    out = []; t0 = start_epoch + train_days * 86400
+    while t0 < end_epoch:
+        out.append((t0 - train_days * 86400, t0, t0, min(end_epoch, t0 + test_days * 86400))); t0 += test_days * 86400
+    return out
+
+
+def walk_forward(ledgers: dict, neighbours: dict, folds: list[tuple], *, min_trades: int = 30, blind_runs: int = 2000,
+                 seed: int = 20261111) -> dict:
+    """ledgers: config -> list of (epoch, r) over the pre-OOS history. neighbours: config -> one-step neighbour configs.
+    folds: [(train_start, train_end, test_start, test_end)] epochs (see rolling_folds)."""
+    configs = list(ledgers)
+
+    def window(cfg, a, b):
+        return [r for e, r in ledgers[cfg] if a <= e < b]
+
+    def plateau_scores(a, b):
+        t = {}
+        for c in configs:
+            w = window(c, a, b); t[c] = _tstat(w) if len(w) >= min_trades else -math.inf
+        out = {}
+        for c in configs:
+            if t[c] == -math.inf or math.isnan(t[c]):
+                out[c] = -math.inf; continue
+            group = [t[c]] + [t[n] for n in neighbours.get(c, []) if n in t and t[n] != -math.inf and not math.isnan(t[n])]
+            out[c] = _mean(group)
+        return out
+
+    train = [plateau_scores(a, b) for a, b, _c, _d in folds]
+    chosen = [max(sc, key=lambda c: sc[c]) if any(v != -math.inf for v in sc.values()) else None for sc in train]
+    tests = [window(c, f[2], f[3]) if c else [] for c, f in zip(chosen, folds)]
+    chained = [r for t in tests for r in t]
+    real_t = _tstat(chained); real_total = sum(chained)
+    rng = random.Random(seed); blind_t, blind_total = [], []
+    for _ in range(blind_runs):
+        path = []
+        for sc, f in zip(train, folds):
+            eligible = [c for c in configs if sc[c] != -math.inf]
+            if not eligible:
+                continue
+            vals = [sc[c] for c in eligible]; rng.shuffle(vals)                # scrambled training information
+            pick = eligible[max(range(len(eligible)), key=lambda i: vals[i])]
+            path += window(pick, f[2], f[3])
+        blind_t.append(_tstat(path)); blind_total.append(sum(path))
+    valid = [x for x in blind_t if not math.isnan(x)]
+    p = (sum(1 for x in valid if x >= real_t) + 1) / (len(valid) + 1)
+    return dict(rule=WALK_FORWARD_RULE, folds=[dict(choice=c, test_trades=len(t), test_total=round(sum(t), 4)) for c, t in zip(chosen, tests)],
+                chained=dict(trades=len(chained), total=round(real_total, 4), mean=round(_mean(chained), 5), t=round(real_t, 3),
+                             positive_folds=sum(1 for t in tests if sum(t) > 0), folds=len(folds)),
+                blind=dict(runs=blind_runs, real_t_beats_pct=round(100.0 * sum(1 for x in valid if x < real_t) / max(1, len(valid)), 2),
+                           real_total_beats_pct=round(100.0 * sum(1 for x in blind_total if x < real_total) / max(1, len(blind_total)), 2), p_value=round(p, 4)),
+                verdict='PASS' if real_total > 0 and p <= 0.10 else 'FAIL')

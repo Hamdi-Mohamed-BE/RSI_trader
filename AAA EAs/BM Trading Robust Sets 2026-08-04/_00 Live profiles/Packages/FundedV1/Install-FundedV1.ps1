@@ -3,6 +3,7 @@ param(
     [string]$TargetTerminal,
     [switch]$UseDefaults,                # accept every default without prompting (account size, guard limits, DI ON)
     [ValidateSet('','ON','OFF')][string]$NasdaqDIFilter='',
+    [ValidateSet('','ON','OFF')][string]$WeekendFlat='',
     [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [string]$GoldSymbol='',
     [string]$NasdaqSymbol='',
@@ -143,6 +144,7 @@ $newsPending=Read-Choice 'Delete pending orders inside news windows? Y/N (strate
 $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
 if(-not $NasdaqDIFilter){$NasdaqDIFilter=Read-Choice 'Nasdaq 5M DI filter ON or OFF' 'ON' @('ON','OFF')}
 $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
+$WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat ([bool]$ValidateOnly)   # Calyx Weekend Flat (2026-11-11)
 Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))
 if($risk -gt $maxOpen){throw 'Risk per trade cannot exceed max open risk.'}
 if($dailyLoss -gt $firmDaily){throw 'Max daily loss cannot exceed the firm daily loss.'}
@@ -220,6 +222,7 @@ for($i=0;$i -lt $portfolio.Count;$i++){
 $order=((1..$portfolio.Count | ForEach-Object {'chart{0:D2}.chr' -f $_}) -join "`r`n")+"`r`n"
 [IO.File]::WriteAllText((Join-Path $profile 'order.wnd'),$order,$unicode)
 Test-ManagedProfile $profile $portfolio 'funded_v1 installed profile'
+Add-CalyxWeekendFlatChart $WeekendFlat $profile $dataRoot ([string]$portfolio[0].BrokerSymbol) ''   # Calyx Weekend Flat (2026-11-11)
 if(-not(Test-Path -LiteralPath $statePath)){
     [void](New-Item -ItemType Directory -Path (Split-Path -Parent $statePath) -Force)
     [IO.File]::WriteAllText($statePath,($reference | ConvertTo-Json),[Text.UTF8Encoding]::new($false))

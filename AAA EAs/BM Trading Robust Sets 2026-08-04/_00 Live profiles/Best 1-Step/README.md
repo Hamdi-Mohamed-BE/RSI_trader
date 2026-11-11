@@ -13,3 +13,14 @@ no guard 0.5% 46 / 68 / 90%, 7.4% breach. 60% within 60 days is NOT reached. In-
 Checks 2026-11-11: 11 guarded wrappers 0 errors / 0 warnings; both BATs -ValidateOnly PASS; source packages unchanged (asserted).
 Not done: native parity of the new guarded wrappers (guard refuses the tester; members are the same sources as Core 9 / P4, whose parity passed), any install, push.
 Sell Nasdaq (guarded) holds its stop in the EA and sells at market. Gold Band Wave / EMA3 use H4 bars: non-UTC brokers (FTMO UTC+2/+3) give different bars.
+
+## 2026-11-11 changes
+- Sell Nasdaq 15min removed (owner). UK100 Monday dip added (owner): FTSE Three Setup Raw 2026-10-27 S2, unchanged rules, UK100 H1; asserted edits only for the live broker
+  clock, the unused governor input and (no guard) RiskSupport sizing. Installers map UK100 / UK100.cash / FTSE100 / UKX / GBR100. 11 EAs in both BATs, -ValidateOnly PASS.
+- Parity: no-guard UK100 wrapper = raw EA, 183 / 183 identical trades (native Model 4, 2019-08 -> 2026-09-28; UK100 Monday Dip QuantLab Check 2026-11-11/PARITY_B1.json).
+  The guarded wrapper has no native run (the guard refuses the tester).
+- FTMO simulation with the Monday dip (Best 1-Step UK100 Monday 2026-11-11): 1-Step guard 0.5% pass <=60/90/180 d 30/53/81%, median 74 d; funded guard $2,669/month.
+- LATER 2026-11-11 (owner: "update the profile now with the new approved EAs"): Best 1-Step = 7 EAs: Nasdaq 5M (REPLACE, DI OFF), Overnight Bias ORB, EMA3, Gold Band Wave,
+  ORB VP Volume Confirmed, XAU RSI VWAP, UK100 Monday dip. Removed USDJPY London, 3 Way Gold, XAU Squeeze, US100 Selective ORB V3. Chosen on the last two months
+  (hindsight selection); over all years 2021-26 the 7 made +258R PF 1.22 vs the 11's +419R PF 1.29 (Best 1-Step Seven 2026-11-11). Both BATs pass -UsdJpyDIFilter OFF; -ValidateOnly PASS.
+
