@@ -1,0 +1,524 @@
+{
+ "windows": {
+  "dev": [
+   "2019-07-16",
+   "2023-11-11"
+  ],
+  "val": [
+   "2023-11-11",
+   "2024-11-11"
+  ],
+  "oos": [
+   "2024-11-11",
+   "2026-11-11"
+  ],
+  "all": [
+   "2019-07-16",
+   "2026-11-11"
+  ],
+  "parity": [
+   "2019-07-16",
+   "2026-11-10"
+  ]
+ },
+ "plateau": [
+  {
+   "sig": "e8540ab25e",
+   "neighbours": 12,
+   "profitable_share": 1.0,
+   "passes": true
+  },
+  {
+   "sig": "2dcdfbc8e8",
+   "neighbours": 12,
+   "profitable_share": 1.0,
+   "passes": true
+  },
+  {
+   "sig": "91a96cc560",
+   "neighbours": 13,
+   "profitable_share": 1.0,
+   "passes": true
+  }
+ ],
+ "base_dev": {
+  "sig": "de19e5b8cc",
+  "window": "dev",
+  "model": 4,
+  "tag": "baseline",
+  "ret": 54.09,
+  "pf": 1.215,
+  "trades": 462,
+  "win": 48.1,
+  "dd": 10.73,
+  "score": 5.041,
+  "changes": {},
+  "flags": {
+   "init_failed": 0,
+   "no_history": 0,
+   "rejected": 4950,
+   "size_below_min": 0,
+   "critical": 0
+  }
+ },
+ "base_dev_model1": {
+  "sig": "de19e5b8cc",
+  "window": "dev",
+  "model": 1,
+  "tag": "baseline",
+  "ret": 55.97,
+  "pf": 1.222,
+  "trades": 462,
+  "win": 48.1,
+  "dd": 10.66,
+  "score": 5.251,
+  "changes": {},
+  "flags": {
+   "init_failed": 0,
+   "no_history": 0,
+   "rejected": 1140,
+   "size_below_min": 0,
+   "critical": 0
+  }
+ },
+ "dev_model4": [
+  {
+   "sig": "e8540ab25e",
+   "window": "dev",
+   "model": 4,
+   "tag": "confirm",
+   "ret": 82.87,
+   "pf": 1.419,
+   "trades": 358,
+   "win": 55.0,
+   "dd": 8.05,
+   "score": 10.295,
+   "changes": {
+    "InpOnbAdxMin": "30",
+    "InpOnbStopMult": "0.2",
+    "InpOnbTargetR": "5",
+    "InpOnbEntryEnd": "840",
+    "InpOnbFlatMin": "955",
+    "InpOnbTrailStartR": "1",
+    "InpOnbTrailDistR": "1"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 3768,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  },
+  {
+   "sig": "2dcdfbc8e8",
+   "window": "dev",
+   "model": 4,
+   "tag": "confirm",
+   "ret": 110.78,
+   "pf": 1.524,
+   "trades": 358,
+   "win": 36.0,
+   "dd": 11.1,
+   "score": 9.98,
+   "changes": {
+    "InpOnbAdxMin": "30",
+    "InpOnbStopMult": "0.2",
+    "InpOnbTargetR": "5",
+    "InpOnbEntryEnd": "840",
+    "InpOnbFlatMin": "955",
+    "InpOnbBreakEvenR": "1"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 3768,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  },
+  {
+   "sig": "91a96cc560",
+   "window": "dev",
+   "model": 4,
+   "tag": "confirm",
+   "ret": 100.8,
+   "pf": 1.495,
+   "trades": 358,
+   "win": 36.3,
+   "dd": 10.45,
+   "score": 9.646,
+   "changes": {
+    "InpOnbAdxMin": "30",
+    "InpOnbStopMult": "0.2",
+    "InpOnbTargetR": "5",
+    "InpOnbEntryEnd": "840",
+    "InpOnbBreakEvenR": "1"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 3768,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  }
+ ],
+ "base_val": {
+  "sig": "de19e5b8cc",
+  "window": "val",
+  "model": 4,
+  "tag": "baseline",
+  "ret": 28.82,
+  "pf": 1.559,
+  "trades": 111,
+  "win": 46.8,
+  "dd": 8.24,
+  "score": 3.497,
+  "changes": {},
+  "flags": {
+   "init_failed": 0,
+   "no_history": 0,
+   "rejected": 7168,
+   "size_below_min": 0,
+   "critical": 0
+  }
+ },
+ "validation": [
+  {
+   "sig": "e8540ab25e",
+   "window": "val",
+   "model": 4,
+   "tag": "validation",
+   "ret": -5.55,
+   "pf": 0.881,
+   "trades": 92,
+   "win": 48.9,
+   "dd": 11.06,
+   "score": -0.502,
+   "changes": {
+    "InpOnbAdxMin": "30",
+    "InpOnbStopMult": "0.2",
+    "InpOnbTargetR": "5",
+    "InpOnbEntryEnd": "840",
+    "InpOnbFlatMin": "955",
+    "InpOnbTrailStartR": "1",
+    "InpOnbTrailDistR": "1"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 7172,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  },
+  {
+   "sig": "2dcdfbc8e8",
+   "window": "val",
+   "model": 4,
+   "tag": "validation",
+   "ret": 1.08,
+   "pf": 1.023,
+   "trades": 92,
+   "win": 26.1,
+   "dd": 8.62,
+   "score": 0.125,
+   "changes": {
+    "InpOnbAdxMin": "30",
+    "InpOnbStopMult": "0.2",
+    "InpOnbTargetR": "5",
+    "InpOnbEntryEnd": "840",
+    "InpOnbFlatMin": "955",
+    "InpOnbBreakEvenR": "1"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 7168,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  },
+  {
+   "sig": "91a96cc560",
+   "window": "val",
+   "model": 4,
+   "tag": "validation",
+   "ret": 1.01,
+   "pf": 1.021,
+   "trades": 92,
+   "win": 28.3,
+   "dd": 10.12,
+   "score": 0.099,
+   "changes": {
+    "InpOnbAdxMin": "30",
+    "InpOnbStopMult": "0.2",
+    "InpOnbTargetR": "5",
+    "InpOnbEntryEnd": "840",
+    "InpOnbBreakEvenR": "1"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 7168,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  }
+ ],
+ "base_oos": {
+  "sig": "de19e5b8cc",
+  "window": "oos",
+  "model": 4,
+  "tag": "baseline",
+  "ret": 54.05,
+  "pf": 1.58,
+  "trades": 209,
+  "win": 53.6,
+  "dd": 10.2,
+  "score": 5.299,
+  "changes": {},
+  "flags": {
+   "init_failed": 0,
+   "no_history": 0,
+   "rejected": 7232,
+   "size_below_min": 0,
+   "critical": 0
+  }
+ },
+ "finalists": [
+  {
+   "InpStrategy": "4",
+   "InpUseBias": "true",
+   "InpRandomDirection": "false",
+   "InpSeed": "1",
+   "InpRiskPercent": "1.0",
+   "InpServerUtcOffsetHours": "0",
+   "InpMagic": "91109001",
+   "InpDeviationPoints": "50",
+   "InpOnbORMinutes": "15",
+   "InpOnbOvernightStart": "0",
+   "InpOnbBiasFrac": "0.3333333333",
+   "InpOnbAdxMin": "30",
+   "InpOnbStopMult": "0.2",
+   "InpOnbTargetR": "5",
+   "InpOnbEntryEnd": "840",
+   "InpOnbFlatMin": "955",
+   "InpOnbBreakEvenR": "0",
+   "InpOnbTrailStartR": "1",
+   "InpOnbTrailDistR": "1",
+   "InpOnbDirection": "2",
+   "InpOnbDayMask": "31",
+   "InpOnbMaxTrades": "1"
+  },
+  {
+   "InpStrategy": "4",
+   "InpUseBias": "true",
+   "InpRandomDirection": "false",
+   "InpSeed": "1",
+   "InpRiskPercent": "1.0",
+   "InpServerUtcOffsetHours": "0",
+   "InpMagic": "91109001",
+   "InpDeviationPoints": "50",
+   "InpOnbORMinutes": "15",
+   "InpOnbOvernightStart": "0",
+   "InpOnbBiasFrac": "0.3333333333",
+   "InpOnbAdxMin": "30",
+   "InpOnbStopMult": "0.2",
+   "InpOnbTargetR": "5",
+   "InpOnbEntryEnd": "840",
+   "InpOnbFlatMin": "955",
+   "InpOnbBreakEvenR": "1",
+   "InpOnbTrailStartR": "0",
+   "InpOnbTrailDistR": "0.5",
+   "InpOnbDirection": "2",
+   "InpOnbDayMask": "31",
+   "InpOnbMaxTrades": "1"
+  },
+  {
+   "InpStrategy": "4",
+   "InpUseBias": "true",
+   "InpRandomDirection": "false",
+   "InpSeed": "1",
+   "InpRiskPercent": "1.0",
+   "InpServerUtcOffsetHours": "0",
+   "InpMagic": "91109001",
+   "InpDeviationPoints": "50",
+   "InpOnbORMinutes": "15",
+   "InpOnbOvernightStart": "0",
+   "InpOnbBiasFrac": "0.3333333333",
+   "InpOnbAdxMin": "30",
+   "InpOnbStopMult": "0.2",
+   "InpOnbTargetR": "5",
+   "InpOnbEntryEnd": "840",
+   "InpOnbFlatMin": "930",
+   "InpOnbBreakEvenR": "1",
+   "InpOnbTrailStartR": "0",
+   "InpOnbTrailDistR": "0.5",
+   "InpOnbDirection": "2",
+   "InpOnbDayMask": "31",
+   "InpOnbMaxTrades": "1"
+  }
+ ],
+ "chosen": null,
+ "diagnostic": {
+  "InpStrategy": "4",
+  "InpUseBias": "true",
+  "InpRandomDirection": "false",
+  "InpSeed": "1",
+  "InpRiskPercent": "1.0",
+  "InpServerUtcOffsetHours": "0",
+  "InpMagic": "91109001",
+  "InpDeviationPoints": "50",
+  "InpOnbORMinutes": "15",
+  "InpOnbOvernightStart": "0",
+  "InpOnbBiasFrac": "0.3333333333",
+  "InpOnbAdxMin": "30",
+  "InpOnbStopMult": "0.2",
+  "InpOnbTargetR": "5",
+  "InpOnbEntryEnd": "840",
+  "InpOnbFlatMin": "955",
+  "InpOnbBreakEvenR": "1",
+  "InpOnbTrailStartR": "0",
+  "InpOnbTrailDistR": "0.5",
+  "InpOnbDirection": "2",
+  "InpOnbDayMask": "31",
+  "InpOnbMaxTrades": "1"
+ },
+ "diagnostic_sig": "2dcdfbc8e8",
+ "diagnostic_oos": {
+  "sig": "2dcdfbc8e8",
+  "window": "oos",
+  "model": 4,
+  "tag": "diagnostic",
+  "ret": 9.97,
+  "pf": 1.123,
+  "trades": 177,
+  "win": 31.6,
+  "dd": 12.5,
+  "score": 0.798,
+  "changes": {
+   "InpOnbAdxMin": "30",
+   "InpOnbStopMult": "0.2",
+   "InpOnbTargetR": "5",
+   "InpOnbEntryEnd": "840",
+   "InpOnbFlatMin": "955",
+   "InpOnbBreakEvenR": "1"
+  },
+  "flags": {
+   "init_failed": 0,
+   "no_history": 0,
+   "rejected": 7232,
+   "size_below_min": 0,
+   "critical": 0
+  }
+ },
+ "final": {
+  "baseline": {
+   "all": {
+    "sig": "de19e5b8cc",
+    "window": "all",
+    "model": 4,
+    "tag": "final-all",
+    "ret": 205.26,
+    "pf": 1.398,
+    "trades": 782,
+    "win": 49.4,
+    "dd": 10.73,
+    "score": 19.13,
+    "changes": {},
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 19350,
+     "size_below_min": 0,
+     "critical": 0
+    }
+   },
+   "mc": {
+    "resample_red": 0.0,
+    "randomize_red": 0.0,
+    "clumped": 1.1
+   },
+   "mc_passes": true
+  },
+  "candidate": {
+   "all": {
+    "sig": "2dcdfbc8e8",
+    "window": "all",
+    "model": 4,
+    "tag": "final-all",
+    "ret": 134.31,
+    "pf": 1.277,
+    "trades": 627,
+    "win": 33.3,
+    "dd": 12.48,
+    "score": 10.762,
+    "changes": {
+     "InpOnbAdxMin": "30",
+     "InpOnbStopMult": "0.2",
+     "InpOnbTargetR": "5",
+     "InpOnbEntryEnd": "840",
+     "InpOnbFlatMin": "955",
+     "InpOnbBreakEvenR": "1"
+    },
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 18168,
+     "size_below_min": 0,
+     "critical": 0
+    }
+   },
+   "mc": {
+    "resample_red": 0.5,
+    "randomize_red": 0.0,
+    "clumped": 1.1
+   },
+   "mc_passes": true
+  }
+ },
+ "buy_hold": {
+  "dev": {
+   "symbol": "USTEC",
+   "window": "dev",
+   "return_pct": -26.9,
+   "price_return_pct": 95.59,
+   "swap_pct": -122.48,
+   "commission_pct": -0.01,
+   "max_dd_pct": 75.15,
+   "trades": 1
+  },
+  "val": {
+   "symbol": "USTEC",
+   "window": "val",
+   "return_pct": 21.91,
+   "price_return_pct": 36.34,
+   "swap_pct": -14.42,
+   "commission_pct": -0.0,
+   "max_dd_pct": 19.09,
+   "trades": 1
+  },
+  "oos": {
+   "symbol": "USTEC",
+   "window": "oos",
+   "return_pct": 10.62,
+   "price_return_pct": 31.81,
+   "swap_pct": -21.18,
+   "commission_pct": -0.0,
+   "max_dd_pct": 29.88,
+   "trades": 1
+  },
+  "all": {
+   "symbol": "USTEC",
+   "window": "all",
+   "return_pct": 44.68,
+   "price_return_pct": 252.6,
+   "swap_pct": -207.91,
+   "commission_pct": -0.01,
+   "max_dd_pct": 75.15,
+   "trades": 1
+  }
+ }
+}

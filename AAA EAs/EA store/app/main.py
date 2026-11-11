@@ -660,6 +660,9 @@ async def portfolio(
 
 @app.get("/pricing", response_class=HTMLResponse)
 async def pricing(request: Request) -> HTMLResponse:
+    # Owner 2026-11-09: the site is research only, with no prices or offers. Old /pricing links land on the research home.
+    if not store_enabled():
+        return RedirectResponse(url="/store", status_code=307)
     products = get_sellable_catalog()
     if not store_enabled():
         return templates.TemplateResponse(request=request, name="pricing.html", context=_legacy_pricing_context(request, products))

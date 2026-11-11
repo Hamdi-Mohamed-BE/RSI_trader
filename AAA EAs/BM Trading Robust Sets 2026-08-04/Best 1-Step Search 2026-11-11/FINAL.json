@@ -1,0 +1,2679 @@
+{
+ "picks": {
+  "GUARD": {
+   "kind": "win",
+   "model": "GUARD",
+   "risk": 0.005,
+   "members": [
+    "3-way-gold#930930101",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0345,
+    "pass_60": 0.2668,
+    "pass_90": 0.4607,
+    "pass_180": 0.5643,
+    "breach": 0.0,
+    "median_days": 63,
+    "median_trades": 141
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1341,
+    "pass_60": 0.5057,
+    "pass_90": 0.8046,
+    "pass_180": 0.9923,
+    "breach": 0.0,
+    "median_days": 59,
+    "median_trades": 133
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.2157,
+    "pass_60": 0.6675,
+    "pass_90": 0.8477,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 47,
+    "median_trades": 108
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.117,
+    "pass_60": 0.4165,
+    "pass_90": 0.619,
+    "pass_180": 0.8035,
+    "breach": 0.0,
+    "median_days": 59,
+    "median_trades": 139
+   }
+  },
+  "GUARD-FORCED": {
+   "kind": "win-forced",
+   "model": "GUARD",
+   "risk": 0.0075,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "vault-break",
+    "xau-rsi-vwap"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1209,
+    "pass_60": 0.2649,
+    "pass_90": 0.3013,
+    "pass_180": 0.3321,
+    "breach": 0.0,
+    "median_days": 41,
+    "median_trades": 56
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1456,
+    "pass_60": 0.5211,
+    "pass_90": 0.6782,
+    "pass_180": 0.6973,
+    "breach": 0.0,
+    "median_days": 47,
+    "median_trades": 59
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.2538,
+    "pass_60": 0.5178,
+    "pass_90": 0.5863,
+    "pass_180": 0.6269,
+    "breach": 0.0,
+    "median_days": 35,
+    "median_trades": 50
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.174,
+    "pass_60": 0.364,
+    "pass_90": 0.469,
+    "pass_180": 0.5325,
+    "breach": 0.0,
+    "median_days": 45,
+    "median_trades": 59
+   }
+  },
+  "NOGUARD": {
+   "kind": "win",
+   "model": "NOGUARD",
+   "risk": 0.005,
+   "members": [
+    "3-way-gold#930930101",
+    "gold-band-wave",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.096,
+    "pass_60": 0.3071,
+    "pass_90": 0.4798,
+    "pass_180": 0.8426,
+    "breach": 0.0096,
+    "median_days": 78,
+    "median_trades": 186
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.2031,
+    "pass_60": 0.5057,
+    "pass_90": 0.8544,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 60,
+    "median_trades": 129
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1802,
+    "pass_60": 0.6421,
+    "pass_90": 0.8959,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 50,
+    "median_trades": 102
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.13,
+    "pass_60": 0.4695,
+    "pass_90": 0.6985,
+    "pass_180": 0.923,
+    "breach": 0.041,
+    "median_days": 60,
+    "median_trades": 133
+   }
+  },
+  "NOGUARD-FORCED": null
+ },
+ "refs": {},
+ "rows": [
+  {
+   "kind": "win",
+   "model": "GUARD",
+   "risk": 0.005,
+   "members": [
+    "3-way-gold#930930101",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0345,
+    "pass_60": 0.2668,
+    "pass_90": 0.4607,
+    "pass_180": 0.5643,
+    "breach": 0.0,
+    "median_days": 63,
+    "median_trades": 141
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1341,
+    "pass_60": 0.5057,
+    "pass_90": 0.8046,
+    "pass_180": 0.9923,
+    "breach": 0.0,
+    "median_days": 59,
+    "median_trades": 133
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.2157,
+    "pass_60": 0.6675,
+    "pass_90": 0.8477,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 47,
+    "median_trades": 108
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.117,
+    "pass_60": 0.4165,
+    "pass_90": 0.619,
+    "pass_180": 0.8035,
+    "breach": 0.0,
+    "median_days": 59,
+    "median_trades": 139
+   }
+  },
+  {
+   "kind": "win",
+   "model": "GUARD",
+   "risk": 0.0075,
+   "members": [
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.119,
+    "pass_60": 0.4069,
+    "pass_90": 0.4914,
+    "pass_180": 0.572,
+    "breach": 0.0,
+    "median_days": 47,
+    "median_trades": 74
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1303,
+    "pass_60": 0.3831,
+    "pass_90": 0.5517,
+    "pass_180": 0.6092,
+    "breach": 0.0,
+    "median_days": 52,
+    "median_trades": 71
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.2183,
+    "pass_60": 0.5863,
+    "pass_90": 0.7716,
+    "pass_180": 0.7766,
+    "breach": 0.0,
+    "median_days": 44,
+    "median_trades": 72
+   }
+  },
+  {
+   "kind": "win",
+   "model": "GUARD",
+   "risk": 0.01,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "nasdaq-5m-candle-momentum",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1132,
+    "pass_60": 0.4012,
+    "pass_90": 0.5221,
+    "pass_180": 0.6526,
+    "breach": 0.0058,
+    "median_days": 50,
+    "median_trades": 42
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1303,
+    "pass_60": 0.3602,
+    "pass_90": 0.4828,
+    "pass_180": 0.5517,
+    "breach": 0.0,
+    "median_days": 51,
+    "median_trades": 44
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1294,
+    "pass_60": 0.4848,
+    "pass_90": 0.5228,
+    "pass_180": 0.5406,
+    "breach": 0.0,
+    "median_days": 41,
+    "median_trades": 41
+   }
+  },
+  {
+   "kind": "win",
+   "model": "GUARD",
+   "risk": 0.0125,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "nasdaq-5m-candle-momentum",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1171,
+    "pass_60": 0.3724,
+    "pass_90": 0.4837,
+    "pass_180": 0.5739,
+    "breach": 0.0134,
+    "median_days": 49,
+    "median_trades": 41
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1341,
+    "pass_60": 0.3333,
+    "pass_90": 0.4521,
+    "pass_180": 0.5249,
+    "breach": 0.0,
+    "median_days": 51,
+    "median_trades": 41
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1421,
+    "pass_60": 0.3858,
+    "pass_90": 0.5051,
+    "pass_180": 0.5305,
+    "breach": 0.0,
+    "median_days": 42,
+    "median_trades": 40
+   }
+  },
+  {
+   "kind": "win-forced",
+   "model": "GUARD",
+   "risk": 0.005,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "overnight-bias-orb",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0326,
+    "pass_60": 0.2111,
+    "pass_90": 0.3781,
+    "pass_180": 0.6353,
+    "breach": 0.0,
+    "median_days": 78,
+    "median_trades": 130
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.0996,
+    "pass_60": 0.3793,
+    "pass_90": 0.6782,
+    "pass_180": 0.9962,
+    "breach": 0.0,
+    "median_days": 71,
+    "median_trades": 144
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1294,
+    "pass_60": 0.4848,
+    "pass_90": 0.7411,
+    "pass_180": 0.9416,
+    "breach": 0.0,
+    "median_days": 58,
+    "median_trades": 108
+   }
+  },
+  {
+   "kind": "win-forced",
+   "model": "GUARD",
+   "risk": 0.0075,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "vault-break",
+    "xau-rsi-vwap"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1209,
+    "pass_60": 0.2649,
+    "pass_90": 0.3013,
+    "pass_180": 0.3321,
+    "breach": 0.0,
+    "median_days": 41,
+    "median_trades": 56
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1456,
+    "pass_60": 0.5211,
+    "pass_90": 0.6782,
+    "pass_180": 0.6973,
+    "breach": 0.0,
+    "median_days": 47,
+    "median_trades": 59
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.2538,
+    "pass_60": 0.5178,
+    "pass_90": 0.5863,
+    "pass_180": 0.6269,
+    "breach": 0.0,
+    "median_days": 35,
+    "median_trades": 50
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.174,
+    "pass_60": 0.364,
+    "pass_90": 0.469,
+    "pass_180": 0.5325,
+    "breach": 0.0,
+    "median_days": 45,
+    "median_trades": 59
+   }
+  },
+  {
+   "kind": "win-forced",
+   "model": "GUARD",
+   "risk": 0.01,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0518,
+    "pass_60": 0.2399,
+    "pass_90": 0.3647,
+    "pass_180": 0.4741,
+    "breach": 0.0038,
+    "median_days": 59,
+    "median_trades": 44
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1303,
+    "pass_60": 0.3755,
+    "pass_90": 0.5057,
+    "pass_180": 0.5862,
+    "breach": 0.0,
+    "median_days": 50,
+    "median_trades": 45
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1929,
+    "pass_60": 0.4721,
+    "pass_90": 0.5152,
+    "pass_180": 0.5279,
+    "breach": 0.0,
+    "median_days": 35,
+    "median_trades": 35
+   }
+  },
+  {
+   "kind": "win-forced",
+   "model": "GUARD",
+   "risk": 0.0125,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0557,
+    "pass_60": 0.2438,
+    "pass_90": 0.3512,
+    "pass_180": 0.4549,
+    "breach": 0.0096,
+    "median_days": 58,
+    "median_trades": 41
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1533,
+    "pass_60": 0.4061,
+    "pass_90": 0.5441,
+    "pass_180": 0.6207,
+    "breach": 0.0,
+    "median_days": 46,
+    "median_trades": 38
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1624,
+    "pass_60": 0.4188,
+    "pass_90": 0.4645,
+    "pass_180": 0.4822,
+    "breach": 0.0,
+    "median_days": 38,
+    "median_trades": 36
+   }
+  },
+  {
+   "kind": "ref:Core9",
+   "model": "GUARD",
+   "risk": 0.005,
+   "members": [
+    "usdjpy-london-open-momentum",
+    "3-way-gold#930930101",
+    "sell-nasdaq-15min",
+    "xau-rsi-vwap",
+    "ema3",
+    "xau-squeeze-momentum-standard",
+    "orb-volume-profile-volume-confirmed",
+    "us100-selective-orb-v3",
+    "nasdaq-5m-candle-momentum"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0134,
+    "pass_60": 0.1881,
+    "pass_90": 0.3666,
+    "pass_180": 0.6411,
+    "breach": 0.0,
+    "median_days": 82,
+    "median_trades": 114
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.0996,
+    "pass_60": 0.3946,
+    "pass_90": 0.7203,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 72,
+    "median_trades": 100
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.0279,
+    "pass_60": 0.4162,
+    "pass_90": 0.7766,
+    "pass_180": 0.8553,
+    "breach": 0.0,
+    "median_days": 62,
+    "median_trades": 90
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.0355,
+    "pass_60": 0.2715,
+    "pass_90": 0.491,
+    "pass_180": 0.825,
+    "breach": 0.0,
+    "median_days": 79,
+    "median_trades": 121
+   }
+  },
+  {
+   "kind": "ref:Core9",
+   "model": "GUARD",
+   "risk": 0.0075,
+   "members": [
+    "usdjpy-london-open-momentum",
+    "3-way-gold#930930101",
+    "sell-nasdaq-15min",
+    "xau-rsi-vwap",
+    "ema3",
+    "xau-squeeze-momentum-standard",
+    "orb-volume-profile-volume-confirmed",
+    "us100-selective-orb-v3",
+    "nasdaq-5m-candle-momentum"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0307,
+    "pass_60": 0.1881,
+    "pass_90": 0.2821,
+    "pass_180": 0.3493,
+    "breach": 0.0,
+    "median_days": 58,
+    "median_trades": 67
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.0996,
+    "pass_60": 0.3448,
+    "pass_90": 0.5057,
+    "pass_180": 0.5441,
+    "breach": 0.0,
+    "median_days": 51,
+    "median_trades": 60
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1447,
+    "pass_60": 0.4924,
+    "pass_90": 0.6599,
+    "pass_180": 0.7081,
+    "breach": 0.0,
+    "median_days": 48,
+    "median_trades": 56
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.0705,
+    "pass_60": 0.323,
+    "pass_90": 0.489,
+    "pass_180": 0.6555,
+    "breach": 0.0005,
+    "median_days": 61,
+    "median_trades": 67
+   }
+  },
+  {
+   "kind": "ref:Core9",
+   "model": "GUARD",
+   "risk": 0.01,
+   "members": [
+    "usdjpy-london-open-momentum",
+    "3-way-gold#930930101",
+    "sell-nasdaq-15min",
+    "xau-rsi-vwap",
+    "ema3",
+    "xau-squeeze-momentum-standard",
+    "orb-volume-profile-volume-confirmed",
+    "us100-selective-orb-v3",
+    "nasdaq-5m-candle-momentum"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.048,
+    "pass_60": 0.2092,
+    "pass_90": 0.3589,
+    "pass_180": 0.5758,
+    "breach": 0.0038,
+    "median_days": 80,
+    "median_trades": 49
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.0383,
+    "pass_60": 0.1877,
+    "pass_90": 0.3103,
+    "pass_180": 0.5402,
+    "breach": 0.0,
+    "median_days": 81,
+    "median_trades": 43
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1548,
+    "pass_60": 0.5406,
+    "pass_90": 0.6447,
+    "pass_180": 0.6548,
+    "breach": 0.0,
+    "median_days": 44,
+    "median_trades": 35
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.068,
+    "pass_60": 0.2715,
+    "pass_90": 0.3945,
+    "pass_180": 0.5595,
+    "breach": 0.001,
+    "median_days": 64,
+    "median_trades": 44
+   }
+  },
+  {
+   "kind": "ref:Core9",
+   "model": "GUARD",
+   "risk": 0.0125,
+   "members": [
+    "usdjpy-london-open-momentum",
+    "3-way-gold#930930101",
+    "sell-nasdaq-15min",
+    "xau-rsi-vwap",
+    "ema3",
+    "xau-squeeze-momentum-standard",
+    "orb-volume-profile-volume-confirmed",
+    "us100-selective-orb-v3",
+    "nasdaq-5m-candle-momentum"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0633,
+    "pass_60": 0.2246,
+    "pass_90": 0.38,
+    "pass_180": 0.572,
+    "breach": 0.0038,
+    "median_days": 71,
+    "median_trades": 43
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.0421,
+    "pass_60": 0.1839,
+    "pass_90": 0.2912,
+    "pass_180": 0.387,
+    "breach": 0.0,
+    "median_days": 62,
+    "median_trades": 45
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1421,
+    "pass_60": 0.4162,
+    "pass_90": 0.5635,
+    "pass_180": 0.6371,
+    "breach": 0.0,
+    "median_days": 49,
+    "median_trades": 36
+   }
+  },
+  {
+   "kind": "ref:P4",
+   "model": "GUARD",
+   "risk": 0.005,
+   "members": [
+    "overnight-bias-orb",
+    "nasdaq-5m-candle-momentum",
+    "ema3",
+    "gold-band-wave"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0077,
+    "pass_60": 0.0998,
+    "pass_90": 0.1631,
+    "pass_180": 0.3532,
+    "breach": 0.0,
+    "median_days": 99,
+    "median_trades": 146
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.0038,
+    "pass_60": 0.1801,
+    "pass_90": 0.5019,
+    "pass_180": 0.7701,
+    "breach": 0.0,
+    "median_days": 78,
+    "median_trades": 91
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.0812,
+    "pass_60": 0.2944,
+    "pass_90": 0.4797,
+    "pass_180": 0.7132,
+    "breach": 0.0,
+    "median_days": 71,
+    "median_trades": 91
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.0275,
+    "pass_60": 0.149,
+    "pass_90": 0.2935,
+    "pass_180": 0.576,
+    "breach": 0.0,
+    "median_days": 88,
+    "median_trades": 115
+   }
+  },
+  {
+   "kind": "ref:P4",
+   "model": "GUARD",
+   "risk": 0.0075,
+   "members": [
+    "overnight-bias-orb",
+    "nasdaq-5m-candle-momentum",
+    "ema3",
+    "gold-band-wave"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0614,
+    "pass_60": 0.1996,
+    "pass_90": 0.2994,
+    "pass_180": 0.4702,
+    "breach": 0.0,
+    "median_days": 70,
+    "median_trades": 72
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.0345,
+    "pass_60": 0.2107,
+    "pass_90": 0.5019,
+    "pass_180": 0.5747,
+    "breach": 0.0,
+    "median_days": 67,
+    "median_trades": 59
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.0939,
+    "pass_60": 0.2614,
+    "pass_90": 0.3579,
+    "pass_180": 0.5102,
+    "breach": 0.0,
+    "median_days": 59,
+    "median_trades": 48
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.068,
+    "pass_60": 0.242,
+    "pass_90": 0.37,
+    "pass_180": 0.5365,
+    "breach": 0.0,
+    "median_days": 66,
+    "median_trades": 60
+   }
+  },
+  {
+   "kind": "ref:P4",
+   "model": "GUARD",
+   "risk": 0.01,
+   "members": [
+    "overnight-bias-orb",
+    "nasdaq-5m-candle-momentum",
+    "ema3",
+    "gold-band-wave"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0345,
+    "pass_60": 0.1036,
+    "pass_90": 0.1382,
+    "pass_180": 0.2322,
+    "breach": 0.0,
+    "median_days": 69,
+    "median_trades": 34
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1149,
+    "pass_60": 0.364,
+    "pass_90": 0.5364,
+    "pass_180": 0.5632,
+    "breach": 0.0,
+    "median_days": 50,
+    "median_trades": 31
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1193,
+    "pass_60": 0.3503,
+    "pass_90": 0.5228,
+    "pass_180": 0.5939,
+    "breach": 0.0076,
+    "median_days": 53,
+    "median_trades": 29
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.067,
+    "pass_60": 0.2175,
+    "pass_90": 0.3,
+    "pass_180": 0.401,
+    "breach": 0.0085,
+    "median_days": 57,
+    "median_trades": 33
+   }
+  },
+  {
+   "kind": "ref:P4",
+   "model": "GUARD",
+   "risk": 0.0125,
+   "members": [
+    "overnight-bias-orb",
+    "nasdaq-5m-candle-momentum",
+    "ema3",
+    "gold-band-wave"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0384,
+    "pass_60": 0.1363,
+    "pass_90": 0.1747,
+    "pass_180": 0.2706,
+    "breach": 0.0,
+    "median_days": 60,
+    "median_trades": 31
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1188,
+    "pass_60": 0.3755,
+    "pass_90": 0.5479,
+    "pass_180": 0.5556,
+    "breach": 0.0,
+    "median_days": 50,
+    "median_trades": 31
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.0812,
+    "pass_60": 0.3249,
+    "pass_90": 0.4594,
+    "pass_180": 0.5838,
+    "breach": 0.0076,
+    "median_days": 56,
+    "median_trades": 27
+   }
+  },
+  {
+   "kind": "ref:Core9+P4",
+   "model": "GUARD",
+   "risk": 0.005,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0326,
+    "pass_60": 0.1785,
+    "pass_90": 0.3532,
+    "pass_180": 0.6468,
+    "breach": 0.0,
+    "median_days": 87,
+    "median_trades": 118
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1686,
+    "pass_60": 0.5862,
+    "pass_90": 0.908,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 50,
+    "median_trades": 82
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1447,
+    "pass_60": 0.5431,
+    "pass_90": 0.8223,
+    "pass_180": 0.8604,
+    "breach": 0.0,
+    "median_days": 54,
+    "median_trades": 88
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.089,
+    "pass_60": 0.351,
+    "pass_90": 0.5655,
+    "pass_180": 0.7795,
+    "breach": 0.0,
+    "median_days": 65,
+    "median_trades": 110
+   }
+  },
+  {
+   "kind": "ref:Core9+P4",
+   "model": "GUARD",
+   "risk": 0.0075,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0345,
+    "pass_60": 0.1612,
+    "pass_90": 0.2821,
+    "pass_180": 0.4069,
+    "breach": 0.0,
+    "median_days": 66,
+    "median_trades": 69
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.249,
+    "pass_60": 0.5939,
+    "pass_90": 0.7318,
+    "pass_180": 0.8084,
+    "breach": 0.0,
+    "median_days": 42,
+    "median_trades": 53
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1396,
+    "pass_60": 0.4112,
+    "pass_90": 0.5761,
+    "pass_180": 0.7386,
+    "breach": 0.0,
+    "median_days": 56,
+    "median_trades": 69
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.128,
+    "pass_60": 0.364,
+    "pass_90": 0.52,
+    "pass_180": 0.631,
+    "breach": 0.0005,
+    "median_days": 54,
+    "median_trades": 64
+   }
+  },
+  {
+   "kind": "ref:Core9+P4",
+   "model": "GUARD",
+   "risk": 0.01,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0441,
+    "pass_60": 0.2054,
+    "pass_90": 0.3071,
+    "pass_180": 0.3973,
+    "breach": 0.0038,
+    "median_days": 58,
+    "median_trades": 43
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1379,
+    "pass_60": 0.4215,
+    "pass_90": 0.6245,
+    "pass_180": 0.7165,
+    "breach": 0.0,
+    "median_days": 51,
+    "median_trades": 38
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1802,
+    "pass_60": 0.467,
+    "pass_90": 0.5381,
+    "pass_180": 0.5635,
+    "breach": 0.0,
+    "median_days": 40,
+    "median_trades": 33
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.0815,
+    "pass_60": 0.279,
+    "pass_90": 0.3965,
+    "pass_180": 0.498,
+    "breach": 0.0005,
+    "median_days": 58,
+    "median_trades": 42
+   }
+  },
+  {
+   "kind": "ref:Core9+P4",
+   "model": "GUARD",
+   "risk": 0.0125,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0441,
+    "pass_60": 0.1747,
+    "pass_90": 0.2706,
+    "pass_180": 0.3762,
+    "breach": 0.0096,
+    "median_days": 64,
+    "median_trades": 40
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1801,
+    "pass_60": 0.4368,
+    "pass_90": 0.6628,
+    "pass_180": 0.751,
+    "breach": 0.0,
+    "median_days": 50,
+    "median_trades": 32
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1472,
+    "pass_60": 0.3629,
+    "pass_90": 0.4467,
+    "pass_180": 0.4772,
+    "breach": 0.0,
+    "median_days": 40,
+    "median_trades": 33
+   }
+  },
+  {
+   "kind": "ref:ALL13",
+   "model": "GUARD",
+   "risk": 0.005,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0307,
+    "pass_60": 0.1727,
+    "pass_90": 0.3608,
+    "pass_180": 0.6507,
+    "breach": 0.0,
+    "median_days": 85,
+    "median_trades": 144
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1609,
+    "pass_60": 0.5594,
+    "pass_90": 0.8352,
+    "pass_180": 0.9808,
+    "breach": 0.0,
+    "median_days": 51,
+    "median_trades": 109
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.165,
+    "pass_60": 0.6624,
+    "pass_90": 0.8503,
+    "pass_180": 0.8934,
+    "breach": 0.0,
+    "median_days": 48,
+    "median_trades": 103
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.094,
+    "pass_60": 0.3945,
+    "pass_90": 0.6015,
+    "pass_180": 0.7765,
+    "breach": 0.0,
+    "median_days": 60,
+    "median_trades": 124
+   }
+  },
+  {
+   "kind": "ref:ALL13",
+   "model": "GUARD",
+   "risk": 0.0075,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0441,
+    "pass_60": 0.1862,
+    "pass_90": 0.263,
+    "pass_180": 0.4376,
+    "breach": 0.0,
+    "median_days": 72,
+    "median_trades": 82
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1916,
+    "pass_60": 0.4406,
+    "pass_90": 0.5632,
+    "pass_180": 0.6015,
+    "breach": 0.0,
+    "median_days": 41,
+    "median_trades": 58
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.203,
+    "pass_60": 0.4924,
+    "pass_90": 0.6269,
+    "pass_180": 0.6294,
+    "breach": 0.0,
+    "median_days": 41,
+    "median_trades": 67
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.1445,
+    "pass_60": 0.3795,
+    "pass_90": 0.5135,
+    "pass_180": 0.6065,
+    "breach": 0.0005,
+    "median_days": 51,
+    "median_trades": 72
+   }
+  },
+  {
+   "kind": "ref:ALL13",
+   "model": "GUARD",
+   "risk": 0.01,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0365,
+    "pass_60": 0.2265,
+    "pass_90": 0.3532,
+    "pass_180": 0.501,
+    "breach": 0.0096,
+    "median_days": 65,
+    "median_trades": 47
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1264,
+    "pass_60": 0.3678,
+    "pass_90": 0.5057,
+    "pass_180": 0.5862,
+    "breach": 0.0,
+    "median_days": 50,
+    "median_trades": 46
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1827,
+    "pass_60": 0.4848,
+    "pass_90": 0.5228,
+    "pass_180": 0.533,
+    "breach": 0.0,
+    "median_days": 36,
+    "median_trades": 36
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.09,
+    "pass_60": 0.3015,
+    "pass_90": 0.4035,
+    "pass_180": 0.4925,
+    "breach": 0.0035,
+    "median_days": 52,
+    "median_trades": 45
+   }
+  },
+  {
+   "kind": "ref:ALL13",
+   "model": "GUARD",
+   "risk": 0.0125,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0269,
+    "pass_60": 0.1727,
+    "pass_90": 0.2572,
+    "pass_180": 0.4357,
+    "breach": 0.0096,
+    "median_days": 74,
+    "median_trades": 47
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1418,
+    "pass_60": 0.4023,
+    "pass_90": 0.5364,
+    "pass_180": 0.6207,
+    "breach": 0.0,
+    "median_days": 49,
+    "median_trades": 40
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1497,
+    "pass_60": 0.3985,
+    "pass_90": 0.4645,
+    "pass_180": 0.4822,
+    "breach": 0.0,
+    "median_days": 39,
+    "median_trades": 37
+   }
+  },
+  {
+   "kind": "win",
+   "model": "NOGUARD",
+   "risk": 0.005,
+   "members": [
+    "3-way-gold#930930101",
+    "gold-band-wave",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.096,
+    "pass_60": 0.3071,
+    "pass_90": 0.4798,
+    "pass_180": 0.8426,
+    "breach": 0.0096,
+    "median_days": 78,
+    "median_trades": 186
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.2031,
+    "pass_60": 0.5057,
+    "pass_90": 0.8544,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 60,
+    "median_trades": 129
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1802,
+    "pass_60": 0.6421,
+    "pass_90": 0.8959,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 50,
+    "median_trades": 102
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.13,
+    "pass_60": 0.4695,
+    "pass_90": 0.6985,
+    "pass_180": 0.923,
+    "breach": 0.041,
+    "median_days": 60,
+    "median_trades": 133
+   }
+  },
+  {
+   "kind": "win",
+   "model": "NOGUARD",
+   "risk": 0.0075,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "orb-volume-profile",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0845,
+    "pass_60": 0.2956,
+    "pass_90": 0.4818,
+    "pass_180": 0.7793,
+    "breach": 0.0422,
+    "median_days": 71,
+    "median_trades": 127
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.2107,
+    "pass_60": 0.4023,
+    "pass_90": 0.613,
+    "pass_180": 0.7241,
+    "breach": 0.2759,
+    "median_days": 50,
+    "median_trades": 96
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.2487,
+    "pass_60": 0.7437,
+    "pass_90": 0.8858,
+    "pass_180": 0.8883,
+    "breach": 0.1117,
+    "median_days": 39,
+    "median_trades": 62
+   }
+  },
+  {
+   "kind": "win",
+   "model": "NOGUARD",
+   "risk": 0.01,
+   "members": [
+    "3-way-gold#930930101",
+    "orb-volume-profile",
+    "overnight-bias-orb",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1689,
+    "pass_60": 0.5259,
+    "pass_90": 0.7409,
+    "pass_180": 0.9655,
+    "breach": 0.0345,
+    "median_days": 57,
+    "median_trades": 55
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.2375,
+    "pass_60": 0.5556,
+    "pass_90": 0.59,
+    "pass_180": 0.59,
+    "breach": 0.41,
+    "median_days": 33,
+    "median_trades": 39
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.2157,
+    "pass_60": 0.6447,
+    "pass_90": 0.8909,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 51,
+    "median_trades": 46
+   }
+  },
+  {
+   "kind": "win",
+   "model": "NOGUARD",
+   "risk": 0.0125,
+   "members": [
+    "3-way-gold#930930101",
+    "orb-volume-profile",
+    "us100-selective-orb-v3",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1036,
+    "pass_60": 0.2994,
+    "pass_90": 0.4875,
+    "pass_180": 0.8618,
+    "breach": 0.0269,
+    "median_days": 81,
+    "median_trades": 52
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1648,
+    "pass_60": 0.4368,
+    "pass_90": 0.751,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 66,
+    "median_trades": 37
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1091,
+    "pass_60": 0.4239,
+    "pass_90": 0.6904,
+    "pass_180": 0.9264,
+    "breach": 0.0,
+    "median_days": 65,
+    "median_trades": 42
+   }
+  },
+  {
+   "kind": "win-forced",
+   "model": "NOGUARD",
+   "risk": 0.005,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0422,
+    "pass_60": 0.2572,
+    "pass_90": 0.4376,
+    "pass_180": 0.7678,
+    "breach": 0.0,
+    "median_days": 83,
+    "median_trades": 183
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1494,
+    "pass_60": 0.5556,
+    "pass_90": 0.8966,
+    "pass_180": 0.9387,
+    "breach": 0.0613,
+    "median_days": 50,
+    "median_trades": 105
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1497,
+    "pass_60": 0.5964,
+    "pass_90": 0.8198,
+    "pass_180": 0.901,
+    "breach": 0.099,
+    "median_days": 48,
+    "median_trades": 94
+   }
+  },
+  {
+   "kind": "win-forced",
+   "model": "NOGUARD",
+   "risk": 0.0075,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1977,
+    "pass_60": 0.3493,
+    "pass_90": 0.4242,
+    "pass_180": 0.5029,
+    "breach": 0.4971,
+    "median_days": 39,
+    "median_trades": 66
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.2414,
+    "pass_60": 0.2759,
+    "pass_90": 0.2759,
+    "pass_180": 0.2759,
+    "breach": 0.7241,
+    "median_days": 17,
+    "median_trades": 48
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.4264,
+    "pass_60": 0.6294,
+    "pass_90": 0.6421,
+    "pass_180": 0.6421,
+    "breach": 0.3579,
+    "median_days": 24,
+    "median_trades": 54
+   }
+  },
+  {
+   "kind": "win-forced",
+   "model": "NOGUARD",
+   "risk": 0.01,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1862,
+    "pass_60": 0.263,
+    "pass_90": 0.2937,
+    "pass_180": 0.2956,
+    "breach": 0.7044,
+    "median_days": 24,
+    "median_trades": 34
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.2337,
+    "pass_60": 0.3448,
+    "pass_90": 0.3448,
+    "pass_180": 0.3448,
+    "breach": 0.6552,
+    "median_days": 25,
+    "median_trades": 35
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.3477,
+    "pass_60": 0.3934,
+    "pass_90": 0.3934,
+    "pass_180": 0.3934,
+    "breach": 0.6066,
+    "median_days": 19,
+    "median_trades": 32
+   }
+  },
+  {
+   "kind": "win-forced",
+   "model": "NOGUARD",
+   "risk": 0.0125,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "us100-selective-orb-v3",
+    "xau-rsi-vwap"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.2131,
+    "pass_60": 0.2649,
+    "pass_90": 0.2668,
+    "pass_180": 0.2668,
+    "breach": 0.7332,
+    "median_days": 19,
+    "median_trades": 20
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.3103,
+    "pass_60": 0.3908,
+    "pass_90": 0.3908,
+    "pass_180": 0.3908,
+    "breach": 0.6092,
+    "median_days": 21,
+    "median_trades": 22
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.2893,
+    "pass_60": 0.3223,
+    "pass_90": 0.3249,
+    "pass_180": 0.3249,
+    "breach": 0.6751,
+    "median_days": 16,
+    "median_trades": 18
+   }
+  },
+  {
+   "kind": "ref:Core9",
+   "model": "NOGUARD",
+   "risk": 0.005,
+   "members": [
+    "usdjpy-london-open-momentum",
+    "3-way-gold#930930101",
+    "sell-nasdaq-15min",
+    "xau-rsi-vwap",
+    "ema3",
+    "xau-squeeze-momentum-standard",
+    "orb-volume-profile-volume-confirmed",
+    "us100-selective-orb-v3",
+    "nasdaq-5m-candle-momentum"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0154,
+    "pass_60": 0.215,
+    "pass_90": 0.3647,
+    "pass_180": 0.7351,
+    "breach": 0.2188,
+    "median_days": 91,
+    "median_trades": 149
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1149,
+    "pass_60": 0.3831,
+    "pass_90": 0.7471,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 71,
+    "median_trades": 115
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1117,
+    "pass_60": 0.5685,
+    "pass_90": 0.8274,
+    "pass_180": 1.0,
+    "breach": 0.0,
+    "median_days": 55,
+    "median_trades": 84
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.0505,
+    "pass_60": 0.3425,
+    "pass_90": 0.5775,
+    "pass_180": 0.888,
+    "breach": 0.0455,
+    "median_days": 73,
+    "median_trades": 122
+   }
+  },
+  {
+   "kind": "ref:Core9",
+   "model": "NOGUARD",
+   "risk": 0.0075,
+   "members": [
+    "usdjpy-london-open-momentum",
+    "3-way-gold#930930101",
+    "sell-nasdaq-15min",
+    "xau-rsi-vwap",
+    "ema3",
+    "xau-squeeze-momentum-standard",
+    "orb-volume-profile-volume-confirmed",
+    "us100-selective-orb-v3",
+    "nasdaq-5m-candle-momentum"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1401,
+    "pass_60": 0.3474,
+    "pass_90": 0.4837,
+    "pass_180": 0.5681,
+    "breach": 0.428,
+    "median_days": 50,
+    "median_trades": 74
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1992,
+    "pass_60": 0.5709,
+    "pass_90": 0.7548,
+    "pass_180": 0.7816,
+    "breach": 0.2184,
+    "median_days": 44,
+    "median_trades": 69
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.3376,
+    "pass_60": 0.7284,
+    "pass_90": 0.7868,
+    "pass_180": 0.8122,
+    "breach": 0.1878,
+    "median_days": 34,
+    "median_trades": 52
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.216,
+    "pass_60": 0.513,
+    "pass_90": 0.6695,
+    "pass_180": 0.7735,
+    "breach": 0.2225,
+    "median_days": 47,
+    "median_trades": 72
+   }
+  },
+  {
+   "kind": "ref:Core9",
+   "model": "NOGUARD",
+   "risk": 0.01,
+   "members": [
+    "usdjpy-london-open-momentum",
+    "3-way-gold#930930101",
+    "sell-nasdaq-15min",
+    "xau-rsi-vwap",
+    "ema3",
+    "xau-squeeze-momentum-standard",
+    "orb-volume-profile-volume-confirmed",
+    "us100-selective-orb-v3",
+    "nasdaq-5m-candle-momentum"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1747,
+    "pass_60": 0.3282,
+    "pass_90": 0.3781,
+    "pass_180": 0.3781,
+    "breach": 0.6219,
+    "median_days": 33,
+    "median_trades": 40
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.2682,
+    "pass_60": 0.3525,
+    "pass_90": 0.3525,
+    "pass_180": 0.3525,
+    "breach": 0.6475,
+    "median_days": 23,
+    "median_trades": 34
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.3934,
+    "pass_60": 0.6345,
+    "pass_90": 0.6574,
+    "pass_180": 0.6574,
+    "breach": 0.3426,
+    "median_days": 27,
+    "median_trades": 37
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.2645,
+    "pass_60": 0.4245,
+    "pass_90": 0.4525,
+    "pass_180": 0.457,
+    "breach": 0.543,
+    "median_days": 26,
+    "median_trades": 38
+   }
+  },
+  {
+   "kind": "ref:Core9",
+   "model": "NOGUARD",
+   "risk": 0.0125,
+   "members": [
+    "usdjpy-london-open-momentum",
+    "3-way-gold#930930101",
+    "sell-nasdaq-15min",
+    "xau-rsi-vwap",
+    "ema3",
+    "xau-squeeze-momentum-standard",
+    "orb-volume-profile-volume-confirmed",
+    "us100-selective-orb-v3",
+    "nasdaq-5m-candle-momentum"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1631,
+    "pass_60": 0.1958,
+    "pass_90": 0.2111,
+    "pass_180": 0.2111,
+    "breach": 0.7889,
+    "median_days": 20,
+    "median_trades": 22
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.2146,
+    "pass_60": 0.2184,
+    "pass_90": 0.2184,
+    "pass_180": 0.2184,
+    "breach": 0.7816,
+    "median_days": 17,
+    "median_trades": 20
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.3604,
+    "pass_60": 0.4213,
+    "pass_90": 0.4213,
+    "pass_180": 0.4213,
+    "breach": 0.5787,
+    "median_days": 20,
+    "median_trades": 24
+   }
+  },
+  {
+   "kind": "ref:P4",
+   "model": "NOGUARD",
+   "risk": 0.005,
+   "members": [
+    "overnight-bias-orb",
+    "nasdaq-5m-candle-momentum",
+    "ema3",
+    "gold-band-wave"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0096,
+    "pass_60": 0.1113,
+    "pass_90": 0.2092,
+    "pass_180": 0.4971,
+    "breach": 0.1689,
+    "median_days": 101,
+    "median_trades": 172
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.0077,
+    "pass_60": 0.2375,
+    "pass_90": 0.59,
+    "pass_180": 0.8238,
+    "breach": 0.1762,
+    "median_days": 74,
+    "median_trades": 90
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.0812,
+    "pass_60": 0.3223,
+    "pass_90": 0.5254,
+    "pass_180": 0.7893,
+    "breach": 0.1574,
+    "median_days": 70,
+    "median_trades": 87
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.0335,
+    "pass_60": 0.18,
+    "pass_90": 0.342,
+    "pass_180": 0.66,
+    "breach": 0.1435,
+    "median_days": 88,
+    "median_trades": 132
+   }
+  },
+  {
+   "kind": "ref:P4",
+   "model": "NOGUARD",
+   "risk": 0.0075,
+   "members": [
+    "overnight-bias-orb",
+    "nasdaq-5m-candle-momentum",
+    "ema3",
+    "gold-band-wave"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0749,
+    "pass_60": 0.2322,
+    "pass_90": 0.3455,
+    "pass_180": 0.4894,
+    "breach": 0.5106,
+    "median_days": 65,
+    "median_trades": 77
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1533,
+    "pass_60": 0.3985,
+    "pass_90": 0.5364,
+    "pass_180": 0.6169,
+    "breach": 0.3831,
+    "median_days": 50,
+    "median_trades": 44
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.1954,
+    "pass_60": 0.533,
+    "pass_90": 0.7335,
+    "pass_180": 0.797,
+    "breach": 0.198,
+    "median_days": 48,
+    "median_trades": 56
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.118,
+    "pass_60": 0.338,
+    "pass_90": 0.463,
+    "pass_180": 0.6005,
+    "breach": 0.3805,
+    "median_days": 57,
+    "median_trades": 66
+   }
+  },
+  {
+   "kind": "ref:P4",
+   "model": "NOGUARD",
+   "risk": 0.01,
+   "members": [
+    "overnight-bias-orb",
+    "nasdaq-5m-candle-momentum",
+    "ema3",
+    "gold-band-wave"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1286,
+    "pass_60": 0.2284,
+    "pass_90": 0.3071,
+    "pass_180": 0.3321,
+    "breach": 0.6679,
+    "median_days": 39,
+    "median_trades": 36
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.2567,
+    "pass_60": 0.4598,
+    "pass_90": 0.5785,
+    "pass_180": 0.6284,
+    "breach": 0.3716,
+    "median_days": 37,
+    "median_trades": 33
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.231,
+    "pass_60": 0.3477,
+    "pass_90": 0.4365,
+    "pass_180": 0.4365,
+    "breach": 0.5635,
+    "median_days": 29,
+    "median_trades": 28
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.171,
+    "pass_60": 0.3285,
+    "pass_90": 0.363,
+    "pass_180": 0.3785,
+    "breach": 0.621,
+    "median_days": 32,
+    "median_trades": 31
+   }
+  },
+  {
+   "kind": "ref:P4",
+   "model": "NOGUARD",
+   "risk": 0.0125,
+   "members": [
+    "overnight-bias-orb",
+    "nasdaq-5m-candle-momentum",
+    "ema3",
+    "gold-band-wave"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1401,
+    "pass_60": 0.1977,
+    "pass_90": 0.2035,
+    "pass_180": 0.2035,
+    "breach": 0.7965,
+    "median_days": 23,
+    "median_trades": 18
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.249,
+    "pass_60": 0.41,
+    "pass_90": 0.4981,
+    "pass_180": 0.4981,
+    "breach": 0.5019,
+    "median_days": 31,
+    "median_trades": 22
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.269,
+    "pass_60": 0.3401,
+    "pass_90": 0.3452,
+    "pass_180": 0.3452,
+    "breach": 0.6548,
+    "median_days": 21,
+    "median_trades": 18
+   }
+  },
+  {
+   "kind": "ref:Core9+P4",
+   "model": "NOGUARD",
+   "risk": 0.005,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.0787,
+    "pass_60": 0.2783,
+    "pass_90": 0.4568,
+    "pass_180": 0.7044,
+    "breach": 0.2821,
+    "median_days": 71,
+    "median_trades": 145
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1762,
+    "pass_60": 0.6015,
+    "pass_90": 0.9004,
+    "pass_180": 0.9272,
+    "breach": 0.0728,
+    "median_days": 48,
+    "median_trades": 102
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.264,
+    "pass_60": 0.6371,
+    "pass_90": 0.8325,
+    "pass_180": 0.9086,
+    "breach": 0.0914,
+    "median_days": 42,
+    "median_trades": 86
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.1345,
+    "pass_60": 0.463,
+    "pass_90": 0.683,
+    "pass_180": 0.9,
+    "breach": 0.074,
+    "median_days": 60,
+    "median_trades": 124
+   }
+  },
+  {
+   "kind": "ref:Core9+P4",
+   "model": "NOGUARD",
+   "risk": 0.0075,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1958,
+    "pass_60": 0.382,
+    "pass_90": 0.4261,
+    "pass_180": 0.453,
+    "breach": 0.547,
+    "median_days": 36,
+    "median_trades": 62
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.3908,
+    "pass_60": 0.659,
+    "pass_90": 0.6897,
+    "pass_180": 0.6897,
+    "breach": 0.3103,
+    "median_days": 29,
+    "median_trades": 50
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.3756,
+    "pass_60": 0.6599,
+    "pass_90": 0.769,
+    "pass_180": 0.7766,
+    "breach": 0.2234,
+    "median_days": 31,
+    "median_trades": 55
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.2785,
+    "pass_60": 0.506,
+    "pass_90": 0.5735,
+    "pass_180": 0.5905,
+    "breach": 0.4095,
+    "median_days": 32,
+    "median_trades": 58
+   }
+  },
+  {
+   "kind": "ref:Core9+P4",
+   "model": "NOGUARD",
+   "risk": 0.01,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1651,
+    "pass_60": 0.1823,
+    "pass_90": 0.1823,
+    "pass_180": 0.1823,
+    "breach": 0.8177,
+    "median_days": 18,
+    "median_trades": 28
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.3716,
+    "pass_60": 0.4253,
+    "pass_90": 0.4253,
+    "pass_180": 0.4253,
+    "breach": 0.5747,
+    "median_days": 18,
+    "median_trades": 28
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.3274,
+    "pass_60": 0.4137,
+    "pass_90": 0.4137,
+    "pass_180": 0.4137,
+    "breach": 0.5863,
+    "median_days": 21,
+    "median_trades": 31
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.2515,
+    "pass_60": 0.305,
+    "pass_90": 0.307,
+    "pass_180": 0.3075,
+    "breach": 0.6925,
+    "median_days": 18,
+    "median_trades": 28
+   }
+  },
+  {
+   "kind": "ref:Core9+P4",
+   "model": "NOGUARD",
+   "risk": 0.0125,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1536,
+    "pass_60": 0.1593,
+    "pass_90": 0.1593,
+    "pass_180": 0.1593,
+    "breach": 0.8407,
+    "median_days": 15,
+    "median_trades": 17
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.249,
+    "pass_60": 0.249,
+    "pass_90": 0.249,
+    "pass_180": 0.249,
+    "breach": 0.751,
+    "median_days": 13,
+    "median_trades": 17
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.2437,
+    "pass_60": 0.2437,
+    "pass_90": 0.2437,
+    "pass_180": 0.2437,
+    "breach": 0.7563,
+    "median_days": 14,
+    "median_trades": 19
+   }
+  },
+  {
+   "kind": "ref:ALL13",
+   "model": "NOGUARD",
+   "risk": 0.005,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1017,
+    "pass_60": 0.3244,
+    "pass_90": 0.4933,
+    "pass_180": 0.6276,
+    "breach": 0.3724,
+    "median_days": 58,
+    "median_trades": 157
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1877,
+    "pass_60": 0.5326,
+    "pass_90": 0.613,
+    "pass_180": 0.613,
+    "breach": 0.387,
+    "median_days": 37,
+    "median_trades": 118
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.3122,
+    "pass_60": 0.7157,
+    "pass_90": 0.8655,
+    "pass_180": 0.9949,
+    "breach": 0.0051,
+    "median_days": 41,
+    "median_trades": 109
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.1725,
+    "pass_60": 0.5195,
+    "pass_90": 0.7015,
+    "pass_180": 0.816,
+    "breach": 0.174,
+    "median_days": 51,
+    "median_trades": 140
+   }
+  },
+  {
+   "kind": "ref:ALL13",
+   "model": "NOGUARD",
+   "risk": 0.0075,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.2035,
+    "pass_60": 0.3628,
+    "pass_90": 0.405,
+    "pass_180": 0.4223,
+    "breach": 0.5777,
+    "median_days": 31,
+    "median_trades": 64
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.2644,
+    "pass_60": 0.3103,
+    "pass_90": 0.3103,
+    "pass_180": 0.3103,
+    "breach": 0.6897,
+    "median_days": 18,
+    "median_trades": 49
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.4137,
+    "pass_60": 0.5914,
+    "pass_90": 0.6015,
+    "pass_180": 0.6015,
+    "breach": 0.3985,
+    "median_days": 23,
+    "median_trades": 55
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.2675,
+    "pass_60": 0.4035,
+    "pass_90": 0.42,
+    "pass_180": 0.422,
+    "breach": 0.578,
+    "median_days": 24,
+    "median_trades": 58
+   }
+  },
+  {
+   "kind": "ref:ALL13",
+   "model": "NOGUARD",
+   "risk": 0.01,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1305,
+    "pass_60": 0.1382,
+    "pass_90": 0.1382,
+    "pass_180": 0.1382,
+    "breach": 0.8618,
+    "median_days": 14,
+    "median_trades": 26
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1686,
+    "pass_60": 0.1801,
+    "pass_90": 0.1801,
+    "pass_180": 0.1801,
+    "breach": 0.8199,
+    "median_days": 14,
+    "median_trades": 26
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.3325,
+    "pass_60": 0.3553,
+    "pass_90": 0.3553,
+    "pass_180": 0.3553,
+    "breach": 0.6447,
+    "median_days": 17,
+    "median_trades": 30
+   },
+   "mc": {
+    "n": 2000,
+    "pass_30": 0.1985,
+    "pass_60": 0.208,
+    "pass_90": 0.208,
+    "pass_180": 0.208,
+    "breach": 0.792,
+    "median_days": 15,
+    "median_trades": 25
+   }
+  },
+  {
+   "kind": "ref:ALL13",
+   "model": "NOGUARD",
+   "risk": 0.0125,
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "dev": {
+    "n": 521,
+    "pass_30": 0.1152,
+    "pass_60": 0.1152,
+    "pass_90": 0.1152,
+    "pass_180": 0.1152,
+    "breach": 0.8848,
+    "median_days": 10,
+    "median_trades": 15
+   },
+   "val": {
+    "n": 261,
+    "pass_30": 0.1226,
+    "pass_60": 0.1226,
+    "pass_90": 0.1226,
+    "pass_180": 0.1226,
+    "breach": 0.8774,
+    "median_days": 14,
+    "median_trades": 17
+   },
+   "oos": {
+    "n": 394,
+    "pass_30": 0.2386,
+    "pass_60": 0.2386,
+    "pass_90": 0.2386,
+    "pass_180": 0.2386,
+    "breach": 0.7614,
+    "median_days": 13,
+    "median_trades": 21
+   }
+  }
+ ]
+}

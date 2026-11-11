@@ -1,8 +1,10 @@
 """Calyx MT5 -> Telegram signal forwarder (owner request 2026-10-29).
 
 Watches ONE MetaTrader 5 terminal (you pick it at start) and posts every trading event of its logged-in account to a Telegram channel:
-new positions (entry / TP / SL / bot name), SL / TP updates, partial and full closes (exit, result, reason), pending orders (placed,
-modified, filled, cancelled, expired). Updates and closes are posted as replies to the original signal message.
+new positions (entry / TP / SL / bot name), partial and full closes (exit, result, reason) and one daily recap. Closes are posted as
+replies to the original signal message. Owner 2026-11-09: entries, exits and the daily recap only, so the channel is not flooded:
+SL / TP moves (trailing stops update every minute) and pending-order messages are OFF by default (SIGNALS_SHOW_UPDATES /
+SIGNALS_SHOW_PENDING=true bring them back). A pending order that fills is still posted, as a normal entry.
 
 READ-ONLY: it only calls account_info / terminal_info / positions_get / orders_get / history_deals_get / history_orders_get /
 symbol_info. It never sends, modifies or closes orders, and it REFUSES to start a terminal that is not already running (the MT5 Python
@@ -33,7 +35,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 STATE_DIR = HERE / 'state'
 LOG_DIR = HERE / 'logs'
-VERSION = 'signals-1.2-20261029'
+VERSION = 'signals-1.3-20261109'
 
 # MT5 enum values (the MetaTrader5 module exposes the same numbers; kept here so the logic is testable without a terminal)
 DEAL_BUY, DEAL_SELL = 0, 1
@@ -79,7 +81,8 @@ class Config:
         self.risk_note = env.get('SIGNALS_RISK_NOTE', RISK_NOTE).strip()      # shown on every new signal / pending order (empty = off)
         self.show_money = flag(env, 'SIGNALS_SHOW_PROFIT', False)            # $ results reveal the account size: off by default
         self.show_r = flag(env, 'SIGNALS_SHOW_R', True)
-        self.show_pending = flag(env, 'SIGNALS_SHOW_PENDING', True)
+        self.show_pending = flag(env, 'SIGNALS_SHOW_PENDING', False)          # pending placed / modified / cancelled (fills always post as entries)
+        self.show_updates = flag(env, 'SIGNALS_SHOW_UPDATES', False)          # SL / TP moves: trailing stops would post every minute
         self.show_account = flag(env, 'SIGNALS_SHOW_ACCOUNT_EVENTS', False)  # deposits / withdrawals (no amounts unless SHOW_PROFIT)
         self.reply = flag(env, 'SIGNALS_REPLY_TO_SIGNAL', True)
         self.announce_open = flag(env, 'SIGNALS_ANNOUNCE_OPEN_ON_START', False)
@@ -361,7 +364,8 @@ class Watcher:
             old = s['positions'].get(k)
             if old is None:                                                  # opened without a visible deal yet (history lag): announce now
                 self.announce_open(k, p, None, False); changed = True; continue
-            if (abs((p['sl'] or 0) - (old['sl'] or 0)) > 1e-12 or abs((p['tp'] or 0) - (old['tp'] or 0)) > 1e-12) and self.wanted(p['magic']):
+            if not s['initial_sl'].get(k) and p['sl']: s['initial_sl'][k] = p['sl']   # R counts from the first stop, also when updates are not posted
+            if (abs((p['sl'] or 0) - (old['sl'] or 0)) > 1e-12 or abs((p['tp'] or 0) - (old['tp'] or 0)) > 1e-12) and self.wanted(p['magic']) and self.cfg.show_updates:
                 sl_moved = abs((p['sl'] or 0) - (old['sl'] or 0)) > 1e-12
                 lines = ['✏️ <b>TRADE UPDATE</b>', '', self.tag(p['side'], p['symbol'], p['magic'], p['comment']), '']
                 if sl_moved: lines.append(f"🛑 SL moved → {self.b(self.px(p['symbol'], p['sl']))}" if p['sl'] else '🛑 SL removed')

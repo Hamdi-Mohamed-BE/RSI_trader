@@ -1,0 +1,539 @@
+{
+ "window": [
+  "2026-09-10",
+  "2026-11-10"
+ ],
+ "eas": {
+  "3-way-gold#930930101": {
+   "trades": 8,
+   "per_month": 3.9,
+   "per_day": 0.18,
+   "win": 50.0,
+   "pf": 0.78,
+   "total_r": -0.98,
+   "closed_dd_r": 3.22,
+   "worst_day_r": -1.21
+  },
+  "ema3": {
+   "trades": 7,
+   "per_month": 3.4,
+   "per_day": 0.16,
+   "win": 57.1,
+   "pf": 2.17,
+   "total_r": 5.39,
+   "closed_dd_r": 1.77,
+   "worst_day_r": -1.77
+  },
+  "gold-band-wave": {
+   "trades": 9,
+   "per_month": 4.4,
+   "per_day": 0.2,
+   "win": 44.4,
+   "pf": 2.05,
+   "total_r": 4.49,
+   "closed_dd_r": 2.16,
+   "worst_day_r": -1.45
+  },
+  "nasdaq-5m-candle-momentum": {
+   "trades": 43,
+   "per_month": 21.1,
+   "per_day": 0.97,
+   "win": 60.5,
+   "pf": 1.97,
+   "total_r": 16.85,
+   "closed_dd_r": 3.41,
+   "worst_day_r": -2.05
+  },
+  "orb-volume-profile": {
+   "trades": 13,
+   "per_month": 6.4,
+   "per_day": 0.29,
+   "win": 38.5,
+   "pf": 0.88,
+   "total_r": -0.88,
+   "closed_dd_r": 6.31,
+   "worst_day_r": -1.14
+  },
+  "orb-volume-profile-volume-confirmed": {
+   "trades": 5,
+   "per_month": 2.5,
+   "per_day": 0.11,
+   "win": 60.0,
+   "pf": 1.92,
+   "total_r": 2.02,
+   "closed_dd_r": 1.63,
+   "worst_day_r": -1.12
+  },
+  "overnight-bias-orb": {
+   "trades": 20,
+   "per_month": 9.8,
+   "per_day": 0.45,
+   "win": 55.0,
+   "pf": 3.2,
+   "total_r": 13.62,
+   "closed_dd_r": 3.16,
+   "worst_day_r": -1.06
+  },
+  "sell-nasdaq-15min": {
+   "trades": 7,
+   "per_month": 3.4,
+   "per_day": 0.16,
+   "win": 42.9,
+   "pf": 1.59,
+   "total_r": 2.42,
+   "closed_dd_r": 3.08,
+   "worst_day_r": -1.05
+  },
+  "us100-selective-orb-v3": {
+   "trades": 1,
+   "per_month": 0.5,
+   "per_day": 0.02,
+   "win": 0.0,
+   "pf": 0.0,
+   "total_r": -0.06,
+   "closed_dd_r": 0.06,
+   "worst_day_r": -0.06
+  },
+  "usdjpy-london-open-momentum": {
+   "trades": 16,
+   "per_month": 7.9,
+   "per_day": 0.36,
+   "win": 18.8,
+   "pf": 0.32,
+   "total_r": -4.16,
+   "closed_dd_r": 4.45,
+   "worst_day_r": -1.04
+  },
+  "vault-break": {
+   "trades": 57,
+   "per_month": 28.0,
+   "per_day": 1.29,
+   "win": 57.9,
+   "pf": 0.77,
+   "total_r": -5.03,
+   "closed_dd_r": 10.74,
+   "worst_day_r": -1.54
+  },
+  "xau-rsi-vwap": {
+   "trades": 12,
+   "per_month": 5.9,
+   "per_day": 0.27,
+   "win": 75.0,
+   "pf": 1.43,
+   "total_r": 1.59,
+   "closed_dd_r": 2.59,
+   "worst_day_r": -1.25
+  },
+  "xau-squeeze-momentum-standard": {
+   "trades": 1,
+   "per_month": 0.5,
+   "per_day": 0.02,
+   "win": 100.0,
+   "pf": null,
+   "total_r": 0.1,
+   "closed_dd_r": 0.0,
+   "worst_day_r": 0.1
+  }
+ },
+ "profiles": {
+  "GUARD pick (0.5%)": {
+   "members": [
+    "3-way-gold#930930101",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "stats": {
+    "trades": 183,
+    "per_month": 89.8,
+    "per_day": 4.13,
+    "win": 53.6,
+    "pf": 1.35,
+    "total_r": 25.49,
+    "closed_dd_r": 9.96,
+    "worst_day_r": -5.1
+   },
+   "ftmo": {
+    "0.005": {
+     "pass_30": 0.174,
+     "breach_30": 0.0,
+     "starts_30": 23,
+     "pass_60": 1.0,
+     "breach_60": 0.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "pass",
+      "day": 58
+     }
+    }
+   }
+  },
+  "GUARD-FORCED pick (0.75%)": {
+   "members": [
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "stats": {
+    "trades": 184,
+    "per_month": 90.3,
+    "per_day": 4.16,
+    "win": 53.3,
+    "pf": 1.42,
+    "total_r": 30.95,
+    "closed_dd_r": 9.96,
+    "worst_day_r": -5.57
+   },
+   "ftmo": {
+    "0.0075": {
+     "pass_30": 0.174,
+     "breach_30": 0.565,
+     "starts_30": 23,
+     "pass_60": 0.5,
+     "breach_60": 0.5,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "breach",
+      "day": 41
+     }
+    }
+   }
+  },
+  "NOGUARD pick (0.5%)": {
+   "members": [
+    "3-way-gold#930930101",
+    "gold-band-wave",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "stats": {
+    "trades": 149,
+    "per_month": 73.1,
+    "per_day": 3.36,
+    "win": 51.0,
+    "pf": 1.22,
+    "total_r": 13.13,
+    "closed_dd_r": 12.65,
+    "worst_day_r": -4.08
+   },
+   "ftmo": {
+    "0.005": {
+     "pass_30": 0.0,
+     "breach_30": 0.0,
+     "starts_30": 23,
+     "pass_60": 0.0,
+     "breach_60": 0.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "open",
+      "day": null
+     }
+    }
+   }
+  },
+  "NOGUARD-FORCED pick (0.5%)": {
+   "members": [
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "stats": {
+    "trades": 164,
+    "per_month": 80.5,
+    "per_day": 3.7,
+    "win": 54.9,
+    "pf": 1.48,
+    "total_r": 29.42,
+    "closed_dd_r": 7.09,
+    "worst_day_r": -5.57
+   },
+   "ftmo": {
+    "0.005": {
+     "pass_30": 0.13,
+     "breach_30": 0.0,
+     "starts_30": 23,
+     "pass_60": 1.0,
+     "breach_60": 0.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "pass",
+      "day": 39
+     }
+    }
+   }
+  },
+  "Core9": {
+   "members": [
+    "usdjpy-london-open-momentum",
+    "3-way-gold#930930101",
+    "sell-nasdaq-15min",
+    "xau-rsi-vwap",
+    "ema3",
+    "xau-squeeze-momentum-standard",
+    "orb-volume-profile-volume-confirmed",
+    "us100-selective-orb-v3",
+    "nasdaq-5m-candle-momentum"
+   ],
+   "stats": {
+    "trades": 100,
+    "per_month": 49.1,
+    "per_day": 2.26,
+    "win": 53.0,
+    "pf": 1.54,
+    "total_r": 23.17,
+    "closed_dd_r": 6.96,
+    "worst_day_r": -3.29
+   },
+   "ftmo": {
+    "0.005": {
+     "pass_30": 0.043,
+     "breach_30": 0.0,
+     "starts_30": 23,
+     "pass_60": 1.0,
+     "breach_60": 0.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "pass",
+      "day": 58
+     }
+    },
+    "0.0075": {
+     "pass_30": 0.261,
+     "breach_30": 0.0,
+     "starts_30": 23,
+     "pass_60": 1.0,
+     "breach_60": 0.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "pass",
+      "day": 51
+     }
+    },
+    "0.01": {
+     "pass_30": 0.174,
+     "breach_30": 0.652,
+     "starts_30": 23,
+     "pass_60": 0.5,
+     "breach_60": 0.5,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "breach",
+      "day": 2
+     }
+    }
+   }
+  },
+  "P4": {
+   "members": [
+    "overnight-bias-orb",
+    "nasdaq-5m-candle-momentum",
+    "ema3",
+    "gold-band-wave"
+   ],
+   "stats": {
+    "trades": 79,
+    "per_month": 38.8,
+    "per_day": 1.78,
+    "win": 57.0,
+    "pf": 2.24,
+    "total_r": 40.34,
+    "closed_dd_r": 5.7,
+    "worst_day_r": -5.7
+   },
+   "ftmo": {
+    "0.005": {
+     "pass_30": 0.435,
+     "breach_30": 0.0,
+     "starts_30": 23,
+     "pass_60": 1.0,
+     "breach_60": 0.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "pass",
+      "day": 39
+     }
+    },
+    "0.0075": {
+     "pass_30": 0.957,
+     "breach_30": 0.0,
+     "starts_30": 23,
+     "pass_60": 1.0,
+     "breach_60": 0.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "pass",
+      "day": 29
+     }
+    },
+    "0.01": {
+     "pass_30": 1.0,
+     "breach_30": 0.0,
+     "starts_30": 23,
+     "pass_60": 1.0,
+     "breach_60": 0.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "pass",
+      "day": 29
+     }
+    }
+   }
+  },
+  "Core9+P4": {
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "stats": {
+    "trades": 129,
+    "per_month": 63.3,
+    "per_day": 2.91,
+    "win": 52.7,
+    "pf": 1.78,
+    "total_r": 41.28,
+    "closed_dd_r": 8.34,
+    "worst_day_r": -5.35
+   },
+   "ftmo": {
+    "0.005": {
+     "pass_30": 0.391,
+     "breach_30": 0.0,
+     "starts_30": 23,
+     "pass_60": 1.0,
+     "breach_60": 0.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "pass",
+      "day": 44
+     }
+    },
+    "0.0075": {
+     "pass_30": 0.826,
+     "breach_30": 0.0,
+     "starts_30": 23,
+     "pass_60": 1.0,
+     "breach_60": 0.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "pass",
+      "day": 37
+     }
+    },
+    "0.01": {
+     "pass_30": 0.522,
+     "breach_30": 0.391,
+     "starts_30": 23,
+     "pass_60": 0.5,
+     "breach_60": 0.5,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "breach",
+      "day": 2
+     }
+    }
+   }
+  },
+  "ALL13": {
+   "members": [
+    "3-way-gold#930930101",
+    "ema3",
+    "gold-band-wave",
+    "nasdaq-5m-candle-momentum",
+    "orb-volume-profile",
+    "orb-volume-profile-volume-confirmed",
+    "overnight-bias-orb",
+    "sell-nasdaq-15min",
+    "us100-selective-orb-v3",
+    "usdjpy-london-open-momentum",
+    "vault-break",
+    "xau-rsi-vwap",
+    "xau-squeeze-momentum-standard"
+   ],
+   "stats": {
+    "trades": 199,
+    "per_month": 97.7,
+    "per_day": 4.49,
+    "win": 53.3,
+    "pf": 1.43,
+    "total_r": 35.36,
+    "closed_dd_r": 9.96,
+    "worst_day_r": -6.85
+   },
+   "ftmo": {
+    "0.005": {
+     "pass_30": 0.304,
+     "breach_30": 0.0,
+     "starts_30": 23,
+     "pass_60": 1.0,
+     "breach_60": 0.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "pass",
+      "day": 51
+     }
+    },
+    "0.0075": {
+     "pass_30": 0.087,
+     "breach_30": 0.652,
+     "starts_30": 23,
+     "pass_60": 0.0,
+     "breach_60": 1.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "breach",
+      "day": 41
+     }
+    },
+    "0.01": {
+     "pass_30": 0.087,
+     "breach_30": 0.913,
+     "starts_30": 23,
+     "pass_60": 0.0,
+     "breach_60": 1.0,
+     "starts_60": 2,
+     "started_sep10": {
+      "status": "breach",
+      "day": 2
+     }
+    }
+   }
+  }
+ }
+}

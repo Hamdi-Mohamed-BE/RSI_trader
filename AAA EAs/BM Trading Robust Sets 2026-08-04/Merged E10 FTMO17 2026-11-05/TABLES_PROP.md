@@ -25,6 +25,12 @@
 | E10 + Gold Overnight | no guard | 0.50% | 69% | 17% | 115.0 | 5% | 0% | 31% / 92% / 100% |
 | E10 + Gold Overnight | no guard | 0.75% | 77% | 36% | 93 | 14% | 0% | 55% / 88% / 100% |
 | E10 + Gold Overnight | no guard | 1.00% | 70% | 45% | 74.0 | 27% | 0% | 57% / 82% / 88% |
+| Core 9 | guard | 0.50% | 66% | 13% | 122 | 0% | 9% | 41% / 88% / 88% |
+| Core 9 | guard | 0.75% | 74% | 33% | 95.0 | 0% | 28% | 63% / 98% / 82% |
+| Core 9 | guard | 1.00% | 67% | 38% | 85 | 0% | 42% | 67% / 69% / 78% |
+| Core 9 | no guard | 0.50% | 72% | 16% | 117.0 | 1% | 0% | 58% / 82% / 90% |
+| Core 9 | no guard | 0.75% | 84% | 40% | 93.0 | 7% | 0% | 69% / 94% / 93% |
+| Core 9 | no guard | 1.00% | 84% | 56% | 72 | 14% | 0% | 70% / 80% / 84% |
 
 ## FTMO 1-Step: pass within 180 days (guard = the built ftmo 1_step guard)
 | Portfolio | Guard | Risk | Pass | Pass within 60 / 90 d | Median days | Breach | Stuck | Pass by start: 2021-23 / 2023-24 / 2024-26 |
@@ -53,6 +59,12 @@
 | E10 + Gold Overnight | no guard | 0.50% | 85% | 33% / 58% | 72 | 10% | 0% | 66% / 99% / 95% |
 | E10 + Gold Overnight | no guard | 0.75% | 60% | 38% / 50% | 51 | 40% | 0% | 33% / 64% / 78% |
 | E10 + Gold Overnight | no guard | 1.00% | 26% | 22% / 25% | 25 | 74% | 0% | 14% / 25% / 42% |
+| Core 9 | guard | 0.50% | 85% | 27% / 50% | 80 | 0% | 10% | 71% / 100% / 88% |
+| Core 9 | guard | 0.75% | 76% | 35% / 55% | 65.0 | 0% | 24% | 75% / 88% / 80% |
+| Core 9 | guard | 1.00% | 61% | 25% / 41% | 71 | 3% | 35% | 62% / 58% / 69% |
+| Core 9 | no guard | 0.50% | 89% | 32% / 57% | 74 | 3% | 0% | 75% / 100% / 100% |
+| Core 9 | no guard | 0.75% | 84% | 52% / 70% | 52.0 | 15% | 0% | 66% / 90% / 84% |
+| Core 9 | no guard | 1.00% | missing |||||| 
 
 ## Funded $100k (FTMO standard funded rules, 36-month MC)
 | Portfolio | Guard | Risk | Income / month while trading | Total 36 m median / mean | Median life (days) | Frozen / breached / still trading | Trades / month |
@@ -81,3 +93,9 @@
 | E10 + Gold Overnight | no guard | 0.50% | $3,638 | $121k / $109k | > 1,092 | 0% / 35% / 65% | 67.2 |
 | E10 + Gold Overnight | no guard | 0.75% | $5,523 | $82k / $99k | 418 | 0% / 84% / 16% | 67.3 |
 | E10 + Gold Overnight | no guard | 1.00% | $6,422 | $29k / $48k | 137 | 0% / 100% / 0% | 67.5 |
+| Core 9 | guard | 0.50% | missing ||||| 
+| Core 9 | guard | 0.75% | missing ||||| 
+| Core 9 | guard | 1.00% | missing ||||| 
+| Core 9 | no guard | 0.50% | missing ||||| 
+| Core 9 | no guard | 0.75% | missing ||||| 
+| Core 9 | no guard | 1.00% | missing ||||| 

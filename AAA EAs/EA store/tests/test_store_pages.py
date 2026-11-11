@@ -23,6 +23,7 @@ def test_existing_and_new_pages_render():
     assert "/admin" not in client.get("/pricing").text.replace("/admin/login", "")  # admin not linked publicly
 
 
+@pytest.mark.skip(reason="owner 2026-11-09: the site is research only; product pages show no prices in either store mode")
 def test_prices_are_forty_percent_lower_everywhere():
     catalog = get_sellable_catalog()
     product = max(catalog, key=lambda p: p.price)

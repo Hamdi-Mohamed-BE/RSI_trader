@@ -16,7 +16,7 @@ CAUTION = (
     "recorded-cost returns can overstate live performance. Fixed one CFD lot, no protective stop, and delayed/weekend "
     "exits are possible. Included in normal BATs by owner request with historical-loss sizing; "
     "the displayed results are the original one-lot benchmark, not the new sized portfolio. "
-    "FTMO/Ava installers and licensed checkout remain excluded."
+    "FTMO/Ava installers and licensed packages remain excluded."
 )
 
 

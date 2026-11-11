@@ -72,7 +72,13 @@ Messages use Telegram formatting: bold values, emojis, and a header that names t
 ```
 The risk note replaces the lot size. Change the text with `SIGNALS_RISK_NOTE`, or leave it empty to turn it off.
 
-Updates and closes are **replies** to the original signal:
+**What is posted (2026-11-09, signals-1.3):** entries, exits (full and partial closes) and the daily recap only.
+- SL / TP moves are **off** (`SIGNALS_SHOW_UPDATES=false`). A trailing stop changes every minute, and those messages make people mute the channel.
+- Pending-order messages (placed, modified, cancelled) are **off** (`SIGNALS_SHOW_PENDING=false`). A pending order that fills is still posted, as a normal entry.
+- R in the exit message is still measured from the first stop.
+- Set either flag to `true` to bring those messages back. The list below describes every message type the forwarder can send.
+
+Closes (and, when switched on, updates) are **replies** to the original signal:
 - **Update:** `✏️ TRADE UPDATE` with `🛑 SL moved → 25100.00`, plus `🔒 risk-free` when the stop reaches entry.
 - **Partial close:** `💰 PARTIAL CLOSE` with `📤 Exit`, `✂️ Closed: 50% of the position` and `📊 Result: +1.00R (+100.00)`.
 - **Close:** the headline depends on the result:

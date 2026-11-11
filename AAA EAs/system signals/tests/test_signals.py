@@ -47,7 +47,7 @@ def env(tmp_path):
     mt5 = FakeMT5()
     mt5.positions[1] = Pos(1, 'XAUUSDm', 0, 926400006, '', 1990.0, 2050.0, 0.1, 2000.0, mt5.t)   # open before the first start: not announced
     out = S.ConsoleSender()
-    w = S.Watcher(mt5, cfg(), out, {862020: 'nasdaq 5m', 926400006: 'gold RSI VWAP'}, tmp_path / 'state.json', tmp_path / 'logs')
+    w = S.Watcher(mt5, cfg(show_pending=True, show_updates=True), out, {862020: 'nasdaq 5m', 926400006: 'gold RSI VWAP'}, tmp_path / 'state.json', tmp_path / 'logs')   # every event type on
     w.start(1234567, 'Broker-Demo')
     return mt5, out, w, tmp_path
 
@@ -215,3 +215,20 @@ def test_daily_recap(env):
     n = len(out.sent); clock[0] = datetime(2026, 11, 7, 22, 5, tzinfo=timezone.utc).timestamp(); w.poll()
     assert len(out.sent) == n                                         # Saturday: no recap
     assert n0 <= len(out.sent)
+
+
+def test_default_posts_only_entries_exits_and_recap(tmp_path):
+    """Owner 2026-11-09: no SL / TP moves and no pending-order messages by default; a filled pending order still posts as an entry,
+    and R still counts from the first stop."""
+    mt5 = FakeMT5(); out = S.ConsoleSender(); c = S.Config({}); c.chat = '@chan'
+    assert c.show_updates is False and c.show_pending is False and c.recap is True
+    w = S.Watcher(mt5, c, out, {862020: 'nasdaq 5m'}, tmp_path / 'state.json', tmp_path / 'logs'); w.start(1234567, 'Broker-Demo')
+    mt5.positions[5] = Pos(5, 'USTEC', 0, 862020, '', 24900.0, 0.0, 1.0, 25000.0, mt5.t); mt5.deal(50, 5, 0, 0, 25000.0, 1.0)
+    w.poll(); assert len(out.sent) == 1 and 'Entry' in texts(out)[0]
+    for sl in (24950.0, 25000.0, 25050.0):                         # trailing stop moves: silent
+        mt5.positions[5] = mt5.positions[5]._replace(sl=sl); w.poll()
+    mt5.orders[60] = Ord(60, 'USTEC', 4, 862020, '', 25500.0, 25400.0, 0.0, 1.0, 0, 0.0); w.poll()
+    del mt5.orders[60]; mt5.hist[60] = Hist(60, 2, 0, 0); w.poll()  # placed and cancelled: silent
+    assert len(out.sent) == 1
+    del mt5.positions[5]; mt5.deal(51, 5, 1, 1, 25050.0, 1.0, reason=4); w.poll()
+    assert len(out.sent) == 2 and '+0.50R' in texts(out)[1] and out.sent[1]['reply_to'] == out.sent[0]['id']

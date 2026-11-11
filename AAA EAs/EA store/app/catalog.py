@@ -122,6 +122,7 @@ class Product(BaseModel):
     featured: bool = False
     development: bool = False
     website_only: bool = False  # Research listing; not a sellable/installer/portfolio member.
+    research_note: str | None = None  # 2026-11-10 research listings (app/research_products.py); hourly listings leave it None
     supported_evidence_periods: tuple[str, ...] = ("6m", "1y", "3y", "5y")
     safe_filter_supported: bool = False
     recommended_safe_mode: bool = False
@@ -3110,7 +3111,8 @@ def get_catalog() -> list[Product]:
         )
     from .admission_release import apply_product_release
     from .hourly_profiles import website_products
-    published=[apply_product_release(product) for product in products] + website_products()
+    from .research_products import website_products as research_website_products
+    published=[apply_product_release(product) for product in products] + website_products() + research_website_products()
     policy_path=PACKAGE_ROOT/'_00 Live profiles/ORB05-policy.json'
     if policy_path.is_file():
         policy=json.loads(policy_path.read_text(encoding='utf-8'))

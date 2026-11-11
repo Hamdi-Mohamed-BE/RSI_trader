@@ -1,0 +1,540 @@
+{
+ "windows": {
+  "dev": [
+   "2019-07-16",
+   "2023-11-11"
+  ],
+  "val": [
+   "2023-11-11",
+   "2024-11-11"
+  ],
+  "oos": [
+   "2024-11-11",
+   "2026-11-11"
+  ],
+  "all": [
+   "2019-07-16",
+   "2026-11-11"
+  ],
+  "parity": [
+   "2019-07-16",
+   "2026-11-10"
+  ]
+ },
+ "plateau": [
+  {
+   "sig": "5979fa011b",
+   "neighbours": 18,
+   "profitable_share": 1.0,
+   "passes": true
+  },
+  {
+   "sig": "b1f4df9dc8",
+   "neighbours": 16,
+   "profitable_share": 1.0,
+   "passes": true
+  },
+  {
+   "sig": "6dd3f469a7",
+   "neighbours": 19,
+   "profitable_share": 1.0,
+   "passes": true
+  }
+ ],
+ "base_dev": {
+  "sig": "327cd10ee8",
+  "window": "dev",
+  "model": 4,
+  "tag": "baseline",
+  "ret": 14.89,
+  "pf": 1.059,
+  "trades": 904,
+  "win": 62.4,
+  "dd": 11.68,
+  "score": 1.275,
+  "changes": {},
+  "flags": {
+   "init_failed": 0,
+   "no_history": 0,
+   "rejected": 4310,
+   "size_below_min": 0,
+   "critical": 0
+  }
+ },
+ "base_dev_model1": {
+  "sig": "327cd10ee8",
+  "window": "dev",
+  "model": 1,
+  "tag": "baseline",
+  "ret": 13.48,
+  "pf": 1.054,
+  "trades": 904,
+  "win": 62.4,
+  "dd": 11.81,
+  "score": 1.141,
+  "changes": {},
+  "flags": {
+   "init_failed": 0,
+   "no_history": 0,
+   "rejected": 912,
+   "size_below_min": 0,
+   "critical": 0
+  }
+ },
+ "dev_model4": [
+  {
+   "sig": "5979fa011b",
+   "window": "dev",
+   "model": 4,
+   "tag": "confirm",
+   "ret": 77.71,
+   "pf": 1.333,
+   "trades": 503,
+   "win": 56.1,
+   "dd": 7.75,
+   "score": 10.027,
+   "changes": {
+    "InpVaultFlatMin": "955",
+    "InpVaultMaxTrades": "1",
+    "InpVaultTargetMode": "1",
+    "InpVaultTargetR": "3",
+    "InpVaultTrailStartR": "1.5",
+    "InpVaultTrailDistR": "1"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 4310,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  },
+  {
+   "sig": "b1f4df9dc8",
+   "window": "dev",
+   "model": 4,
+   "tag": "confirm",
+   "ret": 75.49,
+   "pf": 1.315,
+   "trades": 503,
+   "win": 54.5,
+   "dd": 7.64,
+   "score": 9.881,
+   "changes": {
+    "InpVaultFlatMin": "955",
+    "InpVaultMaxTrades": "1",
+    "InpVaultTargetMode": "1",
+    "InpVaultTargetR": "3"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 4310,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  },
+  {
+   "sig": "6dd3f469a7",
+   "window": "dev",
+   "model": 4,
+   "tag": "confirm",
+   "ret": 79.31,
+   "pf": 1.274,
+   "trades": 599,
+   "win": 54.9,
+   "dd": 8.93,
+   "score": 8.882,
+   "changes": {
+    "InpVaultFlatMin": "955",
+    "InpVaultTargetMode": "1",
+    "InpVaultTargetR": "3",
+    "InpVaultTrailStartR": "1.5",
+    "InpVaultTrailDistR": "1"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 4310,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  }
+ ],
+ "base_val": {
+  "sig": "327cd10ee8",
+  "window": "val",
+  "model": 4,
+  "tag": "baseline",
+  "ret": -10.68,
+  "pf": 0.85,
+  "trades": 238,
+  "win": 58.0,
+  "dd": 15.86,
+  "score": -0.673,
+  "changes": {},
+  "flags": {
+   "init_failed": 0,
+   "no_history": 0,
+   "rejected": 5532,
+   "size_below_min": 0,
+   "critical": 0
+  }
+ },
+ "validation": [
+  {
+   "sig": "5979fa011b",
+   "window": "val",
+   "model": 4,
+   "tag": "validation",
+   "ret": -10.13,
+   "pf": 0.823,
+   "trades": 118,
+   "win": 40.7,
+   "dd": 14.99,
+   "score": -0.676,
+   "changes": {
+    "InpVaultFlatMin": "955",
+    "InpVaultMaxTrades": "1",
+    "InpVaultTargetMode": "1",
+    "InpVaultTargetR": "3",
+    "InpVaultTrailStartR": "1.5",
+    "InpVaultTrailDistR": "1"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 5532,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  },
+  {
+   "sig": "b1f4df9dc8",
+   "window": "val",
+   "model": 4,
+   "tag": "validation",
+   "ret": -11.61,
+   "pf": 0.799,
+   "trades": 118,
+   "win": 39.8,
+   "dd": 16.68,
+   "score": -0.696,
+   "changes": {
+    "InpVaultFlatMin": "955",
+    "InpVaultMaxTrades": "1",
+    "InpVaultTargetMode": "1",
+    "InpVaultTargetR": "3"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 5532,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  },
+  {
+   "sig": "6dd3f469a7",
+   "window": "val",
+   "model": 4,
+   "tag": "validation",
+   "ret": -4.94,
+   "pf": 0.928,
+   "trades": 152,
+   "win": 45.4,
+   "dd": 12.26,
+   "score": -0.403,
+   "changes": {
+    "InpVaultFlatMin": "955",
+    "InpVaultTargetMode": "1",
+    "InpVaultTargetR": "3",
+    "InpVaultTrailStartR": "1.5",
+    "InpVaultTrailDistR": "1"
+   },
+   "flags": {
+    "init_failed": 0,
+    "no_history": 0,
+    "rejected": 5532,
+    "size_below_min": 0,
+    "critical": 0
+   }
+  }
+ ],
+ "base_oos": {
+  "sig": "327cd10ee8",
+  "window": "oos",
+  "model": 4,
+  "tag": "baseline",
+  "ret": 25.07,
+  "pf": 1.138,
+  "trades": 520,
+  "win": 66.2,
+  "dd": 10.7,
+  "score": 2.343,
+  "changes": {},
+  "flags": {
+   "init_failed": 0,
+   "no_history": 0,
+   "rejected": 7232,
+   "size_below_min": 0,
+   "critical": 0
+  }
+ },
+ "finalists": [
+  {
+   "InpStrategy": "2",
+   "InpUseBias": "true",
+   "InpRandomDirection": "false",
+   "InpSeed": "1",
+   "InpRiskPercent": "1.0",
+   "InpServerUtcOffsetHours": "0",
+   "InpMagic": "91109001",
+   "InpDeviationPoints": "50",
+   "InpVaultTF": "30",
+   "InpVaultAnchorMin": "60",
+   "InpVaultBarrierAtr": "0.3",
+   "InpVaultUseVwap": "true",
+   "InpVaultEntryStart": "660",
+   "InpVaultEntryEnd": "900",
+   "InpVaultFlatMin": "955",
+   "InpVaultMaxTrades": "1",
+   "InpVaultStopMode": "0",
+   "InpVaultStopPoints": "75",
+   "InpVaultStopAtr": "0.3",
+   "InpVaultTargetMode": "1",
+   "InpVaultTargetPoints": "40",
+   "InpVaultTargetR": "3",
+   "InpVaultBreakEvenR": "0",
+   "InpVaultTrailStartR": "1.5",
+   "InpVaultTrailDistR": "1",
+   "InpVaultDirection": "0",
+   "InpVaultAdxMin": "0",
+   "InpVaultDayMask": "31"
+  },
+  {
+   "InpStrategy": "2",
+   "InpUseBias": "true",
+   "InpRandomDirection": "false",
+   "InpSeed": "1",
+   "InpRiskPercent": "1.0",
+   "InpServerUtcOffsetHours": "0",
+   "InpMagic": "91109001",
+   "InpDeviationPoints": "50",
+   "InpVaultTF": "30",
+   "InpVaultAnchorMin": "60",
+   "InpVaultBarrierAtr": "0.3",
+   "InpVaultUseVwap": "true",
+   "InpVaultEntryStart": "660",
+   "InpVaultEntryEnd": "900",
+   "InpVaultFlatMin": "955",
+   "InpVaultMaxTrades": "1",
+   "InpVaultStopMode": "0",
+   "InpVaultStopPoints": "75",
+   "InpVaultStopAtr": "0.3",
+   "InpVaultTargetMode": "1",
+   "InpVaultTargetPoints": "40",
+   "InpVaultTargetR": "3",
+   "InpVaultBreakEvenR": "0",
+   "InpVaultTrailStartR": "0",
+   "InpVaultTrailDistR": "0.5",
+   "InpVaultDirection": "0",
+   "InpVaultAdxMin": "0",
+   "InpVaultDayMask": "31"
+  },
+  {
+   "InpStrategy": "2",
+   "InpUseBias": "true",
+   "InpRandomDirection": "false",
+   "InpSeed": "1",
+   "InpRiskPercent": "1.0",
+   "InpServerUtcOffsetHours": "0",
+   "InpMagic": "91109001",
+   "InpDeviationPoints": "50",
+   "InpVaultTF": "30",
+   "InpVaultAnchorMin": "60",
+   "InpVaultBarrierAtr": "0.3",
+   "InpVaultUseVwap": "true",
+   "InpVaultEntryStart": "660",
+   "InpVaultEntryEnd": "900",
+   "InpVaultFlatMin": "955",
+   "InpVaultMaxTrades": "3",
+   "InpVaultStopMode": "0",
+   "InpVaultStopPoints": "75",
+   "InpVaultStopAtr": "0.3",
+   "InpVaultTargetMode": "1",
+   "InpVaultTargetPoints": "40",
+   "InpVaultTargetR": "3",
+   "InpVaultBreakEvenR": "0",
+   "InpVaultTrailStartR": "1.5",
+   "InpVaultTrailDistR": "1",
+   "InpVaultDirection": "0",
+   "InpVaultAdxMin": "0",
+   "InpVaultDayMask": "31"
+  }
+ ],
+ "chosen": null,
+ "diagnostic": {
+  "InpStrategy": "2",
+  "InpUseBias": "true",
+  "InpRandomDirection": "false",
+  "InpSeed": "1",
+  "InpRiskPercent": "1.0",
+  "InpServerUtcOffsetHours": "0",
+  "InpMagic": "91109001",
+  "InpDeviationPoints": "50",
+  "InpVaultTF": "30",
+  "InpVaultAnchorMin": "60",
+  "InpVaultBarrierAtr": "0.3",
+  "InpVaultUseVwap": "true",
+  "InpVaultEntryStart": "660",
+  "InpVaultEntryEnd": "900",
+  "InpVaultFlatMin": "955",
+  "InpVaultMaxTrades": "3",
+  "InpVaultStopMode": "0",
+  "InpVaultStopPoints": "75",
+  "InpVaultStopAtr": "0.3",
+  "InpVaultTargetMode": "1",
+  "InpVaultTargetPoints": "40",
+  "InpVaultTargetR": "3",
+  "InpVaultBreakEvenR": "0",
+  "InpVaultTrailStartR": "1.5",
+  "InpVaultTrailDistR": "1",
+  "InpVaultDirection": "0",
+  "InpVaultAdxMin": "0",
+  "InpVaultDayMask": "31"
+ },
+ "diagnostic_sig": "6dd3f469a7",
+ "diagnostic_oos": {
+  "sig": "6dd3f469a7",
+  "window": "oos",
+  "model": 4,
+  "tag": "diagnostic",
+  "ret": 19.49,
+  "pf": 1.108,
+  "trades": 327,
+  "win": 48.9,
+  "dd": 19.23,
+  "score": 1.014,
+  "changes": {
+   "InpVaultFlatMin": "955",
+   "InpVaultTargetMode": "1",
+   "InpVaultTargetR": "3",
+   "InpVaultTrailStartR": "1.5",
+   "InpVaultTrailDistR": "1"
+  },
+  "flags": {
+   "init_failed": 0,
+   "no_history": 0,
+   "rejected": 7240,
+   "size_below_min": 0,
+   "critical": 0
+  }
+ },
+ "final": {
+  "baseline": {
+   "all": {
+    "sig": "327cd10ee8",
+    "window": "all",
+    "model": 4,
+    "tag": "final-all",
+    "ret": 28.45,
+    "pf": 1.054,
+    "trades": 1662,
+    "win": 62.9,
+    "dd": 16.6,
+    "score": 1.714,
+    "changes": {},
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 17074,
+     "size_below_min": 0,
+     "critical": 0
+    }
+   },
+   "mc": {
+    "resample_red": 14.1,
+    "randomize_red": 100.0,
+    "clumped": 17.0
+   },
+   "mc_passes": false
+  },
+  "candidate": {
+   "all": {
+    "sig": "6dd3f469a7",
+    "window": "all",
+    "model": 4,
+    "tag": "final-all",
+    "ret": 103.7,
+    "pf": 1.144,
+    "trades": 1078,
+    "win": 51.8,
+    "dd": 19.21,
+    "score": 5.398,
+    "changes": {
+     "InpVaultFlatMin": "955",
+     "InpVaultTargetMode": "1",
+     "InpVaultTargetR": "3",
+     "InpVaultTrailStartR": "1.5",
+     "InpVaultTrailDistR": "1"
+    },
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 17082,
+     "size_below_min": 0,
+     "critical": 0
+    }
+   },
+   "mc": {
+    "resample_red": 0.9,
+    "randomize_red": 1.9,
+    "clumped": 47.7
+   },
+   "mc_passes": true
+  }
+ },
+ "buy_hold": {
+  "dev": {
+   "symbol": "USTEC",
+   "window": "dev",
+   "return_pct": -26.9,
+   "price_return_pct": 95.59,
+   "swap_pct": -122.48,
+   "commission_pct": -0.01,
+   "max_dd_pct": 75.15,
+   "trades": 1
+  },
+  "val": {
+   "symbol": "USTEC",
+   "window": "val",
+   "return_pct": 21.91,
+   "price_return_pct": 36.34,
+   "swap_pct": -14.42,
+   "commission_pct": -0.0,
+   "max_dd_pct": 19.09,
+   "trades": 1
+  },
+  "oos": {
+   "symbol": "USTEC",
+   "window": "oos",
+   "return_pct": 10.05,
+   "price_return_pct": 31.27,
+   "swap_pct": -21.21,
+   "commission_pct": -0.0,
+   "max_dd_pct": 29.88,
+   "trades": 1
+  },
+  "all": {
+   "symbol": "USTEC",
+   "window": "all",
+   "return_pct": 43.15,
+   "price_return_pct": 251.14,
+   "swap_pct": -207.99,
+   "commission_pct": -0.01,
+   "max_dd_pct": 75.15,
+   "trades": 1
+  }
+ }
+}

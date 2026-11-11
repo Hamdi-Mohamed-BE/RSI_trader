@@ -1,0 +1,52 @@
+{
+ "events": [
+  {
+   "utc": "2026-11-10T00:20:54.085116+00:00",
+   "event": "WAIT port 3000 is held by another program (waited 0s); not touching it"
+  },
+  {
+   "utc": "2026-11-10T00:26:59.472322+00:00",
+   "event": "START nw-XAUUSD-GBW-all 2019.01.01..2026.11.10"
+  },
+  {
+   "utc": "2026-11-10T00:29:33.000465+00:00",
+   "event": "FAILED: Report does not match requested run nw-XAUUSD-GBW-all: {'expert_in_report': False, 'symbol_in_report': True, 'period_in_report': False, 'inputs_applied': False} []"
+  },
+  {
+   "utc": "2026-11-10T00:30:33.640522+00:00",
+   "event": "START nw-XAUUSD-GBW-all 2019.01.01..2026.11.10"
+  },
+  {
+   "utc": "2026-11-10T00:31:56.710643+00:00",
+   "event": "DONE nw-XAUUSD-GBW-all 83.1s | 49.49% PF 1.22 n=455 DD 19.29% | flags {'init_failed': 0, 'no_history': 0, 'rejected': 62, 'size_below_min': 0, 'critical': 0}"
+  },
+  {
+   "utc": "2026-11-10T00:31:57.271206+00:00",
+   "event": "START nw-XAUUSD-GBW_CLIP-all 2019.01.01..2026.11.10"
+  },
+  {
+   "utc": "2026-11-10T00:33:16.334238+00:00",
+   "event": "DONE nw-XAUUSD-GBW_CLIP-all 79.1s | 60.43% PF 1.19 n=455 DD 27.57% | flags {'init_failed': 0, 'no_history': 0, 'rejected': 62, 'size_below_min': 0, 'critical': 0}"
+  },
+  {
+   "utc": "2026-11-10T00:33:16.842447+00:00",
+   "event": "START nw-XAUUSD-GBW_NOTREND-all 2019.01.01..2026.11.10"
+  },
+  {
+   "utc": "2026-11-10T00:34:37.904684+00:00",
+   "event": "DONE nw-XAUUSD-GBW_NOTREND-all 81.1s | 36.87% PF 1.08 n=923 DD 32.96% | flags {'init_failed': 0, 'no_history': 0, 'rejected': 88, 'size_below_min': 0, 'critical': 0}"
+  },
+  {
+   "utc": "2026-11-10T00:34:38.407220+00:00",
+   "event": "START nw-XAUUSD-GBW_RAND-all 2019.01.01..2026.11.10"
+  },
+  {
+   "utc": "2026-11-10T00:35:40.062041+00:00",
+   "event": "DONE nw-XAUUSD-GBW_RAND-all 61.7s | 8.93% PF 1.04 n=454 DD 16.43% | flags {'init_failed': 0, 'no_history': 0, 'rejected': 68, 'size_below_min': 0, 'critical': 0}"
+  }
+ ],
+ "updated_utc": "2026-11-10T00:35:40.062041+00:00",
+ "state": "running",
+ "case": "nw-XAUUSD-GBW_RAND-all",
+ "error": "Report does not match requested run nw-XAUUSD-GBW-all: {'expert_in_report': False, 'symbol_in_report': True, 'period_in_report': False, 'inputs_applied': False} []"
+}

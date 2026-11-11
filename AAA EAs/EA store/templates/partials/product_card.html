@@ -58,9 +58,7 @@
   <div class="mt-6 flex items-end justify-between border-t border-white/10 pt-5">
 {% if product.website_only %}<div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">Normal BATs included</span><strong class="text-sm">Historical-loss sizing · not for sale</strong></div>
 {% else %}
-{% if store_enabled %}    <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ store_price(product)|money }}</strong> <span class="text-xs text-muted line-through">{{ product.price|money }}</span></div>
-{% else %}    <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">License</span><strong class="text-xl">{{ product.price|money }}</strong></div>
-{% endif %}
+    <div><span class="block text-[10px] uppercase tracking-[.15em] text-muted">Research only</span><strong class="text-sm">Not for sale</strong></div>
 {% endif %}
     <span class="card-link">View details <span aria-hidden="true">→</span></span>
   </div>

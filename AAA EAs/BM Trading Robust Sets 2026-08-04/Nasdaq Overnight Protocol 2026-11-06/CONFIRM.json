@@ -1,0 +1,237 @@
+{
+ "PROD": {
+  "windows": {
+   "dev": {
+    "trades": 128,
+    "per_month": 2.48,
+    "per_weekday": 0.114,
+    "total_r": -13.48,
+    "mean_r": -0.1053,
+    "pf": 0.598,
+    "win": 49.2,
+    "closed_dd_r": 17.02,
+    "ret_dd": -0.79,
+    "worst_day_r": -2.68,
+    "without_best5": -20.78
+   },
+   "val": {
+    "trades": 58,
+    "per_month": 4.82,
+    "per_weekday": 0.222,
+    "total_r": 3.35,
+    "mean_r": 0.0577,
+    "pf": 1.476,
+    "win": 55.2,
+    "closed_dd_r": 1.81,
+    "ret_dd": 1.85,
+    "worst_day_r": -1.06,
+    "without_best5": -0.79
+   },
+   "oos": {
+    "trades": 210,
+    "per_month": 8.76,
+    "per_weekday": 0.403,
+    "total_r": 2.98,
+    "mean_r": 0.0142,
+    "pf": 1.084,
+    "win": 53.3,
+    "closed_dd_r": 5.18,
+    "ret_dd": 0.58,
+    "worst_day_r": -1.08,
+    "without_best5": -2.0
+   },
+   "last_year": {
+    "trades": 117,
+    "per_month": 9.76,
+    "per_weekday": 0.449,
+    "total_r": 0.01,
+    "mean_r": 0.0001,
+    "pf": 1.001,
+    "win": 53.0,
+    "closed_dd_r": 5.18,
+    "ret_dd": 0.0,
+    "worst_day_r": -1.08,
+    "without_best5": -4.82
+   },
+   "all": {
+    "trades": 396,
+    "per_month": 4.52,
+    "per_weekday": 0.208,
+    "total_r": -7.16,
+    "mean_r": -0.0181,
+    "pf": 0.906,
+    "win": 52.3,
+    "closed_dd_r": 17.02,
+    "ret_dd": -0.42,
+    "worst_day_r": -2.68,
+    "without_best5": -14.67
+   }
+  },
+  "equity_dd_relative_pct": 16.18,
+  "three_way": {
+   "rule": "Stage 6 three-way Monte Carlo on per-trade results in time order (R or money): RESHUFFLE = same trades, random order (total fixed; tests order luck: where the real drawdown ranks among shuffled ones); RESAMPLE = draw trades with replacement (tests trade luck: share of runs that end <= 0); RANDOMIZE = drop each trade with probability drop_fraction and charge every kept trade an extra cost drawn uniformly from [0, 2 x extra_cost] (tests the broker; drop-only and cost-only runs are reported separately so the two causes are not mixed).",
+   "trades": 396,
+   "horizon_trades": 396,
+   "runs": 1000,
+   "seed": 20261104,
+   "real": {
+    "total": -7.155,
+    "max_drawdown": 17.0201,
+    "losing_streak": 7
+   },
+   "reshuffle": {
+    "max_drawdown": {
+     "p05": 9.9904,
+     "p50": 13.9684,
+     "p95": 19.7531,
+     "p99": 22.0858
+    },
+    "losing_streak": {
+     "p05": 5,
+     "p50": 7,
+     "p95": 10,
+     "p99": 12
+    },
+    "real_drawdown_worse_than_pct": 81.4,
+    "real_streak_longer_than_pct": 30.8
+   },
+   "resample": {
+    "red_pct": 77.8,
+    "total": {
+     "p05": -24.6414,
+     "p50": -7.6199,
+     "p95": 9.2896,
+     "p99": 15.5032
+    },
+    "max_drawdown": {
+     "p05": 6.5014,
+     "p50": 14.8239,
+     "p95": 28.2313,
+     "p99": 34.0558
+    }
+   },
+   "randomize": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.05,
+    "both": {
+     "red_pct": 100.0,
+     "total": {
+      "p05": -29.242,
+      "p50": -24.321,
+      "p95": -19.2901,
+      "p99": -15.9411
+     },
+     "max_drawdown": {
+      "p05": 20.1071,
+      "p50": 25.115,
+      "p95": 29.7191,
+      "p99": 31.9712
+     }
+    },
+    "drop_only": {
+     "red_pct": 98.2,
+     "total": {
+      "p05": -11.2803,
+      "p50": -6.6978,
+      "p95": -1.2313,
+      "p99": 0.8664
+     },
+     "max_drawdown": {
+      "p05": 12.1788,
+      "p50": 15.6562,
+      "p95": 18.2208,
+      "p99": 19.1857
+     }
+    },
+    "cost_only": {
+     "red_pct": 100.0,
+     "total": {
+      "p05": -27.8863,
+      "p50": -26.9699,
+      "p95": -26.0729,
+      "p99": -25.7081
+     },
+     "max_drawdown": {
+      "p05": 26.6071,
+      "p50": 27.4248,
+      "p95": 28.2528,
+      "p99": 28.6384
+     }
+    }
+   }
+  },
+  "three_way_1y": {
+   "rule": "Stage 6 three-way Monte Carlo on per-trade results in time order (R or money): RESHUFFLE = same trades, random order (total fixed; tests order luck: where the real drawdown ranks among shuffled ones); RESAMPLE = draw trades with replacement (tests trade luck: share of runs that end <= 0); RANDOMIZE = drop each trade with probability drop_fraction and charge every kept trade an extra cost drawn uniformly from [0, 2 x extra_cost] (tests the broker; drop-only and cost-only runs are reported separately so the two causes are not mixed).",
+   "trades": 396,
+   "horizon_trades": 54,
+   "runs": 1000,
+   "seed": 20261104,
+   "real": null,
+   "reshuffle": null,
+   "resample": {
+    "red_pct": 61.3,
+    "total": {
+     "p05": -7.174,
+     "p50": -1.0658,
+     "p95": 5.2437,
+     "p99": 8.0315
+    },
+    "max_drawdown": {
+     "p05": 1.71,
+     "p50": 4.1304,
+     "p95": 8.6019,
+     "p99": 11.0154
+    }
+   },
+   "randomize": {
+    "drop_fraction": 0.1,
+    "extra_cost": 0.05,
+    "both": {
+     "red_pct": 84.6,
+     "total": {
+      "p05": -9.1369,
+      "p50": -3.5734,
+      "p95": 2.351,
+      "p99": 4.4355
+     },
+     "max_drawdown": {
+      "p05": 2.0799,
+      "p50": 5.3774,
+      "p95": 10.1901,
+      "p99": 11.8006
+     }
+    },
+    "drop_only": {
+     "red_pct": 57.9,
+     "total": {
+      "p05": -6.806,
+      "p50": -0.7042,
+      "p95": 4.8864,
+      "p99": 7.4748
+     },
+     "max_drawdown": {
+      "p05": 1.5517,
+      "p50": 3.7273,
+      "p95": 8.2135,
+      "p99": 10.3896
+     }
+    },
+    "cost_only": {
+     "red_pct": 84.2,
+     "total": {
+      "p05": -9.6787,
+      "p50": -3.6488,
+      "p95": 2.2782,
+      "p99": 4.597
+     },
+     "max_drawdown": {
+      "p05": 2.3018,
+      "p50": 5.5548,
+      "p95": 10.5838,
+      "p99": 13.3247
+     }
+    }
+   }
+  }
+ }
+}

@@ -19,18 +19,14 @@
       <p class="mt-6 max-w-3xl text-lg leading-8 text-[#a9bcb7]">{{ product.tagline }}</p>
     </div>
     <div class="buy-panel min-w-[285px]">
-{% if product.website_only %}
+{% if product.website_only and not product.research_note %}
       <p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Research preview</p>
       <p class="mt-3 text-xl font-bold text-mint">Recent performance only</p>
       <p class="mt-3 text-xs leading-6 text-muted">Last 1 year and 6 months: original fixed-lot benchmark. Normal BATs now include a separate historical-loss-sized build (0.5% balance default). No SL; no guaranteed maximum loss. Not for sale.</p>
 {% else %}
-{% if store_enabled %}      <p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Individual license</p><p class="mt-2 flex items-baseline gap-3"><span class="text-4xl font-extrabold">{{ store_price(product)|money }}</span><span class="text-sm text-muted line-through">{{ product.price|money }}</span><span class="badge badge-good">−{{ store_discount_percent }}%</span></p><p class="mt-2 text-xs text-muted">One live + one demo MT5 account · pay in USDT</p>
-      <form method="post" action="/cart/add" class="mt-6"><input type="hidden" name="slug" value="{{ product.slug }}"><input type="hidden" name="next" value="/cart"><button type="submit" class="button-primary w-full justify-center" data-add-to-cart="{{ product.slug }}">Add to cart</button></form>
-      <p class="mt-3 text-center text-[10px] leading-4 text-muted">Buy 3, get 1 free: the cheapest of every 4 bots is free.<br><a href="/how-it-works" class="text-mint hover:text-white">How buying and installing works</a></p>
-{% else %}      <p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Individual license</p><p class="mt-2 text-4xl font-extrabold">{{ product.price|money }}</p><p class="mt-2 text-xs text-muted">One live + one demo MT5 account</p>
-      <a href="{{ product.buy_url }}" target="_blank" rel="noopener" class="button-primary mt-6 w-full justify-center">Buy via WhatsApp</a>
-      <p class="mt-3 text-center text-[10px] leading-4 text-muted">Compatibility and delivery are confirmed before payment.</p>
-{% endif %}
+      <p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Research only</p>
+      <p class="mt-3 text-xl font-bold text-mint">Not for sale</p>
+      <p class="mt-3 text-xs leading-6 text-muted">This page publishes research results for this EA. Nothing here is for sale, and nothing here is financial advice.</p>
 {% endif %}
     </div>
   </div>
@@ -122,7 +118,7 @@
     <div><p class="eyebrow-simple">Closed-trade evidence</p><h2 class="mt-2 text-2xl font-bold">Trade history for the selected period.</h2></div>
     <p class="max-w-xl text-xs leading-6 text-muted">Newest trades appear first. Change the page size or move between pages without reloading the MT5 evidence.</p>
   </div>
-  <p class="metric-disclosure">Net P/L includes the exact commission and swap parsed from the MT5 Deals table. {% if product.website_only %}Movement is in index price points. Est. R is unavailable: these fixed-lot, timed-exit profiles have no protective stop or fixed cash-risk budget.{% else %}Pips/points are reconstructed from cached entry and exit prices using 1 pip = 10 broker points. Est. R uses the configured risk and reconstructed balance at entry because MT5 history does not retain the EA's original stop after trailing or break-even changes.{% endif %}</p>
+  <p class="metric-disclosure">Net P/L includes the exact commission and swap parsed from the MT5 Deals table. {% if product.website_only and not product.research_note %}Movement is in index price points. Est. R is unavailable: these fixed-lot, timed-exit profiles have no protective stop or fixed cash-risk budget.{% else %}Pips/points are reconstructed from cached entry and exit prices using 1 pip = 10 broker points. Est. R uses the configured risk and reconstructed balance at entry because MT5 history does not retain the EA's original stop after trailing or break-even changes.{% endif %}</p>
   <div class="mt-5 live-table-shell" data-backtest-trades><table class="live-table"><thead><tr><th>Closed</th><th>EA / mode</th><th>Result</th><th>Net P/L</th><th>Commission</th><th>Swap</th><th>Est. R</th><th>Pips / points</th><th>Evidence source</th><th>Price chart</th></tr></thead><tbody data-backtest-trades-body><tr><td colspan="10" class="empty-table">Loading trades for this period…</td></tr></tbody></table></div>
   <nav class="trade-pagination" data-trade-pagination aria-label="Trade history pages">
     <label><span>Rows per page</span><select data-trade-page-size><option value="10" selected>10</option><option value="25">25</option><option value="50">50</option></select></label>
@@ -138,14 +134,12 @@
 </div>
 
 <section class="mx-auto grid max-w-7xl gap-8 px-5 py-20 lg:grid-cols-[1fr_380px] lg:px-8">
-{% if product.website_only %}
+{% if product.website_only and not product.research_note %}
   <div><p class="eyebrow-simple">Research boundaries</p><h2 class="section-title">Limitations stay visible.</h2><ul class="mt-8 grid gap-3">{% for item in product.limitations %}<li class="risk-list-item"><span>!</span><p>{{ item }}</p></li>{% endfor %}</ul></div>
   <aside class="included-card"><p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Owner-requested normal-BAT addition</p><h3 class="mt-3 text-2xl font-bold">Historical-loss sizing, not a loss cap</h3><p class="mt-5 text-sm leading-7 text-muted">Reapply a normal BAT to attach the separately compiled deployment build. Original research remains archived. FTMO/Ava and licensed packages are excluded. These benchmark returns do not measure the newly sized shared portfolio.</p></aside>
 {% else %}
-  <div><p class="eyebrow-simple">Before you buy</p><h2 class="section-title">Limitations stay part of the product.</h2><ul class="mt-8 grid gap-3">{% for item in product.limitations %}<li class="risk-list-item"><span>!</span><p>{{ item }}</p></li>{% endfor %}</ul></div>
-{% if store_enabled %}  <aside class="included-card"><p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Included</p><h3 class="mt-3 text-2xl font-bold">Ready for MT5 setup</h3><ul class="mt-6 space-y-4 text-sm"><li>✓ Compiled <span class="font-mono">.ex5</span> Expert Advisor</li><li>✓ Active BAT <span class="font-mono">.set</span> configuration</li><li>✓ Symbol and timeframe guidance</li><li>✓ One live + one demo account license</li><li>✓ 12 months of updates</li><li>✓ One-click install BAT for MT5</li><li>✓ WhatsApp setup support</li></ul><form method="post" action="/cart/add" class="mt-8"><input type="hidden" name="slug" value="{{ product.slug }}"><input type="hidden" name="next" value="/cart"><button type="submit" class="button-primary w-full justify-center">Add {{ product.label }} to cart</button></form><a href="https://wa.me/{{ whatsapp_number }}?text={{ ('Hello Calyx, I have a question about ' ~ product.label)|urlencode }}" target="_blank" rel="noopener" class="button-secondary mt-3 w-full justify-center">Ask a question on WhatsApp</a></aside>
-{% else %}  <aside class="included-card"><p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Included</p><h3 class="mt-3 text-2xl font-bold">Ready for MT5 setup</h3><ul class="mt-6 space-y-4 text-sm"><li>✓ Compiled <span class="font-mono">.ex5</span> Expert Advisor</li><li>✓ Active BAT <span class="font-mono">.set</span> configuration</li><li>✓ Symbol and timeframe guidance</li><li>✓ One live + one demo account license</li><li>✓ 12 months of updates</li><li>✓ WhatsApp setup support</li></ul><a href="{{ product.buy_url }}" target="_blank" rel="noopener" class="button-primary mt-8 w-full justify-center">Ask about {{ product.label }}</a></aside>
-{% endif %}
+  <div><p class="eyebrow-simple">Limitations</p><h2 class="section-title">What this evidence does not show.</h2><ul class="mt-8 grid gap-3">{% for item in product.limitations %}<li class="risk-list-item"><span>!</span><p>{{ item }}</p></li>{% endfor %}</ul></div>
+  <aside class="included-card"><p class="font-mono text-[10px] uppercase tracking-[.18em] text-muted">Research only</p><h3 class="mt-3 text-2xl font-bold">Not for sale</h3><p class="mt-5 text-sm leading-7 text-muted">Backtests are models, not forecasts. Do any testing of your own on demo. Nothing on this site is financial advice.</p></aside>
 {% endif %}
 </section>
 
