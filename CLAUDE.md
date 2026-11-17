@@ -966,6 +966,67 @@ of what is currently attached to a live terminal.
   3WG, XAU Squeeze, Selective V3 removed. Picked on the last two months (hindsight); weekend-flat stream: last year +87.8R PF 1.43 (11 EAs +116.8R PF 1.47), all years +258R PF 1.22
   (11: +419R PF 1.29), 2021-23 +28R PF 1.05. Builder backup build.before-seven.py. FTMO / funded stats: `Best 1-Step Seven 2026-11-11/` (study.py, RESULTS.json).
   Mid-session the 8081 dev preview worker was killed by mistake (process filter) and restarted via reload (HTTP 200).
+- 2026-11-12: `Gold EMA Ribbon Raw 2026-11-12/` (pasted clip: XAUUSD H1, 5 EMAs 8/13/21/34/55 aligned + EMA200 side, 1.5 ATR stop, exit on H1 close beyond EMA55, 0.75%) -
+  REJECTED at the raw gate. Native Model 4, $100k: 2y +105.5% PF 1.75 n239 (10/month) DD 8.7% (clip ~reproduced); all 2019-26 +116R PF 1.17 n995 DD 39%; dev 2019-23 +6.4R PF 1.01,
+  val PF 1.09, OOS +102R PF 1.74 (85% of R in 2025-26). Random ENTRY control p 0.286 (FAIL; same exit rule earns +84R mean), resample MC 10.3% (FAIL); 2x cost +8R (pass barely,
+  point 0.001); RIB2 5-50 +191R PF 1.25 (post hoc). 185 trades held over weekends. Beats buy & hold. No optimisation / FTMO sim. Nothing installed or pushed. REPORT.md.
+- 2026-11-16: `Three EA Last Two Months 2026-11-16/` (owner: UK100 / Nasdaq 5M / ONB last 2 months). Best1Step no-guard package EX5s + inputs, InpPortfolioPercent 1.0
+  (InpRiskPercent must stay 0.5: RiskSupport calibration check, else OnInit fails - first try kept in failed-first-try/), $10k each, Model 4 100% real ticks, 2026-09-16 -> 11-16 excl.,
+  no weekend-flat helper. UK100 3 trades +0.77R PF 1.74; Nasdaq 5M DI OFF 43 trades +18.5R +19.8% PF 2.14 win 63% (5 weekend holds); DI ON 30 trades +14.6R PF 2.44;
+  ONB 22 trades +13.2R +13.8% PF 2.88 win 55%. Retrospective snapshot only. RESULTS.json.
+- 2026-11-16: `Pro 6-6 Prop Sim 2026-11-16/` (owner screenshot: 2-phase P1 6% / P2 6%, daily 3%, max 6% static, 0 min days, fee $466). sim.py: native closed-trade streams
+  (NAS = production 2488443f62a8 REPLACE DI OFF 1,883 trades; ONB raw 782), risk % of closed balance, daily from 00:00 UTC closed balance, no time limit (365 d horizon), history
+  starts 2019-07 -> 2025-11 + MC 2,000 28-day-block paths; optimistic = closed balance, pessimistic = open trades at full stop. Pass both (MC opt / pess): NAS 2% 19.9 / 3.4%
+  (median 21 d; daily-loss fails 31-64%), ONB 2% 40.8 / 28.4% (median 63 d), BOTH 1%+1% 34.0 / 17.3% (44 d). Lower risk passes more (RESULTS_EXTRA.json): ONB 1% 58 / 52% (~170 d),
+  BOTH 0.5% NAS + 1% ONB 53 / 44% (~99 d), BOTH 0.75% 47 / 38%, NAS 1% 37 / 31%. ONB 2019-21 starts weak (16%). In-sample; firm daily-loss basis / time zone unknown.
+- 2026-11-16: `Two EAs UK100 DE30 Raw 2026-11-16/` (owner: Nasdaq 5M + ONB on UK100, German tech, Indian tech). Broker: no TecDAX / Nifty IT; IN50 data only 2022-12 -> 2023-06
+  (discontinued) -> India NOT tested; DE30 used for Germany. NY = EAs unchanged; LOC = research copies with InpMarketClock (London 08:00 / Frankfurt 09:00, EU DST), parity vs
+  production on USTEC 6 m identical (130 / 53 trades). Native Model 4 2019-07-16 -> 2026-11-16, 1%, $10k. ALL REJECTED: UK100 NAS NY -232R PF 0.77 (-91%), NAS LOC -216R,
+  ONB NY -144R PF 0.66, ONB LOC -106R; DE30 NAS NY -83R PF 0.91, NAS LOC +38.5R PF 1.04 (dev 1.01, 2023 -42R, MC resample 19%, randomize 100%), ONB NY -34R, ONB LOC +1.6R PF 1.00.
+  Buy & hold (price only; benchmark EA refuses GBP/EUR symbols) UK100 +43.6% DD 37%, DE30 +113.8% DD 39%. Nothing installed or pushed.
+  Addendum 1 US30 / US500 (EAs unchanged, NY clock): US30 NAS -34.9R PF 0.96, ONB -24.9R PF 0.94; US500 NAS +25.9R PF 1.03 (2024 -37R, MC fail);
+  US500 ONB +59.9R PF 1.16 (native 1.14) n849 9.6/month, 7/8 years positive, dev/val/OOS +33.9/+4.1/+22.0R, MC resample 3.4% / randomize 7.7% = borderline raw pass.
+  Buy & hold incl. swap US30 -12.3%, US500 +12.8%. Addendum 2 controls (US500 ONB, Model 1) STOPPED by the owner after ONB_M1 / NOBIAS / RNDDIR1 (RNDDIR2 partial) - not evaluated.
+- 2026-11-17: `Multi Firm Funded 2026-11-17/` (owner: best multi-firm combination for ~$10k/month; rules verified on the firms' own pages 2026-11-17, RULES.md / REPORT.md).
+  - Official rules found:
+    - FundedNext bans EAs on accounts of $50k and up, so only accounts under $50k are usable.
+    - FundingPips Master accounts need the +10% Swing add-on to hold overnight; own EAs are allowed with proof of ownership; $400k cap.
+    - The5ers High Stakes: one $100k account; Hyper Growth tops out at $50k.
+    - FTMO 1-Step: 90% split, EUR 499 non-refundable. FTMO 2-Step: EUR 540, refundable.
+  - Method:
+    - Stream: Best 1-Step B1XM, 3,721 trades, parity 418.8R.
+    - Python replay with 5-minute marks, no guard, fixed % risk, rebuy after a breach, withdraw all every 14 days.
+    - MC 1,000 paths x 36 months.
+  - Per $100k, net per month median:
+    - FTMO 1-Step 0.5%: $2,755.
+    - FTMO 2-Step / The5ers HS / FP Standard at 0.75%: about $3,560-3,610 (about 2.8-2.9 attempts in 36 months).
+    - FP Pro 6% max loss: worse.
+  - Mix C (2 FTMO 1-Step 0.5% + FTMO 2-Step + FP Standard + The5ers HS at 0.75%, $500k): median $16.2k/month, P(average >= $10k) 95%, upfront $2,884, fees $6.8k in 36 months.
+  - +0.05R extra cost per trade: income roughly halves (mix C $7.6k/month).
+  - About 25% of months pay nothing (all accounts are correlated).
+  - Some prices assumed (FP Standard, The5ers, FundedNext). Nothing bought or installed.
+  - Owner approved; 4 question emails sent 2026-11-17 to FTMO, FundingPips, The5ers and FundedNext.
+    - FundingPips (AI support) replied: buy + sell on the same symbol = forbidden hedging, even from two strategies; daily loss on equity, reset 00:00 UTC+3;
+      news close inside the 5 min window = soft breach (profit removed); own-EA proof = source code / history / live call.
+    - The5ers: ticket FIR59U (no answer yet). FTMO, FundedNext: no reply yet.
+  - Addendum 1, no-opposite-trade rule (nohedge.py): the current stream has opposite same-symbol overlaps on 262 days.
+    - Skipping the later trade removes 293 trades: 418.8R -> 406.2R, PF 1.291 -> 1.305.
+    - Per account about -3 to -5% income and more breaches; mix C $15.5k/month, 91% >= $10k.
+    - The rule is NOT built into the EAs.
+  - Addendum 2, gold EAs chosen on the last 12 months (owner; hindsight; gold.py):
+    - G3 = 8 EAs: Nasdaq 5M, ONB, USDJPY London, UK100 Monday, Selective V3, ORB VP VC, XAU Squeeze, 3 Way Gold.
+      Dropped: Gold Band Wave, RSI VWAP, EMA3.
+    - With the no-opposite rule: 2,828 trades, 385.0R, PF 1.339; last year 526 trades, 113.6R, PF 1.60.
+    - Mix E (2 FTMO 1-Step + FTMO 2-Step + FP Standard + The5ers HS, all at 0.75%): median $17.5k/month, 97.6% >= $10k, 12.5 attempts / $7.2k fees in 36 months;
+      +0.05R cost $9.6k / 47%.
+    - Not built.
+  - Owner final roster, BUILT as Best 1-Step BEST1STEP-20261117 (9 EAs):
+    - EAs: Nasdaq 5M, USDJPY London, 3 Way Gold breakout, EMA3, Selective V3, RSI VWAP, ORB VP VC, ONB, UK100 Monday.
+    - Gold Band Wave + XAU Squeeze removed.
+    - Build: build.py roster edit (backup build.before-nine.py), 9 guarded wrappers 0/0, weekend-flat helper re-added, both BATs -ValidateOnly PASS.
+    - Not installed, not pushed.
+    - Sim as installed: 3,310 trades, 393.1R, PF 1.30. Mix E $17.3k/month, 96% >= $10k; without FundingPips (mix F) $17.2k.
+    - The no-opposite rule is not in the EAs.
 - 2026-11-10 IN PROGRESS: `Portfolio P7 2026-11-10/` (Vault Break, Overnight Bias ORB, Nasdaq 5M REPLACE DI OFF, EMA3, ORB VP, RSI VWAP, Gold Band Wave). Native all years +390.7R PF 1.16
   63.8 trades/month, worst day -7.1R, MC 0/0.3 but clumped 95.7%. FTMO 2-step / 1-Step guard + no guard 0.5/0.75/1% and each EA alone: p7.py runall (48 jobs). USDJPY search resumed after it.
 - 2026-11-05 IN PROGRESS: tester queue `tester_queue_20261105.sh`: `Nasdaq 5M Candle Rule 2026-11-05/` (13 versions, PLAN.md frozen) and `USDJPY London Optimization 2026-11-05/` (PLAN.md frozen, stage 5 + 6, owner approved). Not finished.

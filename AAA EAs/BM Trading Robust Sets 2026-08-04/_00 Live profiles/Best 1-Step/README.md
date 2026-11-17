@@ -1,4 +1,4 @@
-# Best 1-Step (BEST1STEP-20261111)
+# Best 1-Step (BEST1STEP-20261117)
 
 Owner 2026-11-11. Core 9 + Overnight Bias ORB + Gold Band Wave = 11 EAs (Nasdaq 5M REPLACE DI OFF, USDJPY London DI ON, 3 Way Gold breakout only,
 Sell Nasdaq 15min, EMA3, ORB VP Volume Confirmed, XAU Squeeze, US100 Selective ORB V3 0.5R, XAU RSI VWAP, Overnight Bias ORB, Gold Band Wave).
@@ -28,3 +28,11 @@ Sell Nasdaq (guarded) holds its stop in the EA and sells at market. Gold Band Wa
   dot-sourced via Calyx-InstallChoices.ps1, inline in the no-guard installer); `-SkipEAs slug1,slug2` skips without asking. Integrity checks cover all 11; symbols, charts and
   load checks only the chosen ones (a broker without UK100 works if UK100 is skipped). The 7-EA builder is kept as build.seven.py (not used). A smaller set is untested.
 
+
+## 2026-11-17 change (owner: "keep EMA3 and RSI VWAP, remove Gold Band Wave and XAU Squeeze Momentum")
+- Package = 9 EAs: Nasdaq 5M (REPLACE, DI OFF), USDJPY London (DI ON), 3 Way Gold breakout, EMA3, US100 Selective ORB V3 (0.5R), XAU RSI VWAP,
+  ORB VP Volume Confirmed, Overnight Bias ORB, UK100 Monday dip. Version BEST1STEP-20261117. Builder backup: build.before-nine.py.
+- Rebuilt with build.py (9 guarded wrappers 0/0 compiled, no-guard package copied + UK100 wrapper compiled), weekend-flat helper re-added
+  (Calyx Weekend Flat/wire_weekendflat.py patch_b), both BATs -ValidateOnly PASS. Still asks for each EA. Not installed on any terminal; not pushed.
+- The no-opposite-trade rule (needed at FundingPips) is NOT in these EAs.
+- Evidence: Multi Firm Funded 2026-11-17 (Addendum 3). Gold EAs picked on the last 12 months (hindsight).

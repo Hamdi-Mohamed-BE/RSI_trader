@@ -1,0 +1,87 @@
+{
+ "rule": [
+  "even from two independent strategies). Rule: going through the trades in open order, a trade is SKIPPED if, when it opens, an accepted",
+  "trade on the same symbol in the opposite direction is still open. Skipped trades block nothing. Same-direction stacking is unchanged.",
+  "Writes INPUTS-NOHEDGE.json (same format as the source) + NOHEDGE.json (what was removed). python nohedge.py"
+ ],
+ "source": "C:\\Users\\hama101\\Desktop\\geek\\ai trader\\AAA EAs\\BM Trading Robust Sets 2026-08-04\\Best 1-Step UK100 Monday 2026-11-11\\INPUTS-B1XM.json",
+ "trades_before": 3721,
+ "trades_after": 3428,
+ "skipped": 293,
+ "r_before": 418.8,
+ "r_after": 406.2,
+ "r_skipped": 12.6,
+ "pf_before": 1.291,
+ "pf_after": 1.305,
+ "per_month_after": 57.1,
+ "per_day_after": 2.72,
+ "remaining_opposite_overlaps": 0,
+ "per_ea": {
+  "3-way-gold#930930101": {
+   "kept": 272,
+   "skipped": 6,
+   "kept_r": 27.61,
+   "skipped_r": -0.22
+  },
+  "ema3": {
+   "kept": 205,
+   "skipped": 2,
+   "kept_r": 16.67,
+   "skipped_r": -0.06
+  },
+  "gold-band-wave": {
+   "kept": 266,
+   "skipped": 18,
+   "kept_r": 3.99,
+   "skipped_r": -6.55
+  },
+  "nasdaq-5m-candle-momentum": {
+   "kept": 1286,
+   "skipped": 0,
+   "kept_r": 74.74,
+   "skipped_r": 0.0
+  },
+  "orb-volume-profile-volume-confirmed": {
+   "kept": 84,
+   "skipped": 35,
+   "kept_r": 18.91,
+   "skipped_r": 13.17
+  },
+  "overnight-bias-orb": {
+   "kept": 422,
+   "skipped": 120,
+   "kept_r": 101.34,
+   "skipped_r": -7.13
+  },
+  "uk100-monday-dip": {
+   "kept": 124,
+   "skipped": 0,
+   "kept_r": 22.13,
+   "skipped_r": 0.0
+  },
+  "us100-selective-orb-v3": {
+   "kept": 23,
+   "skipped": 11,
+   "kept_r": 8.79,
+   "skipped_r": 2.46
+  },
+  "usdjpy-london-open-momentum": {
+   "kept": 461,
+   "skipped": 0,
+   "kept_r": 93.85,
+   "skipped_r": 0.0
+  },
+  "xau-rsi-vwap": {
+   "kept": 166,
+   "skipped": 93,
+   "kept_r": 10.38,
+   "skipped_r": 10.61
+  },
+  "xau-squeeze-momentum-standard": {
+   "kept": 119,
+   "skipped": 8,
+   "kept_r": 27.9,
+   "skipped_r": 0.36
+  }
+ }
+}

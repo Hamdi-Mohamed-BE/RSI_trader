@@ -356,13 +356,13 @@ function Test-Package {
         if ($digest -ine $property.Value) { throw "Package integrity check failed: $($property.Name). Extract the complete ZIP again." }
     }
     $package = Get-Content -LiteralPath (Join-Path $PackageRoot 'Package.json') -Raw | ConvertFrom-Json
-    if ($package.entries.Count -ne 11 -or @($package.entries.key | Sort-Object -Unique).Count -ne 11) { throw 'Portfolio roster is incomplete or duplicated.' }
+    if ($package.entries.Count -ne 9 -or @($package.entries.key | Sort-Object -Unique).Count -ne 9) { throw 'Portfolio roster is incomplete or duplicated.' }
     if (@($package.entries | Where-Object { $_.key -in $package.orb_keys -and [double]$_.inputs.InpRewardRisk -ne 0.5 }).Count -ne 0) { throw 'An ORB target is not 0.5R.' }
     foreach ($entry in $package.entries) {
         [void](Assert-ChildPath $PackageRoot (Join-Path $PackageRoot $entry.expert))
         [void](Assert-ChildPath $PackageRoot (Join-Path $PackageRoot $entry.settings))
     }
-    if (@($package.entries.magic | Sort-Object -Unique).Count -ne 11) { throw 'Duplicate portfolio magic numbers.' }
+    if (@($package.entries.magic | Sort-Object -Unique).Count -ne 9) { throw 'Duplicate portfolio magic numbers.' }
     return $package
 }
 function Assert-Risk([string]$Mode, [double]$Amount) {
@@ -544,7 +544,7 @@ function Main {
     Write-Host ("Active account: {0} / {1} / {2}" -f $ActiveLogin,$ActiveServer,$probe.account.currency) -ForegroundColor Cyan
     foreach ($item in $portfolio) { Write-Host ("  {0}: {1}, {2} minutes" -f $item.Label,$item.BrokerSymbol,$item.Period) }
     Write-Host ("Chosen risk: {0} {1} per trade. Nasdaq DI=$NasdaqDIFilter; USDJPY DI=$UsdJpyDIFilter." -f $RiskValue,$RiskMode)
-    Write-Host ("A separate 11-chart profile will replace current chart management, not delete it. {0} open position(s) will NOT be closed. EAs excluded from this profile will stop managing their trades." -f $probe.account.open_positions) -ForegroundColor Yellow
+    Write-Host ("A separate 9-chart profile will replace current chart management, not delete it. {0} open position(s) will NOT be closed. EAs excluded from this profile will stop managing their trades." -f $probe.account.open_positions) -ForegroundColor Yellow
     Write-Host 'MT5 will restart once. Algo Trading preferences stay unchanged; profile-change protection may switch it OFF. Check the toolbar afterwards.' -ForegroundColor Yellow
     if ($PreflightOnly) { Write-Host 'Preflight complete; no terminal restart or MT5 data-folder writes. Symbol inspection may subscribe Market Watch symbols.'; return }
     if (-not $Yes -and (Read-Host 'Apply these selected EAs to this account? [y/N]') -notin @('y','Y','yes','YES')) { Write-Host 'Cancelled. No portfolio installed.'; return }
