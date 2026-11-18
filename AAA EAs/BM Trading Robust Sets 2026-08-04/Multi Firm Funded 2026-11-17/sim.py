@@ -68,7 +68,7 @@ def build_days():
 
 def account(rows, T, f):
     """One slot of type T at risk f over len(rows) days. Returns monthly net income list, stats."""
-    inc = [0.0] * NM; fees = [0.0] * NM; st = dict(buys=0, breaches_ch=0, breaches_f=0, funded=0, payouts=0, first_payout_day=None, days_funded=0)
+    inc = [0.0] * NM; fees = [0.0] * NM; st = dict(buys=0, breaches_ch=0, breaches_f=0, funded=0, payouts=0, first_payout_day=None, days_funded=0, first_funded_day=None, buys_to_first_funded=None, refunds=0.0)
     state = 'buy'; size = T['size']
     for d, (dc, fl0, mn, fl1, ntr) in enumerate(rows):
         if COST: dc -= COST * ntr; mn -= COST * ntr
@@ -78,6 +78,7 @@ def account(rows, T, f):
         if state == 'wait':
             if d < ready: continue
             state = 'fund'; b = hwm = 1.0; dp = []; next_pay = d + T['first']; st['funded'] += 1
+            if st['first_funded_day'] is None: st['first_funded_day'] = d; st['buys_to_first_funded'] = st['buys']
         if state == 'fund': st['days_funded'] += 1
         eq0 = b + f * fl0; anchor = b if T['dbasis'] == 'bal' else max(b, eq0)
         floor = (1 - T['ml']) if T['mk'] == 'static' else min(hwm - T['ml'], 1.0)
@@ -96,7 +97,7 @@ def account(rows, T, f):
         elif d >= next_pay:
             prof = b - 1; ok_best = T['best'] is None or max(dp) <= T['best'] * prof + 1e-12
             if prof > 0 and prof >= T['minpay'] and ok_best:
-                inc[m] += T['split'] * prof * size + refund_due; refund_due = 0; st['payouts'] += 1
+                inc[m] += T['split'] * prof * size + refund_due; st['refunds'] += refund_due; refund_due = 0; st['payouts'] += 1
                 if st['first_payout_day'] is None: st['first_payout_day'] = d
                 b = hwm = 1.0; dp = []; next_pay = d + T['cycle']
     return [i - x for i, x in zip(inc, fees)], st
@@ -128,7 +129,18 @@ def run():
                                breaches_funded_mean=round(float(np.mean([s['breaches_f'] for s in S])), 2), breaches_challenge_mean=round(float(np.mean([s['breaches_ch'] for s in S])), 2),
                                payouts_mean=round(float(np.mean([s['payouts'] for s in S])), 1), never_paid=round(100 * (1 - len(fp) / len(P)), 1),
                                first_payout_day_median=round(statistics.median(fp), 0) if fp else None, funded_share=round(float(np.mean([s['days_funded'] for s in S]) / HORIZON * 100), 1))
-                if ev == 'mc': np.save(H / f'mc_{k}{TAG}.npy', M)
+                ff = [s['first_funded_day'] for s in S if s['first_funded_day'] is not None]; nf = len(P)
+                out[ev].update(funded_within={w: round(100 * sum(1 for x in ff if x <= w) / nf, 1) for w in (30, 60, 90, 180, 365)},
+                               first_funded_day_median=round(statistics.median(ff), 0) if ff else None, first_funded_day_mean=round(statistics.mean(ff), 0) if ff else None,
+                               first_funded_p25_p75=[float(np.percentile(ff, 25)), float(np.percentile(ff, 75))] if ff else None,
+                               attempts_to_first_funded_mean=round(statistics.mean(s['buys_to_first_funded'] for s in S if s['buys_to_first_funded']), 2) if ff else None,
+                               payout_within={w: round(100 * sum(1 for x in fp if x <= w) / nf, 1) for w in (60, 90, 180, 365)})
+                out[ev].update(refunds_mean=round(float(np.mean([s['refunds'] for s in S])), 0), fees_to_first_funded_mean=round(float(np.mean([s['buys_to_first_funded'] * T['fee'] for s in S if s['buys_to_first_funded']])), 0),
+                               attempts_to_first_funded_p90=float(np.percentile([s['buys_to_first_funded'] for s in S if s['buys_to_first_funded']], 90)), never_funded=round(100 * (1 - len(ff) / nf), 1),
+                               one_attempt_share=round(100 * sum(1 for s in S if s['buys_to_first_funded'] == 1) / nf, 1))
+                if ev == 'mc':
+                    np.save(H / f'mc_{k}{TAG}.npy', M)
+                    np.save(H / f'mcff_{k}{TAG}.npy', np.array([[s['first_funded_day'] if s['first_funded_day'] is not None else 99999, s['first_payout_day'] if s['first_payout_day'] is not None else 99999] for s in S]))
             res[k] = out; print(k, out['mc'], flush=True)
     (H / f'TYPES{TAG}.json').write_text(json.dumps(res, indent=1), encoding='utf-8')
 

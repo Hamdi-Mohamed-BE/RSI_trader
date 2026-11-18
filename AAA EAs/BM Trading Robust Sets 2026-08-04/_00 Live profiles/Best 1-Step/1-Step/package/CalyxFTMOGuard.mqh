@@ -1,5 +1,6 @@
 #ifndef CALYX_PROP_READY_GUARD
 #define CALYX_PROP_READY_GUARD
+#include "CalyxNoOpposite.mqh"   // Best 1-Step 2026-11-17: no-opposite rule (InpCalyxNoOpposite), checked inside the guard lock
 // ftmo 1_step 2026-11-04: derived from the broker-neutral Prop Ready guard for the FTMO 1-Step rules: 10% max loss trailing
 // the highest end-of-day balance, 3% max daily loss from the midnight balance, best day <= 50% of total profit.
 // Broker-neutral FTMO 1-Step builds. Admission guard, NOT a guaranteed loss limiter.
@@ -8,6 +9,7 @@
 // liquidation, asynchronous execution or permission to use netting accounts.
 input int FTMOAllocationMode=0; // 0=fixed account-currency amount, 1=current equity %
 input double FTMOAllocationValue=50.0;
+input double FTMOEntryRiskFactor=1.0; // Best 1-Step 2026-11-18: entry size factor for this chart only (Nasdaq 5M 0.75); total / symbol caps unchanged
 input double FTMORiskCapPercent=0.5; // per-entry cap, % of the saved reference balance; the installer sets it to the chosen risk (2026-10-30). Totals: the two multiples below
 input double FTMOTotalRiskMultiple=4.5; // total open stop risk = this x the per-entry cap; 0 = no total cap (installer: 4.5 / 6 / 8 / none, 2026-11-03)
 input double FTMOSymbolRiskMultiple=3.0; // same-symbol open stop risk = this x the per-entry cap; 0 = no per-symbol cap (installer: 3 / none)
@@ -25,7 +27,7 @@ input double FTMO1FloorBufferPercent=2.0;  // guard: new entries need projected 
 input double FTMO1DailyReservePercent=2.5; // guard: projected daily loss <= this; the day latches here
 input double FTMO1BestDayCapPercent=4.5;   // guard: no new entries today once today P&L >= this (0 = off)
 
-double FTMORiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent/100.0;}
+double FTMORiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent/100.0*MathMax(0.05,MathMin(1.0,FTMOEntryRiskFactor));}
 double FTMOTotalRiskCap(){return FTMOTotalRiskMultiple<=0?DBL_MAX:FTMOReferenceBalance*FTMORiskCapPercent*(FTMOTotalRiskMultiple/100.0);}
 double FTMOSymbolRiskCap(){return FTMOSymbolRiskMultiple<=0?DBL_MAX:FTMOReferenceBalance*FTMORiskCapPercent*(FTMOSymbolRiskMultiple/100.0);}
 double FTMODailyReserve(){return FTMOReferenceBalance*FTMO1DailyReservePercent/100.0;}
@@ -300,6 +302,8 @@ bool FTMOOrderSend(const MqlTradeRequest &request,MqlTradeResult &result) {
       bool buy=PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_BUY;
       if(old>0 && ((buy && r.sl<old) || (!buy && r.sl>old))){FileClose(lock);return FTMOReject(result,"cannot widen SL");}
    }
+   if(entry && InpCalyxNewsBlock && CNO_NewsBlocked(r.symbol)){FileClose(lock);return FTMOReject(result,"news window on "+r.symbol);}
+   if(entry && InpCalyxNoOpposite && CNO_OppositeOpen(r.symbol,CNO_Dir(r.type))){FileClose(lock);return FTMOReject(result,"no-opposite rule: opposite position open on "+r.symbol);}
    if(entry && !FTMOAdmit(r,result)){FileClose(lock);return false;}
    GlobalVariableSet(counter,requests+1);
    bool sent=OrderSend(r,result);

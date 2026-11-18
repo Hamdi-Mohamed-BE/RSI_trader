@@ -15,7 +15,7 @@ Guarded wrappers: exactly the Core 9 build (../Core 9/build.py: FTMO-AnyBroker w
 python build.py            full build (compiles 11 guarded wrappers)
 python build.py installer  regenerate the installer + helpers only
 Run from AAA EAs/EA store:  uv run python "<this>" """
-import importlib.util, json, re, shutil, sys
+import hashlib, importlib.util, json, re, shutil, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent; LIVE = HERE.parent; ROOT = LIVE.parent
@@ -28,12 +28,100 @@ def load(name, path):
 C9 = load('core9_build', LIVE / 'Core 9/build.py'); P4 = load('p4_build', LIVE / 'P4/build.py')
 BL = C9.BL; read, write, sub1, sha, compile_ea, set_values = C9.read, C9.write, C9.sub1, C9.sha, C9.compile_ea, C9.set_values
 ANY, F1S, EDGE = C9.ANY, C9.F1S, C9.EDGE; NOGUARD = LIVE / 'Packages/Best1Step'; CORE9_NG = LIVE / 'Packages/Core9'; P4_NG = LIVE / 'Packages/P4'
-VERSION = 'BEST1STEP-20261117'; TAG = 'B1O'; SCRIPT = 'Install-Best1Step-1Step.ps1'
+VERSION = 'BEST1STEP-20261118'; TAG = 'B1O'; SCRIPT = 'Install-Best1Step-1Step.ps1'
 RESEARCH = ['overnight-bias-orb', 'uk100-monday-dip']
+AAA_NEW = ['asia-breakout']   # 2026-11-18 owner: Asia Breakout added (Best 1-Step Add Gold 2026-11-18)
 DROPPED = ['xau-squeeze-momentum-standard', 'gold-band-wave']   # owner 2026-11-17: "keep EMA3 and RSI VWAP, remove Gold Band Wave and XAU Squeeze Momentum"
-SLUGS = [x for x in C9.SLUGS if x not in DROPPED] + RESEARCH
-assert len(SLUGS) == 9 and len(set(SLUGS)) == 9   # 2026-11-11: Sell Nasdaq removed, UK100 Monday dip added; 2026-11-17: Gold Band Wave + XAU Squeeze removed (owner)
-WORD = 'nine'
+SLUGS = [x for x in C9.SLUGS if x not in DROPPED] + RESEARCH + AAA_NEW
+assert len(SLUGS) == 10 and len(set(SLUGS)) == 10   # 2026-11-11: Sell Nasdaq removed, UK100 Monday dip added; 2026-11-17: Gold Band Wave + XAU Squeeze removed (owner)
+WORD = 'ten'
+# 2026-11-18 owner: "update the best profile to respect this and respect all the trading rules" (Best 1-Step Add Gold 2026-11-18/FINAL_PICK.json):
+#   - Asia Breakout (AAA Final engine, XAUUSD H1, market entries), installer effective inputs from the Full EA portfolio (FULL_ITEMS.json);
+#   - Nasdaq 5M at 0.75x the chosen risk (guarded: FTMOEntryRiskFactor on its chart only, total / symbol caps unchanged; no guard: InpPortfolioPercent / fixed USD x0.75);
+#   - Calyx News Guard chart + InpCalyxNewsBlock (FTMO funded Standard 2 min, The5ers 2 min, FundingPips 5 min).
+ASIA_SRC = ROOT / 'AAA Final EAs/AAA Final Asia Breakout EA/AAA Final Asia Breakout EA.mq5'
+ASIA = dict(label='Asia Breakout', symbol='XAUUSD', timeframe='H1', period=60)
+NEWS = LIVE / 'Calyx News Guard'
+NASDAQ_FACTOR = 0.75
+
+
+def asia_inputs():
+    items = json.loads(read(ROOT / 'Portfolio October 2026 ATR6 2026-11-03/FULL_ITEMS.json'))
+    it = next(i for i in items if i['label'] == 'AAA Final Asia Breakout'); v = {k: str(x) for k, x in it['inputs'].items()}
+    assert v['InpMagic'] == '290729' and v['InpRewardRisk'] == '3'
+    v.update(InpRiskPercent='0.5', InpGridRiskPercent='0.5', InpAdaptivePortfolioControls='false'); return v
+
+
+def news_functions():
+    m = json.loads(read(NEWS / 'NEWS_GUARD.json')); assert sha(NEWS / 'Calyx News Guard.ex5') == m['ex5_sha256'] and sha(NEWS / 'NewsGuard-Functions.ps1') == m['functions_sha256'], 'Calyx News Guard changed: rerun make_functions.py'
+    return read(NEWS / 'NewsGuard-Functions.ps1').replace('\r\n', '\n')
+
+
+def aaa_graph(path, target, cache):
+    """Edge 10 / ORB-only method: copy the include graph, CalyxAdaptiveRiskMultiplier returns the RiskSupport multiplier, then the CNO shim."""
+    path = path.resolve()
+    if path in cache: return cache[path]
+    name = 'src_aaa_' + hashlib.sha256(str(path.relative_to(ROOT)).encode()).hexdigest()[:12] + '.mqh'; cache[path] = name
+    text = read(path)
+    if 'double CalyxAdaptiveRiskMultiplier(' in text:
+        m = re.search(r'double\s+CalyxAdaptiveRiskMultiplier\s*\([^)]*\)\s*\{', text); i = m.end(); depth = 1
+        while depth:
+            depth += {'{': 1, '}': -1}.get(text[i], 0); i += 1
+        text = text[:m.end()] + '\n   return UR_RiskMultiplier();\n' + text[i - 1:]
+    text = re.sub(r'#include\s+"([^"]+)"', lambda g: '#include "' + aaa_graph(path.parent / g[1].replace(chr(92), '/'), target, cache) + '"', text)
+    write(target / name, cno_text(text)); return name
+# 2026-11-17 owner: "build the no opposite trade rule into the EAs and add to profile along side with weekend hold".
+# Calyx No Opposite (../Calyx No Opposite): input InpCalyxNoOpposite (default false = the tested order path); the installers ask ON/OFF.
+CNO = LIVE / 'Calyx No Opposite'
+CNO_PS = (
+    "# >>> Calyx No Opposite (owner 2026-11-17) >>>\n"
+    "function Read-CalyxNoOpposite([string]$Current, [bool]$NoPrompt) {\n"
+    "    if ($Current) { if ($Current -notin @('ON','OFF')) { throw 'No-opposite rule must be ON or OFF.' }; return $Current }\n"
+    "    if ($NoPrompt) { return 'OFF' }\n"
+    "    Write-Host ''\n"
+    "    Write-Host 'NO OPPOSITE TRADES (hedging rule)' -ForegroundColor Cyan\n"
+    "    Write-Host '  ON  = an EA never opens a trade or places a pending order against an open position on the same symbol (any EA,'\n"
+    "    Write-Host '        manual too), and deletes its own pending orders that face one. Use it at FundingPips: a buy and a sell on one'\n"
+    "    Write-Host '        symbol at the same time is forbidden hedging there, with no exceptions. Simulation: about 7% fewer trades, ~4% less R.'\n"
+    "    Write-Host '  OFF (default) = the tested behaviour; FTMO and The5ers have not restricted it.'\n"
+    "    $answer = (Read-Host 'No opposite trades on the same symbol? ON or OFF [OFF]').Trim().ToUpperInvariant()\n"
+    "    if (-not $answer) { $answer = 'OFF' }\n"
+    "    if ($answer -notin @('ON','OFF')) { throw 'Answer ON or OFF.' }\n"
+    "    Write-Host ('No-opposite rule: {0}' -f $answer)\n"
+    "    return $answer\n"
+    "}\n"
+    "# <<< Calyx No Opposite <<<\n")
+NG_WRAP = {'nasdaq-5m-candle-momentum': 'current14', '3-way-gold': 'edge10',   # Nasdaq: Current14 source = the verified REPLACE build (Packages/Edge10 Sources reverted to pre-REPLACE, found 2026-11-17)
+           'orb-volume-profile-volume-confirmed': 'edge10',
+           'usdjpy-london-open-momentum': 'current14', 'ema3': 'current14', 'us100-selective-orb-v3': 'current14', 'xau-rsi-vwap': 'current14'}
+NG_SRC = {'edge10': (LIVE / 'Packages/Edge10/Sources', 'Calyx Edge10 - '), 'current14': (BL.CURRENT / 'Sources', 'Calyx Current14 ORB05 - ')}
+DIRECT_SEND = r'(?<![.\w:])OrderSend\('
+
+
+def cno_check():
+    m = json.loads(read(CNO / 'CNO.json'))
+    assert sha(CNO / 'CNO_Trade.mqh') == m['cno_trade_sha256'] and sha(CNO / 'CalyxNoOpposite.mqh') == m['cno_include_sha256'], 'Calyx No Opposite files changed: rerun make_trade.py and the native tests'
+
+
+def cno_text(t):
+    # no-guard wrappers: CTrade and direct OrderSend go through CalyxNoOppOrderSend (= ::OrderSend while InpCalyxNoOpposite=false)
+    t = t.replace('#include <Trade/Trade.mqh>', '#include "CNO_Trade.mqh"')
+    return re.sub(DIRECT_SEND, 'CalyxNoOppOrderSend(', t)
+
+
+def cno_copy(path, target, cache):
+    path = path.resolve()
+    if path in cache: return cache[path]
+    cache[path] = path.name; t = cno_text(read(path))
+    for inc in re.findall(r'#include\s+"([^"]+)"', t):
+        if inc in ('CNO_Trade.mqh', 'CalyxNoOpposite.mqh') or inc.startswith('../'): continue
+        cno_copy(path.parent / inc.replace(chr(92), '/'), target, cache)
+    write(target / path.name, t); return path.name
+
+
+def cno_wrapper(text):
+    text = sub1(text, '#include "../RiskSupport.mqh"\n', '#include "../../RiskSupport.mqh"\n#include "CalyxNoOpposite.mqh"   // Best 1-Step 2026-11-17: no-opposite rule\n')
+    return sub1(text, 'UR_Heartbeat(InpMagic);UR_StrategyTick();}', 'UR_Heartbeat(InpMagic);CNO_Tick();UR_StrategyTick();}')
 # UK100 Monday dip = FTSE Three Setup Raw 2026-10-27 S2, unchanged rules (Monday London day, close < SMA20, RSI < 40, long, 2.5 ATR stop, 2R, 24 h), one per Monday.
 FTSE_SRC = ROOT / 'FTSE Three Setup Raw 2026-10-27/EA/FTSE Three Setup Research EA.mq5'
 FTSE_INPUTS = dict(json.loads(read(ROOT / 'FTSE Three Setup Raw 2026-10-27/run-config.json'))['common_inputs'])
@@ -64,7 +152,14 @@ def ftse_include(target, shim, noguard):
 
 def guard_text():
     g = read(F1S / 'CalyxFTMOGuard.mqh'); assert sha(F1S / 'CalyxFTMOGuard.mqh') == json.loads(read(F1S / 'PACKAGE.json'))['guard_sha'], 'ftmo 1_step guard altered'
-    return sub1(g, 'return "F1S"+IntegerToString(FTMOExpectedLogin)', 'return "' + TAG + '"+IntegerToString(FTMOExpectedLogin)')
+    g = sub1(g, 'return "F1S"+IntegerToString(FTMOExpectedLogin)', 'return "' + TAG + '"+IntegerToString(FTMOExpectedLogin)')
+    g = sub1(g, '#define CALYX_PROP_READY_GUARD\n', '#define CALYX_PROP_READY_GUARD\n#include "CalyxNoOpposite.mqh"   // Best 1-Step 2026-11-17: no-opposite rule (InpCalyxNoOpposite), checked inside the guard lock\n')
+    g = sub1(g, 'input double FTMORiskCapPercent=0.5;', 'input double FTMOEntryRiskFactor=1.0; // Best 1-Step 2026-11-18: entry size factor for this chart only (Nasdaq 5M 0.75); total / symbol caps unchanged\ninput double FTMORiskCapPercent=0.5;')
+    g = sub1(g, 'double FTMORiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent/100.0;}', 'double FTMORiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent/100.0*MathMax(0.05,MathMin(1.0,FTMOEntryRiskFactor));}')
+    return sub1(g, '   if(entry && !FTMOAdmit(r,result)){FileClose(lock);return false;}',
+                '   if(entry && InpCalyxNewsBlock && CNO_NewsBlocked(r.symbol)){FileClose(lock);return FTMOReject(result,"news window on "+r.symbol);}\n'
+                '   if(entry && InpCalyxNoOpposite && CNO_OppositeOpen(r.symbol,CNO_Dir(r.type))){FileClose(lock);return FTMOReject(result,"no-opposite rule: opposite position open on "+r.symbol);}\n'
+                '   if(entry && !FTMOAdmit(r,result)){FileClose(lock);return false;}')
 
 
 def build_guarded(anyb, edge):
@@ -73,6 +168,7 @@ def build_guarded(anyb, edge):
         if d.exists(): shutil.rmtree(d)                  # this profile's own generated folders only
         d.mkdir(parents=True)
     guard = guard_text(); write(root / 'CalyxFTMOGuard.mqh', guard); write(pkg / 'CalyxFTMOGuard.mqh', guard)
+    cno_check(); shutil.copy2(CNO / 'CalyxNoOpposite.mqh', root / 'CalyxNoOpposite.mqh'); shutil.copy2(CNO / 'CalyxNoOpposite.mqh', pkg / 'CalyxNoOpposite.mqh')
     for f in (ANY / 'package').iterdir():
         if f.suffix == '.mqh' and f.name != 'CalyxFTMOGuard.mqh': shutil.copy2(f, pkg / f.name)
     entries = []; magics = {}; cache = {}
@@ -94,6 +190,13 @@ def build_guarded(anyb, edge):
             code = ('#property strict\n#include "CalyxFTMOGuard.mqh"\n#define OnInit FTMO_StrategyInit\n#define OnTick FTMO_StrategyTick\n#include "' + include + '"\n#undef OnInit\n#undef OnTick\n'
                     'int OnInit(){ if(FTMOInit()!=INIT_SUCCEEDED)return INIT_FAILED; return FTMO_StrategyInit(); }\nvoid OnTick(){ if(FTMOPulse())FTMO_StrategyTick(); }\n')
             write(pkg / f'{stem}.mq5', code); values = dict(FTSE_INPUTS, InpAdaptivePortfolioControls='false'); source = ('research (FTSE S2, Best 1-Step edits)', str(FTSE_SRC), 'FTSE run-config S2')
+        elif slug == 'asia-breakout':
+            label, symbol, timeframe = ASIA['label'], ASIA['symbol'], ASIA['timeframe']; include = C9.graph_copy(ASIA_SRC, pkg, cache, True)
+            code = ('#property strict\n#include "CalyxFTMOGuard.mqh"\n#define OnInit FTMO_StrategyInit\n#define OnTick FTMO_StrategyTick\n#define OnTimer FTMO_StrategyTimer\n#include "' + include + '"\n#undef OnInit\n#undef OnTick\n#undef OnTimer\n'
+                    'int OnInit(){ if(FTMOInit()!=INIT_SUCCEEDED)return INIT_FAILED; return FTMO_StrategyInit(); }\nvoid OnTick(){ if(FTMOPulse())FTMO_StrategyTick(); }\n')
+            if re.search(r'void\s+OnTimer\s*\(', C9.expansion(pkg, include)): code += 'void OnTimer(){ if(FTMOPulse())FTMO_StrategyTimer(); }\n'
+            write(pkg / f'{stem}.mq5', code); values = asia_inputs(); source = ('AAA Final engine (Full EA preset)', str(ASIA_SRC), 'FULL_ITEMS.json')
+            assert 'AAA_SendPending' not in read(ASIA_SRC) and 'AAA_SendMarket' in read(ASIA_SRC.parent / 'AAA_Final_Strategy_Engine.mqh')
         else:
             r = P4.RESEARCH[slug]; label, symbol, timeframe = r['label'], r['symbol'], r['timeframe']; include = P4.flat_include(slug, pkg, True, False)
             code = ('#property strict\n#include "CalyxFTMOGuard.mqh"\n#define OnInit FTMO_StrategyInit\n#define OnTick FTMO_StrategyTick\n#include "' + include + '"\n#undef OnInit\n#undef OnTick\n'
@@ -106,7 +209,7 @@ def build_guarded(anyb, edge):
             assert values['InpMarketEntries'] == 'true'; values.update(InpEnableMomentum='false', InpEnableBreakout='true', InpEnableTurnOfMonth='false')
         if slug == 'nasdaq-5m-candle-momentum': values['InpRequireDIAgreement'] = 'false'          # tested DI OFF (pool stream); the installer asks
         if slug == 'usdjpy-london-open-momentum': assert values['InpRequireDIAgreement'] == 'true'    # tested DI ON (Core 9 stream)
-        values.update(FTMOAllocationMode='1', FTMOAllocationValue='0.5', FTMOPhase='1', **C9.UNARMED); values.update(C9.RULES_1STEP)
+        values.update(FTMOAllocationMode='1', FTMOAllocationValue='0.5', FTMOPhase='1', **C9.UNARMED); values.update(C9.RULES_1STEP); values['InpCalyxNoOpposite'] = 'false'; values['InpCalyxNewsBlock'] = 'false'; values['FTMOEntryRiskFactor'] = '1.0'
         magic = values.get('InpMagic') or values.get('InpMagicBase'); assert magic and magic not in magics, ('magic clash', slug, magic); magics[magic] = slug
         write(pkg / f'{stem}.set', '\n'.join(f'{k}={v}' for k, v in values.items()) + '\n')
         shutil.copy2(pkg / f'{stem}.ex5', root / 'EAs' / f'{stem}.ex5'); shutil.copy2(pkg / f'{stem}.set', root / 'Sets' / f'{stem}.set')
@@ -126,12 +229,12 @@ def installer():
     s = C9.installer_1step().replace('\r\n', '\n')
     s, n = re.subn(r"\$expected=@\('[^)]*\)", lambda m: '$expected=@(' + ROSTER + ')', s, count=1); assert n == 1
     for a, b in [("[ValidateSet('ON','OFF')][string]$NasdaqDIFilter='ON',", "[ValidateSet('ON','OFF')][string]$NasdaqDIFilter='OFF',"),
-                 ("# Core 9 2026-11-05: nine EAs with the FTMO 1-Step guard", "# Best 1-Step 2026-11-17: Core 9 without Sell Nasdaq / XAU Squeeze + Overnight Bias ORB + UK100 Monday dip, nine EAs (Gold Band Wave + XAU Squeeze removed 2026-11-17) with the FTMO 1-Step guard"),
+                 ("# Core 9 2026-11-05: nine EAs with the FTMO 1-Step guard", "# Best 1-Step 2026-11-18: Core 9 without Sell Nasdaq / XAU Squeeze + Overnight Bias ORB + UK100 Monday dip + Asia Breakout, ten EAs (Gold Band Wave + XAU Squeeze removed 2026-11-17; Asia Breakout added, Nasdaq 5M 0.75x, news guard 2026-11-18) with the FTMO 1-Step guard"),
                  ("# GENERATED by Core 9/build.py from ftmo 1_step/Install-FTMO1Step.ps1; do not edit by hand.", "# GENERATED by Best 1-Step/build.py (via Core 9/build.py) from ftmo 1_step/Install-FTMO1Step.ps1; do not edit by hand."),
                  ("if($manifest.entries.Count -ne 9 -or", f"if($manifest.entries.Count -ne {len(SLUGS)} -or"),
                  ("        $answer=(Read-Host 'Nasdaq 5M DI filter ON or OFF [ON]').Trim().ToUpperInvariant()\n        if(-not $answer){$answer='ON'}\n",
                   "        $answer=(Read-Host 'Nasdaq 5M DI filter ON or OFF (tested OFF) [OFF]').Trim().ToUpperInvariant()\n        if(-not $answer){$answer='OFF'}\n"),
-                 ("3 Way Gold breakout only", "3 Way Gold breakout only / Overnight Bias ORB + UK100 Monday dip"),
+                 ("3 Way Gold breakout only", "3 Way Gold breakout only / Overnight Bias ORB + UK100 Monday dip + Asia Breakout / Nasdaq 5M 0.75x risk"),
                  ("USDJPY=@('USDJPY')}", "USDJPY=@('USDJPY');UK100=@(" + ','.join("'" + a + "'" for a in UK_ALIASES) + ")}"),
                  ("Nasdaq DI default ON.", "Nasdaq DI default OFF.")]:
         s = sub1(s, a, b)
@@ -144,6 +247,27 @@ def installer():
     s = sub1(s, "$WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat ([bool]$ValidateOnly)   # Calyx Weekend Flat (2026-11-11)\n",
              "$WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat ([bool]$ValidateOnly)   # Calyx Weekend Flat (2026-11-11)\n"
              "$selectedEntries=@(Select-CalyxEntries @($manifest.entries) $SkipEAs ([bool]($ValidateOnly -or -not $Interactive)) 'slug' 'label' 'symbol')   # owner 2026-11-11: one by one\n")
+    s = sub1(s, "[ValidateSet('','ON','OFF')][string]$WeekendFlat='',", "[ValidateSet('','ON','OFF')][string]$WeekendFlat='',\n    [ValidateSet('','ON','OFF')][string]$NoOpposite='',")
+    s = sub1(s, "$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)\n", CNO_PS + "$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)\n")
+    s = sub1(s, "$WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat ([bool]$ValidateOnly)   # Calyx Weekend Flat (2026-11-11)\n",
+             "$WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat ([bool]$ValidateOnly)   # Calyx Weekend Flat (2026-11-11)\n$NoOpposite=Read-CalyxNoOpposite $NoOpposite ([bool]$ValidateOnly)   # Calyx No Opposite (2026-11-17)\n")
+    s = sub1(s, "$inputs['FTMOTotalRiskMultiple']=Get-CalyxCapMultiple $TotalRiskCap;$inputs['FTMOSymbolRiskMultiple']=Get-CalyxCapMultiple $SymbolRiskCap",
+             "$inputs['FTMOTotalRiskMultiple']=Get-CalyxCapMultiple $TotalRiskCap;$inputs['FTMOSymbolRiskMultiple']=Get-CalyxCapMultiple $SymbolRiskCap;$inputs['InpCalyxNoOpposite']=if($NoOpposite -eq 'ON'){'true'}else{'false'}")
+    s = sub1(s, "Nasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`n", "Nasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`nNo-opposite rule: $NoOpposite`r`nNews guard: $NewsGuard; Nasdaq 5M risk factor: $NasdaqRiskFactor`r`n")
+    # 2026-11-18: news guard + Nasdaq 5M entry factor
+    s = sub1(s, "[ValidateSet('','ON','OFF')][string]$NoOpposite='',", "[ValidateSet('','ON','OFF')][string]$NoOpposite='',\n    [ValidateSet('','OFF','2','5')][string]$NewsGuard='',\n    [double]$NasdaqRiskFactor=0.75,")
+    s = sub1(s, "$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)\n", news_functions() + "$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)\n")
+    s = sub1(s, "$NoOpposite=Read-CalyxNoOpposite $NoOpposite ([bool]$ValidateOnly)   # Calyx No Opposite (2026-11-17)\n",
+             "$NoOpposite=Read-CalyxNoOpposite $NoOpposite ([bool]$ValidateOnly)   # Calyx No Opposite (2026-11-17)\n"
+             "$NewsGuard=Read-CalyxNewsGuard $NewsGuard ([bool]$ValidateOnly) $(if($Phase -eq 'Funded'){'2'}else{'OFF'})   # Calyx News Guard (2026-11-18): FTMO funded Standard = 2 min; challenges exempt\n"
+             "if([double]::IsNaN($NasdaqRiskFactor) -or $NasdaqRiskFactor -le 0 -or $NasdaqRiskFactor -gt 1){throw 'NasdaqRiskFactor must be above 0 and at most 1.'}\n"
+             "Write-Host ('Nasdaq 5M risk factor: {0} x the chosen risk (tested best 0.75; Best 1-Step Add Gold 2026-11-18)' -f $NasdaqRiskFactor)\n")
+    s = sub1(s, ";$inputs['InpCalyxNoOpposite']=if($NoOpposite -eq 'ON'){'true'}else{'false'}",
+             ";$inputs['InpCalyxNoOpposite']=if($NoOpposite -eq 'ON'){'true'}else{'false'};$inputs['InpCalyxNewsBlock']=if($NewsGuard -ne 'OFF'){'true'}else{'false'}"
+             ";$inputs['FTMOEntryRiskFactor']=if([string]$entry.slug -eq 'nasdaq-5m-candle-momentum'){$NasdaqRiskFactor.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)}else{'1.0'}")
+    s = sub1(s, "Add-CalyxWeekendFlatChart $WeekendFlat $profile $dataRoot ([string]$portfolio[0].BrokerSymbol) ''   # Calyx Weekend Flat (2026-11-11)\n",
+             "Add-CalyxWeekendFlatChart $WeekendFlat $profile $dataRoot ([string]$portfolio[0].BrokerSymbol) ''   # Calyx Weekend Flat (2026-11-11)\n"
+             "Add-CalyxNewsGuardChart $NewsGuard $profile $dataRoot ([string]$portfolio[0].BrokerSymbol) ''   # Calyx News Guard (2026-11-18)\n")
     s = sub1(s, "foreach($symbol in $aliasMap.Keys){", "foreach($symbol in @($aliasMap.Keys | Where-Object { $_ -in @($selectedEntries | ForEach-Object { [string]$_.symbol }) })){")
     s = sub1(s, "$portfolio=@()\nforeach($entry in $manifest.entries){", "$portfolio=@()\nforeach($entry in $selectedEntries){")
     return s.replace('\n', '\r\n')
@@ -158,7 +282,8 @@ def write_installers():
 
 
 def build_noguard():
-    """No recompile: the Core 9 no-guard EX5s (minus its DI-ON Nasdaq) + the P4 no-guard Nasdaq (Edge10, DI OFF) and research EX5s."""
+    """2026-11-17: every wrapper is recompiled from its package source with the Calyx No Opposite shim (InpCalyxNoOpposite, default false = the old
+    order path). Inputs / sets = the Core 9 no-guard entries (minus its DI-ON Nasdaq) + the P4 no-guard Nasdaq (DI OFF) and Overnight Bias ORB, as before."""
     c9 = json.loads(read(CORE9_NG / 'Package.json')); p4 = json.loads(read(P4_NG / 'Package.json'))
     for pk in (CORE9_NG, P4_NG):
         for rel, digest in json.loads(read(pk / 'Checksums.json')).items(): assert BL.sha(pk / rel) == digest, ('package altered', pk.name, rel)
@@ -166,18 +291,60 @@ def build_noguard():
     if NOGUARD.exists(): shutil.rmtree(NOGUARD)          # generated package only
     (NOGUARD / 'Experts').mkdir(parents=True); (NOGUARD / 'Sets').mkdir(); entries = []
     pick = [(CORE9_NG, e) for e in c9['entries'] if e['key'] != 'nasdaq-5m-candle-momentum' and e['key'] not in DROPPED] + [(P4_NG, e) for e in p4['entries'] if e['key'] in ('nasdaq-5m-candle-momentum', 'overnight-bias-orb')]
+    cno_check(); caches = {}; shutil.copy2(BL.CURRENT / 'RiskSupport.mqh', NOGUARD / 'RiskSupport.mqh')   # the wrappers include ../../RiskSupport.mqh
+    flat = ('#property strict\n#include "../RiskSupport.mqh"\n#define OnInit UR_StrategyInit\n#define OnTick UR_StrategyTick\n#include "{inc}"\n#undef OnInit\n#undef OnTick\n'
+            'int OnInit(){{if(!UR_InputsValid(InpRiskPercent))return INIT_PARAMETERS_INCORRECT;int r=UR_StrategyInit();if(r==INIT_SUCCEEDED)UR_Heartbeat(InpMagic,true);return r;}}\n'
+            'void OnTick(){{if(!UR_BindingOK())return;UR_Heartbeat(InpMagic);UR_StrategyTick();}}\n')
+
+    def compile_wrapper(slug, family, text):
+        folder = NOGUARD / 'Sources' / family; folder.mkdir(parents=True, exist_ok=True)
+        for n in ('CalyxNoOpposite.mqh', 'CNO_Trade.mqh'): shutil.copy2(CNO / n, folder / n)
+        name = 'Calyx Best1Step - ' + slug; write(folder / (name + '.mq5'), cno_wrapper(text))
+        closure = C9.expansion(folder, name + '.mq5')   # wrapper + strategy files (src_*), without the shim files
+        assert '<Trade/Trade.mqh>' not in closure and '#include "CNO_Trade.mqh"' in closure and 'CNO_Tick();UR_StrategyTick();' in closure, slug
+        assert not re.search(DIRECT_SEND, closure), slug   # every direct OrderSend of the strategy goes through the rule
+        BL.compile_ea(folder / (name + '.mq5')); shutil.copy2(folder / (name + '.ex5'), NOGUARD / 'Experts' / (name + '.ex5')); return 'Experts/' + name + '.ex5'
+
     for root, e in pick:
-        shutil.copy2(root / e['expert'], NOGUARD / e['expert']); shutil.copy2(root / e['settings'], NOGUARD / e['settings']); entries.append(dict(e, from_package=root.name))
-    # UK100 Monday dip: new no-guard wrapper (RiskSupport sizing), the FTSE S2 inputs
-    (NOGUARD / 'Sources').mkdir(exist_ok=True); include = ftse_include(NOGUARD / 'Sources', False, True); name = 'Calyx Best1Step - uk100-monday-dip'
-    BL.write(NOGUARD / 'Sources' / (name + '.mq5'), '#property strict\n#include "../RiskSupport.mqh"\n#define OnInit UR_StrategyInit\n#define OnTick UR_StrategyTick\n#include "' + include + '"\n#undef OnInit\n#undef OnTick\n'
-             'int OnInit(){if(!UR_InputsValid(InpRiskPercent))return INIT_PARAMETERS_INCORRECT;int r=UR_StrategyInit();if(r==INIT_SUCCEEDED)UR_Heartbeat(InpMagic,true);return r;}\n'
-             'void OnTick(){if(!UR_BindingOK())return;UR_Heartbeat(InpMagic);UR_StrategyTick();}\n')
+        slug = e['key']
+        if slug == 'nasdaq-5m-candle-momentum': assert 'InpCarryMode' in read(BL.CURRENT / 'Sources/src_7d5ce7953b20.mqh'), 'Nasdaq source must be the REPLACE build'
+        if slug in NG_WRAP:
+            family = NG_WRAP[slug]; src, prefix = NG_SRC[family]; folder = NOGUARD / 'Sources' / family; folder.mkdir(parents=True, exist_ok=True)
+            wrapper = src / (prefix + slug + '.mq5'); body = read(wrapper)
+            for inc in re.findall(r'#include\s+"([^"]+)"', body):
+                if not inc.startswith('../'): cno_copy(src / inc, folder, caches.setdefault(family, {}))
+            expert = compile_wrapper(slug, family, body); source = str(wrapper)
+        else:   # overnight-bias-orb: the P4 research source with its asserted edits
+            folder = NOGUARD / 'Sources' / 'p4'; folder.mkdir(parents=True, exist_ok=True); inc = P4.flat_include(slug, folder, False, True)
+            write(folder / inc, cno_text(read(folder / inc))); expert = compile_wrapper(slug, 'p4', flat.format(inc=inc)); source = 'P4 research source (P4/build.py flat_include)'
+        inputs = dict(e['inputs'], InpCalyxNoOpposite='false', InpCalyxNewsBlock='false')
+        BL.write(NOGUARD / e['settings'], read(root / e['settings']).rstrip('\r\n') + '\nInpCalyxNoOpposite=false\nInpCalyxNewsBlock=false\n')
+        entries.append(dict(e, expert=expert, inputs=inputs, from_package=root.name, wrapper_source=source, tested_expert=e['expert'], tested_expert_sha256=BL.sha(root / e['expert'])))
+    # 2026-11-18 Asia Breakout: AAA Final engine graph (risk multiplier -> RiskSupport) + the CNO shim, Edge 10 wrapper template
+    folder = NOGUARD / 'Sources' / 'aaa'; folder.mkdir(parents=True, exist_ok=True); inc = aaa_graph(ASIA_SRC, folder, {})
+    body = ('#property strict\n#include "../RiskSupport.mqh"\n#define OnInit UR_StrategyInit\n#define OnTick UR_StrategyTick\n#define OnTimer UR_StrategyTimer\n#include "' + inc + '"\n#undef OnInit\n#undef OnTick\n#undef OnTimer\n'
+            'int OnInit(){if(!UR_InputsValid(InpRiskPercent))return INIT_PARAMETERS_INCORRECT;int r=UR_StrategyInit();if(r==INIT_SUCCEEDED)UR_Heartbeat(InpMagic,true);return r;}\n'
+            'void OnTick(){if(!UR_BindingOK())return;UR_Heartbeat(InpMagic);UR_StrategyTick();}\n')
+    exp = C9.expansion(folder, inc); assert 'return UR_RiskMultiplier();' in exp
+    if re.search(r'void\s+OnTimer\s*\(', exp): body += 'void OnTimer(){if(!UR_BindingOK())return;UR_Heartbeat(InpMagic);UR_StrategyTimer();}\n'
+    for n in ('CalyxNoOpposite.mqh', 'CNO_Trade.mqh'): shutil.copy2(CNO / n, folder / n)
+    asin = asia_inputs()
+    if 'InpRiskMode' in asin: asin['InpRiskMode'] = '0'
+    asin.update(InpPortfolioRiskMode='0', InpPortfolioPercent='0.5', InpPortfolioFixedUSD='50.0', InpPortfolioExpectedLogin='0', InpPortfolioExpectedServer='', InpPortfolioExpectedSymbol='',
+                InpPortfolioInstallNonce='', InpCalyxNoOpposite='false', InpCalyxNewsBlock='false')
+    expert = compile_wrapper('asia-breakout', 'aaa', body)
+    BL.write(NOGUARD / 'Sets' / 'asia-breakout.set', '\n'.join(k + '=' + v for k, v in asin.items()) + '\n')
+    entries.append(dict(key='asia-breakout', label=ASIA['label'], canonical='XAUUSD', period=60, magic=int(asin['InpMagic']), hourly=False, expert=expert, settings='Sets/asia-breakout.set',
+                        inputs=asin, di_input=None, production_source=str(ASIA_SRC), production_sha256=BL.sha(ASIA_SRC), production_ex5=str(ASIA_SRC.with_suffix('.ex5'))))
+    # UK100 Monday dip: no-guard wrapper (RiskSupport sizing), the FTSE S2 inputs
+    folder = NOGUARD / 'Sources' / 'b1'; folder.mkdir(parents=True, exist_ok=True); include = ftse_include(folder, False, True)
+    write(folder / include, cno_text(read(folder / include))); name = 'Calyx Best1Step - uk100-monday-dip'
+    compile_wrapper('uk100-monday-dip', 'b1', flat.format(inc=include))
     shutil.copy2(BL.CURRENT / 'RiskSupport.mqh', NOGUARD / 'RiskSupport.mqh')
     ukin = dict(FTSE_INPUTS, InpAdaptivePortfolioControls='false', InpPortfolioRiskMode='0', InpPortfolioPercent='0.5', InpPortfolioFixedUSD='50.0', InpPortfolioExpectedLogin='0',
                 InpPortfolioExpectedServer='', InpPortfolioExpectedSymbol='', InpPortfolioInstallNonce='')
     BL.write(NOGUARD / 'Sets' / 'uk100-monday-dip.set', '\n'.join(k + '=' + v for k, v in ukin.items()) + '\n')
-    BL.compile_ea(NOGUARD / 'Sources' / (name + '.mq5')); shutil.copy2(NOGUARD / 'Sources' / (name + '.ex5'), NOGUARD / 'Experts' / (name + '.ex5'))
+    ukin['InpCalyxNoOpposite'] = 'false'; ukin['InpCalyxNewsBlock'] = 'false'; BL.write(NOGUARD / 'Sets' / 'uk100-monday-dip.set', '\n'.join(k + '=' + v for k, v in ukin.items()) + '\n')
     entries.append(dict(key='uk100-monday-dip', label=UK['label'], canonical='UK100', period=60, magic=int(ukin['InpMagic']), hourly=False, expert='Experts/' + name + '.ex5',
                         settings='Sets/uk100-monday-dip.set', inputs=ukin, di_input=None, research_source=str(FTSE_SRC), research_sha256=BL.sha(FTSE_SRC)))
     entries.sort(key=lambda e: SLUGS.index(e['key']))
@@ -185,6 +352,9 @@ def build_noguard():
     assert next(e for e in entries if e['key'] == 'nasdaq-5m-candle-momentum')['inputs']['InpRequireDIAgreement'] == 'false'
     assert next(e for e in entries if e['key'] == 'usdjpy-london-open-momentum')['inputs']['InpRequireDIAgreement'] == 'true'
     for name in ('RiskSupport.mqh', 'Installer-Helpers.ps1', 'Probe-MT5.py'): shutil.copy2(BL.CURRENT / name, NOGUARD / name)
+    helpers = read(NOGUARD / 'Installer-Helpers.ps1'); wf = "Contains('path=Experts\\Calyx Weekend Flat\\')"
+    assert helpers.count(wf) == 1, 'chart audit filter'
+    BL.write(NOGUARD / 'Installer-Helpers.ps1', helpers.replace(wf, wf + " -or ([string](Get-Content -LiteralPath $_.FullName -Raw)).Contains('path=Experts\\Calyx News Guard\\')"))   # helper charts are not portfolio charts
     text = BL.read(BL.CURRENT / 'Install-Portfolio.ps1')
     for old, new, count in [('.Count -ne 17', f'.Count -ne {len(SLUGS)}', 3), ('return $ready -eq 17', f'return $ready -eq {len(SLUGS)}', 1), ('17-chart', f'{len(SLUGS)}-chart', 1), ("'CALYX - CURRENT14 + ORB05 PORTFOLIO'", "'CALYX - BEST 1-STEP PORTFOLIO (NO GUARD)'", 1),
                             ('No FTMO restrictions, no shared $400/$450 daily stop. This is NOT the previously simulated guarded portfolio. Three-Way Gold risk applies to each module.',
@@ -204,14 +374,36 @@ def build_noguard():
                       "    $WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat $false   # Calyx Weekend Flat (2026-11-11)\n"
                       "    $package.entries=@(Select-CalyxEntries @($package.entries) $SkipEAs $false 'key' 'label' 'canonical')   # owner 2026-11-11: one by one\n"),
                      ("foreach ($canonical in @('USDJPY', 'USTEC', 'XAUUSD', 'UK100')) {", "foreach ($canonical in @(@('USDJPY', 'USTEC', 'XAUUSD', 'UK100') | Where-Object { $_ -in @($Package.entries | ForEach-Object { [string]$_.canonical }) })) {"),
-                     (f"return $ready -eq {len(SLUGS)}", "return $ready -eq @($Items).Count")]:
+                     (f"return $ready -eq {len(SLUGS)}", "return $ready -eq @($Items).Count"),
+                     ("    [ValidateSet('', 'ON', 'OFF')][string]$WeekendFlat = '',\n", "    [ValidateSet('', 'ON', 'OFF')][string]$WeekendFlat = '',\n    [ValidateSet('', 'ON', 'OFF')][string]$NoOpposite = '',\n"),
+                     ("function Read-CalyxNasdaqVersion", CNO_PS + "\nfunction Read-CalyxNasdaqVersion"),
+                     ("    $WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat $false   # Calyx Weekend Flat (2026-11-11)\n",
+                      "    $WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat $false   # Calyx Weekend Flat (2026-11-11)\n    $script:NoOpposite=Read-CalyxNoOpposite $NoOpposite $false   # Calyx No Opposite (2026-11-17)\n"),
+                     ("    $inputs['InpPortfolioInstallNonce'] = [string]$InstallNonce\n",
+                      "    $inputs['InpPortfolioInstallNonce'] = [string]$InstallNonce\n    $inputs['InpCalyxNoOpposite'] = if ($script:NoOpposite -eq 'ON') { 'true' } else { 'false' }   # Calyx No Opposite (2026-11-17)\n"
+                      "    $inputs['InpCalyxNewsBlock'] = if ($script:NewsGuard -ne 'OFF') { 'true' } else { 'false' }   # Calyx News Guard (2026-11-18)\n"
+                      "    if ($Item.Key -eq 'nasdaq-5m-candle-momentum') {   # 2026-11-18: Nasdaq 5M at a fraction of the chosen risk (tested 0.75)\n"
+                      "        $inv = [Globalization.CultureInfo]::InvariantCulture\n"
+                      "        if ($cash) { $inputs['InpPortfolioFixedUSD'] = ([double]::Parse($inputs['InpPortfolioFixedUSD'], $inv) * $NasdaqRiskFactor).ToString('G17', $inv) }\n"
+                      "        else { $inputs['InpPortfolioPercent'] = ([double]::Parse($inputs['InpPortfolioPercent'], $inv) * $NasdaqRiskFactor).ToString('G17', $inv) }\n"
+                      "    }\n"),
+                     ("    [ValidateSet('', 'ON', 'OFF')][string]$NoOpposite = '',\n", "    [ValidateSet('', 'ON', 'OFF')][string]$NoOpposite = '',\n    [ValidateSet('', 'OFF', '2', '5')][string]$NewsGuard = '',\n    [double]$NasdaqRiskFactor = 0.75,\n"),
+                     ("function Read-CalyxNasdaqVersion", news_functions() + "\nfunction Read-CalyxNasdaqVersion"),
+                     ("    $script:NoOpposite=Read-CalyxNoOpposite $NoOpposite $false   # Calyx No Opposite (2026-11-17)\n",
+                      "    $script:NoOpposite=Read-CalyxNoOpposite $NoOpposite $false   # Calyx No Opposite (2026-11-17)\n"
+                      "    $script:NewsGuard=Read-CalyxNewsGuard $NewsGuard $false '5'   # Calyx News Guard (2026-11-18): 5 min covers FTMO funded / The5ers (2) and FundingPips (5)\n"
+                      "    if ([double]::IsNaN($NasdaqRiskFactor) -or $NasdaqRiskFactor -le 0 -or $NasdaqRiskFactor -gt 1) { throw 'NasdaqRiskFactor must be above 0 and at most 1.' }\n"
+                      "    Write-Host ('Nasdaq 5M risk factor: {0} x the chosen risk (tested best 0.75)' -f $NasdaqRiskFactor)\n"),
+                     ("    Add-CalyxWeekendFlatChart $WeekendFlat (Join-Path $stage 'Charts') $dataRoot ([string]$portfolio[0].BrokerSymbol) $PackageRoot   # Calyx Weekend Flat (2026-11-11)\n",
+                      "    Add-CalyxWeekendFlatChart $WeekendFlat (Join-Path $stage 'Charts') $dataRoot ([string]$portfolio[0].BrokerSymbol) $PackageRoot   # Calyx Weekend Flat (2026-11-11)\n"
+                      "    Add-CalyxNewsGuardChart $script:NewsGuard (Join-Path $stage 'Charts') $dataRoot ([string]$portfolio[0].BrokerSymbol) $PackageRoot   # Calyx News Guard (2026-11-18)\n")]:
         assert text.count(old) == 1, (old[:60], text.count(old)); text = text.replace(old, new)
     BL.write(NOGUARD / 'Install-Portfolio.ps1', text)
     BL.save(NOGUARD / 'Package.json', dict(version=f'{VERSION}-NOGUARD', profile='Calyx BEST1STEP NOGUARD', entries=entries, orb_keys=['us100-selective-orb-v3'], default_percent=0.5, required_margin_mode=2, news=False, ftmo_guard=False,
-                                           shared_daily_stop=False, adaptive_governor=False, selection='Owner 2026-11-11: Core 9 + P4 (Best 1-Step Search 2026-11-11, in-sample, selection-biased); Sell Nasdaq removed; UK100 Monday dip added (Best 1-Step UK100 Monday 2026-11-11). Owner 2026-11-17: Gold Band Wave and XAU Squeeze removed (last-year review, Multi Firm Funded 2026-11-17).', compatibility=c9['compatibility'],
+                                           shared_daily_stop=False, adaptive_governor=False, selection='Owner 2026-11-11: Core 9 + P4 (Best 1-Step Search 2026-11-11, in-sample, selection-biased); Sell Nasdaq removed; UK100 Monday dip added (Best 1-Step UK100 Monday 2026-11-11). Owner 2026-11-17: Gold Band Wave and XAU Squeeze removed (last-year review, Multi Firm Funded 2026-11-17). Owner 2026-11-18: Asia Breakout added, Nasdaq 5M 0.75x risk, news guard (Best 1-Step Add Gold 2026-11-18).', compatibility=c9['compatibility'],
                                            no_live_installation=True, sources=dict(core9=c9['version'], p4=p4['version'])))
     paths = [NOGUARD / n for n in ('Package.json', 'Install-Portfolio.ps1', 'Installer-Helpers.ps1', 'Probe-MT5.py')] + sorted((NOGUARD / 'Experts').glob('*.ex5')) + sorted((NOGUARD / 'Sets').glob('*.set'))
-    BL.save(NOGUARD / 'Checksums.json', {str(p.relative_to(NOGUARD)).replace(chr(92), '/'): BL.sha(p) for p in paths}); print('Built no guard,', len(entries), 'EAs (UK100 wrapper compiled, the rest copied)', flush=True)
+    BL.save(NOGUARD / 'Checksums.json', {str(p.relative_to(NOGUARD)).replace(chr(92), '/'): BL.sha(p) for p in paths}); print('Built no guard,', len(entries), 'EAs (all wrappers recompiled with the Calyx No Opposite shim)', flush=True)
 
 
 def main():

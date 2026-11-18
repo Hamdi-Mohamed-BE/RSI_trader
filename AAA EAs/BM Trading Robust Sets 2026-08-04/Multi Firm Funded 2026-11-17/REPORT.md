@@ -188,3 +188,34 @@ Mixes (MC 36 months; Mix F = 2 FTMO 1-Step + 2 FTMO 2-Step + The5ers HS at 0.75%
 | E | B9NH | $16,096 | 93.9% | — | — | — |
 
 Results: B9.json, B9_MIXES.json, TYPES_B9*.json.
+
+## Addendum 4 (2026-11-17): cost, return and time to get funded (9-EA Best 1-Step as installed, MC 36 months)
+sim.py now records each slot's first funded day (same seed; the other numbers are unchanged). Results: TYPES_B9*.json (funded_within,
+first_funded_day_*), B9_TIMING.json.
+
+Per account (median days from purchase):
+
+| Account | Funded | Funded ≤ 60 / 90 / 180 d | First payout | Net per month |
+|---|---|---|---|---|
+| FTMO 1-Step 0.75% | 59 d | 52 / 77 / 98% | 117 d | $3,587 |
+| FTMO 1-Step 0.5% | 92 d | — | — | — |
+| FP Standard 0.75% | 81 d | — | — | — |
+| FTMO 2-Step 0.75% | 96 d | — | — | — |
+| The5ers HS 0.75% | 96 d | — | — | — |
+| FTMO 2-Step / The5ers 0.5% | 142 d | — | — | — |
+
+History starts (2021-23 included) are slower: FTMO 1-Step 0.75% median 82 d, 2-Step 116 d.
+
+Mix F (2 FTMO 1-Step + 2 FTMO 2-Step + The5ers at 0.75%):
+
+| Measure | Base | +0.05R cost |
+|---|---|---|
+| Upfront fees | $2,905 | — |
+| Fees in 36 months | $9,040 | $16,438 |
+| Most cash out at once | median $2,905, p90 $5,811 | $4,063 |
+| Break-even | month 4 | month 6 |
+| First account funded | 59 d (p25–p75 39–87) | 87 d |
+| All five funded | 96 d | 149 d |
+| First payout | 105 d | 158 d |
+| Year-1 net | median $168k (p10 $60k) | $66k |
+| 36-month net | median $620k (p10 $424k, p90 $828k) | $293k (p10 $135k) |

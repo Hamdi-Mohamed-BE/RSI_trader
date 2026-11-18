@@ -1,4 +1,4 @@
-# Best 1-Step (BEST1STEP-20261117)
+# Best 1-Step (BEST1STEP-20261118)
 
 Owner 2026-11-11. Core 9 + Overnight Bias ORB + Gold Band Wave = 11 EAs (Nasdaq 5M REPLACE DI OFF, USDJPY London DI ON, 3 Way Gold breakout only,
 Sell Nasdaq 15min, EMA3, ORB VP Volume Confirmed, XAU Squeeze, US100 Selective ORB V3 0.5R, XAU RSI VWAP, Overnight Bias ORB, Gold Band Wave).
@@ -36,3 +36,26 @@ Sell Nasdaq (guarded) holds its stop in the EA and sells at market. Gold Band Wa
   (Calyx Weekend Flat/wire_weekendflat.py patch_b), both BATs -ValidateOnly PASS. Still asks for each EA. Not installed on any terminal; not pushed.
 - The no-opposite-trade rule (needed at FundingPips) is NOT in these EAs.
 - Evidence: Multi Firm Funded 2026-11-17 (Addendum 3). Gold EAs picked on the last 12 months (hindsight).
+
+## 2026-11-17 no-opposite rule (owner: "build the no opposite trade rule into the EAs and add to profile along side with weekend hold")
+- Both installers ask: "No opposite trades on the same symbol? ON or OFF [OFF]" (-NoOpposite ON|OFF), next to the weekend-flat question.
+  ON = no new entry / pending order against an open opposite position on the same symbol (FundingPips hedging rule); OFF = tested behaviour.
+- No guard: all 9 wrappers recompiled from their package sources with the Calyx No Opposite shim (`../Calyx No Opposite/`). They are now named
+  `Calyx Best1Step - <ea>.ex5`, and Package.json keeps the tested EX5 name + sha per entry. Guarded: the check runs inside the FTMO 1-Step guard lock.
+- Every set has InpCalyxNoOpposite=false. 18 EAs compiled 0/0; weekend-flat helper re-added; both BATs -ValidateOnly PASS.
+  The native harness passed 11/11 checks with the rule ON and 11/11 with it OFF. Wrapper parity: `../Calyx No Opposite/parity/PARITY.json`.
+- Builder backup before this change: build.before-noopposite.py.
+
+## 2026-11-18 "best perfect profile" (owner: "update the best profile to respect this and respect all the trading rules check inbox responses")
+- 10 EAs: the 9 above + **Asia Breakout** (AAA Final engine, XAUUSD H1, market entries only, Full EA inputs, magic 290729). Builder backup: build.before-ten.py.
+- **Nasdaq 5M at 0.75x** the chosen risk (`-NasdaqRiskFactor`, default 0.75, range (0, 1]). Guarded: new guard input `FTMOEntryRiskFactor` (Nasdaq chart only) scales the
+  per-entry cap; total / symbol caps unchanged. No guard: InpPortfolioPercent (or the fixed USD) x0.75 on the Nasdaq chart.
+- **News guard** (`../Calyx News Guard/`): question `OFF / 2 / 5` (`-NewsGuard`); guarded default Funded = 2, Challenge = OFF; no guard default 5. ON adds the helper
+  chart, downloads the calendar and sets `InpCalyxNewsBlock=true` on every EA (entries refused while the guard blocks the symbol).
+- Firm rules behind it (email replies): FTMO funded Standard 2 min news + flat before weekends (weekend-flat ON), challenges exempt; The5ers 2 min; FundingPips 5 min
+  soft breach + no hedging (no-opposite ON); FTMO $400k per client AND per strategy; no copying the same trades into opposite directions across accounts.
+- Checks: 20 wrappers compiled 0/0; weekend flat re-added; both BATs -ValidateOnly PASS; installer sandbox test 25/25 (news question, Nasdaq 0.375% / $75 at
+  0.5% / $100, Asia inputs, chart writer, calendar download to a redirected APPDATA, guarded per-chart inputs, guard text). Native parity: `parity/PARITY.json`.
+- Evidence for the list (Best 1-Step Add Gold 2026-11-18/FINAL_PICK.json, no-guard multi-firm engine, in-sample, hindsight-selected): FTMO 1-Step 0.75% first-try 93.1%,
+  median 59 d; FTMO 2-Step / The5ers 0.75% 95.4%, 89 d; FundingPips Standard 0.75% 96.2%, 79 d. Weekend / holiday flat was applied;
+  news closes were NOT simulated, so the real effect of the news guard is not measured. Not installed; not pushed.
