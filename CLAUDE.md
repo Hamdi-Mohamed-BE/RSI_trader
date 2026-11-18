@@ -1119,7 +1119,8 @@ of what is currently attached to a live terminal.
     accounts; The5ers 2 min, own source required; FundingPips 5 min soft breach, no hedging (no-opposite ON), AI-assisted OK if you are the developer.
   - Checks: 20 wrappers 0/0, weekend flat re-added, both BATs -ValidateOnly PASS, installer sandbox test 25/25; native parity `Best 1-Step/parity/PARITY.json`.
   - Expected (no-guard multi-firm engine, in-sample, hindsight, no news closes simulated): FTMO 1-Step 0.75% first try 93.1% median 59 d; 2-Step / The5ers 0.75% 95.4% 89 d;
-    FP Standard 0.75% 96.2% 79 d. Not installed; not pushed.
+    FP Standard 0.75% 96.2% 79 d. Pushed 55d5e72e2 / 6111b7718; not installed.
+  - `Best 1-Step/Setup Best 1-Step (all in one).bat`: account type -> calendar + daily task + installer with the answers filled in (validate PASS types 1-6).
 - 2026-11-10 IN PROGRESS: `Portfolio P7 2026-11-10/` (Vault Break, Overnight Bias ORB, Nasdaq 5M REPLACE DI OFF, EMA3, ORB VP, RSI VWAP, Gold Band Wave). Native all years +390.7R PF 1.16
   63.8 trades/month, worst day -7.1R, MC 0/0.3 but clumped 95.7%. FTMO 2-step / 1-Step guard + no guard 0.5/0.75/1% and each EA alone: p7.py runall (48 jobs). USDJPY search resumed after it.
 - 2026-11-05 IN PROGRESS: tester queue `tester_queue_20261105.sh`: `Nasdaq 5M Candle Rule 2026-11-05/` (13 versions, PLAN.md frozen) and `USDJPY London Optimization 2026-11-05/` (PLAN.md frozen, stage 5 + 6, owner approved). Not finished.

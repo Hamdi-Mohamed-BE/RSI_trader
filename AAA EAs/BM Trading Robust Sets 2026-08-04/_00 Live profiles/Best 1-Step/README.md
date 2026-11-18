@@ -59,3 +59,9 @@ Sell Nasdaq (guarded) holds its stop in the EA and sells at market. Gold Band Wa
 - Evidence for the list (Best 1-Step Add Gold 2026-11-18/FINAL_PICK.json, no-guard multi-firm engine, in-sample, hindsight-selected): FTMO 1-Step 0.75% first-try 93.1%,
   median 59 d; FTMO 2-Step / The5ers 0.75% 95.4%, 89 d; FundingPips Standard 0.75% 96.2%, 79 d. Weekend / holiday flat was applied;
   news closes were NOT simulated, so the real effect of the news guard is not measured. Not installed; not pushed.
+
+## 2026-11-18 all-in-one setup (owner: "one script file that will apply all these extra stuff")
+`Setup Best 1-Step (all in one).bat` (-> Setup-Best1Step.ps1): pick the account type 1-7 (FTMO 1-Step challenge / funded, FTMO 2-Step challenge / funded,
+The5ers, FundingPips, custom). It downloads the news calendar, creates / refreshes the daily task "Calyx News Calendar" (06:00, asked), then runs the right
+installer with risk / weekend flat / no-opposite / news guard / Nasdaq / DI / caps answers filled in. Still asked: each EA (Enter = install) and the installer's
+typed confirmation. `-Type N -ValidateOnly` PASS for types 1-6. Not run on a terminal.
