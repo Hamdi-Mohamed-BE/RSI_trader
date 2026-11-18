@@ -5,7 +5,7 @@
 # (Update News Calendar.bat, or a Windows Task Scheduler task that you create yourself). Sends only a plain GET.
 # FTMO's "selected news" list can differ; the ForexFactory High-impact set covers the big USD / EUR / GBP / JPY releases.
 [CmdletBinding()]
-param([string]$Out = '', [string]$Feed = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json')
+param([string]$Out = '', [string]$Feed = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json', [switch]$Quiet)   # -Quiet: used by the BAT to skip its pause (scheduled task)
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
 if (-not $Out) {
