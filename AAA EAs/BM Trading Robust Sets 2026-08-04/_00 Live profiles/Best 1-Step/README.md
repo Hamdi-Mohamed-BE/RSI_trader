@@ -65,3 +65,16 @@ Sell Nasdaq (guarded) holds its stop in the EA and sells at market. Gold Band Wa
 The5ers, FundingPips, custom). It downloads the news calendar, creates / refreshes the daily task "Calyx News Calendar" (06:00, asked), then runs the right
 installer with risk / weekend flat / no-opposite / news guard / Nasdaq / DI / caps answers filled in. Still asked: each EA (Enter = install) and the installer's
 typed confirmation. `-Type N -ValidateOnly` PASS for types 1-6. Not run on a terminal.
+
+## 2026-11-19 Nasdaq 5M factor is now ASKED (owner: "make it ask me what to use for it")
+Both installers ask: 1 = 0.75x (recommended, Enter), 2 = 1.00x (full), 3 = 0.50x, or a typed factor 0.05-1. `-NasdaqRiskFactor <f>` skips the question;
+-ValidateOnly / no-prompt runs use 0.75. The all-in-one setup no longer forces 0.75 (the installer asks). Builder backup build.before-nasdaqask.py,
+setup backup Setup-Best1Step.before-nasdaqask.ps1. Rebuilt (20 wrappers 0/0), weekend flat re-added, both BATs + setup types 1-6 -ValidateOnly PASS,
+question tested with typed answers on both installers (Enter/1/2/3/0.6/invalid/no-prompt/param) PASS. Not installed; not pushed.
+
+## 2026-11-20 `Ready for FTMO.bat` (owner: one file, 0.75% risk, DI off, all FTMO rules, "just run it on the account")
+`Ready for FTMO.bat` -> `Ready-For-FTMO.ps1` -> the FTMO 1-Step guarded installer, non-interactive, all 10 EAs. Fixed: risk 0.75% (challenge), Nasdaq 5M x0.75,
+Nasdaq DI OFF, USDJPY DI ON (tested), Nasdaq stop ATR6, caps 4.5x / 3x, weekend flat ON, no-opposite OFF, news guard Challenge OFF / Funded +-2 min, news
+calendar now + daily task "Calyx News Calendar" (refreshed silently; a funded install stops if the calendar download fails). Asks: Challenge or Funded;
+on Funded also the risk per trade (Enter = 0.5%, 0.1-1.5; `-FundedRisk x` skips it); then the installer's typed confirmation. -ValidateOnly PASS for
+Challenge / Funded / -FundedRisk 0.6; risk question tested (Enter, 0.75, 0.3, rejects 2 / abc, param skip, challenge no question). Not installed; not pushed.

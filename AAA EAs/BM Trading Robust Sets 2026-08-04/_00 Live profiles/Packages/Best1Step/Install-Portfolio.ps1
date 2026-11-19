@@ -7,7 +7,7 @@ param(
     [ValidateSet('', 'ON', 'OFF')][string]$WeekendFlat = '',
     [ValidateSet('', 'ON', 'OFF')][string]$NoOpposite = '',
     [ValidateSet('', 'OFF', '2', '5')][string]$NewsGuard = '',
-    [double]$NasdaqRiskFactor = 0.75,
+    [double]$NasdaqRiskFactor = 0,
     [ValidateSet('', 'NEW', 'OLD')][string]$NasdaqStopVersion = '',
     [string]$TargetTerminal = '',
     [switch]$ValidateOnly,
@@ -252,6 +252,30 @@ function Read-CalyxNoOpposite([string]$Current, [bool]$NoPrompt) {
 }
 # <<< Calyx No Opposite <<<
 
+# >>> Calyx Nasdaq 5M risk factor (owner 2026-11-19: "make it ask me what to use") >>>
+function Read-CalyxNasdaqFactor([double]$Current, [bool]$NoPrompt) {
+    if ($Current -gt 0) { if ([double]::IsNaN($Current) -or $Current -gt 1) { throw 'NasdaqRiskFactor must be above 0 and at most 1.' }; return $Current }
+    if ($NoPrompt) { return 0.75 }
+    Write-Host ''
+    Write-Host 'NASDAQ 5M RISK - Nasdaq 5M decides most of the pass rate. Its risk per trade = your chosen risk x this factor.' -ForegroundColor Cyan
+    Write-Host '  1 = 0.75 x  recommended   (FTMO 1-Step at 0.75%: first-try pass 93%, median 59 days to funded)'
+    Write-Host '  2 = 1.00 x  full risk     (82%, 58 days)'
+    Write-Host '  3 = 0.50 x  safer         (96%, 61 days)'
+    Write-Host '  or type your own factor, e.g. 0.6 (between 0.05 and 1). Figures: in-sample simulation, Best 1-Step Add Gold 2026-11-18.' -ForegroundColor Yellow
+    $answer = (Read-Host 'Nasdaq 5M risk factor [1]').Trim()
+    $factor = 0.0
+    switch ($answer) {
+        '' { $factor = 0.75 } '1' { $factor = 0.75 } '2' { $factor = 1.0 } '3' { $factor = 0.5 }
+        default {
+            if (-not [double]::TryParse($answer, [Globalization.NumberStyles]::Float, [Globalization.CultureInfo]::InvariantCulture, [ref]$factor) -or $factor -lt 0.05 -or $factor -gt 1) {
+                throw 'Answer 1, 2, 3 or a number between 0.05 and 1 (use a decimal point).'
+            }
+        }
+    }
+    Write-Host ('Nasdaq 5M risk factor: {0} x the chosen risk' -f $factor) -ForegroundColor Green
+    return $factor
+}
+# <<< Calyx Nasdaq 5M risk factor <<<
 # >>> Calyx News Guard (owner 2026-11-18: "respect all the trading rules") >>>
 # FTMO funded Standard: no execution 2 min before / after selected news (entries, TP, SL, pending orders) - challenges / Swing are exempt.
 # The5ers High Stakes: no trades 2 min around high-impact news. FundingPips Master: 5 min (profit removed).
@@ -724,8 +748,7 @@ function Main {
     $WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat $false   # Calyx Weekend Flat (2026-11-11)
     $script:NoOpposite=Read-CalyxNoOpposite $NoOpposite $false   # Calyx No Opposite (2026-11-17)
     $script:NewsGuard=Read-CalyxNewsGuard $NewsGuard $false '5'   # Calyx News Guard (2026-11-18): 5 min covers FTMO funded / The5ers (2) and FundingPips (5)
-    if ([double]::IsNaN($NasdaqRiskFactor) -or $NasdaqRiskFactor -le 0 -or $NasdaqRiskFactor -gt 1) { throw 'NasdaqRiskFactor must be above 0 and at most 1.' }
-    Write-Host ('Nasdaq 5M risk factor: {0} x the chosen risk (tested best 0.75)' -f $NasdaqRiskFactor)
+    $script:NasdaqRiskFactor=Read-CalyxNasdaqFactor $NasdaqRiskFactor $false   # asked; Enter = 0.75 (2026-11-19)
     $package.entries=@(Select-CalyxEntries @($package.entries) $SkipEAs $false 'key' 'label' 'canonical')   # owner 2026-11-11: one by one
     foreach ($parameter in @('NasdaqDIFilter','UsdJpyDIFilter')) {
         if (-not (Get-Variable -Name $parameter -ValueOnly)) {

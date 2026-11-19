@@ -1,0 +1,766 @@
+{
+ "eas": [
+  "3WG",
+  "ASIA",
+  "EMA3",
+  "NAS",
+  "ORBVC",
+  "ONB",
+  "UK",
+  "SEL",
+  "JPY",
+  "RSI"
+ ],
+ "dev_starts": 740,
+ "test_starts": 480,
+ "mc_paths": 2000,
+ "FULL_1": {
+  "0.75%": {
+   "dev": {
+    "any_pass_30": 12.8,
+    "any_pass_60": 34.7,
+    "all_breach_60": 7.8,
+    "median_days_first_pass": 38.0,
+    "each_pass_30": [
+     12.8
+    ],
+    "each_breach_60": [
+     7.8
+    ]
+   },
+   "test": {
+    "any_pass_30": 38.5,
+    "any_pass_60": 79.2,
+    "all_breach_60": 0.0,
+    "median_days_first_pass": 31.0,
+    "each_pass_30": [
+     38.5
+    ],
+    "each_breach_60": [
+     0.0
+    ]
+   },
+   "mc": {
+    "any_pass_30": 20.9,
+    "any_pass_60": 52.5,
+    "all_breach_60": 3.6,
+    "median_days_first_pass": 37.0,
+    "each_pass_30": [
+     20.9
+    ],
+    "each_breach_60": [
+     3.6
+    ]
+   }
+  },
+  "1%": {
+   "dev": {
+    "any_pass_30": 20.1,
+    "any_pass_60": 31.6,
+    "all_breach_60": 52.4,
+    "median_days_first_pass": 24.0,
+    "each_pass_30": [
+     20.1
+    ],
+    "each_breach_60": [
+     52.4
+    ]
+   },
+   "test": {
+    "any_pass_30": 39.6,
+    "any_pass_60": 65.2,
+    "all_breach_60": 26.5,
+    "median_days_first_pass": 24.0,
+    "each_pass_30": [
+     39.6
+    ],
+    "each_breach_60": [
+     26.5
+    ]
+   },
+   "mc": {
+    "any_pass_30": 24.3,
+    "any_pass_60": 46.2,
+    "all_breach_60": 41.2,
+    "median_days_first_pass": 30.0,
+    "each_pass_30": [
+     24.3
+    ],
+    "each_breach_60": [
+     41.2
+    ]
+   }
+  },
+  "1.25%": {
+   "dev": {
+    "any_pass_30": 20.8,
+    "any_pass_60": 22.8,
+    "all_breach_60": 77.2,
+    "median_days_first_pass": 16.0,
+    "each_pass_30": [
+     20.8
+    ],
+    "each_breach_60": [
+     77.2
+    ]
+   },
+   "test": {
+    "any_pass_30": 36.9,
+    "any_pass_60": 44.0,
+    "all_breach_60": 56.0,
+    "median_days_first_pass": 17.0,
+    "each_pass_30": [
+     36.9
+    ],
+    "each_breach_60": [
+     56.0
+    ]
+   },
+   "mc": {
+    "any_pass_30": 22.0,
+    "any_pass_60": 27.1,
+    "all_breach_60": 71.9,
+    "median_days_first_pass": 20.0,
+    "each_pass_30": [
+     22.0
+    ],
+    "each_breach_60": [
+     71.9
+    ]
+   }
+  },
+  "1.5%": {
+   "dev": {
+    "any_pass_30": 18.8,
+    "any_pass_60": 19.7,
+    "all_breach_60": 80.3,
+    "median_days_first_pass": 14.0,
+    "each_pass_30": [
+     18.8
+    ],
+    "each_breach_60": [
+     80.3
+    ]
+   },
+   "test": {
+    "any_pass_30": 35.4,
+    "any_pass_60": 41.2,
+    "all_breach_60": 58.8,
+    "median_days_first_pass": 16.0,
+    "each_pass_30": [
+     35.4
+    ],
+    "each_breach_60": [
+     58.8
+    ]
+   },
+   "mc": {
+    "any_pass_30": 22.0,
+    "any_pass_60": 24.0,
+    "all_breach_60": 75.8,
+    "median_days_first_pass": 16.0,
+    "each_pass_30": [
+     22.0
+    ],
+    "each_breach_60": [
+     75.8
+    ]
+   }
+  },
+  "2%": {
+   "dev": {
+    "any_pass_30": 8.5,
+    "any_pass_60": 8.5,
+    "all_breach_60": 91.5,
+    "median_days_first_pass": 8.0,
+    "each_pass_30": [
+     8.5
+    ],
+    "each_breach_60": [
+     91.5
+    ]
+   },
+   "test": {
+    "any_pass_30": 18.1,
+    "any_pass_60": 18.1,
+    "all_breach_60": 81.9,
+    "median_days_first_pass": 9.0,
+    "each_pass_30": [
+     18.1
+    ],
+    "each_breach_60": [
+     81.9
+    ]
+   },
+   "mc": {
+    "any_pass_30": 8.8,
+    "any_pass_60": 8.8,
+    "all_breach_60": 91.2,
+    "median_days_first_pass": 9.0,
+    "each_pass_30": [
+     8.8
+    ],
+    "each_breach_60": [
+     91.2
+    ]
+   }
+  }
+ },
+ "FULL_1_pick": "1.25%",
+ "FULL_2RISK_pick": {
+  "risks": [
+   "1%",
+   "1.5%"
+  ],
+  "dev": {
+   "any_pass_30": 25.3,
+   "any_pass_60": 33.5,
+   "all_breach_60": 50.7,
+   "median_days_first_pass": 20.0,
+   "each_pass_30": [
+    20.1,
+    18.8
+   ],
+   "each_breach_60": [
+    52.4,
+    80.3
+   ]
+  },
+  "test": {
+   "any_pass_30": 47.7,
+   "any_pass_60": 67.7,
+   "all_breach_60": 24.6,
+   "median_days_first_pass": 20.0,
+   "each_pass_30": [
+    39.6,
+    35.4
+   ],
+   "each_breach_60": [
+    26.5,
+    58.8
+   ]
+  },
+  "mc": {
+   "any_pass_30": 32.4,
+   "any_pass_60": 50.6,
+   "all_breach_60": 37.6,
+   "median_days_first_pass": 23.0,
+   "each_pass_30": [
+    24.3,
+    22.0
+   ],
+   "each_breach_60": [
+    41.2,
+    75.8
+   ]
+  }
+ },
+ "SPLIT_top5_dev": [
+  {
+   "A": [
+    "3WG",
+    "EMA3",
+    "ORBVC",
+    "SEL",
+    "JPY"
+   ],
+   "B": [
+    "ASIA",
+    "NAS",
+    "ONB",
+    "UK",
+    "RSI"
+   ],
+   "risk_A": "1.5%",
+   "risk_B": "1.5%",
+   "opposite_overlaps_across_accounts": 125,
+   "symbol_disjoint": false,
+   "dev": {
+    "any_pass_30": 39.3,
+    "any_pass_60": 60.4,
+    "all_breach_60": 18.1,
+    "median_days_first_pass": 24.0,
+    "each_pass_30": [
+     17.2,
+     23.9
+    ],
+    "each_breach_60": [
+     42.7,
+     60.4
+    ]
+   },
+   "test": {
+    "any_pass_30": 48.1,
+    "any_pass_60": 76.0,
+    "all_breach_60": 15.0,
+    "median_days_first_pass": 24.0,
+    "each_pass_30": [
+     17.3,
+     34.4
+    ],
+    "each_breach_60": [
+     28.1,
+     52.5
+    ]
+   },
+   "mc": {
+    "any_pass_30": 40.0,
+    "any_pass_60": 61.7,
+    "all_breach_60": 21.4,
+    "median_days_first_pass": 27.0,
+    "each_pass_30": [
+     18.1,
+     22.0
+    ],
+    "each_breach_60": [
+     42.8,
+     65.0
+    ]
+   },
+   "daily_corr": 0.025
+  },
+  {
+   "A": [
+    "3WG",
+    "EMA3",
+    "UK",
+    "JPY"
+   ],
+   "B": [
+    "ASIA",
+    "NAS",
+    "ORBVC",
+    "ONB",
+    "SEL",
+    "RSI"
+   ],
+   "risk_A": "2%",
+   "risk_B": "1.5%",
+   "opposite_overlaps_across_accounts": 131,
+   "symbol_disjoint": false,
+   "dev": {
+    "any_pass_30": 38.6,
+    "any_pass_60": 51.6,
+    "all_breach_60": 37.3,
+    "median_days_first_pass": 21.0,
+    "each_pass_30": [
+     15.1,
+     26.9
+    ],
+    "each_breach_60": [
+     69.3,
+     57.7
+    ]
+   },
+   "test": {
+    "any_pass_30": 57.1,
+    "any_pass_60": 81.5,
+    "all_breach_60": 16.9,
+    "median_days_first_pass": 23.0,
+    "each_pass_30": [
+     28.1,
+     35.2
+    ],
+    "each_breach_60": [
+     48.3,
+     45.8
+    ]
+   },
+   "mc": {
+    "any_pass_30": 46.4,
+    "any_pass_60": 63.6,
+    "all_breach_60": 29.9,
+    "median_days_first_pass": 28.0,
+    "each_pass_30": [
+     22.9,
+     26.6
+    ],
+    "each_breach_60": [
+     60.6,
+     57.4
+    ]
+   },
+   "daily_corr": 0.04
+  },
+  {
+   "A": [
+    "3WG",
+    "EMA3",
+    "ORBVC",
+    "JPY"
+   ],
+   "B": [
+    "ASIA",
+    "NAS",
+    "ONB",
+    "UK",
+    "SEL",
+    "RSI"
+   ],
+   "risk_A": "1.5%",
+   "risk_B": "1.5%",
+   "opposite_overlaps_across_accounts": 114,
+   "symbol_disjoint": false,
+   "dev": {
+    "any_pass_30": 38.2,
+    "any_pass_60": 59.9,
+    "all_breach_60": 20.0,
+    "median_days_first_pass": 25.0,
+    "each_pass_30": [
+     15.0,
+     24.6
+    ],
+    "each_breach_60": [
+     44.5,
+     57.8
+    ]
+   },
+   "test": {
+    "any_pass_30": 47.5,
+    "any_pass_60": 74.4,
+    "all_breach_60": 16.7,
+    "median_days_first_pass": 23.0,
+    "each_pass_30": [
+     15.8,
+     34.6
+    ],
+    "each_breach_60": [
+     30.4,
+     52.3
+    ]
+   },
+   "mc": {
+    "any_pass_30": 39.8,
+    "any_pass_60": 60.7,
+    "all_breach_60": 22.1,
+    "median_days_first_pass": 27.0,
+    "each_pass_30": [
+     17.9,
+     22.0
+    ],
+    "each_breach_60": [
+     43.4,
+     65.0
+    ]
+   },
+   "daily_corr": 0.024
+  },
+  {
+   "A": [
+    "3WG",
+    "EMA3",
+    "UK",
+    "SEL",
+    "JPY"
+   ],
+   "B": [
+    "ASIA",
+    "NAS",
+    "ORBVC",
+    "ONB",
+    "RSI"
+   ],
+   "risk_A": "2%",
+   "risk_B": "1.5%",
+   "opposite_overlaps_across_accounts": 142,
+   "symbol_disjoint": false,
+   "dev": {
+    "any_pass_30": 38.2,
+    "any_pass_60": 52.0,
+    "all_breach_60": 34.9,
+    "median_days_first_pass": 21.0,
+    "each_pass_30": [
+     15.7,
+     26.8
+    ],
+    "each_breach_60": [
+     67.0,
+     56.5
+    ]
+   },
+   "test": {
+    "any_pass_30": 57.3,
+    "any_pass_60": 80.4,
+    "all_breach_60": 16.9,
+    "median_days_first_pass": 22.0,
+    "each_pass_30": [
+     29.4,
+     34.4
+    ],
+    "each_breach_60": [
+     48.1,
+     46.5
+    ]
+   },
+   "mc": {
+    "any_pass_30": 48.5,
+    "any_pass_60": 66.8,
+    "all_breach_60": 26.3,
+    "median_days_first_pass": 28.0,
+    "each_pass_30": [
+     24.9,
+     26.6
+    ],
+    "each_breach_60": [
+     57.2,
+     56.6
+    ]
+   },
+   "daily_corr": 0.044
+  },
+  {
+   "A": [
+    "3WG",
+    "ASIA",
+    "ORBVC",
+    "UK",
+    "SEL",
+    "JPY"
+   ],
+   "B": [
+    "EMA3",
+    "NAS",
+    "ONB",
+    "RSI"
+   ],
+   "risk_A": "1.5%",
+   "risk_B": "1.5%",
+   "opposite_overlaps_across_accounts": 80,
+   "symbol_disjoint": false,
+   "dev": {
+    "any_pass_30": 38.0,
+    "any_pass_60": 52.0,
+    "all_breach_60": 28.2,
+    "median_days_first_pass": 22.0,
+    "each_pass_30": [
+     13.6,
+     28.6
+    ],
+    "each_breach_60": [
+     62.3,
+     48.2
+    ]
+   },
+   "test": {
+    "any_pass_30": 54.8,
+    "any_pass_60": 75.6,
+    "all_breach_60": 15.8,
+    "median_days_first_pass": 22.0,
+    "each_pass_30": [
+     32.5,
+     29.2
+    ],
+    "each_breach_60": [
+     49.6,
+     47.3
+    ]
+   },
+   "mc": {
+    "any_pass_30": 43.6,
+    "any_pass_60": 60.3,
+    "all_breach_60": 30.0,
+    "median_days_first_pass": 22.0,
+    "each_pass_30": [
+     22.6,
+     25.6
+    ],
+    "each_breach_60": [
+     57.3,
+     54.9
+    ]
+   },
+   "daily_corr": 0.015
+  }
+ ],
+ "SPLIT_SYM_top3_dev": [
+  {
+   "A": [
+    "3WG",
+    "ASIA",
+    "EMA3",
+    "ORBVC",
+    "UK",
+    "JPY",
+    "RSI"
+   ],
+   "B": [
+    "NAS",
+    "ONB",
+    "SEL"
+   ],
+   "risk_A": "1.25%",
+   "risk_B": "1.5%",
+   "opposite_overlaps_across_accounts": 0,
+   "symbol_disjoint": true,
+   "dev": {
+    "any_pass_30": 33.5,
+    "any_pass_60": 56.6,
+    "all_breach_60": 9.1,
+    "median_days_first_pass": 28.0,
+    "each_pass_30": [
+     13.4,
+     23.5
+    ],
+    "each_breach_60": [
+     23.1,
+     48.0
+    ]
+   },
+   "test": {
+    "any_pass_30": 51.5,
+    "any_pass_60": 79.4,
+    "all_breach_60": 16.7,
+    "median_days_first_pass": 25.0,
+    "each_pass_30": [
+     33.8,
+     26.9
+    ],
+    "each_breach_60": [
+     27.1,
+     47.7
+    ]
+   },
+   "mc": {
+    "any_pass_30": 42.6,
+    "any_pass_60": 67.2,
+    "all_breach_60": 13.4,
+    "median_days_first_pass": 27.0,
+    "each_pass_30": [
+     24.5,
+     23.8
+    ],
+    "each_breach_60": [
+     29.8,
+     45.2
+    ]
+   },
+   "daily_corr": -0.012
+  },
+  {
+   "A": [
+    "3WG",
+    "ASIA",
+    "EMA3",
+    "ORBVC",
+    "UK",
+    "RSI"
+   ],
+   "B": [
+    "NAS",
+    "ONB",
+    "SEL",
+    "JPY"
+   ],
+   "risk_A": "2%",
+   "risk_B": "1.5%",
+   "opposite_overlaps_across_accounts": 0,
+   "symbol_disjoint": true,
+   "dev": {
+    "any_pass_30": 33.2,
+    "any_pass_60": 45.0,
+    "all_breach_60": 49.2,
+    "median_days_first_pass": 21.0,
+    "each_pass_30": [
+     12.7,
+     24.2
+    ],
+    "each_breach_60": [
+     83.5,
+     57.7
+    ]
+   },
+   "test": {
+    "any_pass_30": 43.1,
+    "any_pass_60": 62.1,
+    "all_breach_60": 29.6,
+    "median_days_first_pass": 23.0,
+    "each_pass_30": [
+     22.5,
+     28.3
+    ],
+    "each_breach_60": [
+     69.2,
+     44.2
+    ]
+   },
+   "mc": {
+    "any_pass_30": 42.4,
+    "any_pass_60": 57.0,
+    "all_breach_60": 37.5,
+    "median_days_first_pass": 22.0,
+    "each_pass_30": [
+     17.7,
+     27.8
+    ],
+    "each_breach_60": [
+     76.2,
+     53.7
+    ]
+   },
+   "daily_corr": -0.029
+  },
+  {
+   "A": [
+    "3WG",
+    "ASIA",
+    "EMA3",
+    "ORBVC",
+    "JPY",
+    "RSI"
+   ],
+   "B": [
+    "NAS",
+    "ONB",
+    "UK",
+    "SEL"
+   ],
+   "risk_A": "1.5%",
+   "risk_B": "1.25%",
+   "opposite_overlaps_across_accounts": 0,
+   "symbol_disjoint": true,
+   "dev": {
+    "any_pass_30": 33.1,
+    "any_pass_60": 53.1,
+    "all_breach_60": 34.9,
+    "median_days_first_pass": 26.0,
+    "each_pass_30": [
+     15.3,
+     22.3
+    ],
+    "each_breach_60": [
+     66.6,
+     47.2
+    ]
+   },
+   "test": {
+    "any_pass_30": 45.6,
+    "any_pass_60": 61.9,
+    "all_breach_60": 21.0,
+    "median_days_first_pass": 22.0,
+    "each_pass_30": [
+     25.4,
+     27.5
+    ],
+    "each_breach_60": [
+     62.7,
+     24.0
+    ]
+   },
+   "mc": {
+    "any_pass_30": 40.5,
+    "any_pass_60": 64.7,
+    "all_breach_60": 22.7,
+    "median_days_first_pass": 26.0,
+    "each_pass_30": [
+     21.4,
+     23.8
+    ],
+    "each_breach_60": [
+     65.1,
+     35.2
+    ]
+   },
+   "daily_corr": -0.024
+  }
+ ]
+}

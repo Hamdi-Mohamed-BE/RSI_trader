@@ -52,6 +52,33 @@ def asia_inputs():
     v.update(InpRiskPercent='0.5', InpGridRiskPercent='0.5', InpAdaptivePortfolioControls='false'); return v
 
 
+NASDAQ_FACTOR_PS = r"""# >>> Calyx Nasdaq 5M risk factor (owner 2026-11-19: "make it ask me what to use") >>>
+function Read-CalyxNasdaqFactor([double]$Current, [bool]$NoPrompt) {
+    if ($Current -gt 0) { if ([double]::IsNaN($Current) -or $Current -gt 1) { throw 'NasdaqRiskFactor must be above 0 and at most 1.' }; return $Current }
+    if ($NoPrompt) { return 0.75 }
+    Write-Host ''
+    Write-Host 'NASDAQ 5M RISK - Nasdaq 5M decides most of the pass rate. Its risk per trade = your chosen risk x this factor.' -ForegroundColor Cyan
+    Write-Host '  1 = 0.75 x  recommended   (FTMO 1-Step at 0.75%: first-try pass 93%, median 59 days to funded)'
+    Write-Host '  2 = 1.00 x  full risk     (82%, 58 days)'
+    Write-Host '  3 = 0.50 x  safer         (96%, 61 days)'
+    Write-Host '  or type your own factor, e.g. 0.6 (between 0.05 and 1). Figures: in-sample simulation, Best 1-Step Add Gold 2026-11-18.' -ForegroundColor Yellow
+    $answer = (Read-Host 'Nasdaq 5M risk factor [1]').Trim()
+    $factor = 0.0
+    switch ($answer) {
+        '' { $factor = 0.75 } '1' { $factor = 0.75 } '2' { $factor = 1.0 } '3' { $factor = 0.5 }
+        default {
+            if (-not [double]::TryParse($answer, [Globalization.NumberStyles]::Float, [Globalization.CultureInfo]::InvariantCulture, [ref]$factor) -or $factor -lt 0.05 -or $factor -gt 1) {
+                throw 'Answer 1, 2, 3 or a number between 0.05 and 1 (use a decimal point).'
+            }
+        }
+    }
+    Write-Host ('Nasdaq 5M risk factor: {0} x the chosen risk' -f $factor) -ForegroundColor Green
+    return $factor
+}
+# <<< Calyx Nasdaq 5M risk factor <<<
+"""
+
+
 def news_functions():
     m = json.loads(read(NEWS / 'NEWS_GUARD.json')); assert sha(NEWS / 'Calyx News Guard.ex5') == m['ex5_sha256'] and sha(NEWS / 'NewsGuard-Functions.ps1') == m['functions_sha256'], 'Calyx News Guard changed: rerun make_functions.py'
     return read(NEWS / 'NewsGuard-Functions.ps1').replace('\r\n', '\n')
@@ -255,13 +282,12 @@ def installer():
              "$inputs['FTMOTotalRiskMultiple']=Get-CalyxCapMultiple $TotalRiskCap;$inputs['FTMOSymbolRiskMultiple']=Get-CalyxCapMultiple $SymbolRiskCap;$inputs['InpCalyxNoOpposite']=if($NoOpposite -eq 'ON'){'true'}else{'false'}")
     s = sub1(s, "Nasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`n", "Nasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`nNo-opposite rule: $NoOpposite`r`nNews guard: $NewsGuard; Nasdaq 5M risk factor: $NasdaqRiskFactor`r`n")
     # 2026-11-18: news guard + Nasdaq 5M entry factor
-    s = sub1(s, "[ValidateSet('','ON','OFF')][string]$NoOpposite='',", "[ValidateSet('','ON','OFF')][string]$NoOpposite='',\n    [ValidateSet('','OFF','2','5')][string]$NewsGuard='',\n    [double]$NasdaqRiskFactor=0.75,")
-    s = sub1(s, "$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)\n", news_functions() + "$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)\n")
+    s = sub1(s, "[ValidateSet('','ON','OFF')][string]$NoOpposite='',", "[ValidateSet('','ON','OFF')][string]$NoOpposite='',\n    [ValidateSet('','OFF','2','5')][string]$NewsGuard='',\n    [double]$NasdaqRiskFactor=0,")   # 0 = ask (Enter = 0.75)
+    s = sub1(s, "$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)\n", NASDAQ_FACTOR_PS + news_functions() + "$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)\n")
     s = sub1(s, "$NoOpposite=Read-CalyxNoOpposite $NoOpposite ([bool]$ValidateOnly)   # Calyx No Opposite (2026-11-17)\n",
              "$NoOpposite=Read-CalyxNoOpposite $NoOpposite ([bool]$ValidateOnly)   # Calyx No Opposite (2026-11-17)\n"
              "$NewsGuard=Read-CalyxNewsGuard $NewsGuard ([bool]$ValidateOnly) $(if($Phase -eq 'Funded'){'2'}else{'OFF'})   # Calyx News Guard (2026-11-18): FTMO funded Standard = 2 min; challenges exempt\n"
-             "if([double]::IsNaN($NasdaqRiskFactor) -or $NasdaqRiskFactor -le 0 -or $NasdaqRiskFactor -gt 1){throw 'NasdaqRiskFactor must be above 0 and at most 1.'}\n"
-             "Write-Host ('Nasdaq 5M risk factor: {0} x the chosen risk (tested best 0.75; Best 1-Step Add Gold 2026-11-18)' -f $NasdaqRiskFactor)\n")
+             "$NasdaqRiskFactor=Read-CalyxNasdaqFactor $NasdaqRiskFactor ([bool]$ValidateOnly)   # asked; Enter = 0.75 (2026-11-19)\n")
     s = sub1(s, ";$inputs['InpCalyxNoOpposite']=if($NoOpposite -eq 'ON'){'true'}else{'false'}",
              ";$inputs['InpCalyxNoOpposite']=if($NoOpposite -eq 'ON'){'true'}else{'false'};$inputs['InpCalyxNewsBlock']=if($NewsGuard -ne 'OFF'){'true'}else{'false'}"
              ";$inputs['FTMOEntryRiskFactor']=if([string]$entry.slug -eq 'nasdaq-5m-candle-momentum'){$NasdaqRiskFactor.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)}else{'1.0'}")
@@ -387,13 +413,12 @@ def build_noguard():
                       "        if ($cash) { $inputs['InpPortfolioFixedUSD'] = ([double]::Parse($inputs['InpPortfolioFixedUSD'], $inv) * $NasdaqRiskFactor).ToString('G17', $inv) }\n"
                       "        else { $inputs['InpPortfolioPercent'] = ([double]::Parse($inputs['InpPortfolioPercent'], $inv) * $NasdaqRiskFactor).ToString('G17', $inv) }\n"
                       "    }\n"),
-                     ("    [ValidateSet('', 'ON', 'OFF')][string]$NoOpposite = '',\n", "    [ValidateSet('', 'ON', 'OFF')][string]$NoOpposite = '',\n    [ValidateSet('', 'OFF', '2', '5')][string]$NewsGuard = '',\n    [double]$NasdaqRiskFactor = 0.75,\n"),
-                     ("function Read-CalyxNasdaqVersion", news_functions() + "\nfunction Read-CalyxNasdaqVersion"),
+                     ("    [ValidateSet('', 'ON', 'OFF')][string]$NoOpposite = '',\n", "    [ValidateSet('', 'ON', 'OFF')][string]$NoOpposite = '',\n    [ValidateSet('', 'OFF', '2', '5')][string]$NewsGuard = '',\n    [double]$NasdaqRiskFactor = 0,\n"),   # 0 = ask (Enter = 0.75)
+                     ("function Read-CalyxNasdaqVersion", NASDAQ_FACTOR_PS + news_functions() + "\nfunction Read-CalyxNasdaqVersion"),
                      ("    $script:NoOpposite=Read-CalyxNoOpposite $NoOpposite $false   # Calyx No Opposite (2026-11-17)\n",
                       "    $script:NoOpposite=Read-CalyxNoOpposite $NoOpposite $false   # Calyx No Opposite (2026-11-17)\n"
                       "    $script:NewsGuard=Read-CalyxNewsGuard $NewsGuard $false '5'   # Calyx News Guard (2026-11-18): 5 min covers FTMO funded / The5ers (2) and FundingPips (5)\n"
-                      "    if ([double]::IsNaN($NasdaqRiskFactor) -or $NasdaqRiskFactor -le 0 -or $NasdaqRiskFactor -gt 1) { throw 'NasdaqRiskFactor must be above 0 and at most 1.' }\n"
-                      "    Write-Host ('Nasdaq 5M risk factor: {0} x the chosen risk (tested best 0.75)' -f $NasdaqRiskFactor)\n"),
+                      "    $script:NasdaqRiskFactor=Read-CalyxNasdaqFactor $NasdaqRiskFactor $false   # asked; Enter = 0.75 (2026-11-19)\n"),
                      ("    Add-CalyxWeekendFlatChart $WeekendFlat (Join-Path $stage 'Charts') $dataRoot ([string]$portfolio[0].BrokerSymbol) $PackageRoot   # Calyx Weekend Flat (2026-11-11)\n",
                       "    Add-CalyxWeekendFlatChart $WeekendFlat (Join-Path $stage 'Charts') $dataRoot ([string]$portfolio[0].BrokerSymbol) $PackageRoot   # Calyx Weekend Flat (2026-11-11)\n"
                       "    Add-CalyxNewsGuardChart $script:NewsGuard (Join-Path $stage 'Charts') $dataRoot ([string]$portfolio[0].BrokerSymbol) $PackageRoot   # Calyx News Guard (2026-11-18)\n")]:

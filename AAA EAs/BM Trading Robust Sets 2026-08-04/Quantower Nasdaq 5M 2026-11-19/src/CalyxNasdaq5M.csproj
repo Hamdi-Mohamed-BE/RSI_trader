@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Builds against the Quantower installed on this PC (v1.146.17 targets .NETCoreApp 10.0). Output stays in this folder (bin/);
+       copy CalyxNasdaq5M.dll to C:\Quantower\TradingPlatform\v1.146.17\bin\Scripts\Strategies\CalyxNasdaq5M\ to use it. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <AssemblyName>CalyxNasdaq5M</AssemblyName>
+    <RootNamespace>CalyxQuantower</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>bin\</OutputPath>
+    <QuantowerBin Condition="'$(QuantowerBin)'==''">C:\Quantower\TradingPlatform\v1.146.17\bin</QuantowerBin>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="TradingPlatform.BusinessLayer">
+      <HintPath>$(QuantowerBin)\TradingPlatform.BusinessLayer.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

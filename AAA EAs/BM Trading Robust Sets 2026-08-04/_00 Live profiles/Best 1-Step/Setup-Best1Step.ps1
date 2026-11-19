@@ -2,7 +2,7 @@
 # 1. asks the account type -> fills in every installer answer (phase, risk, weekend flat, no-opposite, news guard, Nasdaq / DI / caps defaults)
 # 2. downloads the news calendar now
 # 3. creates / refreshes the daily Windows task "Calyx News Calendar" (06:00) - asked, default yes
-# 4. runs the right Best 1-Step installer with those answers. The installer still asks for each EA (Enter = install) and for its
+# 4. runs the right Best 1-Step installer with those answers (it still asks the Nasdaq 5M risk factor: Enter = 0.75 recommended). The installer still asks for each EA (Enter = install) and for its
 #    typed confirmation; it restarts MT5 into a new profile with Algo Trading OFF and never places orders.
 # Windows PowerShell 5.1. Nothing here touches MT5 except step 4 (the normal installer).
 [CmdletBinding()]
@@ -80,11 +80,11 @@ if (-not $t) {
 } elseif ($t.Guard) {
     $script = $guarded
     $args2 = @('-Interactive', '-Phase', $t.Phase, '-RiskMode', 'PERCENT', '-RiskValue', $risk.ToString($inv), '-NasdaqDIFilter', 'OFF', '-UsdJpyDIFilter', 'ON',
-               '-NasdaqStopVersion', 'NEW', '-TotalRiskCap', '4.5', '-SymbolRiskCap', '3', '-WeekendFlat', $t.Weekend, '-NoOpposite', $t.NoOpp, '-NewsGuard', $t.News, '-NasdaqRiskFactor', '0.75')
+               '-NasdaqStopVersion', 'NEW', '-TotalRiskCap', '4.5', '-SymbolRiskCap', '3', '-WeekendFlat', $t.Weekend, '-NoOpposite', $t.NoOpp, '-NewsGuard', $t.News)
 } else {
     $script = $noguard
     $args2 = @('-RiskMode', 'PERCENT', '-RiskValue', $risk.ToString($inv), '-NasdaqDIFilter', 'OFF', '-UsdJpyDIFilter', 'ON', '-NasdaqStopVersion', 'NEW',
-               '-WeekendFlat', $t.Weekend, '-NoOpposite', $t.NoOpp, '-NewsGuard', $t.News, '-NasdaqRiskFactor', '0.75')
+               '-WeekendFlat', $t.Weekend, '-NoOpposite', $t.NoOpp, '-NewsGuard', $t.News)
 }
 if ($ValidateOnly) { $args2 += '-ValidateOnly' }
 else { Write-Host 'The installer now asks for EACH EA: press Enter 10 times to install all 10 (the tested set), then type its confirmation.' -ForegroundColor Yellow }
