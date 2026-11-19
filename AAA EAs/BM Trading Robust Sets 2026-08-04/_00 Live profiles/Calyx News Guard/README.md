@@ -30,3 +30,14 @@ Limits:
 - Run `Update News Calendar.bat` every day (Task Scheduler). ForexFactory "High" is not FTMO's exact "selected news" list.
 - Backtests and FTMO simulations behind the profiles were run WITHOUT news closes; the effect on results is unknown (no long news history in the repo).
 - Positions are closed at market ~90 s before the window: spread and slippage cost is not modelled.
+
+## 2026-11-20 v2: FTMO calendar first, ForexFactory fallback (owner: "use the FTMO calendar, if it fails then ForexFactory if possible")
+- `Update-NewsCalendar.ps1` now reads FTMO's public calendar API (https://gw2.ftmo.com/public-api/v1/economic-calendar, the data behind ftmo.com/en/calendar/;
+  week-by-week requests, the API refuses long ranges). Only events with `restriction: true` (FTMO's restricted news) are written as "High"; the rest as
+  "ftmo-<impact>" (ignored). Currency from FTMO's "instrument" field (e.g. "USD + US Indices + XAUUSD + DXY" -> USD). If FTMO cannot be reached it falls back to
+  the ForexFactory weekly High-impact feed (old behaviour). `-Source FTMO|ForexFactory|Auto`. No change to the EA (it acts on impact "High").
+- Tested 2026-11-20: FTMO 253 events / 20 restricted (e.g. FOMC Minutes USD, UK Core CPI GBP); forced ForexFactory OK; FTMO unreachable -> fallback OK.
+- `Register-NewsCalendarTask.ps1`: daily task "Calyx News Calendar" via the ScheduledTasks module (06:00 + 18:00, catch-up after the PC was off). The old
+  schtasks.exe call failed on the space in the path ("Invalid argument/option - 'EAs\BM'"). Used by Ready for FTMO and the all-in-one setup. Registered and
+  run once on this PC (result 0; the real calendar file now comes from FTMO).
+- FTMO's "instrument" can also be e.g. Crude Oil / DAX: written as their own code, no traded symbol matches it.

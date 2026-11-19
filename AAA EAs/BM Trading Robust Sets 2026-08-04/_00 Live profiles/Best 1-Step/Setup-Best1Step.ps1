@@ -65,9 +65,7 @@ else {
     $have = $false; try { $null = & schtasks.exe /Query /TN 'Calyx News Calendar' 2>$null; $have = ($LASTEXITCODE -eq 0) } catch { $have = $false }
     $q = if ($have) { 'Task already exists. Refresh it? Y/n' } else { 'Create the daily task? Y/n' }
     if ((Read-Host $q).Trim() -notin @('n', 'N', 'no', 'NO')) {
-        $tr = '"' + $updaterBat + '" -Quiet'
-        & schtasks.exe /Create /F /TN 'Calyx News Calendar' /SC DAILY /ST 06:00 /TR $tr | Out-Host
-        if ($LASTEXITCODE -ne 0) { Write-Host 'Could not create the task: run "Update News Calendar.bat" yourself every day.' -ForegroundColor Red }
+        $null = & (Join-Path $news 'Register-NewsCalendarTask.ps1')   # 2026-11-20: schtasks.exe broke on the space in the path
     } else { Write-Host '  Skipped: run "Update News Calendar.bat" yourself every day.' -ForegroundColor Yellow }
 }
 

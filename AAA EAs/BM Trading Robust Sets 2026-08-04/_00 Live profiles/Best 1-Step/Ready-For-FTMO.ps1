@@ -60,9 +60,8 @@ if (-not $ValidateOnly) {
         if ($Phase -eq 'Funded') { throw 'News calendar download FAILED: the news guard cannot protect a funded account without it. Fix the internet connection and run this again. Nothing installed.' }
         Write-Host 'News calendar download failed (the challenge does not need it). Continuing.' -ForegroundColor Yellow
     }
-    Write-Host ''; Write-Host 'STEP 2/3 - daily calendar update task "Calyx News Calendar" (06:00)' -ForegroundColor Cyan
-    & schtasks.exe /Create /F /TN 'Calyx News Calendar' /SC DAILY /ST 06:00 /TR ('"' + $updaterBat + '" -Quiet') | Out-Host
-    if ($LASTEXITCODE -ne 0) { Write-Host 'Could not create the task: run "Update News Calendar.bat" yourself every day.' -ForegroundColor Red }
+    Write-Host ''; Write-Host 'STEP 2/3 - daily calendar update task "Calyx News Calendar" (06:00 and 18:00)' -ForegroundColor Cyan
+    $null = & (Join-Path $news 'Register-NewsCalendarTask.ps1')   # 2026-11-20: schtasks.exe broke on the space in the path
 }
 
 # 2. installer with every answer filled in (non-interactive: all 10 EAs, no per-EA questions)

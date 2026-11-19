@@ -1123,6 +1123,7 @@ of what is currently attached to a live terminal.
   - `Best 1-Step/Setup Best 1-Step (all in one).bat`: account type -> calendar + daily task + installer with the answers filled in (validate PASS types 1-6).
   - 2026-11-19: both installers now ASK the Nasdaq 5M factor (1 = 0.75 recommended / 2 = 1.0 / 3 = 0.5 / typed); setup file no longer forces it. Tested; not pushed.
   - 2026-11-20: `Best 1-Step/Ready for FTMO.bat` (Ready-For-FTMO.ps1): one-file FTMO 1-Step install, challenge 0.75% fixed, funded asks risk (Enter 0.5%), Nasdaq DI OFF, all FTMO rules ON (README). Validate PASS; not pushed.
+  - 2026-11-20: News Guard calendar v2 = FTMO public API (gw2.ftmo.com/public-api/v1/economic-calendar, restriction=true -> High), ForexFactory fallback; daily task via Register-NewsCalendarTask.ps1 (schtasks path bug fixed). Tested.
 - 2026-11-19: `Quantower Nasdaq 5M 2026-11-19/` (owner: move the US100 bots to futures on Quantower, starting with Nasdaq 5M). C# port of the production MT5 EA
   (REPLACE, ATR6 stop / trail from +1R, DI optional default OFF) for Quantower v1.146.17 (.NET 10; SDK 10.0.404 installed by winget with owner approval).
   Same rules; futures changes: risk % of balance (default 0.375 = 0.5 x 0.75), contracts rounded DOWN (skip < 1), optional flat time, Trading enabled default OFF,
