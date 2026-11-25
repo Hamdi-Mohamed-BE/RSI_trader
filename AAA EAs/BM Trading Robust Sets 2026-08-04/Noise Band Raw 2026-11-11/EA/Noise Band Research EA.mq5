@@ -1,5 +1,5 @@
 #property strict
-#property version "1.00"
+#property version "1.10"
 #property description "Research only (2026-11-11). Noise Band intraday momentum (Zarattini/Aziz/Barbon 2024; QuantLab simplified band): from 10:00 to 15:00 New York, on closed M30"
 #property description "candles, trade when |close - 09:30 open| > k*sqrt(K)*ATR14(M30). Stop s*ATR, trail 2*ATR after +1R, flat 16:00 NY, one trade a day. RULES.md."
 #include <Trade/Trade.mqh>
@@ -13,6 +13,10 @@ input double InpRiskPercent=1.0;         // % of balance, lots rounded UP to the
 input bool   InpRandomDirection=false;   // control: random direction, same distances
 input int    InpSeed=1;
 input int    InpServerUtcOffsetHours=0;  // Exness server = UTC
+input int    InpMarketClock=0;           // v1.10 2026-11-24: 0 New York (US DST), 2 Frankfurt (EU DST, UTC+1/+2)
+input int    InpOpenMin=570;             // cash open, minutes in that clock (NY 09:30 = 570, Frankfurt 09:00 = 540)
+input int    InpLastCheckMin=900;        // last checkpoint = close of the bar ending here (NY 15:00 = 900, Frankfurt 16:30 = 990)
+input int    InpFlatMin=960;             // flat time (NY 16:00 = 960, Frankfurt 17:30 = 1050)
 input int    InpDeviationPoints=50;
 input long   InpMagic=2911120;
 
@@ -22,7 +26,9 @@ double g_risk=0.0,g_trail=0.0,g_best=0.0; long g_signals=0,g_entries=0,g_flat=0;
 datetime NthSunday(int y,int m,int n){MqlDateTime t={};t.year=y;t.mon=m;t.day=1;datetime x=StructToTime(t);MqlDateTime d;TimeToStruct(x,d);return x+(datetime)((((7-d.day_of_week)%7)+7*(n-1))*86400);}
 bool NyDst(datetime utc){MqlDateTime d;TimeToStruct(utc,d);return utc>=NthSunday(d.year,3,2)+7*3600&&utc<NthSunday(d.year,11,1)+6*3600;}
 int SrvOff(){if((bool)MQLInfoInteger(MQL_TESTER))return InpServerUtcOffsetHours*3600;datetime s=TimeTradeServer(),u=TimeGMT();if(s<=0||u<=0)return InpServerUtcOffsetHours*3600;return (int)MathRound((double)(s-u)/1800.0)*1800;}
-datetime NyTime(datetime server){datetime utc=server-SrvOff();return utc-(NyDst(utc)?4:5)*3600;}
+datetime LastSunday(int y,int m){MqlDateTime t={};t.year=y;t.mon=m;t.day=31;datetime x=StructToTime(t);MqlDateTime d;TimeToStruct(x,d);return x-(datetime)(d.day_of_week*86400);}
+bool EuDst(datetime utc){MqlDateTime d;TimeToStruct(utc,d);return utc>=LastSunday(d.year,3)+3600&&utc<LastSunday(d.year,10)+3600;}
+datetime NyTime(datetime server){datetime utc=server-SrvOff();if(InpMarketClock==2)return utc+(EuDst(utc)?2:1)*3600;return utc-(NyDst(utc)?4:5)*3600;}   // "Ny" = the market clock
 int NyMinute(datetime server){MqlDateTime n;TimeToStruct(NyTime(server),n);return n.hour*60+n.min;}
 int NyKey(datetime server){MqlDateTime n;TimeToStruct(NyTime(server),n);return n.year*10000+n.mon*100+n.day;}
 int NyDow(datetime server){MqlDateTime n;TimeToStruct(NyTime(server),n);return n.day_of_week;}
@@ -53,14 +59,14 @@ void OnBar(){
    datetime t1=iTime(_Symbol,PERIOD_M30,1); if(t1<=0) return;
    int dow=NyDow(t1); if(dow<1||dow>5) return;
    int key=NyKey(t1); if(key!=g_day){g_day=key;g_traded=false;}
-   int close_min=NyMinute(t1)+30; if(close_min<600||close_min>900||(close_min-570)%30!=0||g_traded) return;
+   int close_min=NyMinute(t1)+30; if(close_min<InpOpenMin+30||close_min>InpLastCheckMin||(close_min-InpOpenMin)%30!=0||g_traded) return;
    ulong tk; if(HasPos(tk)) return;
    // the 09:30 New York bar of today
-   int s930=-1; for(int i=1;i<=24;i++){datetime bt=iTime(_Symbol,PERIOD_M30,i);if(bt<=0)break;if(NyKey(bt)!=key)break;if(NyMinute(bt)==570){s930=i;break;}}
+   int s930=-1; for(int i=1;i<=24;i++){datetime bt=iTime(_Symbol,PERIOD_M30,i);if(bt<=0)break;if(NyKey(bt)!=key)break;if(NyMinute(bt)==InpOpenMin){s930=i;break;}}
    if(s930<0) return;
    double open930=iOpen(_Symbol,PERIOD_M30,s930),c=iClose(_Symbol,PERIOD_M30,1),atr[1];
    if(CopyBuffer(g_atr,0,1,1,atr)!=1||atr[0]<=0.0) return;
-   int K=(close_min-570)/30; double thr=InpK*MathSqrt((double)K)*atr[0],mv=c-open930; int dir=0;
+   int K=(close_min-InpOpenMin)/30; double thr=InpK*MathSqrt((double)K)*atr[0],mv=c-open930; int dir=0;
    if(mv>thr) dir=1; else if(mv<-thr) dir=-1; if(dir==0) return;
    g_signals++; g_traded=true;
    if(InpRandomDirection) dir=((MathRand()&1)==1?1:-1);
@@ -76,13 +82,13 @@ int OnInit(){
    if(InpK<=0||InpStopATR<=0||InpTrailATR<=0||InpRiskPercent<=0) return INIT_PARAMETERS_INCORRECT;
    g_atr=iATR(_Symbol,PERIOD_M30,InpATRPeriod); if(g_atr==INVALID_HANDLE) return INIT_FAILED;
    MathSrand(InpSeed); g_last_bar=iTime(_Symbol,PERIOD_M30,0);
-   PrintFormat("NB_SPEC k=%.2f stop=%.2f trail=%.2f start=%.2f random=%d",InpK,InpStopATR,InpTrailATR,InpTrailStartR,InpRandomDirection);
+   PrintFormat("NB_SPEC k=%.2f stop=%.2f trail=%.2f start=%.2f random=%d clock=%d open=%d last=%d flat=%d",InpK,InpStopATR,InpTrailATR,InpTrailStartR,InpRandomDirection,InpMarketClock,InpOpenMin,InpLastCheckMin,InpFlatMin);
    return INIT_SUCCEEDED;
 }
 void OnDeinit(const int r){if(g_atr!=INVALID_HANDLE)IndicatorRelease(g_atr);PrintFormat("NB_SUMMARY signals=%I64d entries=%I64d flat_closes=%I64d",g_signals,g_entries,g_flat);}
 void OnTick(){
    datetime now=TimeCurrent(); ulong t;
-   if(HasPos(t)&&NyMinute(now)>=960&&NyDow(now)>=1&&NyDow(now)<=5){CloseAll();g_flat++;}
+   if(HasPos(t)&&NyMinute(now)>=InpFlatMin&&NyDow(now)>=1&&NyDow(now)<=5){CloseAll();g_flat++;}
    Manage();
    datetime b0=iTime(_Symbol,PERIOD_M30,0); if(b0>0&&b0!=g_last_bar){g_last_bar=b0;OnBar();}
 }

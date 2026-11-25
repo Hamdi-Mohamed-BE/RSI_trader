@@ -12,6 +12,7 @@ input double FTMOAllocationValue=50.0;
 input double FTMOEntryRiskFactor=1.0; // Best 1-Step 2026-11-18: entry size factor for this chart only (Nasdaq 5M 0.75); total / symbol caps unchanged
 input double FTMORiskCapPercent=0.5; // per-entry cap, % of the saved reference balance; the installer sets it to the chosen risk (2026-10-30). Totals: the two multiples below
 input double FTMOTotalRiskMultiple=4.5; // total open stop risk = this x the per-entry cap; 0 = no total cap (installer: 4.5 / 6 / 8 / none, 2026-11-03)
+input double FTMOMinLotMaxMultiple=0.0; // 2026-11-25: if even the broker minimum lot risks more than the budget, trade the minimum lot when it risks at most this x the per-entry cap; 0 = skip (old rule). Installer: OFF / 2 / 3
 input double FTMOSymbolRiskMultiple=3.0; // same-symbol open stop risk = this x the per-entry cap; 0 = no per-symbol cap (installer: 3 / none)
 input long   FTMOExpectedLogin=0;
 input string FTMOExpectedServer="";
@@ -249,9 +250,15 @@ bool FTMOAdmit(MqlTradeRequest &r,MqlTradeResult &result) {
    double step=SymbolInfoDouble(r.symbol,SYMBOL_VOLUME_STEP);
    double volume=FTMOLotsDown(MathMin(r.volume,MathMin(FTMOAllocationBudget()/unit,
                   SymbolInfoDouble(r.symbol,SYMBOL_VOLUME_MAX))),step);
-   if(volume<SymbolInfoDouble(r.symbol,SYMBOL_VOLUME_MIN)-1e-9)return FTMOReject(result,"minimum lot exceeds budget");
+   double vmin=SymbolInfoDouble(r.symbol,SYMBOL_VOLUME_MIN),cap_used=FTMORiskCap();
+   if(volume<vmin-1e-9) {   // Best 1-Step 2026-11-25: broker minimum lot fallback; every other guard limit below still applies
+      if(FTMOMinLotMaxMultiple<=0 || FTMOAllocationBudget()<=0 || vmin<=0 || r.volume<vmin-1e-9 || unit*vmin>FTMOMinLotMaxMultiple*FTMORiskCap()+1e-7)
+         return FTMOReject(result,"minimum lot exceeds budget");
+      volume=vmin;cap_used=FTMOMinLotMaxMultiple*FTMORiskCap();
+      Print("FTMO 1-Step: minimum lot ",DoubleToString(vmin,2)," used, risk ",DoubleToString(unit*vmin,2)," vs budget ",DoubleToString(FTMOAllocationBudget(),2));
+   }
    double risk=unit*volume;
-   if(risk>FTMORiskCap()+1e-7)return FTMOReject(result,"risk rounding");
+   if(risk>cap_used+1e-7)return FTMOReject(result,"risk rounding");
    int offset=0,ftmo_entries=0,losses=0,ftmo_days=0;datetime utc=0;double anchor=0;
    if(!FTMOClock(offset,utc) || !FTMOLedger(anchor,ftmo_entries,losses,ftmo_days,offset,utc))return FTMOReject(result,"clock/history/capital baseline unavailable");
    int day=FTMODay(utc);

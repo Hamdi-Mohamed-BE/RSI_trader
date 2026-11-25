@@ -1,0 +1,3171 @@
+{
+ "windows": {
+  "all": [
+   "2019-07-16",
+   "2026-11-21"
+  ],
+  "dev": [
+   "2019-07-16",
+   "2023-11-21"
+  ],
+  "val": [
+   "2023-11-21",
+   "2024-11-21"
+  ],
+  "oos": [
+   "2024-11-21",
+   "2026-11-21"
+  ],
+  "last12m": [
+   "2025-11-21",
+   "2026-11-21"
+  ]
+ },
+ "cases": {
+  "USTEC WIDE": {
+   "native": {
+    "ret": 172.3,
+    "pf": 1.22,
+    "mt5_dd": 15.08,
+    "trades": 1166,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 3427,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 16.69
+   },
+   "win": {
+    "all": {
+     "trades": 1166,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": 107.9,
+     "ret_pct_1R1pct": 107.9,
+     "pf": 1.22,
+     "win": 53.7,
+     "avg_r": 0.093,
+     "consistency": 57.3,
+     "avg_win_streak": 2.12,
+     "avg_loss_streak": 1.84,
+     "max_win_streak": 9,
+     "max_loss_streak": 10,
+     "sharpe": 0.99,
+     "closed_dd_r": 16.6
+    },
+    "dev": {
+     "trades": 690,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": 44.6,
+     "ret_pct_1R1pct": 44.6,
+     "pf": 1.14,
+     "win": 52.5,
+     "avg_r": 0.065,
+     "consistency": 56.6,
+     "avg_win_streak": 2.13,
+     "avg_loss_streak": 1.93,
+     "max_win_streak": 8,
+     "max_loss_streak": 7,
+     "sharpe": 0.69,
+     "closed_dd_r": 16.6
+    },
+    "val": {
+     "trades": 156,
+     "per_month": 13.0,
+     "per_day": 0.6,
+     "r": 22.3,
+     "ret_pct_1R1pct": 22.3,
+     "pf": 1.34,
+     "win": 55.1,
+     "avg_r": 0.143,
+     "consistency": 53.8,
+     "avg_win_streak": 1.95,
+     "avg_loss_streak": 1.59,
+     "max_win_streak": 7,
+     "max_loss_streak": 4,
+     "sharpe": 1.42,
+     "closed_dd_r": 8.9
+    },
+    "oos": {
+     "trades": 320,
+     "per_month": 13.3,
+     "per_day": 0.61,
+     "r": 41.1,
+     "ret_pct_1R1pct": 41.1,
+     "pf": 1.33,
+     "win": 55.6,
+     "avg_r": 0.128,
+     "consistency": 60.0,
+     "avg_win_streak": 2.17,
+     "avg_loss_streak": 1.75,
+     "max_win_streak": 9,
+     "max_loss_streak": 10,
+     "sharpe": 1.44,
+     "closed_dd_r": 14.2
+    },
+    "last12m": {
+     "trades": 152,
+     "per_month": 12.7,
+     "per_day": 0.58,
+     "r": 23.5,
+     "ret_pct_1R1pct": 23.5,
+     "pf": 1.4,
+     "win": 52.6,
+     "avg_r": 0.154,
+     "consistency": 69.2,
+     "avg_win_streak": 2.16,
+     "avg_loss_streak": 2.0,
+     "max_win_streak": 9,
+     "max_loss_streak": 10,
+     "sharpe": 1.61,
+     "closed_dd_r": 10.8
+    }
+   },
+   "years": {
+    "2019": -2.9,
+    "2020": 2.6,
+    "2021": 25.5,
+    "2022": 20.6,
+    "2023": -0.9,
+    "2024": 33.4,
+    "2025": 10.1,
+    "2026": 19.6
+   },
+   "held_past_flat": 9,
+   "mc": {
+    "resample": 0.5,
+    "randomize": 0.0,
+    "clumped": 15.9
+   },
+   "dependence": {
+    "trades": 1166,
+    "days": 1164,
+    "total": 107.9462,
+    "rule": "For a positive total, the result FAILS if removing the single best day or the single best trade leaves a total <= 0. Worst-day removal is reported as a diagnostic (mean-reversion shape), not a gate.",
+    "best_day": {
+     "date": "2024-07-30",
+     "value": 5.155
+    },
+    "worst_day": {
+     "date": "2025-06-20",
+     "value": -2.243
+    },
+    "best_trade": 5.155,
+    "worst_trade": -2.243,
+    "without_best_day": 102.7912,
+    "without_best_trade": 102.7912,
+    "without_worst_day": 110.1892,
+    "without_top5_days": 85.6584,
+    "best_day_share_of_total": 0.0478,
+    "applicable": true,
+    "best_day_sign_flip": false,
+    "best_trade_sign_flip": false,
+    "top5_days_sign_flip": false,
+    "verdict": "PASS"
+   },
+   "cost_stress": {
+    "rule": "Recorded per-trade costs (spread + commission + swap, same unit as the results) are multiplied: net_k = net - (k - 1) * cost. Gate: the total must stay > 0 at 2x costs; 3x and the break-even multiple are diagnostics.",
+    "trades": 1166,
+    "costs_paid": 12.0362,
+    "multiples": {
+     "1x": {
+      "total": 107.9462,
+      "mean": 0.09258,
+      "pf": 1.216
+     },
+     "2x": {
+      "total": 95.9101,
+      "mean": 0.08226,
+      "pf": 1.189
+     },
+     "3x": {
+      "total": 83.8739,
+      "mean": 0.07193,
+      "pf": 1.164
+     }
+    },
+    "breakeven_multiple": 9.968,
+    "verdict": "PASS"
+   },
+   "random_direction_r": [
+    10.9,
+    -44.2,
+    -56.6,
+    -92.8,
+    11.0
+   ]
+  },
+  "USTEC PAPER": {
+   "native": {
+    "ret": 24.04,
+    "pf": 1.02,
+    "mt5_dd": 31.43,
+    "trades": 1830,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 28462,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 31.43
+   },
+   "win": {
+    "all": {
+     "trades": 1830,
+     "per_month": 20.7,
+     "per_day": 0.95,
+     "r": 38.0,
+     "ret_pct_1R1pct": 38.0,
+     "pf": 1.04,
+     "win": 40.5,
+     "avg_r": 0.021,
+     "consistency": 55.1,
+     "avg_win_streak": 1.62,
+     "avg_loss_streak": 2.37,
+     "max_win_streak": 7,
+     "max_loss_streak": 11,
+     "sharpe": 0.24,
+     "closed_dd_r": 33.7
+    },
+    "dev": {
+     "trades": 1086,
+     "per_month": 20.8,
+     "per_day": 0.96,
+     "r": 14.6,
+     "ret_pct_1R1pct": 14.6,
+     "pf": 1.03,
+     "win": 39.5,
+     "avg_r": 0.013,
+     "consistency": 52.8,
+     "avg_win_streak": 1.59,
+     "avg_loss_streak": 2.44,
+     "max_win_streak": 6,
+     "max_loss_streak": 11,
+     "sharpe": 0.15,
+     "closed_dd_r": 33.7
+    },
+    "val": {
+     "trades": 250,
+     "per_month": 20.8,
+     "per_day": 0.95,
+     "r": 13.7,
+     "ret_pct_1R1pct": 13.7,
+     "pf": 1.11,
+     "win": 41.2,
+     "avg_r": 0.055,
+     "consistency": 69.2,
+     "avg_win_streak": 1.49,
+     "avg_loss_streak": 2.16,
+     "max_win_streak": 7,
+     "max_loss_streak": 11,
+     "sharpe": 0.62,
+     "closed_dd_r": 24.0
+    },
+    "oos": {
+     "trades": 494,
+     "per_month": 20.6,
+     "per_day": 0.95,
+     "r": 9.8,
+     "ret_pct_1R1pct": 9.8,
+     "pf": 1.04,
+     "win": 42.5,
+     "avg_r": 0.02,
+     "consistency": 48.0,
+     "avg_win_streak": 1.72,
+     "avg_loss_streak": 2.33,
+     "max_win_streak": 7,
+     "max_loss_streak": 9,
+     "sharpe": 0.27,
+     "closed_dd_r": 23.0
+    },
+    "last12m": {
+     "trades": 247,
+     "per_month": 20.6,
+     "per_day": 0.95,
+     "r": -4.8,
+     "ret_pct_1R1pct": -4.8,
+     "pf": 0.96,
+     "win": 42.5,
+     "avg_r": -0.02,
+     "consistency": 38.5,
+     "avg_win_streak": 1.81,
+     "avg_loss_streak": 2.41,
+     "max_win_streak": 5,
+     "max_loss_streak": 9,
+     "sharpe": -0.18,
+     "closed_dd_r": 23.0
+    }
+   },
+   "years": {
+    "2019": -6.7,
+    "2020": 10.6,
+    "2021": -10.3,
+    "2022": 19.7,
+    "2023": 2.1,
+    "2024": 17.5,
+    "2025": 12.0,
+    "2026": -6.9
+   },
+   "held_past_flat": 28,
+   "mc": {
+    "resample": 26.3,
+    "randomize": 99.6,
+    "clumped": 4.3
+   },
+   "dependence": {
+    "trades": 1830,
+    "days": 1828,
+    "total": 38.0341,
+    "rule": "For a positive total, the result FAILS if removing the single best day or the single best trade leaves a total <= 0. Worst-day removal is reported as a diagnostic (mean-reversion shape), not a gate.",
+    "best_day": {
+     "date": "2020-07-20",
+     "value": 6.7862
+    },
+    "worst_day": {
+     "date": "2020-02-17",
+     "value": -4.5924
+    },
+    "best_trade": 6.7862,
+    "worst_trade": -4.5924,
+    "without_best_day": 31.2479,
+    "without_best_trade": 31.2479,
+    "without_worst_day": 42.6266,
+    "without_top5_days": 7.2971,
+    "best_day_share_of_total": 0.1784,
+    "applicable": true,
+    "best_day_sign_flip": false,
+    "best_trade_sign_flip": false,
+    "top5_days_sign_flip": false,
+    "verdict": "PASS"
+   },
+   "cost_stress": {
+    "rule": "Recorded per-trade costs (spread + commission + swap, same unit as the results) are multiplied: net_k = net - (k - 1) * cost. Gate: the total must stay > 0 at 2x costs; 3x and the break-even multiple are diagnostics.",
+    "trades": 1830,
+    "costs_paid": 25.7401,
+    "multiples": {
+     "1x": {
+      "total": 38.0341,
+      "mean": 0.02078,
+      "pf": 1.04
+     },
+     "2x": {
+      "total": 12.2941,
+      "mean": 0.00672,
+      "pf": 1.013
+     },
+     "3x": {
+      "total": -13.446,
+      "mean": -0.00735,
+      "pf": 0.986
+     }
+    },
+    "breakeven_multiple": 2.478,
+    "verdict": "PASS"
+   }
+  },
+  "USTEC RND1": {
+   "native": {
+    "ret": 2.95,
+    "pf": 1.01,
+    "mt5_dd": 31.32,
+    "trades": 1166,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 4294,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 31.32
+   },
+   "win": {
+    "all": {
+     "trades": 1166,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": 10.9,
+     "ret_pct_1R1pct": 10.9,
+     "pf": 1.02,
+     "win": 47.8,
+     "avg_r": 0.009,
+     "consistency": 47.2,
+     "avg_win_streak": 1.98,
+     "avg_loss_streak": 2.16,
+     "max_win_streak": 9,
+     "max_loss_streak": 11,
+     "sharpe": 0.1,
+     "closed_dd_r": 35.2
+    },
+    "dev": {
+     "trades": 690,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": -0.6,
+     "ret_pct_1R1pct": -0.6,
+     "pf": 1.0,
+     "win": 46.5,
+     "avg_r": -0.001,
+     "consistency": 45.3,
+     "avg_win_streak": 1.88,
+     "avg_loss_streak": 2.15,
+     "max_win_streak": 7,
+     "max_loss_streak": 11,
+     "sharpe": -0.01,
+     "closed_dd_r": 35.2
+    },
+    "val": {
+     "trades": 156,
+     "per_month": 13.0,
+     "per_day": 0.6,
+     "r": 15.4,
+     "ret_pct_1R1pct": 15.4,
+     "pf": 1.21,
+     "win": 51.3,
+     "avg_r": 0.099,
+     "consistency": 46.2,
+     "avg_win_streak": 2.35,
+     "avg_loss_streak": 2.3,
+     "max_win_streak": 9,
+     "max_loss_streak": 5,
+     "sharpe": 0.97,
+     "closed_dd_r": 14.0
+    },
+    "oos": {
+     "trades": 320,
+     "per_month": 13.3,
+     "per_day": 0.61,
+     "r": -3.9,
+     "ret_pct_1R1pct": -3.9,
+     "pf": 0.97,
+     "win": 48.8,
+     "avg_r": -0.012,
+     "consistency": 48.0,
+     "avg_win_streak": 2.03,
+     "avg_loss_streak": 2.13,
+     "max_win_streak": 7,
+     "max_loss_streak": 7,
+     "sharpe": -0.14,
+     "closed_dd_r": 16.6
+    },
+    "last12m": {
+     "trades": 152,
+     "per_month": 12.7,
+     "per_day": 0.58,
+     "r": 3.7,
+     "ret_pct_1R1pct": 3.7,
+     "pf": 1.06,
+     "win": 46.7,
+     "avg_r": 0.024,
+     "consistency": 38.5,
+     "avg_win_streak": 2.03,
+     "avg_loss_streak": 2.25,
+     "max_win_streak": 5,
+     "max_loss_streak": 6,
+     "sharpe": 0.26,
+     "closed_dd_r": 8.0
+    }
+   },
+   "years": {
+    "2019": -22.5,
+    "2020": -5.0,
+    "2021": 1.4,
+    "2022": 3.0,
+    "2023": 27.1,
+    "2024": 11.3,
+    "2025": -10.6,
+    "2026": 6.3
+   },
+   "held_past_flat": 7
+  },
+  "USTEC RND2": {
+   "native": {
+    "ret": -40.3,
+    "pf": 0.9,
+    "mt5_dd": 56.51,
+    "trades": 1166,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 2654,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 56.51
+   },
+   "win": {
+    "all": {
+     "trades": 1166,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": -44.2,
+     "ret_pct_1R1pct": -44.2,
+     "pf": 0.92,
+     "win": 46.9,
+     "avg_r": -0.038,
+     "consistency": 47.2,
+     "avg_win_streak": 1.87,
+     "avg_loss_streak": 2.12,
+     "max_win_streak": 9,
+     "max_loss_streak": 10,
+     "sharpe": -0.42,
+     "closed_dd_r": 77.5
+    },
+    "dev": {
+     "trades": 690,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": -56.7,
+     "ret_pct_1R1pct": -56.7,
+     "pf": 0.84,
+     "win": 44.3,
+     "avg_r": -0.082,
+     "consistency": 47.2,
+     "avg_win_streak": 1.82,
+     "avg_loss_streak": 2.27,
+     "max_win_streak": 6,
+     "max_loss_streak": 10,
+     "sharpe": -0.9,
+     "closed_dd_r": 61.0
+    },
+    "val": {
+     "trades": 156,
+     "per_month": 13.0,
+     "per_day": 0.6,
+     "r": 5.2,
+     "ret_pct_1R1pct": 5.2,
+     "pf": 1.07,
+     "win": 50.6,
+     "avg_r": 0.033,
+     "consistency": 30.8,
+     "avg_win_streak": 1.8,
+     "avg_loss_streak": 1.79,
+     "max_win_streak": 7,
+     "max_loss_streak": 4,
+     "sharpe": 0.34,
+     "closed_dd_r": 18.5
+    },
+    "oos": {
+     "trades": 320,
+     "per_month": 13.3,
+     "per_day": 0.61,
+     "r": 7.3,
+     "ret_pct_1R1pct": 7.3,
+     "pf": 1.05,
+     "win": 50.6,
+     "avg_r": 0.023,
+     "consistency": 52.0,
+     "avg_win_streak": 2.0,
+     "avg_loss_streak": 1.98,
+     "max_win_streak": 9,
+     "max_loss_streak": 10,
+     "sharpe": 0.26,
+     "closed_dd_r": 21.8
+    },
+    "last12m": {
+     "trades": 152,
+     "per_month": 12.7,
+     "per_day": 0.58,
+     "r": 8.3,
+     "ret_pct_1R1pct": 8.3,
+     "pf": 1.14,
+     "win": 51.3,
+     "avg_r": 0.054,
+     "consistency": 61.5,
+     "avg_win_streak": 2.05,
+     "avg_loss_streak": 1.95,
+     "max_win_streak": 9,
+     "max_loss_streak": 10,
+     "sharpe": 0.6,
+     "closed_dd_r": 17.8
+    }
+   },
+   "years": {
+    "2019": -10.3,
+    "2020": -14.3,
+    "2021": 22.6,
+    "2022": -26.5,
+    "2023": -33.7,
+    "2024": 7.6,
+    "2025": -6.2,
+    "2026": 16.6
+   },
+   "held_past_flat": 6
+  },
+  "USTEC RND3": {
+   "native": {
+    "ret": -47.42,
+    "pf": 0.88,
+    "mt5_dd": 53.87,
+    "trades": 1166,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 6176,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 53.87
+   },
+   "win": {
+    "all": {
+     "trades": 1166,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": -56.6,
+     "ret_pct_1R1pct": -56.6,
+     "pf": 0.9,
+     "win": 46.1,
+     "avg_r": -0.049,
+     "consistency": 44.9,
+     "avg_win_streak": 1.91,
+     "avg_loss_streak": 2.24,
+     "max_win_streak": 12,
+     "max_loss_streak": 10,
+     "sharpe": -0.52,
+     "closed_dd_r": 69.1
+    },
+    "dev": {
+     "trades": 690,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": -34.2,
+     "ret_pct_1R1pct": -34.2,
+     "pf": 0.9,
+     "win": 45.8,
+     "avg_r": -0.05,
+     "consistency": 47.2,
+     "avg_win_streak": 1.86,
+     "avg_loss_streak": 2.2,
+     "max_win_streak": 12,
+     "max_loss_streak": 10,
+     "sharpe": -0.52,
+     "closed_dd_r": 58.9
+    },
+    "val": {
+     "trades": 156,
+     "per_month": 13.0,
+     "per_day": 0.6,
+     "r": -20.6,
+     "ret_pct_1R1pct": -20.6,
+     "pf": 0.77,
+     "win": 41.0,
+     "avg_r": -0.132,
+     "consistency": 30.8,
+     "avg_win_streak": 1.78,
+     "avg_loss_streak": 2.49,
+     "max_win_streak": 6,
+     "max_loss_streak": 7,
+     "sharpe": -1.41,
+     "closed_dd_r": 26.9
+    },
+    "oos": {
+     "trades": 320,
+     "per_month": 13.3,
+     "per_day": 0.61,
+     "r": -1.8,
+     "ret_pct_1R1pct": -1.8,
+     "pf": 0.99,
+     "win": 49.4,
+     "avg_r": -0.006,
+     "consistency": 48.0,
+     "avg_win_streak": 2.11,
+     "avg_loss_streak": 2.19,
+     "max_win_streak": 9,
+     "max_loss_streak": 7,
+     "sharpe": -0.06,
+     "closed_dd_r": 21.4
+    },
+    "last12m": {
+     "trades": 152,
+     "per_month": 12.7,
+     "per_day": 0.58,
+     "r": 3.7,
+     "ret_pct_1R1pct": 3.7,
+     "pf": 1.06,
+     "win": 50.0,
+     "avg_r": 0.024,
+     "consistency": 53.8,
+     "avg_win_streak": 2.05,
+     "avg_loss_streak": 2.05,
+     "max_win_streak": 6,
+     "max_loss_streak": 7,
+     "sharpe": 0.27,
+     "closed_dd_r": 8.8
+    }
+   },
+   "years": {
+    "2019": -12.1,
+    "2020": -17.7,
+    "2021": -19.9,
+    "2022": 4.1,
+    "2023": 7.2,
+    "2024": -9.8,
+    "2025": -17.5,
+    "2026": 9.1
+   },
+   "held_past_flat": 7
+  },
+  "USTEC RND4": {
+   "native": {
+    "ret": -63.13,
+    "pf": 0.82,
+    "mt5_dd": 63.64,
+    "trades": 1166,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 4536,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 63.64
+   },
+   "win": {
+    "all": {
+     "trades": 1166,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": -92.8,
+     "ret_pct_1R1pct": -92.8,
+     "pf": 0.84,
+     "win": 47.2,
+     "avg_r": -0.08,
+     "consistency": 38.2,
+     "avg_win_streak": 1.83,
+     "avg_loss_streak": 2.05,
+     "max_win_streak": 7,
+     "max_loss_streak": 10,
+     "sharpe": -0.9,
+     "closed_dd_r": 94.0
+    },
+    "dev": {
+     "trades": 690,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": -68.3,
+     "ret_pct_1R1pct": -68.3,
+     "pf": 0.81,
+     "win": 45.4,
+     "avg_r": -0.099,
+     "consistency": 37.7,
+     "avg_win_streak": 1.75,
+     "avg_loss_streak": 2.09,
+     "max_win_streak": 6,
+     "max_loss_streak": 8,
+     "sharpe": -1.11,
+     "closed_dd_r": 72.0
+    },
+    "val": {
+     "trades": 156,
+     "per_month": 13.0,
+     "per_day": 0.6,
+     "r": 9.4,
+     "ret_pct_1R1pct": 9.4,
+     "pf": 1.13,
+     "win": 52.6,
+     "avg_r": 0.06,
+     "consistency": 53.8,
+     "avg_win_streak": 2.22,
+     "avg_loss_streak": 1.95,
+     "max_win_streak": 5,
+     "max_loss_streak": 5,
+     "sharpe": 0.6,
+     "closed_dd_r": 9.9
+    },
+    "oos": {
+     "trades": 320,
+     "per_month": 13.3,
+     "per_day": 0.61,
+     "r": -33.9,
+     "ret_pct_1R1pct": -33.9,
+     "pf": 0.78,
+     "win": 48.4,
+     "avg_r": -0.106,
+     "consistency": 28.0,
+     "avg_win_streak": 1.85,
+     "avg_loss_streak": 1.96,
+     "max_win_streak": 7,
+     "max_loss_streak": 10,
+     "sharpe": -1.33,
+     "closed_dd_r": 35.2
+    },
+    "last12m": {
+     "trades": 152,
+     "per_month": 12.7,
+     "per_day": 0.58,
+     "r": -22.9,
+     "ret_pct_1R1pct": -22.9,
+     "pf": 0.69,
+     "win": 44.7,
+     "avg_r": -0.15,
+     "consistency": 15.4,
+     "avg_win_streak": 1.74,
+     "avg_loss_streak": 2.1,
+     "max_win_streak": 5,
+     "max_loss_streak": 10,
+     "sharpe": -1.86,
+     "closed_dd_r": 24.0
+    }
+   },
+   "years": {
+    "2019": -17.6,
+    "2020": -26.7,
+    "2021": 2.7,
+    "2022": 4.9,
+    "2023": -28.5,
+    "2024": -3.6,
+    "2025": -6.6,
+    "2026": -17.5
+   },
+   "held_past_flat": 7
+  },
+  "USTEC RND5": {
+   "native": {
+    "ret": 3.16,
+    "pf": 1.01,
+    "mt5_dd": 37.43,
+    "trades": 1166,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 8494,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 37.43
+   },
+   "win": {
+    "all": {
+     "trades": 1166,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": 11.0,
+     "ret_pct_1R1pct": 11.0,
+     "pf": 1.02,
+     "win": 48.9,
+     "avg_r": 0.009,
+     "consistency": 47.2,
+     "avg_win_streak": 1.95,
+     "avg_loss_streak": 2.04,
+     "max_win_streak": 9,
+     "max_loss_streak": 8,
+     "sharpe": 0.1,
+     "closed_dd_r": 44.6
+    },
+    "dev": {
+     "trades": 690,
+     "per_month": 13.2,
+     "per_day": 0.61,
+     "r": 22.9,
+     "ret_pct_1R1pct": 22.9,
+     "pf": 1.07,
+     "win": 49.3,
+     "avg_r": 0.033,
+     "consistency": 49.1,
+     "avg_win_streak": 2.01,
+     "avg_loss_streak": 2.07,
+     "max_win_streak": 9,
+     "max_loss_streak": 8,
+     "sharpe": 0.34,
+     "closed_dd_r": 44.6
+    },
+    "val": {
+     "trades": 156,
+     "per_month": 13.0,
+     "per_day": 0.6,
+     "r": -11.2,
+     "ret_pct_1R1pct": -11.2,
+     "pf": 0.87,
+     "win": 43.6,
+     "avg_r": -0.072,
+     "consistency": 38.5,
+     "avg_win_streak": 1.7,
+     "avg_loss_streak": 2.2,
+     "max_win_streak": 5,
+     "max_loss_streak": 6,
+     "sharpe": -0.71,
+     "closed_dd_r": 22.2
+    },
+    "oos": {
+     "trades": 320,
+     "per_month": 13.3,
+     "per_day": 0.61,
+     "r": -0.7,
+     "ret_pct_1R1pct": -0.7,
+     "pf": 1.0,
+     "win": 50.6,
+     "avg_r": -0.002,
+     "consistency": 48.0,
+     "avg_win_streak": 1.93,
+     "avg_loss_streak": 1.9,
+     "max_win_streak": 7,
+     "max_loss_streak": 7,
+     "sharpe": -0.03,
+     "closed_dd_r": 20.1
+    },
+    "last12m": {
+     "trades": 152,
+     "per_month": 12.7,
+     "per_day": 0.58,
+     "r": -0.6,
+     "ret_pct_1R1pct": -0.6,
+     "pf": 0.99,
+     "win": 48.0,
+     "avg_r": -0.004,
+     "consistency": 38.5,
+     "avg_win_streak": 1.74,
+     "avg_loss_streak": 1.88,
+     "max_win_streak": 5,
+     "max_loss_streak": 7,
+     "sharpe": -0.05,
+     "closed_dd_r": 11.5
+    }
+   },
+   "years": {
+    "2019": 5.7,
+    "2020": 14.4,
+    "2021": -31.3,
+    "2022": 28.0,
+    "2023": 1.9,
+    "2024": -5.1,
+    "2025": -5.8,
+    "2026": 3.3
+   },
+   "held_past_flat": 9
+  },
+  "US500 WIDE": {
+   "native": {
+    "ret": 162.49,
+    "pf": 1.25,
+    "mt5_dd": 28.46,
+    "trades": 1014,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 3264,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 28.46
+   },
+   "win": {
+    "all": {
+     "trades": 1014,
+     "per_month": 11.5,
+     "per_day": 0.53,
+     "r": 103.8,
+     "ret_pct_1R1pct": 103.8,
+     "pf": 1.23,
+     "win": 52.9,
+     "avg_r": 0.102,
+     "consistency": 57.3,
+     "avg_win_streak": 2.09,
+     "avg_loss_streak": 1.86,
+     "max_win_streak": 10,
+     "max_loss_streak": 7,
+     "sharpe": 0.99,
+     "closed_dd_r": 31.2
+    },
+    "dev": {
+     "trades": 594,
+     "per_month": 11.4,
+     "per_day": 0.52,
+     "r": 33.8,
+     "ret_pct_1R1pct": 33.8,
+     "pf": 1.12,
+     "win": 50.2,
+     "avg_r": 0.057,
+     "consistency": 56.6,
+     "avg_win_streak": 1.9,
+     "avg_loss_streak": 1.89,
+     "max_win_streak": 9,
+     "max_loss_streak": 7,
+     "sharpe": 0.54,
+     "closed_dd_r": 21.1
+    },
+    "val": {
+     "trades": 135,
+     "per_month": 11.2,
+     "per_day": 0.52,
+     "r": 18.6,
+     "ret_pct_1R1pct": 18.6,
+     "pf": 1.32,
+     "win": 54.1,
+     "avg_r": 0.137,
+     "consistency": 53.8,
+     "avg_win_streak": 2.21,
+     "avg_loss_streak": 1.88,
+     "max_win_streak": 9,
+     "max_loss_streak": 5,
+     "sharpe": 1.27,
+     "closed_dd_r": 11.7
+    },
+    "oos": {
+     "trades": 285,
+     "per_month": 11.9,
+     "per_day": 0.55,
+     "r": 51.4,
+     "ret_pct_1R1pct": 51.4,
+     "pf": 1.48,
+     "win": 57.9,
+     "avg_r": 0.18,
+     "consistency": 60.0,
+     "avg_win_streak": 2.5,
+     "avg_loss_streak": 1.79,
+     "max_win_streak": 10,
+     "max_loss_streak": 7,
+     "sharpe": 1.86,
+     "closed_dd_r": 9.3
+    },
+    "last12m": {
+     "trades": 145,
+     "per_month": 12.1,
+     "per_day": 0.56,
+     "r": 27.6,
+     "ret_pct_1R1pct": 27.6,
+     "pf": 1.49,
+     "win": 55.9,
+     "avg_r": 0.19,
+     "consistency": 53.8,
+     "avg_win_streak": 2.25,
+     "avg_loss_streak": 1.78,
+     "max_win_streak": 7,
+     "max_loss_streak": 7,
+     "sharpe": 1.86,
+     "closed_dd_r": 7.0
+    }
+   },
+   "years": {
+    "2019": -3.3,
+    "2020": 5.7,
+    "2021": 16.4,
+    "2022": 23.7,
+    "2023": -13.2,
+    "2024": 27.7,
+    "2025": 23.4,
+    "2026": 23.3
+   },
+   "held_past_flat": 6,
+   "mc": {
+    "resample": 0.2,
+    "randomize": 0.0,
+    "clumped": 95.3
+   },
+   "dependence": {
+    "trades": 1014,
+    "days": 1014,
+    "total": 103.7518,
+    "rule": "For a positive total, the result FAILS if removing the single best day or the single best trade leaves a total <= 0. Worst-day removal is reported as a diagnostic (mean-reversion shape), not a gate.",
+    "best_day": {
+     "date": "2023-05-02",
+     "value": 5.6742
+    },
+    "worst_day": {
+     "date": "2019-08-02",
+     "value": -1.1851
+    },
+    "best_trade": 5.6742,
+    "worst_trade": -1.1851,
+    "without_best_day": 98.0776,
+    "without_best_trade": 98.0776,
+    "without_worst_day": 104.9369,
+    "without_top5_days": 79.8288,
+    "best_day_share_of_total": 0.0547,
+    "applicable": true,
+    "best_day_sign_flip": false,
+    "best_trade_sign_flip": false,
+    "top5_days_sign_flip": false,
+    "verdict": "PASS"
+   },
+   "cost_stress": {
+    "rule": "Recorded per-trade costs (spread + commission + swap, same unit as the results) are multiplied: net_k = net - (k - 1) * cost. Gate: the total must stay > 0 at 2x costs; 3x and the break-even multiple are diagnostics.",
+    "trades": 1014,
+    "costs_paid": 18.3953,
+    "multiples": {
+     "1x": {
+      "total": 103.7518,
+      "mean": 0.10232,
+      "pf": 1.23
+     },
+     "2x": {
+      "total": 85.3565,
+      "mean": 0.08418,
+      "pf": 1.186
+     },
+     "3x": {
+      "total": 66.9613,
+      "mean": 0.06604,
+      "pf": 1.143
+     }
+    },
+    "breakeven_multiple": 6.64,
+    "verdict": "PASS"
+   },
+   "random_direction_r": [
+    -26.9,
+    -69.4,
+    -100.0,
+    -87.7,
+    -54.4
+   ]
+  },
+  "US500 PAPER": {
+   "native": {
+    "ret": -45.49,
+    "pf": 0.92,
+    "mt5_dd": 70.88,
+    "trades": 1815,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 13202,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 70.88
+   },
+   "win": {
+    "all": {
+     "trades": 1815,
+     "per_month": 20.6,
+     "per_day": 0.95,
+     "r": -44.3,
+     "ret_pct_1R1pct": -44.3,
+     "pf": 0.96,
+     "win": 38.1,
+     "avg_r": -0.024,
+     "consistency": 40.4,
+     "avg_win_streak": 1.56,
+     "avg_loss_streak": 2.52,
+     "max_win_streak": 7,
+     "max_loss_streak": 12,
+     "sharpe": -0.24,
+     "closed_dd_r": 111.2
+    },
+    "dev": {
+     "trades": 1078,
+     "per_month": 20.6,
+     "per_day": 0.95,
+     "r": -82.6,
+     "ret_pct_1R1pct": -82.6,
+     "pf": 0.87,
+     "win": 36.0,
+     "avg_r": -0.077,
+     "consistency": 30.2,
+     "avg_win_streak": 1.47,
+     "avg_loss_streak": 2.61,
+     "max_win_streak": 7,
+     "max_loss_streak": 12,
+     "sharpe": -0.82,
+     "closed_dd_r": 92.3
+    },
+    "val": {
+     "trades": 243,
+     "per_month": 20.2,
+     "per_day": 0.93,
+     "r": -4.0,
+     "ret_pct_1R1pct": -4.0,
+     "pf": 0.97,
+     "win": 37.9,
+     "avg_r": -0.016,
+     "consistency": 46.2,
+     "avg_win_streak": 1.42,
+     "avg_loss_streak": 2.32,
+     "max_win_streak": 4,
+     "max_loss_streak": 7,
+     "sharpe": -0.18,
+     "closed_dd_r": 25.2
+    },
+    "oos": {
+     "trades": 494,
+     "per_month": 20.6,
+     "per_day": 0.95,
+     "r": 42.3,
+     "ret_pct_1R1pct": 42.3,
+     "pf": 1.17,
+     "win": 42.9,
+     "avg_r": 0.086,
+     "consistency": 60.0,
+     "avg_win_streak": 1.83,
+     "avg_loss_streak": 2.41,
+     "max_win_streak": 7,
+     "max_loss_streak": 12,
+     "sharpe": 0.98,
+     "closed_dd_r": 23.0
+    },
+    "last12m": {
+     "trades": 246,
+     "per_month": 20.5,
+     "per_day": 0.94,
+     "r": 6.3,
+     "ret_pct_1R1pct": 6.3,
+     "pf": 1.05,
+     "win": 40.7,
+     "avg_r": 0.026,
+     "consistency": 53.8,
+     "avg_win_streak": 1.85,
+     "avg_loss_streak": 2.65,
+     "max_win_streak": 7,
+     "max_loss_streak": 12,
+     "sharpe": 0.29,
+     "closed_dd_r": 23.0
+    }
+   },
+   "years": {
+    "2019": -26.6,
+    "2020": -25.4,
+    "2021": -0.3,
+    "2022": -20.6,
+    "2023": -17.4,
+    "2024": 15.0,
+    "2025": 30.7,
+    "2026": 0.3
+   },
+   "held_past_flat": 26,
+   "mc": {
+    "resample": 75.7,
+    "randomize": 100.0,
+    "clumped": 92.1
+   },
+   "dependence": {
+    "trades": 1815,
+    "days": 1814,
+    "total": -44.2888,
+    "rule": "For a positive total, the result FAILS if removing the single best day or the single best trade leaves a total <= 0. Worst-day removal is reported as a diagnostic (mean-reversion shape), not a gate.",
+    "best_day": {
+     "date": "2023-05-02",
+     "value": 7.5681
+    },
+    "worst_day": {
+     "date": "2020-02-17",
+     "value": -5.1189
+    },
+    "best_trade": 7.5681,
+    "worst_trade": -5.1189,
+    "without_best_day": -51.8569,
+    "without_best_trade": -51.8569,
+    "without_worst_day": -39.1698,
+    "without_top5_days": -76.1943,
+    "best_day_share_of_total": null,
+    "applicable": false,
+    "verdict": "NOT_APPLICABLE_NON_POSITIVE_TOTAL",
+    "best_day_sign_flip": null,
+    "best_trade_sign_flip": null
+   },
+   "cost_stress": {
+    "rule": "Recorded per-trade costs (spread + commission + swap, same unit as the results) are multiplied: net_k = net - (k - 1) * cost. Gate: the total must stay > 0 at 2x costs; 3x and the break-even multiple are diagnostics.",
+    "trades": 1815,
+    "costs_paid": 44.1675,
+    "multiples": {
+     "1x": {
+      "total": -44.2888,
+      "mean": -0.0244,
+      "pf": 0.956
+     },
+     "2x": {
+      "total": -88.4562,
+      "mean": -0.04874,
+      "pf": 0.914
+     },
+     "3x": {
+      "total": -132.6237,
+      "mean": -0.07307,
+      "pf": 0.874
+     }
+    },
+    "breakeven_multiple": -0.003,
+    "verdict": "FAIL"
+   }
+  },
+  "US500 RND1": {
+   "native": {
+    "ret": -28.66,
+    "pf": 0.93,
+    "mt5_dd": 43.72,
+    "trades": 1014,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 1938,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 43.72
+   },
+   "win": {
+    "all": {
+     "trades": 1014,
+     "per_month": 11.5,
+     "per_day": 0.53,
+     "r": -26.9,
+     "ret_pct_1R1pct": -26.9,
+     "pf": 0.95,
+     "win": 47.6,
+     "avg_r": -0.027,
+     "consistency": 44.9,
+     "avg_win_streak": 1.77,
+     "avg_loss_streak": 1.95,
+     "max_win_streak": 7,
+     "max_loss_streak": 8,
+     "sharpe": -0.26,
+     "closed_dd_r": 51.1
+    },
+    "dev": {
+     "trades": 594,
+     "per_month": 11.4,
+     "per_day": 0.52,
+     "r": -33.0,
+     "ret_pct_1R1pct": -33.0,
+     "pf": 0.89,
+     "win": 45.6,
+     "avg_r": -0.055,
+     "consistency": 37.7,
+     "avg_win_streak": 1.7,
+     "avg_loss_streak": 2.04,
+     "max_win_streak": 6,
+     "max_loss_streak": 6,
+     "sharpe": -0.54,
+     "closed_dd_r": 43.3
+    },
+    "val": {
+     "trades": 135,
+     "per_month": 11.2,
+     "per_day": 0.52,
+     "r": -8.4,
+     "ret_pct_1R1pct": -8.4,
+     "pf": 0.88,
+     "win": 45.9,
+     "avg_r": -0.062,
+     "consistency": 46.2,
+     "avg_win_streak": 1.68,
+     "avg_loss_streak": 2.03,
+     "max_win_streak": 4,
+     "max_loss_streak": 8,
+     "sharpe": -0.59,
+     "closed_dd_r": 20.1
+    },
+    "oos": {
+     "trades": 285,
+     "per_month": 11.9,
+     "per_day": 0.55,
+     "r": 14.5,
+     "ret_pct_1R1pct": 14.5,
+     "pf": 1.12,
+     "win": 52.6,
+     "avg_r": 0.051,
+     "consistency": 56.0,
+     "avg_win_streak": 1.9,
+     "avg_loss_streak": 1.73,
+     "max_win_streak": 7,
+     "max_loss_streak": 6,
+     "sharpe": 0.52,
+     "closed_dd_r": 13.7
+    },
+    "last12m": {
+     "trades": 145,
+     "per_month": 12.1,
+     "per_day": 0.56,
+     "r": 12.7,
+     "ret_pct_1R1pct": 12.7,
+     "pf": 1.2,
+     "win": 50.3,
+     "avg_r": 0.087,
+     "consistency": 61.5,
+     "avg_win_streak": 1.74,
+     "avg_loss_streak": 1.76,
+     "max_win_streak": 5,
+     "max_loss_streak": 6,
+     "sharpe": 0.86,
+     "closed_dd_r": 9.6
+    }
+   },
+   "years": {
+    "2019": -10.4,
+    "2020": -0.2,
+    "2021": -13.0,
+    "2022": -6.8,
+    "2023": -0.9,
+    "2024": -7.5,
+    "2025": 0.7,
+    "2026": 11.2
+   },
+   "held_past_flat": 8
+  },
+  "US500 RND2": {
+   "native": {
+    "ret": -53.41,
+    "pf": 0.85,
+    "mt5_dd": 56.06,
+    "trades": 1014,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 3264,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 56.06
+   },
+   "win": {
+    "all": {
+     "trades": 1014,
+     "per_month": 11.5,
+     "per_day": 0.53,
+     "r": -69.4,
+     "ret_pct_1R1pct": -69.4,
+     "pf": 0.87,
+     "win": 45.4,
+     "avg_r": -0.068,
+     "consistency": 36.0,
+     "avg_win_streak": 1.84,
+     "avg_loss_streak": 2.22,
+     "max_win_streak": 9,
+     "max_loss_streak": 10,
+     "sharpe": -0.67,
+     "closed_dd_r": 75.1
+    },
+    "dev": {
+     "trades": 594,
+     "per_month": 11.4,
+     "per_day": 0.52,
+     "r": -38.7,
+     "ret_pct_1R1pct": -38.7,
+     "pf": 0.88,
+     "win": 44.9,
+     "avg_r": -0.065,
+     "consistency": 37.7,
+     "avg_win_streak": 1.96,
+     "avg_loss_streak": 2.42,
+     "max_win_streak": 9,
+     "max_loss_streak": 10,
+     "sharpe": -0.63,
+     "closed_dd_r": 47.6
+    },
+    "val": {
+     "trades": 135,
+     "per_month": 11.2,
+     "per_day": 0.52,
+     "r": -9.9,
+     "ret_pct_1R1pct": -9.9,
+     "pf": 0.86,
+     "win": 43.7,
+     "avg_r": -0.073,
+     "consistency": 46.2,
+     "avg_win_streak": 1.55,
+     "avg_loss_streak": 1.95,
+     "max_win_streak": 4,
+     "max_loss_streak": 6,
+     "sharpe": -0.69,
+     "closed_dd_r": 16.9
+    },
+    "oos": {
+     "trades": 285,
+     "per_month": 11.9,
+     "per_day": 0.55,
+     "r": -20.8,
+     "ret_pct_1R1pct": -20.8,
+     "pf": 0.85,
+     "win": 47.0,
+     "avg_r": -0.073,
+     "consistency": 32.0,
+     "avg_win_streak": 1.76,
+     "avg_loss_streak": 2.01,
+     "max_win_streak": 6,
+     "max_loss_streak": 7,
+     "sharpe": -0.76,
+     "closed_dd_r": 26.0
+    },
+    "last12m": {
+     "trades": 145,
+     "per_month": 12.1,
+     "per_day": 0.56,
+     "r": -9.2,
+     "ret_pct_1R1pct": -9.2,
+     "pf": 0.88,
+     "win": 44.8,
+     "avg_r": -0.064,
+     "consistency": 30.8,
+     "avg_win_streak": 1.62,
+     "avg_loss_streak": 2.05,
+     "max_win_streak": 6,
+     "max_loss_streak": 7,
+     "sharpe": -0.62,
+     "closed_dd_r": 16.2
+    }
+   },
+   "years": {
+    "2019": -14.8,
+    "2020": -14.7,
+    "2021": -8.0,
+    "2022": -1.0,
+    "2023": -2.4,
+    "2024": -9.8,
+    "2025": -14.4,
+    "2026": -4.3
+   },
+   "held_past_flat": 5
+  },
+  "US500 RND3": {
+   "native": {
+    "ret": -65.55,
+    "pf": 0.79,
+    "mt5_dd": 65.93,
+    "trades": 1014,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 3264,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 65.93
+   },
+   "win": {
+    "all": {
+     "trades": 1014,
+     "per_month": 11.5,
+     "per_day": 0.53,
+     "r": -100.0,
+     "ret_pct_1R1pct": -100.0,
+     "pf": 0.81,
+     "win": 44.6,
+     "avg_r": -0.099,
+     "consistency": 29.2,
+     "avg_win_streak": 1.82,
+     "avg_loss_streak": 2.25,
+     "max_win_streak": 8,
+     "max_loss_streak": 9,
+     "sharpe": -1.0,
+     "closed_dd_r": 100.1
+    },
+    "dev": {
+     "trades": 594,
+     "per_month": 11.4,
+     "per_day": 0.52,
+     "r": -48.8,
+     "ret_pct_1R1pct": -48.8,
+     "pf": 0.84,
+     "win": 44.9,
+     "avg_r": -0.082,
+     "consistency": 37.7,
+     "avg_win_streak": 1.89,
+     "avg_loss_streak": 2.32,
+     "max_win_streak": 8,
+     "max_loss_streak": 9,
+     "sharpe": -0.8,
+     "closed_dd_r": 57.5
+    },
+    "val": {
+     "trades": 135,
+     "per_month": 11.2,
+     "per_day": 0.52,
+     "r": -22.3,
+     "ret_pct_1R1pct": -22.3,
+     "pf": 0.7,
+     "win": 41.5,
+     "avg_r": -0.165,
+     "consistency": 15.4,
+     "avg_win_streak": 1.44,
+     "avg_loss_streak": 2.03,
+     "max_win_streak": 4,
+     "max_loss_streak": 5,
+     "sharpe": -1.69,
+     "closed_dd_r": 23.6
+    },
+    "oos": {
+     "trades": 285,
+     "per_month": 11.9,
+     "per_day": 0.55,
+     "r": -28.9,
+     "ret_pct_1R1pct": -28.9,
+     "pf": 0.8,
+     "win": 45.3,
+     "avg_r": -0.101,
+     "consistency": 20.0,
+     "avg_win_streak": 1.84,
+     "avg_loss_streak": 2.23,
+     "max_win_streak": 7,
+     "max_loss_streak": 7,
+     "sharpe": -1.1,
+     "closed_dd_r": 36.6
+    },
+    "last12m": {
+     "trades": 145,
+     "per_month": 12.1,
+     "per_day": 0.56,
+     "r": -9.0,
+     "ret_pct_1R1pct": -9.0,
+     "pf": 0.87,
+     "win": 43.4,
+     "avg_r": -0.062,
+     "consistency": 23.1,
+     "avg_win_streak": 1.8,
+     "avg_loss_streak": 2.28,
+     "max_win_streak": 7,
+     "max_loss_streak": 7,
+     "sharpe": -0.64,
+     "closed_dd_r": 11.8
+    }
+   },
+   "years": {
+    "2019": -19.7,
+    "2020": -16.6,
+    "2021": -19.6,
+    "2022": 0.1,
+    "2023": 4.4,
+    "2024": -12.4,
+    "2025": -29.6,
+    "2026": -6.5
+   },
+   "held_past_flat": 6
+  },
+  "US500 RND4": {
+   "native": {
+    "ret": -60.98,
+    "pf": 0.8,
+    "mt5_dd": 63.05,
+    "trades": 1014,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 1938,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 63.05
+   },
+   "win": {
+    "all": {
+     "trades": 1014,
+     "per_month": 11.5,
+     "per_day": 0.53,
+     "r": -87.7,
+     "ret_pct_1R1pct": -87.7,
+     "pf": 0.83,
+     "win": 45.8,
+     "avg_r": -0.086,
+     "consistency": 32.6,
+     "avg_win_streak": 1.82,
+     "avg_loss_streak": 2.16,
+     "max_win_streak": 9,
+     "max_loss_streak": 10,
+     "sharpe": -0.89,
+     "closed_dd_r": 92.2
+    },
+    "dev": {
+     "trades": 594,
+     "per_month": 11.4,
+     "per_day": 0.52,
+     "r": -61.3,
+     "ret_pct_1R1pct": -61.3,
+     "pf": 0.81,
+     "win": 43.8,
+     "avg_r": -0.103,
+     "consistency": 32.1,
+     "avg_win_streak": 1.73,
+     "avg_loss_streak": 2.23,
+     "max_win_streak": 8,
+     "max_loss_streak": 9,
+     "sharpe": -1.0,
+     "closed_dd_r": 74.0
+    },
+    "val": {
+     "trades": 135,
+     "per_month": 11.2,
+     "per_day": 0.52,
+     "r": -1.0,
+     "ret_pct_1R1pct": -1.0,
+     "pf": 0.99,
+     "win": 49.6,
+     "avg_r": -0.007,
+     "consistency": 38.5,
+     "avg_win_streak": 1.86,
+     "avg_loss_streak": 1.89,
+     "max_win_streak": 5,
+     "max_loss_streak": 6,
+     "sharpe": -0.07,
+     "closed_dd_r": 10.4
+    },
+    "oos": {
+     "trades": 285,
+     "per_month": 11.9,
+     "per_day": 0.55,
+     "r": -25.4,
+     "ret_pct_1R1pct": -25.4,
+     "pf": 0.81,
+     "win": 48.1,
+     "avg_r": -0.089,
+     "consistency": 32.0,
+     "avg_win_streak": 1.99,
+     "avg_loss_streak": 2.14,
+     "max_win_streak": 9,
+     "max_loss_streak": 10,
+     "sharpe": -1.05,
+     "closed_dd_r": 35.6
+    },
+    "last12m": {
+     "trades": 145,
+     "per_month": 12.1,
+     "per_day": 0.56,
+     "r": -29.4,
+     "ret_pct_1R1pct": -29.4,
+     "pf": 0.61,
+     "win": 41.4,
+     "avg_r": -0.203,
+     "consistency": 15.4,
+     "avg_win_streak": 1.67,
+     "avg_loss_streak": 2.36,
+     "max_win_streak": 5,
+     "max_loss_streak": 10,
+     "sharpe": -2.51,
+     "closed_dd_r": 29.9
+    }
+   },
+   "years": {
+    "2019": -22.9,
+    "2020": -25.0,
+    "2021": -5.6,
+    "2022": -6.8,
+    "2023": 1.1,
+    "2024": -4.1,
+    "2025": -0.5,
+    "2026": -24.0
+   },
+   "held_past_flat": 7
+  },
+  "US500 RND5": {
+   "native": {
+    "ret": -45.57,
+    "pf": 0.89,
+    "mt5_dd": 47.23,
+    "trades": 1014,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 3264,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00"
+    ],
+    "equity_dd_relative": 47.23
+   },
+   "win": {
+    "all": {
+     "trades": 1014,
+     "per_month": 11.5,
+     "per_day": 0.53,
+     "r": -54.4,
+     "ret_pct_1R1pct": -54.4,
+     "pf": 0.89,
+     "win": 47.6,
+     "avg_r": -0.054,
+     "consistency": 47.2,
+     "avg_win_streak": 1.89,
+     "avg_loss_streak": 2.07,
+     "max_win_streak": 8,
+     "max_loss_streak": 9,
+     "sharpe": -0.55,
+     "closed_dd_r": 56.9
+    },
+    "dev": {
+     "trades": 594,
+     "per_month": 11.4,
+     "per_day": 0.52,
+     "r": -27.5,
+     "ret_pct_1R1pct": -27.5,
+     "pf": 0.91,
+     "win": 47.3,
+     "avg_r": -0.046,
+     "consistency": 47.2,
+     "avg_win_streak": 1.85,
+     "avg_loss_streak": 2.05,
+     "max_win_streak": 8,
+     "max_loss_streak": 9,
+     "sharpe": -0.46,
+     "closed_dd_r": 45.0
+    },
+    "val": {
+     "trades": 135,
+     "per_month": 11.2,
+     "per_day": 0.52,
+     "r": 19.3,
+     "ret_pct_1R1pct": 19.3,
+     "pf": 1.33,
+     "win": 53.3,
+     "avg_r": 0.143,
+     "consistency": 61.5,
+     "avg_win_streak": 2.32,
+     "avg_loss_streak": 2.03,
+     "max_win_streak": 5,
+     "max_loss_streak": 6,
+     "sharpe": 1.31,
+     "closed_dd_r": 9.4
+    },
+    "oos": {
+     "trades": 285,
+     "per_month": 11.9,
+     "per_day": 0.55,
+     "r": -46.2,
+     "ret_pct_1R1pct": -46.2,
+     "pf": 0.68,
+     "win": 45.6,
+     "avg_r": -0.162,
+     "consistency": 36.0,
+     "avg_win_streak": 1.81,
+     "avg_loss_streak": 2.15,
+     "max_win_streak": 6,
+     "max_loss_streak": 7,
+     "sharpe": -1.89,
+     "closed_dd_r": 52.2
+    },
+    "last12m": {
+     "trades": 145,
+     "per_month": 12.1,
+     "per_day": 0.56,
+     "r": -22.8,
+     "ret_pct_1R1pct": -22.8,
+     "pf": 0.69,
+     "win": 44.1,
+     "avg_r": -0.157,
+     "consistency": 46.2,
+     "avg_win_streak": 1.78,
+     "avg_loss_streak": 2.25,
+     "max_win_streak": 4,
+     "max_loss_streak": 6,
+     "sharpe": -1.87,
+     "closed_dd_r": 25.0
+    }
+   },
+   "years": {
+    "2019": -7.9,
+    "2020": -13.0,
+    "2021": -2.7,
+    "2022": -1.4,
+    "2023": -10.4,
+    "2024": 33.1,
+    "2025": -31.5,
+    "2026": -20.7
+   },
+   "held_past_flat": 6
+  },
+  "DE30 WIDE": {
+   "native": {
+    "ret": 14.4,
+    "pf": 1.02,
+    "mt5_dd": 47.4,
+    "trades": 1075,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 0,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00",
+     "real ticks begin from 2026.01.02 00:00:00"
+    ],
+    "equity_dd_relative": 47.4
+   },
+   "win": {
+    "all": {
+     "trades": 1075,
+     "per_month": 12.2,
+     "per_day": 0.56,
+     "r": 21.5,
+     "ret_pct_1R1pct": 21.5,
+     "pf": 1.04,
+     "win": 49.0,
+     "avg_r": 0.02,
+     "consistency": 57.3,
+     "avg_win_streak": 1.94,
+     "avg_loss_streak": 2.01,
+     "max_win_streak": 9,
+     "max_loss_streak": 9,
+     "sharpe": 0.19,
+     "closed_dd_r": 59.0
+    },
+    "dev": {
+     "trades": 640,
+     "per_month": 12.3,
+     "per_day": 0.56,
+     "r": 13.2,
+     "ret_pct_1R1pct": 13.2,
+     "pf": 1.04,
+     "win": 47.7,
+     "avg_r": 0.021,
+     "consistency": 56.6,
+     "avg_win_streak": 1.89,
+     "avg_loss_streak": 2.07,
+     "max_win_streak": 9,
+     "max_loss_streak": 9,
+     "sharpe": 0.2,
+     "closed_dd_r": 33.0
+    },
+    "val": {
+     "trades": 155,
+     "per_month": 12.9,
+     "per_day": 0.59,
+     "r": -19.2,
+     "ret_pct_1R1pct": -19.2,
+     "pf": 0.78,
+     "win": 44.5,
+     "avg_r": -0.124,
+     "consistency": 30.8,
+     "avg_win_streak": 1.86,
+     "avg_loss_streak": 2.32,
+     "max_win_streak": 6,
+     "max_loss_streak": 7,
+     "sharpe": -1.32,
+     "closed_dd_r": 26.0
+    },
+    "oos": {
+     "trades": 280,
+     "per_month": 11.7,
+     "per_day": 0.54,
+     "r": 27.5,
+     "ret_pct_1R1pct": 27.5,
+     "pf": 1.22,
+     "win": 54.6,
+     "avg_r": 0.098,
+     "consistency": 68.0,
+     "avg_win_streak": 2.04,
+     "avg_loss_streak": 1.72,
+     "max_win_streak": 7,
+     "max_loss_streak": 5,
+     "sharpe": 0.93,
+     "closed_dd_r": 13.8
+    },
+    "last12m": {
+     "trades": 133,
+     "per_month": 11.1,
+     "per_day": 0.51,
+     "r": 2.0,
+     "ret_pct_1R1pct": 2.0,
+     "pf": 1.03,
+     "win": 52.6,
+     "avg_r": 0.015,
+     "consistency": 61.5,
+     "avg_win_streak": 1.89,
+     "avg_loss_streak": 1.75,
+     "max_win_streak": 6,
+     "max_loss_streak": 5,
+     "sharpe": 0.14,
+     "closed_dd_r": 11.1
+    }
+   },
+   "years": {
+    "2019": 17.2,
+    "2020": 21.9,
+    "2021": -12.6,
+    "2022": 7.9,
+    "2023": -27.8,
+    "2024": -13.0,
+    "2025": 19.8,
+    "2026": 8.2
+   },
+   "held_past_flat": 0,
+   "mc": {
+    "resample": 29.8,
+    "randomize": 98.8,
+    "clumped": 96.5
+   },
+   "dependence": {
+    "trades": 1075,
+    "days": 1075,
+    "total": 21.5204,
+    "rule": "For a positive total, the result FAILS if removing the single best day or the single best trade leaves a total <= 0. Worst-day removal is reported as a diagnostic (mean-reversion shape), not a gate.",
+    "best_day": {
+     "date": "2026-07-02",
+     "value": 4.8524
+    },
+    "worst_day": {
+     "date": "2023-04-13",
+     "value": -1.0887
+    },
+    "best_trade": 4.8524,
+    "worst_trade": -1.0887,
+    "without_best_day": 16.668,
+    "without_best_trade": 16.668,
+    "without_worst_day": 22.609,
+    "without_top5_days": -2.0182,
+    "best_day_share_of_total": 0.2255,
+    "applicable": true,
+    "best_day_sign_flip": false,
+    "best_trade_sign_flip": false,
+    "top5_days_sign_flip": true,
+    "verdict": "PASS"
+   },
+   "cost_stress": {
+    "rule": "Recorded per-trade costs (spread + commission + swap, same unit as the results) are multiplied: net_k = net - (k - 1) * cost. Gate: the total must stay > 0 at 2x costs; 3x and the break-even multiple are diagnostics.",
+    "trades": 1075,
+    "costs_paid": 12.548,
+    "multiples": {
+     "1x": {
+      "total": 21.5204,
+      "mean": 0.02002,
+      "pf": 1.04
+     },
+     "2x": {
+      "total": 8.9724,
+      "mean": 0.00835,
+      "pf": 1.017
+     },
+     "3x": {
+      "total": -3.5756,
+      "mean": -0.00333,
+      "pf": 0.993
+     }
+    },
+    "breakeven_multiple": 2.715,
+    "verdict": "PASS"
+   },
+   "random_direction_r": [
+    -58.1,
+    -75.3,
+    -63.5,
+    -106.1,
+    -30.7
+   ]
+  },
+  "DE30 PAPER": {
+   "native": {
+    "ret": -75.39,
+    "pf": 0.89,
+    "mt5_dd": 86.2,
+    "trades": 1829,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 0,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00",
+     "real ticks begin from 2026.01.02 00:00:00"
+    ],
+    "equity_dd_relative": 86.2
+   },
+   "win": {
+    "all": {
+     "trades": 1829,
+     "per_month": 20.7,
+     "per_day": 0.95,
+     "r": -122.7,
+     "ret_pct_1R1pct": -122.7,
+     "pf": 0.88,
+     "win": 36.2,
+     "avg_r": -0.067,
+     "consistency": 43.8,
+     "avg_win_streak": 1.55,
+     "avg_loss_streak": 2.73,
+     "max_win_streak": 6,
+     "max_loss_streak": 19,
+     "sharpe": -0.75,
+     "closed_dd_r": 186.8
+    },
+    "dev": {
+     "trades": 1081,
+     "per_month": 20.7,
+     "per_day": 0.95,
+     "r": -82.4,
+     "ret_pct_1R1pct": -82.4,
+     "pf": 0.87,
+     "win": 36.4,
+     "avg_r": -0.076,
+     "consistency": 39.6,
+     "avg_win_streak": 1.57,
+     "avg_loss_streak": 2.73,
+     "max_win_streak": 6,
+     "max_loss_streak": 14,
+     "sharpe": -0.87,
+     "closed_dd_r": 125.7
+    },
+    "val": {
+     "trades": 250,
+     "per_month": 20.8,
+     "per_day": 0.95,
+     "r": -39.4,
+     "ret_pct_1R1pct": -39.4,
+     "pf": 0.74,
+     "win": 30.8,
+     "avg_r": -0.158,
+     "consistency": 38.5,
+     "avg_win_streak": 1.4,
+     "avg_loss_streak": 3.09,
+     "max_win_streak": 5,
+     "max_loss_streak": 19,
+     "sharpe": -1.86,
+     "closed_dd_r": 48.7
+    },
+    "oos": {
+     "trades": 498,
+     "per_month": 20.8,
+     "per_day": 0.95,
+     "r": -0.9,
+     "ret_pct_1R1pct": -0.9,
+     "pf": 1.0,
+     "win": 38.8,
+     "avg_r": -0.002,
+     "consistency": 60.0,
+     "avg_win_streak": 1.6,
+     "avg_loss_streak": 2.54,
+     "max_win_streak": 5,
+     "max_loss_streak": 8,
+     "sharpe": -0.02,
+     "closed_dd_r": 29.4
+    },
+    "last12m": {
+     "trades": 249,
+     "per_month": 20.8,
+     "per_day": 0.95,
+     "r": -3.0,
+     "ret_pct_1R1pct": -3.0,
+     "pf": 0.98,
+     "win": 40.2,
+     "avg_r": -0.012,
+     "consistency": 61.5,
+     "avg_win_streak": 1.64,
+     "avg_loss_streak": 2.48,
+     "max_win_streak": 5,
+     "max_loss_streak": 8,
+     "sharpe": -0.13,
+     "closed_dd_r": 29.4
+    }
+   },
+   "years": {
+    "2019": 24.0,
+    "2020": 1.5,
+    "2021": -44.7,
+    "2022": -2.0,
+    "2023": -66.5,
+    "2024": -47.0,
+    "2025": 8.2,
+    "2026": 3.8
+   },
+   "held_past_flat": 2,
+   "mc": {
+    "resample": 98.3,
+    "randomize": 100.0,
+    "clumped": 99.2
+   },
+   "dependence": {
+    "trades": 1829,
+    "days": 1828,
+    "total": -122.7392,
+    "rule": "For a positive total, the result FAILS if removing the single best day or the single best trade leaves a total <= 0. Worst-day removal is reported as a diagnostic (mean-reversion shape), not a gate.",
+    "best_day": {
+     "date": "2025-04-04",
+     "value": 8.7307
+    },
+    "worst_day": {
+     "date": "2025-06-23",
+     "value": -1.4319
+    },
+    "best_trade": 8.7307,
+    "worst_trade": -1.3077,
+    "without_best_day": -131.4698,
+    "without_best_trade": -131.4698,
+    "without_worst_day": -121.3072,
+    "without_top5_days": -161.849,
+    "best_day_share_of_total": null,
+    "applicable": false,
+    "verdict": "NOT_APPLICABLE_NON_POSITIVE_TOTAL",
+    "best_day_sign_flip": null,
+    "best_trade_sign_flip": null
+   },
+   "cost_stress": {
+    "rule": "Recorded per-trade costs (spread + commission + swap, same unit as the results) are multiplied: net_k = net - (k - 1) * cost. Gate: the total must stay > 0 at 2x costs; 3x and the break-even multiple are diagnostics.",
+    "trades": 1829,
+    "costs_paid": 28.5203,
+    "multiples": {
+     "1x": {
+      "total": -122.7392,
+      "mean": -0.06711,
+      "pf": 0.883
+     },
+     "2x": {
+      "total": -151.2595,
+      "mean": -0.0827,
+      "pf": 0.858
+     },
+     "3x": {
+      "total": -179.7798,
+      "mean": -0.09829,
+      "pf": 0.834
+     }
+    },
+    "breakeven_multiple": -3.304,
+    "verdict": "FAIL"
+   }
+  },
+  "DE30 RND1": {
+   "native": {
+    "ret": -48.19,
+    "pf": 0.91,
+    "mt5_dd": 69.28,
+    "trades": 1075,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 0,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00",
+     "real ticks begin from 2026.01.02 00:00:00"
+    ],
+    "equity_dd_relative": 69.28
+   },
+   "win": {
+    "all": {
+     "trades": 1075,
+     "per_month": 12.2,
+     "per_day": 0.56,
+     "r": -58.1,
+     "ret_pct_1R1pct": -58.1,
+     "pf": 0.9,
+     "win": 47.0,
+     "avg_r": -0.054,
+     "consistency": 38.2,
+     "avg_win_streak": 1.86,
+     "avg_loss_streak": 2.1,
+     "max_win_streak": 7,
+     "max_loss_streak": 8,
+     "sharpe": -0.54,
+     "closed_dd_r": 112.1
+    },
+    "dev": {
+     "trades": 640,
+     "per_month": 12.3,
+     "per_day": 0.56,
+     "r": -7.5,
+     "ret_pct_1R1pct": -7.5,
+     "pf": 0.98,
+     "win": 48.3,
+     "avg_r": -0.012,
+     "consistency": 41.5,
+     "avg_win_streak": 1.97,
+     "avg_loss_streak": 2.11,
+     "max_win_streak": 7,
+     "max_loss_streak": 8,
+     "sharpe": -0.12,
+     "closed_dd_r": 57.3
+    },
+    "val": {
+     "trades": 155,
+     "per_month": 12.9,
+     "per_day": 0.59,
+     "r": -25.3,
+     "ret_pct_1R1pct": -25.3,
+     "pf": 0.72,
+     "win": 41.9,
+     "avg_r": -0.163,
+     "consistency": 15.4,
+     "avg_win_streak": 1.81,
+     "avg_loss_streak": 2.43,
+     "max_win_streak": 4,
+     "max_loss_streak": 7,
+     "sharpe": -1.64,
+     "closed_dd_r": 31.7
+    },
+    "oos": {
+     "trades": 280,
+     "per_month": 11.7,
+     "per_day": 0.54,
+     "r": -25.3,
+     "ret_pct_1R1pct": -25.3,
+     "pf": 0.83,
+     "win": 46.8,
+     "avg_r": -0.09,
+     "consistency": 40.0,
+     "avg_win_streak": 1.68,
+     "avg_loss_streak": 1.91,
+     "max_win_streak": 6,
+     "max_loss_streak": 7,
+     "sharpe": -0.89,
+     "closed_dd_r": 38.8
+    },
+    "last12m": {
+     "trades": 133,
+     "per_month": 11.1,
+     "per_day": 0.51,
+     "r": -9.9,
+     "ret_pct_1R1pct": -9.9,
+     "pf": 0.86,
+     "win": 47.4,
+     "avg_r": -0.074,
+     "consistency": 46.2,
+     "avg_win_streak": 1.66,
+     "avg_loss_streak": 1.89,
+     "max_win_streak": 4,
+     "max_loss_streak": 6,
+     "sharpe": -0.69,
+     "closed_dd_r": 14.3
+    }
+   },
+   "years": {
+    "2019": 14.7,
+    "2020": 13.9,
+    "2021": 5.4,
+    "2022": -6.9,
+    "2023": -43.7,
+    "2024": -16.7,
+    "2025": -17.9,
+    "2026": -6.9
+   },
+   "held_past_flat": 0
+  },
+  "DE30 RND2": {
+   "native": {
+    "ret": -56.36,
+    "pf": 0.87,
+    "mt5_dd": 69.75,
+    "trades": 1075,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 0,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00",
+     "real ticks begin from 2026.01.02 00:00:00"
+    ],
+    "equity_dd_relative": 69.75
+   },
+   "win": {
+    "all": {
+     "trades": 1075,
+     "per_month": 12.2,
+     "per_day": 0.56,
+     "r": -75.3,
+     "ret_pct_1R1pct": -75.3,
+     "pf": 0.87,
+     "win": 45.5,
+     "avg_r": -0.07,
+     "consistency": 41.6,
+     "avg_win_streak": 1.83,
+     "avg_loss_streak": 2.19,
+     "max_win_streak": 8,
+     "max_loss_streak": 10,
+     "sharpe": -0.7,
+     "closed_dd_r": 112.9
+    },
+    "dev": {
+     "trades": 640,
+     "per_month": 12.3,
+     "per_day": 0.56,
+     "r": -53.8,
+     "ret_pct_1R1pct": -53.8,
+     "pf": 0.84,
+     "win": 45.0,
+     "avg_r": -0.084,
+     "consistency": 37.7,
+     "avg_win_streak": 1.91,
+     "avg_loss_streak": 2.32,
+     "max_win_streak": 8,
+     "max_loss_streak": 10,
+     "sharpe": -0.87,
+     "closed_dd_r": 78.2
+    },
+    "val": {
+     "trades": 155,
+     "per_month": 12.9,
+     "per_day": 0.59,
+     "r": -25.2,
+     "ret_pct_1R1pct": -25.2,
+     "pf": 0.72,
+     "win": 42.6,
+     "avg_r": -0.163,
+     "consistency": 30.8,
+     "avg_win_streak": 1.65,
+     "avg_loss_streak": 2.23,
+     "max_win_streak": 4,
+     "max_loss_streak": 5,
+     "sharpe": -1.63,
+     "closed_dd_r": 27.0
+    },
+    "oos": {
+     "trades": 280,
+     "per_month": 11.7,
+     "per_day": 0.54,
+     "r": 3.7,
+     "ret_pct_1R1pct": 3.7,
+     "pf": 1.03,
+     "win": 48.2,
+     "avg_r": 0.013,
+     "consistency": 52.0,
+     "avg_win_streak": 1.78,
+     "avg_loss_streak": 1.88,
+     "max_win_streak": 7,
+     "max_loss_streak": 8,
+     "sharpe": 0.12,
+     "closed_dd_r": 26.0
+    },
+    "last12m": {
+     "trades": 133,
+     "per_month": 11.1,
+     "per_day": 0.51,
+     "r": 4.8,
+     "ret_pct_1R1pct": 4.8,
+     "pf": 1.07,
+     "win": 49.6,
+     "avg_r": 0.036,
+     "consistency": 61.5,
+     "avg_win_streak": 1.89,
+     "avg_loss_streak": 1.86,
+     "max_win_streak": 7,
+     "max_loss_streak": 8,
+     "sharpe": 0.32,
+     "closed_dd_r": 12.1
+    }
+   },
+   "years": {
+    "2019": 17.0,
+    "2020": -1.0,
+    "2021": -25.2,
+    "2022": -18.4,
+    "2023": -28.1,
+    "2024": -25.1,
+    "2025": -9.9,
+    "2026": 15.3
+   },
+   "held_past_flat": 0
+  },
+  "DE30 RND3": {
+   "native": {
+    "ret": -50.94,
+    "pf": 0.91,
+    "mt5_dd": 67.57,
+    "trades": 1075,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 0,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00",
+     "real ticks begin from 2026.01.02 00:00:00"
+    ],
+    "equity_dd_relative": 67.57
+   },
+   "win": {
+    "all": {
+     "trades": 1075,
+     "per_month": 12.2,
+     "per_day": 0.56,
+     "r": -63.5,
+     "ret_pct_1R1pct": -63.5,
+     "pf": 0.89,
+     "win": 45.5,
+     "avg_r": -0.059,
+     "consistency": 41.6,
+     "avg_win_streak": 1.95,
+     "avg_loss_streak": 2.34,
+     "max_win_streak": 6,
+     "max_loss_streak": 9,
+     "sharpe": -0.58,
+     "closed_dd_r": 106.0
+    },
+    "dev": {
+     "trades": 640,
+     "per_month": 12.3,
+     "per_day": 0.56,
+     "r": -2.6,
+     "ret_pct_1R1pct": -2.6,
+     "pf": 0.99,
+     "win": 47.3,
+     "avg_r": -0.004,
+     "consistency": 43.4,
+     "avg_win_streak": 2.1,
+     "avg_loss_streak": 2.34,
+     "max_win_streak": 6,
+     "max_loss_streak": 7,
+     "sharpe": -0.04,
+     "closed_dd_r": 39.3
+    },
+    "val": {
+     "trades": 155,
+     "per_month": 12.9,
+     "per_day": 0.59,
+     "r": -23.5,
+     "ret_pct_1R1pct": -23.5,
+     "pf": 0.73,
+     "win": 43.9,
+     "avg_r": -0.151,
+     "consistency": 46.2,
+     "avg_win_streak": 2.0,
+     "avg_loss_streak": 2.56,
+     "max_win_streak": 4,
+     "max_loss_streak": 6,
+     "sharpe": -1.58,
+     "closed_dd_r": 28.0
+    },
+    "oos": {
+     "trades": 280,
+     "per_month": 11.7,
+     "per_day": 0.54,
+     "r": -37.5,
+     "ret_pct_1R1pct": -37.5,
+     "pf": 0.76,
+     "win": 42.1,
+     "avg_r": -0.134,
+     "consistency": 32.0,
+     "avg_win_streak": 1.59,
+     "avg_loss_streak": 2.22,
+     "max_win_streak": 5,
+     "max_loss_streak": 7,
+     "sharpe": -1.34,
+     "closed_dd_r": 43.3
+    },
+    "last12m": {
+     "trades": 133,
+     "per_month": 11.1,
+     "per_day": 0.51,
+     "r": -12.6,
+     "ret_pct_1R1pct": -12.6,
+     "pf": 0.83,
+     "win": 43.6,
+     "avg_r": -0.095,
+     "consistency": 46.2,
+     "avg_win_streak": 1.66,
+     "avg_loss_streak": 2.14,
+     "max_win_streak": 4,
+     "max_loss_streak": 7,
+     "sharpe": -0.91,
+     "closed_dd_r": 18.4
+    }
+   },
+   "years": {
+    "2019": 6.9,
+    "2020": 23.8,
+    "2021": -2.3,
+    "2022": -17.8,
+    "2023": -20.8,
+    "2024": -21.4,
+    "2025": -25.0,
+    "2026": -6.8
+   },
+   "held_past_flat": 0
+  },
+  "DE30 RND4": {
+   "native": {
+    "ret": -67.81,
+    "pf": 0.82,
+    "mt5_dd": 73.72,
+    "trades": 1075,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 0,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00",
+     "real ticks begin from 2026.01.02 00:00:00"
+    ],
+    "equity_dd_relative": 73.72
+   },
+   "win": {
+    "all": {
+     "trades": 1075,
+     "per_month": 12.2,
+     "per_day": 0.56,
+     "r": -106.1,
+     "ret_pct_1R1pct": -106.1,
+     "pf": 0.82,
+     "win": 45.4,
+     "avg_r": -0.099,
+     "consistency": 44.9,
+     "avg_win_streak": 1.91,
+     "avg_loss_streak": 2.29,
+     "max_win_streak": 10,
+     "max_loss_streak": 10,
+     "sharpe": -1.01,
+     "closed_dd_r": 126.5
+    },
+    "dev": {
+     "trades": 640,
+     "per_month": 12.3,
+     "per_day": 0.56,
+     "r": -73.3,
+     "ret_pct_1R1pct": -73.3,
+     "pf": 0.79,
+     "win": 42.8,
+     "avg_r": -0.115,
+     "consistency": 43.4,
+     "avg_win_streak": 1.72,
+     "avg_loss_streak": 2.29,
+     "max_win_streak": 6,
+     "max_loss_streak": 10,
+     "sharpe": -1.15,
+     "closed_dd_r": 83.0
+    },
+    "val": {
+     "trades": 155,
+     "per_month": 12.9,
+     "per_day": 0.59,
+     "r": -19.5,
+     "ret_pct_1R1pct": -19.5,
+     "pf": 0.78,
+     "win": 45.2,
+     "avg_r": -0.126,
+     "consistency": 46.2,
+     "avg_win_streak": 2.19,
+     "avg_loss_streak": 2.66,
+     "max_win_streak": 6,
+     "max_loss_streak": 9,
+     "sharpe": -1.31,
+     "closed_dd_r": 28.8
+    },
+    "oos": {
+     "trades": 280,
+     "per_month": 11.7,
+     "per_day": 0.54,
+     "r": -13.3,
+     "ret_pct_1R1pct": -13.3,
+     "pf": 0.9,
+     "win": 51.4,
+     "avg_r": -0.047,
+     "consistency": 48.0,
+     "avg_win_streak": 2.18,
+     "avg_loss_streak": 2.09,
+     "max_win_streak": 10,
+     "max_loss_streak": 6,
+     "sharpe": -0.51,
+     "closed_dd_r": 26.7
+    },
+    "last12m": {
+     "trades": 133,
+     "per_month": 11.1,
+     "per_day": 0.51,
+     "r": -7.1,
+     "ret_pct_1R1pct": -7.1,
+     "pf": 0.89,
+     "win": 51.1,
+     "avg_r": -0.054,
+     "consistency": 53.8,
+     "avg_win_streak": 2.0,
+     "avg_loss_streak": 1.91,
+     "max_win_streak": 6,
+     "max_loss_streak": 6,
+     "sharpe": -0.56,
+     "closed_dd_r": 19.6
+    }
+   },
+   "years": {
+    "2019": -0.8,
+    "2020": 3.5,
+    "2021": -21.2,
+    "2022": -19.8,
+    "2023": -38.3,
+    "2024": -17.4,
+    "2025": -8.5,
+    "2026": -3.6
+   },
+   "held_past_flat": 0
+  },
+  "DE30 RND5": {
+   "native": {
+    "ret": -31.99,
+    "pf": 0.94,
+    "mt5_dd": 60.66,
+    "trades": 1075,
+    "flags": {
+     "init_failed": 0,
+     "no_history": 0,
+     "rejected": 0,
+     "size_below_min": 0,
+     "critical": 0
+    },
+    "ticks": [
+     "real ticks begin from 2026.01.01 00:00:00",
+     "real ticks begin from 2026.01.02 00:00:00"
+    ],
+    "equity_dd_relative": 60.66
+   },
+   "win": {
+    "all": {
+     "trades": 1075,
+     "per_month": 12.2,
+     "per_day": 0.56,
+     "r": -30.7,
+     "ret_pct_1R1pct": -30.7,
+     "pf": 0.94,
+     "win": 47.3,
+     "avg_r": -0.029,
+     "consistency": 42.7,
+     "avg_win_streak": 1.91,
+     "avg_loss_streak": 2.12,
+     "max_win_streak": 10,
+     "max_loss_streak": 10,
+     "sharpe": -0.28,
+     "closed_dd_r": 86.6
+    },
+    "dev": {
+     "trades": 640,
+     "per_month": 12.3,
+     "per_day": 0.56,
+     "r": 8.1,
+     "ret_pct_1R1pct": 8.1,
+     "pf": 1.02,
+     "win": 46.7,
+     "avg_r": 0.013,
+     "consistency": 41.5,
+     "avg_win_streak": 1.82,
+     "avg_loss_streak": 2.09,
+     "max_win_streak": 6,
+     "max_loss_streak": 7,
+     "sharpe": 0.12,
+     "closed_dd_r": 35.1
+    },
+    "val": {
+     "trades": 155,
+     "per_month": 12.9,
+     "per_day": 0.59,
+     "r": -30.2,
+     "ret_pct_1R1pct": -30.2,
+     "pf": 0.64,
+     "win": 46.5,
+     "avg_r": -0.195,
+     "consistency": 30.8,
+     "avg_win_streak": 1.95,
+     "avg_loss_streak": 2.24,
+     "max_win_streak": 6,
+     "max_loss_streak": 10,
+     "sharpe": -2.35,
+     "closed_dd_r": 34.9
+    },
+    "oos": {
+     "trades": 280,
+     "per_month": 11.7,
+     "per_day": 0.54,
+     "r": -8.5,
+     "ret_pct_1R1pct": -8.5,
+     "pf": 0.94,
+     "win": 49.3,
+     "avg_r": -0.03,
+     "consistency": 52.0,
+     "avg_win_streak": 2.06,
+     "avg_loss_streak": 2.12,
+     "max_win_streak": 10,
+     "max_loss_streak": 6,
+     "sharpe": -0.3,
+     "closed_dd_r": 32.0
+    },
+    "last12m": {
+     "trades": 133,
+     "per_month": 11.1,
+     "per_day": 0.51,
+     "r": 7.6,
+     "ret_pct_1R1pct": 7.6,
+     "pf": 1.12,
+     "win": 52.6,
+     "avg_r": 0.057,
+     "consistency": 61.5,
+     "avg_win_streak": 1.94,
+     "avg_loss_streak": 1.75,
+     "max_win_streak": 5,
+     "max_loss_streak": 6,
+     "sharpe": 0.52,
+     "closed_dd_r": 13.9
+    }
+   },
+   "years": {
+    "2019": 25.0,
+    "2020": -4.2,
+    "2021": -10.3,
+    "2022": -6.7,
+    "2023": 3.0,
+    "2024": -34.4,
+    "2025": -19.7,
+    "2026": 16.7
+   },
+   "held_past_flat": 0
+  },
+  "ALL3 WIDE": {
+   "win": {
+    "all": {
+     "trades": 3255,
+     "per_month": 36.9,
+     "per_day": 1.7,
+     "r": 233.2,
+     "ret_pct_1R1pct": 233.2,
+     "pf": 1.16,
+     "win": 51.9,
+     "avg_r": 0.072,
+     "consistency": 60.7,
+     "avg_win_streak": 2.44,
+     "avg_loss_streak": 2.27,
+     "max_win_streak": 18,
+     "max_loss_streak": 10,
+     "sharpe": 1.06,
+     "closed_dd_r": 81.3
+    },
+    "dev": {
+     "trades": 1924,
+     "per_month": 36.9,
+     "per_day": 1.7,
+     "r": 91.5,
+     "ret_pct_1R1pct": 91.5,
+     "pf": 1.1,
+     "win": 50.2,
+     "avg_r": 0.048,
+     "consistency": 56.6,
+     "avg_win_streak": 2.35,
+     "avg_loss_streak": 2.33,
+     "max_win_streak": 10,
+     "max_loss_streak": 10,
+     "sharpe": 0.7,
+     "closed_dd_r": 51.1
+    },
+    "val": {
+     "trades": 446,
+     "per_month": 37.1,
+     "per_day": 1.7,
+     "r": 21.7,
+     "ret_pct_1R1pct": 21.7,
+     "pf": 1.1,
+     "win": 51.1,
+     "avg_r": 0.049,
+     "consistency": 46.2,
+     "avg_win_streak": 2.13,
+     "avg_loss_streak": 2.04,
+     "max_win_streak": 8,
+     "max_loss_streak": 9,
+     "sharpe": 0.71,
+     "closed_dd_r": 31.9
+    },
+    "oos": {
+     "trades": 885,
+     "per_month": 36.9,
+     "per_day": 1.7,
+     "r": 120.0,
+     "ret_pct_1R1pct": 120.0,
+     "pf": 1.34,
+     "win": 56.0,
+     "avg_r": 0.136,
+     "consistency": 72.0,
+     "avg_win_streak": 2.85,
+     "avg_loss_streak": 2.25,
+     "max_win_streak": 18,
+     "max_loss_streak": 10,
+     "sharpe": 2.04,
+     "closed_dd_r": 18.8
+    },
+    "last12m": {
+     "trades": 430,
+     "per_month": 35.9,
+     "per_day": 1.65,
+     "r": 53.0,
+     "ret_pct_1R1pct": 53.0,
+     "pf": 1.3,
+     "win": 53.7,
+     "avg_r": 0.123,
+     "consistency": 76.9,
+     "avg_win_streak": 2.69,
+     "avg_loss_streak": 2.34,
+     "max_win_streak": 18,
+     "max_loss_streak": 10,
+     "sharpe": 1.73,
+     "closed_dd_r": 18.8
+    }
+   },
+   "mc": {
+    "resample": 0.2,
+    "randomize": 0.1
+   },
+   "years": {
+    "2019": 11.0,
+    "2020": 30.2,
+    "2021": 29.2,
+    "2022": 52.2,
+    "2023": -42.0,
+    "2024": 48.1,
+    "2025": 53.3,
+    "2026": 51.1
+   }
+  },
+  "ALL3 PAPER": {
+   "win": {
+    "all": {
+     "trades": 5474,
+     "per_month": 62.1,
+     "per_day": 2.85,
+     "r": -129.0,
+     "ret_pct_1R1pct": -129.0,
+     "pf": 0.96,
+     "win": 38.3,
+     "avg_r": -0.024,
+     "consistency": 42.7,
+     "avg_win_streak": 1.91,
+     "avg_loss_streak": 3.08,
+     "max_win_streak": 9,
+     "max_loss_streak": 20,
+     "sharpe": -0.37,
+     "closed_dd_r": 222.0
+    },
+    "dev": {
+     "trades": 3245,
+     "per_month": 62.2,
+     "per_day": 2.86,
+     "r": -150.4,
+     "ret_pct_1R1pct": -150.4,
+     "pf": 0.92,
+     "win": 37.3,
+     "avg_r": -0.046,
+     "consistency": 37.7,
+     "avg_win_streak": 1.88,
+     "avg_loss_streak": 3.16,
+     "max_win_streak": 8,
+     "max_loss_streak": 20,
+     "sharpe": -0.74,
+     "closed_dd_r": 169.8
+    },
+    "val": {
+     "trades": 743,
+     "per_month": 61.8,
+     "per_day": 2.84,
+     "r": -29.7,
+     "ret_pct_1R1pct": -29.7,
+     "pf": 0.93,
+     "win": 36.6,
+     "avg_r": -0.04,
+     "consistency": 46.2,
+     "avg_win_streak": 1.81,
+     "avg_loss_streak": 3.14,
+     "max_win_streak": 6,
+     "max_loss_streak": 10,
+     "sharpe": -0.69,
+     "closed_dd_r": 53.2
+    },
+    "oos": {
+     "trades": 1486,
+     "per_month": 62.0,
+     "per_day": 2.85,
+     "r": 51.1,
+     "ret_pct_1R1pct": 51.1,
+     "pf": 1.07,
+     "win": 41.4,
+     "avg_r": 0.034,
+     "consistency": 48.0,
+     "avg_win_streak": 2.02,
+     "avg_loss_streak": 2.86,
+     "max_win_streak": 9,
+     "max_loss_streak": 14,
+     "sharpe": 0.59,
+     "closed_dd_r": 46.7
+    },
+    "last12m": {
+     "trades": 742,
+     "per_month": 61.9,
+     "per_day": 2.84,
+     "r": -1.5,
+     "ret_pct_1R1pct": -1.5,
+     "pf": 1.0,
+     "win": 41.1,
+     "avg_r": -0.002,
+     "consistency": 30.8,
+     "avg_win_streak": 2.02,
+     "avg_loss_streak": 2.89,
+     "max_win_streak": 9,
+     "max_loss_streak": 14,
+     "sharpe": -0.01,
+     "closed_dd_r": 46.7
+    }
+   },
+   "mc": {
+    "resample": 87.3,
+    "randomize": 100.0
+   },
+   "years": {
+    "2019": -9.3,
+    "2020": -13.3,
+    "2021": -55.3,
+    "2022": -2.9,
+    "2023": -81.8,
+    "2024": -14.5,
+    "2025": 50.9,
+    "2026": -2.7
+   }
+  },
+  "US2 WIDE": {
+   "win": {
+    "all": {
+     "trades": 2180,
+     "per_month": 24.7,
+     "per_day": 1.14,
+     "r": 211.7,
+     "ret_pct_1R1pct": 211.7,
+     "pf": 1.22,
+     "win": 53.3,
+     "avg_r": 0.097,
+     "consistency": 62.9,
+     "avg_win_streak": 2.65,
+     "avg_loss_streak": 2.32,
+     "max_win_streak": 15,
+     "max_loss_streak": 13,
+     "sharpe": 1.12,
+     "closed_dd_r": 42.7
+    },
+    "dev": {
+     "trades": 1284,
+     "per_month": 24.6,
+     "per_day": 1.13,
+     "r": 78.3,
+     "ret_pct_1R1pct": 78.3,
+     "pf": 1.13,
+     "win": 51.4,
+     "avg_r": 0.061,
+     "consistency": 62.3,
+     "avg_win_streak": 2.52,
+     "avg_loss_streak": 2.39,
+     "max_win_streak": 14,
+     "max_loss_streak": 9,
+     "sharpe": 0.7,
+     "closed_dd_r": 28.8
+    },
+    "val": {
+     "trades": 291,
+     "per_month": 24.2,
+     "per_day": 1.11,
+     "r": 40.8,
+     "ret_pct_1R1pct": 40.8,
+     "pf": 1.33,
+     "win": 54.6,
+     "avg_r": 0.14,
+     "consistency": 61.5,
+     "avg_win_streak": 2.41,
+     "avg_loss_streak": 2.0,
+     "max_win_streak": 8,
+     "max_loss_streak": 7,
+     "sharpe": 1.53,
+     "closed_dd_r": 17.9
+    },
+    "oos": {
+     "trades": 605,
+     "per_month": 25.2,
+     "per_day": 1.16,
+     "r": 92.6,
+     "ret_pct_1R1pct": 92.6,
+     "pf": 1.4,
+     "win": 56.7,
+     "avg_r": 0.153,
+     "consistency": 64.0,
+     "avg_win_streak": 3.06,
+     "avg_loss_streak": 2.36,
+     "max_win_streak": 15,
+     "max_loss_streak": 13,
+     "sharpe": 1.85,
+     "closed_dd_r": 17.4
+    },
+    "last12m": {
+     "trades": 297,
+     "per_month": 24.8,
+     "per_day": 1.14,
+     "r": 51.0,
+     "ret_pct_1R1pct": 51.0,
+     "pf": 1.45,
+     "win": 54.2,
+     "avg_r": 0.172,
+     "consistency": 69.2,
+     "avg_win_streak": 2.93,
+     "avg_loss_streak": 2.52,
+     "max_win_streak": 15,
+     "max_loss_streak": 13,
+     "sharpe": 1.92,
+     "closed_dd_r": 15.8
+    }
+   },
+   "years": {
+    "2019": -6.1,
+    "2020": 8.4,
+    "2021": 41.8,
+    "2022": 44.4,
+    "2023": -14.2,
+    "2024": 61.0,
+    "2025": 33.5,
+    "2026": 42.9
+   },
+   "mc": {
+    "resample": 0.0,
+    "randomize": 0.0,
+    "clumped": 98.8
+   },
+   "same_days": 836
+  }
+ },
+ "USTEC buy&hold": {
+  "symbol": "USTEC",
+  "window": "all",
+  "return_pct": 19.04,
+  "price_return_pct": 218.14,
+  "swap_pct": -199.09,
+  "commission_pct": -0.01,
+  "max_dd_pct": 72.58,
+  "trades": 1
+ },
+ "US500 buy&hold": {
+  "symbol": "US500",
+  "window": "all",
+  "return_pct": -2.94,
+  "price_return_pct": 131.67,
+  "swap_pct": -134.6,
+  "commission_pct": -0.01,
+  "max_dd_pct": 52.35,
+  "trades": 1
+ },
+ "DE30 buy&hold": "AssertionError('nw-DE30-BUYHOLD-all: benchmark did not open exactly one position')"
+}

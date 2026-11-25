@@ -78,3 +78,17 @@ Nasdaq DI OFF, USDJPY DI ON (tested), Nasdaq stop ATR6, caps 4.5x / 3x, weekend 
 calendar now + daily task "Calyx News Calendar" (refreshed silently; a funded install stops if the calendar download fails). Asks: Challenge or Funded;
 on Funded also the risk per trade (Enter = 0.5%, 0.1-1.5; `-FundedRisk x` skips it); then the installer's typed confirmation. -ValidateOnly PASS for
 Challenge / Funded / -FundedRisk 0.6; risk question tested (Enter, 0.75, 0.3, rejects 2 / abc, param skip, challenge no question). Not installed; not pushed.
+
+## 2026-11-25 minimum-lot fallback (owner: EMA3 trade skipped on the $10k FTMO account but taken on Exness)
+- Cause: on 2026-11-24 EMA3 sold XAUUSD with a ~109-point stop. 0.01 lot = ~$109 risk; the guard budget was 0.75% of $10k = $75, so the FTMO 1-Step guard
+  rounded the lot DOWN to 0 and rejected it ("minimum lot exceeds budget"). EMA3's own sizing rounds UP, so the order did reach the guard. Exness ($108k) sized 0.08 lot.
+- New guard input `FTMOMinLotMaxMultiple` (default 0.0 = skip, the old rule): when even the broker minimum lot risks more than the budget, the guard trades the
+  minimum lot if its risk is at most this x the per-entry cap. Every other guard check still applies to the larger risk (total / symbol open-risk caps, daily
+  reserve, floor buffer, margin cap, entries / losses per day). The journal prints "FTMO 1-Step: minimum lot 0.01 used, risk ... vs budget ...".
+- Installer question `-MinLot OFF / 2 / 3` (Enter = 2). Ready for FTMO passes `-MinLot 2`. -ValidateOnly / non-interactive = OFF.
+- build.py patch (guard_text + installer); `python build.py guarded` rebuilds only the guarded package + installers. 10 wrappers 0 errors / 0 warnings;
+  guarded, no-guard, Ready for FTMO and all-in-one -ValidateOnly PASS; question tested with typed answers. Backups: build.before-minlot.py,
+  Ready-For-FTMO.before-minlot.ps1, before-minlot/1-Step/. No native guard test (the guard refuses the tester). Backtests / FTMO sims were run without it.
+- 2026-11-25 later (owner: "apply 0.75% + minimum lot up to 3x"): default is now 3x (installer Enter = 3; Ready for FTMO passes `-MinLot 3`); challenge risk stays 0.75%.
+  Sim ($10k FTMO 1-Step 0.75%, INPUTS_N75, no guard, `FTMO vs Exness 2026-11-24/minlot.py`): skip 93.2% first try / 61 d, 2x 93.5% / 61 d, 3x 93.4% / 60 d (4 gold
+  trades skipped in 5 y), raising every trade to 1% 54.9%.

@@ -1134,6 +1134,30 @@ of what is currently attached to a live terminal.
   0 stars, Oct 2026) and Travis-Clement-Dev (read-only chart); neither installed. No order placed.
 - 2026-11-19: `Best 1-Step October Account 2026-11-19/` (owner: $10k FTMO 1-Step bought Oct 1, day by day). Native Model 4 of the 10 EAs 2026-10-01 -> 11-18 (study.py), account.py replay: lots for $10k rounded DOWN (skip < 0.01), Nasdaq x0.75, M1 worst-price equity, FTMO 1-Step rules, challenge 0.75% -> funded 0.5%, funded 4 days after the pass. Passed 2026-11-03 (day 34, 24 trading days, 75 trades, best day Oct 14 $481 = 46%), worst intraday -$193 (Oct 20) vs $300 limit, lowest balance $9,775; funded from Nov 7: 7/7 green days, +$580 closed (+~$200 floating in 2 gold shorts), first reward request allowed Nov 21. No guard limits / weekend flat / news closes modelled; one period, in-sample.
 - 2026-11-20: `Two Uncorrelated Accounts 2026-11-20/` (owner: 2 uncorrelated profiles so one of 2 accounts almost surely passes, aim 1 month). study.py, INPUTS_N75, FTMO 1-Step first attempt, no guard, split + risks chosen on dev starts (2021-10 -> 2024-08), test 2024-10 -> 2026-08 + MC 2,000 shared-block paths. P(at least one passes) 30/60 d MC: 1 account 0.75% 20.9/52.5; full profile 1%+1.5% on 2 accounts 32.4/50.6; symbol-disjoint split A = gold+UK100+USDJPY 1.25% / B = Nasdaq 5M+ONB+Selective 1.5% 42.6/67.2 (test 51.5/79.4, both breach 13.4%, corr -0.012). Shared-symbol splits break FTMO's no-opposite-across-accounts rule. ~100% in 1 month not reachable. Not built (can be installed with -SkipEAs); guard not modelled.
+- 2026-11-24: `FTMO vs Exness 2026-11-24/` (owner: connected FTMO account; compare last 2 months + rerun pass rate). FTMO prices exported READ-ONLY from the normal
+  MT5 (FTMO-Server4; bars 2021-06 ->, real ticks 2026-09-21 -> 11-20) -> custom symbols *.ftmo in the isolated tester. FTMO server clock = UTC+3 during US DST, else UTC+2
+  (v1 used EU dates, 19 weeks 1 h off; fixed, clock_check lag 0 all weeks; v1 runs in native-INVALID-v1clock/). FTMO commission: XAU $3/lot/side measured, US100 0,
+  USDJPY $2.5 ASSUMED. Last 2 months Model 4: Exness 131 trades +44.65R PF 2.07 vs FTMO 131 +39.25R PF 1.88 (7/10 EAs identical trades). 5y Model 1 (Exness rebuild = N75
+  406 vs 408R): FTMO 437R PF 1.35 vs 406R PF 1.32 (Nasdaq 5M +89.5 vs +63.8R, tighter FTMO spread). Pass (MC, no guard): 1-Step 0.75% 87.8% / 53 d vs Exness 92.7% / 59 d
+  (3 FTMO days cross the 4R = 3% daily limit; worst days sit at -3.5 to -4R); 1-Step 0.5% 99.3% vs 97.4%; 2-Step 0.75% 96.6% vs 95.5%. REPORT.md. Nothing installed.
+- 2026-11-24: `Noise Band Raw 2026-11-11/` RUN (owner: same assets as QuantLab's deep dive = Nasdaq 100 / S&P 500 / DAX 40 -> USTEC / US500 / DE30). EA v1.10 adds a market
+  clock (parity 77/77 vs v1.00); DAX = Frankfurt 09:00 open, checks 09:30-16:30 (assumption). Addendum 2: flat 15:55 NY / 17:25 Frankfurt (first run held 12% overnight:
+  2020-24 USTEC quotes end at 16:00 NY; kept in native-INVALID-flat1600/). Model 4, $10k, 1%, 2019-07-16 -> 2026-11-21. WIDE (k1.4, 2 ATR): USTEC +172% PF 1.22 n1166
+  (13.2/month) eqDD 16.7%, dev/val/OOS +44.6/+22.3/+41.1R, random-entry p 0.02, MC 0.5/0%: PASS; US500 +162% PF 1.25 n1014 eqDD 28.5%, p 0.02, MC 0.2/0% but CLUMPED (95.3%):
+  PASS with flag; DE30 +14% PF 1.02 eqDD 47%, p 0.20, MC fail: FAIL. PAPER (k0.6) fails all 3. Buy & hold USTEC +19% DD 73%, US500 -2.9%. QuantLab claim +420% PF 1.28 not
+  reproduced on DAX. USTEC/US500 share 836 signal days. Survivors for stage 5: USTEC + US500 WIDE (owner approval; OOS viewed by QuantLab). REPORT.md. Nothing installed.
+- 2026-11-24: `Noise Band Optimization 2026-11-24/` (owner: optimise the best result, show in / out of sample) - REJECTED_AT_VALIDATION, keep raw WIDE. PLAN frozen; USTEC + US500
+  shared setting; numba M1 engine, parity 99.7-99.8% same day/direction, corr 0.99+, fill cost calibrated on WIDE (+0.44 / +0.13 pt) and checked on PAPER (within 3%). 294 configs
+  (252 search + 42 plateau). Finalists = M15, k2.0, 2 ATR stop, BE at 1R, no trail, 6R target (+ variants skip Monday / last check 11:00): dev PF 1.60 R +133 (raw 1.12 / +71),
+  plateau 100%; validation -10.8 / -2.9 / -6.2R vs raw +43.5R; walk-forward p 0.84 FAIL. Diagnostic OOS (after decision): finalist 1 +58.9R PF 1.57 vs raw +96.1R PF 1.42.
+  REPORT.md. Nothing changed or installed.
+- 2026-11-25: Best 1-Step MINIMUM-LOT FALLBACK (owner: EMA3 XAU sell 2026-11-24 opened on Exness $108k but not on the FTMO $10k 1-Step). Cause: ~109-pt stop, 0.01 lot = ~$109 >
+  budget 0.75% x $10k = $75 -> guard rejected "minimum lot exceeds budget" (EMA3 itself rounds UP). New guard input FTMOMinLotMaxMultiple (default 0 = skip): trade the broker
+  minimum lot when it risks <= N x the per-entry cap; every other guard check still applies. Installer -MinLot OFF/2/3 (Enter 2); Ready for FTMO passes 2. build.py patch +
+  `python build.py guarded` (guarded only); 10 wrappers 0/0; all Best 1-Step BATs -ValidateOnly PASS; question tested. Backups build.before-minlot.py / before-minlot/.
+  Not installed, not pushed; other guarded profiles (Core 9, P4, ftmo 1_step, Prop Ready family) still skip. Reinstall needs a flat account and re-bases the guard to today's balance.
+  Owner then chose 3x: installer Enter = 3, Ready for FTMO -MinLot 3, challenge 0.75%. Sim $10k 1-Step 0.75% (minlot.py): skip 93.2% / 2x 93.5% / 3x 93.4% first try,
+  1% for every trade 54.9%. Pushed on owner request (2026-11-25).
 - 2026-11-10 IN PROGRESS: `Portfolio P7 2026-11-10/` (Vault Break, Overnight Bias ORB, Nasdaq 5M REPLACE DI OFF, EMA3, ORB VP, RSI VWAP, Gold Band Wave). Native all years +390.7R PF 1.16
   63.8 trades/month, worst day -7.1R, MC 0/0.3 but clumped 95.7%. FTMO 2-step / 1-Step guard + no guard 0.5/0.75/1% and each EA alone: p7.py runall (48 jobs). USDJPY search resumed after it.
 - 2026-11-05 IN PROGRESS: tester queue `tester_queue_20261105.sh`: `Nasdaq 5M Candle Rule 2026-11-05/` (13 versions, PLAN.md frozen) and `USDJPY London Optimization 2026-11-05/` (PLAN.md frozen, stage 5 + 6, owner approved). Not finished.

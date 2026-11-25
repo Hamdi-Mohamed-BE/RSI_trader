@@ -100,6 +100,26 @@ def aaa_graph(path, target, cache):
 # 2026-11-17 owner: "build the no opposite trade rule into the EAs and add to profile along side with weekend hold".
 # Calyx No Opposite (../Calyx No Opposite): input InpCalyxNoOpposite (default false = the tested order path); the installers ask ON/OFF.
 CNO = LIVE / 'Calyx No Opposite'
+MINLOT_PS = r"""# >>> Calyx minimum-lot fallback (owner 2026-11-25) >>>
+function Read-CalyxMinLot([string]$Current, [bool]$NoPrompt) {
+    if ($Current) { if ($Current -notin @('OFF','2','3')) { throw 'MinLot must be OFF, 2 or 3.' }; return $Current }
+    if ($NoPrompt) { return 'OFF' }
+    Write-Host ''
+    Write-Host 'MINIMUM LOT - on a small account even the smallest lot (0.01) can risk more than your risk per trade' -ForegroundColor Cyan
+    Write-Host '  (example: gold with a wide stop, 0.01 lot = $109 while 0.75% of $10k = $75). What should the guard do then?'
+    Write-Host '  OFF = skip the trade (old behaviour)'
+    Write-Host '  2   = trade the broker minimum lot if it risks at most 2x your risk per trade'
+    Write-Host '  3   = up to 3x   [recommended, owner 2026-11-25: FTMO 1-Step 0.75% sim 93.4% first try, 4 gold trades skipped in 5 y]'
+    Write-Host '  The daily-loss reserve, open-risk caps, margin cap and every other guard limit still apply to that trade.' -ForegroundColor Yellow
+    $answer = (Read-Host 'Minimum-lot fallback OFF, 2 or 3 [3]').Trim().ToUpperInvariant()
+    if (-not $answer) { $answer = '3' }
+    if ($answer -notin @('OFF','2','3')) { throw 'Answer OFF, 2 or 3.' }
+    Write-Host ('Minimum-lot fallback: {0}' -f $answer)
+    return $answer
+}
+# <<< Calyx minimum-lot fallback <<<
+"""
+
 CNO_PS = (
     "# >>> Calyx No Opposite (owner 2026-11-17) >>>\n"
     "function Read-CalyxNoOpposite([string]$Current, [bool]$NoPrompt) {\n"
@@ -183,6 +203,17 @@ def guard_text():
     g = sub1(g, '#define CALYX_PROP_READY_GUARD\n', '#define CALYX_PROP_READY_GUARD\n#include "CalyxNoOpposite.mqh"   // Best 1-Step 2026-11-17: no-opposite rule (InpCalyxNoOpposite), checked inside the guard lock\n')
     g = sub1(g, 'input double FTMORiskCapPercent=0.5;', 'input double FTMOEntryRiskFactor=1.0; // Best 1-Step 2026-11-18: entry size factor for this chart only (Nasdaq 5M 0.75); total / symbol caps unchanged\ninput double FTMORiskCapPercent=0.5;')
     g = sub1(g, 'double FTMORiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent/100.0;}', 'double FTMORiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent/100.0*MathMax(0.05,MathMin(1.0,FTMOEntryRiskFactor));}')
+    # 2026-11-25 owner: "risk broker min when this issue happens" (EMA3: 0.01 lot = $109 > $75 budget on a $10k FTMO 1-Step, so the guard skipped it).
+    g = sub1(g, 'input double FTMOSymbolRiskMultiple=3.0;', 'input double FTMOMinLotMaxMultiple=0.0; // 2026-11-25: if even the broker minimum lot risks more than the budget, trade the minimum lot when it risks at most this x the per-entry cap; 0 = skip (old rule). Installer: OFF / 2 / 3\ninput double FTMOSymbolRiskMultiple=3.0;')
+    g = sub1(g, '   if(volume<SymbolInfoDouble(r.symbol,SYMBOL_VOLUME_MIN)-1e-9)return FTMOReject(result,"minimum lot exceeds budget");\n   double risk=unit*volume;\n   if(risk>FTMORiskCap()+1e-7)return FTMOReject(result,"risk rounding");',
+             '   double vmin=SymbolInfoDouble(r.symbol,SYMBOL_VOLUME_MIN),cap_used=FTMORiskCap();\n'
+             '   if(volume<vmin-1e-9) {   // Best 1-Step 2026-11-25: broker minimum lot fallback; every other guard limit below still applies\n'
+             '      if(FTMOMinLotMaxMultiple<=0 || FTMOAllocationBudget()<=0 || vmin<=0 || r.volume<vmin-1e-9 || unit*vmin>FTMOMinLotMaxMultiple*FTMORiskCap()+1e-7)\n'
+             '         return FTMOReject(result,"minimum lot exceeds budget");\n'
+             '      volume=vmin;cap_used=FTMOMinLotMaxMultiple*FTMORiskCap();\n'
+             '      Print("FTMO 1-Step: minimum lot ",DoubleToString(vmin,2)," used, risk ",DoubleToString(unit*vmin,2)," vs budget ",DoubleToString(FTMOAllocationBudget(),2));\n'
+             '   }\n'
+             '   double risk=unit*volume;\n   if(risk>cap_used+1e-7)return FTMOReject(result,"risk rounding");')
     return sub1(g, '   if(entry && !FTMOAdmit(r,result)){FileClose(lock);return false;}',
                 '   if(entry && InpCalyxNewsBlock && CNO_NewsBlocked(r.symbol)){FileClose(lock);return FTMOReject(result,"news window on "+r.symbol);}\n'
                 '   if(entry && InpCalyxNoOpposite && CNO_OppositeOpen(r.symbol,CNO_Dir(r.type))){FileClose(lock);return FTMOReject(result,"no-opposite rule: opposite position open on "+r.symbol);}\n'
@@ -236,7 +267,7 @@ def build_guarded(anyb, edge):
             assert values['InpMarketEntries'] == 'true'; values.update(InpEnableMomentum='false', InpEnableBreakout='true', InpEnableTurnOfMonth='false')
         if slug == 'nasdaq-5m-candle-momentum': values['InpRequireDIAgreement'] = 'false'          # tested DI OFF (pool stream); the installer asks
         if slug == 'usdjpy-london-open-momentum': assert values['InpRequireDIAgreement'] == 'true'    # tested DI ON (Core 9 stream)
-        values.update(FTMOAllocationMode='1', FTMOAllocationValue='0.5', FTMOPhase='1', **C9.UNARMED); values.update(C9.RULES_1STEP); values['InpCalyxNoOpposite'] = 'false'; values['InpCalyxNewsBlock'] = 'false'; values['FTMOEntryRiskFactor'] = '1.0'
+        values.update(FTMOAllocationMode='1', FTMOAllocationValue='0.5', FTMOPhase='1', **C9.UNARMED); values.update(C9.RULES_1STEP); values['InpCalyxNoOpposite'] = 'false'; values['InpCalyxNewsBlock'] = 'false'; values['FTMOEntryRiskFactor'] = '1.0'; values['FTMOMinLotMaxMultiple'] = '0.0'
         magic = values.get('InpMagic') or values.get('InpMagicBase'); assert magic and magic not in magics, ('magic clash', slug, magic); magics[magic] = slug
         write(pkg / f'{stem}.set', '\n'.join(f'{k}={v}' for k, v in values.items()) + '\n')
         shutil.copy2(pkg / f'{stem}.ex5', root / 'EAs' / f'{stem}.ex5'); shutil.copy2(pkg / f'{stem}.set', root / 'Sets' / f'{stem}.set')
@@ -294,6 +325,15 @@ def installer():
     s = sub1(s, "Add-CalyxWeekendFlatChart $WeekendFlat $profile $dataRoot ([string]$portfolio[0].BrokerSymbol) ''   # Calyx Weekend Flat (2026-11-11)\n",
              "Add-CalyxWeekendFlatChart $WeekendFlat $profile $dataRoot ([string]$portfolio[0].BrokerSymbol) ''   # Calyx Weekend Flat (2026-11-11)\n"
              "Add-CalyxNewsGuardChart $NewsGuard $profile $dataRoot ([string]$portfolio[0].BrokerSymbol) ''   # Calyx News Guard (2026-11-18)\n")
+    # 2026-11-25: minimum-lot fallback question (-MinLot OFF / 2 / 3; ValidateOnly / non-interactive = OFF)
+    s = sub1(s, "    [double]$NasdaqRiskFactor=0,", "    [double]$NasdaqRiskFactor=0,\n    [ValidateSet('','OFF','2','3')][string]$MinLot='',")
+    s = sub1(s, "$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)\n", MINLOT_PS + "$NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)\n")
+    s = sub1(s, "$NasdaqRiskFactor=Read-CalyxNasdaqFactor $NasdaqRiskFactor ([bool]$ValidateOnly)   # asked; Enter = 0.75 (2026-11-19)\n",
+             "$NasdaqRiskFactor=Read-CalyxNasdaqFactor $NasdaqRiskFactor ([bool]$ValidateOnly)   # asked; Enter = 0.75 (2026-11-19)\n"
+             "$MinLot=Read-CalyxMinLot $MinLot ([bool]$ValidateOnly)   # minimum-lot fallback (2026-11-25)\n")
+    s = sub1(s, "{$NasdaqRiskFactor.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)}else{'1.0'}",
+             "{$NasdaqRiskFactor.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)}else{'1.0'};$inputs['FTMOMinLotMaxMultiple']=if($MinLot -eq 'OFF'){'0.0'}else{$MinLot}")
+    s = sub1(s, "Nasdaq 5M risk factor: $NasdaqRiskFactor`r`n", "Nasdaq 5M risk factor: $NasdaqRiskFactor`r`nMinimum-lot fallback: $MinLot`r`n")
     s = sub1(s, "foreach($symbol in $aliasMap.Keys){", "foreach($symbol in @($aliasMap.Keys | Where-Object { $_ -in @($selectedEntries | ForEach-Object { [string]$_.symbol }) })){")
     s = sub1(s, "$portfolio=@()\nforeach($entry in $manifest.entries){", "$portfolio=@()\nforeach($entry in $selectedEntries){")
     return s.replace('\n', '\r\n')
@@ -442,4 +482,7 @@ def main():
 
 
 if __name__ == '__main__':
-    write_installers() if sys.argv[1:] == ['installer'] else main()
+    if sys.argv[1:] == ['installer']: write_installers()
+    elif sys.argv[1:] == ['guarded']:   # 2026-11-25: guarded package + installers only; the no-guard package is not rebuilt
+        anyb = json.loads(read(ANY / 'PACKAGE.json')); edge = json.loads(read(EDGE / 'Package.json')); build_guarded(anyb, edge); write_installers()
+    else: main()

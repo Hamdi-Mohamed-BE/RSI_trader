@@ -10,6 +10,7 @@ param(
     [ValidateSet('','ON','OFF')][string]$NoOpposite='',
     [ValidateSet('','OFF','2','5')][string]$NewsGuard='',
     [double]$NasdaqRiskFactor=0,
+    [ValidateSet('','OFF','2','3')][string]$MinLot='',
     [ValidateSet('','NEW','OLD')][string]$NasdaqStopVersion='',
     [ValidateSet('','4.5','6','8','NONE')][string]$TotalRiskCap='',
     [ValidateSet('','3','NONE')][string]$SymbolRiskCap='',
@@ -319,11 +320,30 @@ fixed_height=-1
     Write-Host 'IMPORTANT: run "Update News Calendar.bat" (_00 Live profiles\Calyx News Guard) once a day, e.g. with Windows Task Scheduler. Without a fresh calendar the guard warns on its chart and cannot block anything.' -ForegroundColor Yellow
 }
 # <<< Calyx News Guard <<<
+# >>> Calyx minimum-lot fallback (owner 2026-11-25) >>>
+function Read-CalyxMinLot([string]$Current, [bool]$NoPrompt) {
+    if ($Current) { if ($Current -notin @('OFF','2','3')) { throw 'MinLot must be OFF, 2 or 3.' }; return $Current }
+    if ($NoPrompt) { return 'OFF' }
+    Write-Host ''
+    Write-Host 'MINIMUM LOT - on a small account even the smallest lot (0.01) can risk more than your risk per trade' -ForegroundColor Cyan
+    Write-Host '  (example: gold with a wide stop, 0.01 lot = $109 while 0.75% of $10k = $75). What should the guard do then?'
+    Write-Host '  OFF = skip the trade (old behaviour)'
+    Write-Host '  2   = trade the broker minimum lot if it risks at most 2x your risk per trade'
+    Write-Host '  3   = up to 3x   [recommended, owner 2026-11-25: FTMO 1-Step 0.75% sim 93.4% first try, 4 gold trades skipped in 5 y]'
+    Write-Host '  The daily-loss reserve, open-risk caps, margin cap and every other guard limit still apply to that trade.' -ForegroundColor Yellow
+    $answer = (Read-Host 'Minimum-lot fallback OFF, 2 or 3 [3]').Trim().ToUpperInvariant()
+    if (-not $answer) { $answer = '3' }
+    if ($answer -notin @('OFF','2','3')) { throw 'Answer OFF, 2 or 3.' }
+    Write-Host ('Minimum-lot fallback: {0}' -f $answer)
+    return $answer
+}
+# <<< Calyx minimum-lot fallback <<<
 $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion ([bool]$ValidateOnly)
 $WeekendFlat=Read-CalyxWeekendFlat $WeekendFlat ([bool]$ValidateOnly)   # Calyx Weekend Flat (2026-11-11)
 $NoOpposite=Read-CalyxNoOpposite $NoOpposite ([bool]$ValidateOnly)   # Calyx No Opposite (2026-11-17)
 $NewsGuard=Read-CalyxNewsGuard $NewsGuard ([bool]$ValidateOnly) $(if($Phase -eq 'Funded'){'2'}else{'OFF'})   # Calyx News Guard (2026-11-18): FTMO funded Standard = 2 min; challenges exempt
 $NasdaqRiskFactor=Read-CalyxNasdaqFactor $NasdaqRiskFactor ([bool]$ValidateOnly)   # asked; Enter = 0.75 (2026-11-19)
+$MinLot=Read-CalyxMinLot $MinLot ([bool]$ValidateOnly)   # minimum-lot fallback (2026-11-25)
 $selectedEntries=@(Select-CalyxEntries @($manifest.entries) $SkipEAs ([bool]($ValidateOnly -or -not $Interactive)) 'slug' 'label' 'symbol')   # owner 2026-11-11: one by one
 Write-Host ('Nasdaq 5M: '+(Get-CalyxNasdaqVersionText $NasdaqStopVersion))
 $TotalRiskCap=Read-CalyxTotalRiskCap $TotalRiskCap ([bool]$ValidateOnly)
@@ -385,7 +405,7 @@ foreach($entry in $selectedEntries){
     $inputs['FTMOReferenceBalance']=$initial.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)
     $inputs['FTMOStartUtcTime']=[string]$reference.start_utc;$inputs['FTMOPhase']=[string]$phaseNumber
     $inputs['FTMORiskCapPercent']=$capText
-    $inputs['FTMOTotalRiskMultiple']=Get-CalyxCapMultiple $TotalRiskCap;$inputs['FTMOSymbolRiskMultiple']=Get-CalyxCapMultiple $SymbolRiskCap;$inputs['InpCalyxNoOpposite']=if($NoOpposite -eq 'ON'){'true'}else{'false'};$inputs['InpCalyxNewsBlock']=if($NewsGuard -ne 'OFF'){'true'}else{'false'};$inputs['FTMOEntryRiskFactor']=if([string]$entry.slug -eq 'nasdaq-5m-candle-momentum'){$NasdaqRiskFactor.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)}else{'1.0'}
+    $inputs['FTMOTotalRiskMultiple']=Get-CalyxCapMultiple $TotalRiskCap;$inputs['FTMOSymbolRiskMultiple']=Get-CalyxCapMultiple $SymbolRiskCap;$inputs['InpCalyxNoOpposite']=if($NoOpposite -eq 'ON'){'true'}else{'false'};$inputs['InpCalyxNewsBlock']=if($NewsGuard -ne 'OFF'){'true'}else{'false'};$inputs['FTMOEntryRiskFactor']=if([string]$entry.slug -eq 'nasdaq-5m-candle-momentum'){$NasdaqRiskFactor.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)}else{'1.0'};$inputs['FTMOMinLotMaxMultiple']=if($MinLot -eq 'OFF'){'0.0'}else{$MinLot}
     $inputs['FTMO1TargetPercent']='10.0'
     $inputs['FTMO1MaxLossPercent']='10.0'
     $inputs['FTMO1DailyLossPercent']='3.0'
@@ -454,7 +474,7 @@ Set-IniValue $commonIni 'Experts' 'Enabled' '0'
 Set-IniValue $commonIni 'Experts' 'Account' '1'
 Set-IniValue $commonIni 'Charts' 'ProfileLast' $ProfileName
 [IO.File]::WriteAllText((Join-Path $profile 'DEPLOYMENT.txt'),
-    "Portfolio: Best 1-Step (ten EAs, FTMO 1-Step guard)`r`nAccount: $login / $server / $currency`r`nPhase: $Phase`r`nReference: $initial; start UTC: $($reference.start_utc)`r`nRequested allocation: $RiskMode $RiskValue (per-entry cap $capPercent% of reference); open-risk caps total $TotalRiskCap R / symbol $SymbolRiskCap R`r`nNasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`nNo-opposite rule: $NoOpposite`r`nNews guard: $NewsGuard; Nasdaq 5M risk factor: $NasdaqRiskFactor`r`nNews: OFF; five ORBs: 0.5R; Algo Trading: OFF`r`n",[Text.UTF8Encoding]::new($false))
+    "Portfolio: Best 1-Step (ten EAs, FTMO 1-Step guard)`r`nAccount: $login / $server / $currency`r`nPhase: $Phase`r`nReference: $initial; start UTC: $($reference.start_utc)`r`nRequested allocation: $RiskMode $RiskValue (per-entry cap $capPercent% of reference); open-risk caps total $TotalRiskCap R / symbol $SymbolRiskCap R`r`nNasdaq DI: $NasdaqDIFilter; USDJPY DI: $UsdJpyDIFilter`r`nNo-opposite rule: $NoOpposite`r`nNews guard: $NewsGuard; Nasdaq 5M risk factor: $NasdaqRiskFactor`r`nMinimum-lot fallback: $MinLot`r`nNews: OFF; five ORBs: 0.5R; Algo Trading: OFF`r`n",[Text.UTF8Encoding]::new($false))
 Start-Process -FilePath $terminalPath -ArgumentList ('/profile:"'+$ProfileName+'"') -WindowStyle Hidden
 Write-Host "Installed $ProfileName. Review all ten charts and inputs; Algo Trading remains OFF."
 Write-Host 'Turn Algo Trading ON yourself when satisfied. No orders were placed by this installer.'

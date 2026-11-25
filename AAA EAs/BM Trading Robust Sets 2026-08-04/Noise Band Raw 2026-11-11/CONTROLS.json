@@ -1,0 +1,51 @@
+{
+ "USTEC": {
+  "rule": "Each copy keeps every real trade's direction, clock time of day, stop distance, target distance and holding time, but enters on a random trading day of the same price history (bars, entry at the bar open). Stop is assumed first when stop and target fall in the same bar. p = (copies with mean R >= real mean R + 1) / (copies + 1). Raw-gate screen: p <= 0.10 (lenient on purpose: it removes market drift, it does not prove an edge).",
+  "trades": 1166,
+  "copies": 200,
+  "seed": 20261111,
+  "real_mean_r": 0.09258,
+  "random_mean_r": {
+   "p05": -0.04133,
+   "p50": 0.01007,
+   "p95": 0.07123
+  },
+  "p_value": 0.0249,
+  "verdict": "PASS"
+ },
+ "US500": {
+  "rule": "Each copy keeps every real trade's direction, clock time of day, stop distance, target distance and holding time, but enters on a random trading day of the same price history (bars, entry at the bar open). Stop is assumed first when stop and target fall in the same bar. p = (copies with mean R >= real mean R + 1) / (copies + 1). Raw-gate screen: p <= 0.10 (lenient on purpose: it removes market drift, it does not prove an edge).",
+  "trades": 1014,
+  "copies": 200,
+  "seed": 20261111,
+  "real_mean_r": 0.10232,
+  "random_mean_r": {
+   "p05": -0.06305,
+   "p50": 0.00345,
+   "p95": 0.07949
+  },
+  "p_value": 0.0299,
+  "verdict": "PASS"
+ },
+ "DE30": {
+  "rule": "Each copy keeps every real trade's direction, clock time of day, stop distance, target distance and holding time, but enters on a random trading day of the same price history (bars, entry at the bar open). Stop is assumed first when stop and target fall in the same bar. p = (copies with mean R >= real mean R + 1) / (copies + 1). Raw-gate screen: p <= 0.10 (lenient on purpose: it removes market drift, it does not prove an edge).",
+  "trades": 1075,
+  "copies": 200,
+  "seed": 20261111,
+  "real_mean_r": 0.02002,
+  "random_mean_r": {
+   "p05": -0.05597,
+   "p50": -0.00245,
+   "p95": 0.06312
+  },
+  "p_value": 0.2736,
+  "verdict": "FAIL"
+ },
+ "DE30 buy&hold price only": {
+  "start": 12371.5,
+  "end": 24572.4,
+  "price_return_pct": 98.62,
+  "max_dd_pct": 42.37,
+  "note": "price only (no swap, no FX); the benchmark EA refuses EUR-margined symbols"
+ }
+}
