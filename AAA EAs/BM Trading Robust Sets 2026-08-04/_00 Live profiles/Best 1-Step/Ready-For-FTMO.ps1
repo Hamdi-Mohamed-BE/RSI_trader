@@ -49,7 +49,7 @@ if ($Phase -eq 'Funded') {
     if ($risk -lt 0.1 -or $risk -gt 1.5) { throw 'Funded risk must be between 0.1 and 1.5 %.' }
 }
 $riskText = $risk.ToString('0.###', [Globalization.CultureInfo]::InvariantCulture)
-Write-Host ("Phase {0}: risk {1}% per trade (Nasdaq 5M {2}%), Nasdaq DI OFF, weekend flat ON, news guard {3}, no-opposite OFF, minimum lot used when it risks <= 3x your risk." -f $Phase, $riskText,
+Write-Host ("Phase {0}: risk {1}% per trade (Nasdaq 5M {2}%), Nasdaq DI OFF, weekend flat ON, news guard {3}, no-opposite OFF, minimum lot used when it risks <= 2x your risk." -f $Phase, $riskText,
     ($risk * 0.75).ToString('0.####', [Globalization.CultureInfo]::InvariantCulture), $(if ($newsMode -eq 'OFF') { 'OFF (challenge is exempt)' } else { '+-2 min' })) -ForegroundColor Cyan
 
 # 1. news calendar now (needed on the funded account) + daily task
@@ -67,7 +67,7 @@ if (-not $ValidateOnly) {
 # 2. installer with every answer filled in (non-interactive: all 10 EAs, no per-EA questions)
 Write-Host ''; Write-Host 'STEP 3/3 - install' -ForegroundColor Cyan
 $args2 = @('-Phase', $Phase, '-RiskMode', 'PERCENT', '-RiskValue', $riskText, '-NasdaqDIFilter', 'OFF', '-UsdJpyDIFilter', 'ON', '-NasdaqStopVersion', 'NEW',
-           '-TotalRiskCap', '4.5', '-SymbolRiskCap', '3', '-WeekendFlat', 'ON', '-NoOpposite', 'OFF', '-NewsGuard', $newsMode, '-NasdaqRiskFactor', '0.75', '-MinLot', '3')   # 2026-11-25 owner: broker minimum lot when it risks <= 3x the budget
+           '-TotalRiskCap', '4.5', '-SymbolRiskCap', '3', '-WeekendFlat', 'ON', '-NoOpposite', 'OFF', '-NewsGuard', $newsMode, '-NasdaqRiskFactor', '0.75', '-MinLot', '2')   # 2026-11-25 owner: broker minimum lot when it risks <= 2x the budget (all BATs)
 if ($ValidateOnly) { $args2 += '-ValidateOnly' }
 & powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File $guarded @args2
 $code = $LASTEXITCODE

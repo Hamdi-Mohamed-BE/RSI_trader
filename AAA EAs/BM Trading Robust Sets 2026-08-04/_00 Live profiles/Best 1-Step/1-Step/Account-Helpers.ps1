@@ -6,7 +6,7 @@ function Assert-PropReadyAccount([object]$Probe) {
     if([int]$Probe.account.margin_mode -ne 2){throw 'Best 1-Step requires a hedging MT5 account; netting would merge the independent EAs.'}
     if(-not $Probe.account.trade_allowed -or -not $Probe.account.trade_expert){throw 'Account does not permit EA trading.'}
     if($Probe.terminal.trade_allowed){throw 'Turn Algo Trading OFF in the selected MT5 terminal, then run again.'}
-    if($Probe.positions -ne 0 -or $Probe.orders -ne 0){throw 'Account must be flat with no pending orders; nothing will be closed automatically.'}
+    if($Probe.positions -ne 0 -or $Probe.orders -ne 0){Write-Host ("Open trades: {0} position(s), {1} pending order(s). They are NOT closed or changed; the EAs manage them again after the restart and the guard counts their stop risk. While a pending order exists the guard opens no NEW trades." -f $Probe.positions,$Probe.orders) -ForegroundColor Yellow}   # 2026-11-25: no longer requires a flat account
     foreach($value in @([double]$Probe.account.balance,[double]$Probe.account.equity)){
         if([double]::IsNaN($value) -or [double]::IsInfinity($value) -or $value -le 0){throw 'Account balance/equity must be positive and finite.'}
     }
@@ -59,7 +59,7 @@ function Select-PropReadyReference([object]$Probe,[object]$Existing,[bool]$Ask) 
 
 function Assert-PropReadyConfirmation([object]$Original,[object]$Confirmation) {
     Assert-PropReadyAccount $Confirmation
-    foreach($field in @('login','server','currency','margin_mode','balance','equity')){
+    foreach($field in @('login','server','currency','margin_mode','balance')){   # equity moves with open trades (2026-11-25)
         if([string]$Confirmation.account.$field -cne [string]$Original.account.$field){throw "Account $field changed during confirmation; nothing installed."}
     }
     if([string]$Confirmation.terminal.data_path -ine [string]$Original.terminal.data_path -or

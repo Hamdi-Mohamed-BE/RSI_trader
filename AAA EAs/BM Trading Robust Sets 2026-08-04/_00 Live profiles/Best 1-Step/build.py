@@ -134,11 +134,11 @@ function Read-CalyxMinLot([string]$Current, [bool]$NoPrompt) {
     Write-Host 'MINIMUM LOT - on a small account even the smallest lot (0.01) can risk more than your risk per trade' -ForegroundColor Cyan
     Write-Host '  (example: gold with a wide stop, 0.01 lot = $109 while 0.75% of $10k = $75). What should the guard do then?'
     Write-Host '  OFF = skip the trade (old behaviour)'
-    Write-Host '  2   = trade the broker minimum lot if it risks at most 2x your risk per trade'
-    Write-Host '  3   = up to 3x   [recommended, owner 2026-11-25: FTMO 1-Step 0.75% sim 93.4% first try, 4 gold trades skipped in 5 y]'
+    Write-Host '  2   = trade the broker minimum lot if it risks at most 2x your risk per trade   [default, owner 2026-11-25: "minimum lot up to 2x for all bats"; sim 93.5% first try]'
+    Write-Host '  3   = up to 3x'
     Write-Host '  The daily-loss reserve, open-risk caps, margin cap and every other guard limit still apply to that trade.' -ForegroundColor Yellow
-    $answer = (Read-Host 'Minimum-lot fallback OFF, 2 or 3 [3]').Trim().ToUpperInvariant()
-    if (-not $answer) { $answer = '3' }
+    $answer = (Read-Host 'Minimum-lot fallback OFF, 2 or 3 [2]').Trim().ToUpperInvariant()
+    if (-not $answer) { $answer = '2' }
     if ($answer -notin @('OFF','2','3')) { throw 'Answer OFF, 2 or 3.' }
     Write-Host ('Minimum-lot fallback: {0}' -f $answer)
     return $answer
@@ -230,8 +230,9 @@ def guard_text():
     g = sub1(g, 'input double FTMORiskCapPercent=0.5;', 'input double FTMOEntryRiskFactor=1.0; // Best 1-Step 2026-11-18: entry size factor for this chart only (Nasdaq 5M 0.75); total / symbol caps unchanged\ninput double FTMORiskCapPercent=0.5;')
     g = sub1(g, 'double FTMORiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent/100.0;}', 'double FTMORiskCap(){return FTMOReferenceBalance*FTMORiskCapPercent/100.0*MathMax(0.05,MathMin(1.0,FTMOEntryRiskFactor));}')
     # 2026-11-25 owner: "risk broker min when this issue happens" (EMA3: 0.01 lot = $109 > $75 budget on a $10k FTMO 1-Step, so the guard skipped it).
-    g = sub1(g, 'input double FTMOSymbolRiskMultiple=3.0;', 'input double FTMOMinLotMaxMultiple=0.0; // 2026-11-25: if even the broker minimum lot risks more than the budget, trade the minimum lot when it risks at most this x the per-entry cap; 0 = skip (old rule). Installer: OFF / 2 / 3\ninput double FTMOSymbolRiskMultiple=3.0;')
-    g = sub1(g, '   if(volume<SymbolInfoDouble(r.symbol,SYMBOL_VOLUME_MIN)-1e-9)return FTMOReject(result,"minimum lot exceeds budget");\n   double risk=unit*volume;\n   if(risk>FTMORiskCap()+1e-7)return FTMOReject(result,"risk rounding");',
+    if 'FTMOMinLotMaxMultiple' not in g:   # 2026-11-25 rollout: newer ftmo 1_step guards already carry the fallback (Min Lot Rollout 2026-11-25)
+      g = sub1(g, 'input double FTMOSymbolRiskMultiple=3.0;', 'input double FTMOMinLotMaxMultiple=0.0; // 2026-11-25: if even the broker minimum lot risks more than the budget, trade the minimum lot when it risks at most this x the per-entry cap; 0 = skip (old rule). Installer: OFF / 2 / 3\ninput double FTMOSymbolRiskMultiple=3.0;')
+      g = sub1(g, '   if(volume<SymbolInfoDouble(r.symbol,SYMBOL_VOLUME_MIN)-1e-9)return FTMOReject(result,"minimum lot exceeds budget");\n   double risk=unit*volume;\n   if(risk>FTMORiskCap()+1e-7)return FTMOReject(result,"risk rounding");',
              '   double vmin=SymbolInfoDouble(r.symbol,SYMBOL_VOLUME_MIN),cap_used=FTMORiskCap();\n'
              '   if(volume<vmin-1e-9) {   // Best 1-Step 2026-11-25: broker minimum lot fallback; every other guard limit below still applies\n'
              '      if(FTMOMinLotMaxMultiple<=0 || FTMOAllocationBudget()<=0 || vmin<=0 || r.volume<vmin-1e-9 || unit*vmin>FTMOMinLotMaxMultiple*FTMORiskCap()+1e-7)\n'
@@ -360,6 +361,9 @@ def installer():
     s = sub1(s, "{$NasdaqRiskFactor.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)}else{'1.0'}",
              "{$NasdaqRiskFactor.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)}else{'1.0'};$inputs['FTMOMinLotMaxMultiple']=if($MinLot -eq 'OFF'){'0.0'}else{$MinLot}")
     s = sub1(s, "Nasdaq 5M risk factor: $NasdaqRiskFactor`r`n", "Nasdaq 5M risk factor: $NasdaqRiskFactor`r`nMinimum-lot fallback: $MinLot`r`n")
+    # 2026-11-25 owner: install with open trades too (the baseline uses the closed BALANCE; floating P&L is not part of it)
+    s = sub1(s, "if([double]$probe.account.equity -lt [double]$probe.account.balance-0.005){throw 'Account must be flat (equity = balance) to start an FTMO 1-Step baseline.'}",
+             "if([double]$probe.account.equity -lt [double]$probe.account.balance-0.005){Write-Host ('Floating loss on open trades: {0:N2}. The guard baseline uses the closed balance {1:N2}.' -f ([double]$probe.account.equity-[double]$probe.account.balance),[double]$probe.account.balance) -ForegroundColor Yellow}")
     # 2026-11-25 owner VPS: "Fatal Python error: Failed to import encodings module" -> the first python.exe on PATH was broken; pick a working one.
     s = sub1(s, "$python=(Get-Command python.exe -ErrorAction Stop).Source\n", FIND_PYTHON_PS + "$python=Find-CalyxPython\n")
     s = sub1(s, "foreach($symbol in $aliasMap.Keys){", "foreach($symbol in @($aliasMap.Keys | Where-Object { $_ -in @($selectedEntries | ForEach-Object { [string]$_.symbol }) })){")
@@ -371,6 +375,11 @@ def write_installers():
     root = HERE / '1-Step'; root.mkdir(exist_ok=True)
     (root / SCRIPT).write_bytes(installer().encode('utf-8'))
     h = sub1(read(F1S / 'Account-Helpers.ps1'), "throw 'FTMO 1-Step requires a hedging MT5 account", "throw 'Best 1-Step requires a hedging MT5 account")
+    # 2026-11-25 owner: "make it apply no matter what is open or not". Open positions / pending orders are allowed: nothing is closed, they keep
+    # their server-side SL/TP, the reinstalled EAs (same magics) manage them again, and the guard counts their original stop risk.
+    h = sub1(h, "    if($Probe.positions -ne 0 -or $Probe.orders -ne 0){throw 'Account must be flat with no pending orders; nothing will be closed automatically.'}\n",
+             "    if($Probe.positions -ne 0 -or $Probe.orders -ne 0){Write-Host (\"Open trades: {0} position(s), {1} pending order(s). They are NOT closed or changed; the EAs manage them again after the restart and the guard counts their stop risk. While a pending order exists the guard opens no NEW trades.\" -f $Probe.positions,$Probe.orders) -ForegroundColor Yellow}   # 2026-11-25: no longer requires a flat account\n")
+    h = sub1(h, "foreach($field in @('login','server','currency','margin_mode','balance','equity')){", "foreach($field in @('login','server','currency','margin_mode','balance')){   # equity moves with open trades (2026-11-25)")
     (root / 'Account-Helpers.ps1').write_bytes(h.replace('\n', '\r\n').encode('utf-8')); shutil.copy2(F1S / 'probe_account.py', root / 'probe_account.py')
     print('installer + helpers written', flush=True)
 

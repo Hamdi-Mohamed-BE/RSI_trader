@@ -89,9 +89,9 @@ if($Interactive -and -not $ValidateOnly){
         if(-not $RiskMode){throw 'Risk type must be 1 or 2.'}
     }
     if(-not $PSBoundParameters.ContainsKey('RiskValue')){
-        $prompt=if($RiskMode -eq 'PERCENT'){'Risk per trade, % of current equity: 0.5 (tested best) / 0.75 / 1.0 (max 2) [0.5]'}else{'Risk per trade, fixed amount in the account currency, e.g. 500 (max 2% of the starting balance) [500]'}
+        $prompt=if($RiskMode -eq 'PERCENT'){'Risk per trade, % of current equity: 0.5 / 0.75 (default) / 1.0 (max 2) [0.75]'}else{'Risk per trade, fixed amount in the account currency, e.g. 500 (max 2% of the starting balance) [500]'}
         $answer=(Read-Host $prompt).Trim()
-        $RiskValue=if($answer){[double]::Parse($answer.Replace(',','.'),[Globalization.CultureInfo]::InvariantCulture)}elseif($RiskMode -eq 'PERCENT'){0.5}else{500.0}
+        $RiskValue=if($answer){[double]::Parse($answer.Replace(',','.'),[Globalization.CultureInfo]::InvariantCulture)}elseif($RiskMode -eq 'PERCENT'){0.75}else{500.0}
     }
     $NasdaqStopVersion=Read-CalyxNasdaqVersion $NasdaqStopVersion $false
     if(-not $PSBoundParameters.ContainsKey('NasdaqDIFilter')){
@@ -328,11 +328,11 @@ function Read-CalyxMinLot([string]$Current, [bool]$NoPrompt) {
     Write-Host 'MINIMUM LOT - on a small account even the smallest lot (0.01) can risk more than your risk per trade' -ForegroundColor Cyan
     Write-Host '  (example: gold with a wide stop, 0.01 lot = $109 while 0.75% of $10k = $75). What should the guard do then?'
     Write-Host '  OFF = skip the trade (old behaviour)'
-    Write-Host '  2   = trade the broker minimum lot if it risks at most 2x your risk per trade'
-    Write-Host '  3   = up to 3x   [recommended, owner 2026-11-25: FTMO 1-Step 0.75% sim 93.4% first try, 4 gold trades skipped in 5 y]'
+    Write-Host '  2   = trade the broker minimum lot if it risks at most 2x your risk per trade   [default, owner 2026-11-25: "minimum lot up to 2x for all bats"; sim 93.5% first try]'
+    Write-Host '  3   = up to 3x'
     Write-Host '  The daily-loss reserve, open-risk caps, margin cap and every other guard limit still apply to that trade.' -ForegroundColor Yellow
-    $answer = (Read-Host 'Minimum-lot fallback OFF, 2 or 3 [3]').Trim().ToUpperInvariant()
-    if (-not $answer) { $answer = '3' }
+    $answer = (Read-Host 'Minimum-lot fallback OFF, 2 or 3 [2]').Trim().ToUpperInvariant()
+    if (-not $answer) { $answer = '2' }
     if ($answer -notin @('OFF','2','3')) { throw 'Answer OFF, 2 or 3.' }
     Write-Host ('Minimum-lot fallback: {0}' -f $answer)
     return $answer
@@ -408,7 +408,7 @@ $initial=[double]$reference.reference_balance
 $capPercent=Resolve-RiskCapPercent $RiskMode $RiskValue $initial
 $capText=$capPercent.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)
 if([double]$probe.account.equity -lt $initial*0.92){throw 'Equity is below 92% of the starting balance; stop for review.'}
-if([double]$probe.account.equity -lt [double]$probe.account.balance-0.005){throw 'Account must be flat (equity = balance) to start an FTMO 1-Step baseline.'}
+if([double]$probe.account.equity -lt [double]$probe.account.balance-0.005){Write-Host ('Floating loss on open trades: {0:N2}. The guard baseline uses the closed balance {1:N2}.' -f ([double]$probe.account.equity-[double]$probe.account.balance),[double]$probe.account.balance) -ForegroundColor Yellow}
 Write-Host 'Every run starts a NEW baseline from the current balance (owner 2026-11-03). On a prop account that is already down, the firm still measures its loss limits from the ORIGINAL balance, so the guard floor/buffer can sit below the firm floor.' -ForegroundColor Yellow
 $phaseNumber=@{Challenge=1;Funded=3}[$Phase]
 $aliasMap=@{XAUUSD=@('XAUUSD','GOLD');USTEC=@('USTEC','US100','NAS100','NDX100','UT100','NASDAQ100','NASUSD','USTECH','USNDX');USDJPY=@('USDJPY');UK100=@('UK100','UK100CASH','FTSE100','FTSE','UKX','UK100CFD','GBR100')}
