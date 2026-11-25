@@ -100,6 +100,32 @@ def aaa_graph(path, target, cache):
 # 2026-11-17 owner: "build the no opposite trade rule into the EAs and add to profile along side with weekend hold".
 # Calyx No Opposite (../Calyx No Opposite): input InpCalyxNoOpposite (default false = the tested order path); the installers ask ON/OFF.
 CNO = LIVE / 'Calyx No Opposite'
+FIND_PYTHON_PS = r"""# >>> Calyx working-Python finder (2026-11-25) >>>
+function Find-CalyxPython {
+    # A stale PYTHONHOME / PYTHONPATH makes every python.exe fail with "Failed to import encodings"; clear them for this installer only.
+    Remove-Item Env:PYTHONHOME -ErrorAction SilentlyContinue; Remove-Item Env:PYTHONPATH -ErrorAction SilentlyContinue
+    $candidates=[System.Collections.Generic.List[string]]::new()
+    foreach($c in @(Get-Command python.exe -All -ErrorAction SilentlyContinue)){ if($c.Source -and $c.Source -notmatch '\\WindowsApps\\'){ $candidates.Add($c.Source) } }
+    $py=Get-Command py.exe -ErrorAction SilentlyContinue
+    if($py){ try { $p=(& $py.Source -3 -c "import sys;print(sys.executable)" 2>$null | Select-Object -Last 1); if($p){ $candidates.Add(([string]$p).Trim()) } } catch {} }
+    foreach($root in @("$env:LOCALAPPDATA\Programs\Python","$env:ProgramFiles","${env:ProgramFiles(x86)}","C:\")){
+        if($root -and (Test-Path -LiteralPath $root)){ foreach($d in @(Get-ChildItem -LiteralPath $root -Directory -Filter 'Python3*' -ErrorAction SilentlyContinue)){ $e=Join-Path $d.FullName 'python.exe'; if(Test-Path -LiteralPath $e){ $candidates.Add($e) } } }
+    }
+    $tried=@()
+    foreach($exe in ($candidates | Select-Object -Unique)){
+        $out=''
+        try { $out=(& $exe -c "import encodings, MetaTrader5; print('CALYX_PY_OK')" 2>&1 | ForEach-Object { [string]$_ }) -join ' ' } catch { $out=[string]$_ }
+        if($LASTEXITCODE -eq 0 -and $out -match 'CALYX_PY_OK'){ Write-Host "Python: $exe"; return $exe }
+        $short=($out -replace '\s+',' '); if($short.Length -gt 120){ $short=$short.Substring(0,120) }
+        $tried+=("{0} -> {1}" -f $exe, $short)
+    }
+    Write-Host 'No working Python with the MetaTrader5 package was found. Tried:' -ForegroundColor Red
+    $tried | ForEach-Object { Write-Host "  $_" }
+    throw 'Install Python 3.12 from python.org (tick "Add python.exe to PATH"), then run:  py -3 -m pip install MetaTrader5  and run this BAT again. Nothing installed.'
+}
+# <<< Calyx working-Python finder <<<
+"""
+
 MINLOT_PS = r"""# >>> Calyx minimum-lot fallback (owner 2026-11-25) >>>
 function Read-CalyxMinLot([string]$Current, [bool]$NoPrompt) {
     if ($Current) { if ($Current -notin @('OFF','2','3')) { throw 'MinLot must be OFF, 2 or 3.' }; return $Current }
@@ -334,6 +360,8 @@ def installer():
     s = sub1(s, "{$NasdaqRiskFactor.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)}else{'1.0'}",
              "{$NasdaqRiskFactor.ToString('G17',[Globalization.CultureInfo]::InvariantCulture)}else{'1.0'};$inputs['FTMOMinLotMaxMultiple']=if($MinLot -eq 'OFF'){'0.0'}else{$MinLot}")
     s = sub1(s, "Nasdaq 5M risk factor: $NasdaqRiskFactor`r`n", "Nasdaq 5M risk factor: $NasdaqRiskFactor`r`nMinimum-lot fallback: $MinLot`r`n")
+    # 2026-11-25 owner VPS: "Fatal Python error: Failed to import encodings module" -> the first python.exe on PATH was broken; pick a working one.
+    s = sub1(s, "$python=(Get-Command python.exe -ErrorAction Stop).Source\n", FIND_PYTHON_PS + "$python=Find-CalyxPython\n")
     s = sub1(s, "foreach($symbol in $aliasMap.Keys){", "foreach($symbol in @($aliasMap.Keys | Where-Object { $_ -in @($selectedEntries | ForEach-Object { [string]$_.symbol }) })){")
     s = sub1(s, "$portfolio=@()\nforeach($entry in $manifest.entries){", "$portfolio=@()\nforeach($entry in $selectedEntries){")
     return s.replace('\n', '\r\n')

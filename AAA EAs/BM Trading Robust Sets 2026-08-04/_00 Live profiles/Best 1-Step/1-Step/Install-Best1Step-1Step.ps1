@@ -364,7 +364,31 @@ if($candidates.Count -eq 0){throw 'Open your intended MT5 terminal and log into 
 if($TargetTerminal -and -not @($candidates | Where-Object Path -eq $TargetTerminal).Count){throw 'Target must be an already running normal MT5 terminal.'}
 $selected=Select-Mt5Candidate $candidates
 $terminalPath=[IO.Path]::GetFullPath($selected.Path)
-$python=(Get-Command python.exe -ErrorAction Stop).Source
+# >>> Calyx working-Python finder (2026-11-25) >>>
+function Find-CalyxPython {
+    # A stale PYTHONHOME / PYTHONPATH makes every python.exe fail with "Failed to import encodings"; clear them for this installer only.
+    Remove-Item Env:PYTHONHOME -ErrorAction SilentlyContinue; Remove-Item Env:PYTHONPATH -ErrorAction SilentlyContinue
+    $candidates=[System.Collections.Generic.List[string]]::new()
+    foreach($c in @(Get-Command python.exe -All -ErrorAction SilentlyContinue)){ if($c.Source -and $c.Source -notmatch '\\WindowsApps\\'){ $candidates.Add($c.Source) } }
+    $py=Get-Command py.exe -ErrorAction SilentlyContinue
+    if($py){ try { $p=(& $py.Source -3 -c "import sys;print(sys.executable)" 2>$null | Select-Object -Last 1); if($p){ $candidates.Add(([string]$p).Trim()) } } catch {} }
+    foreach($root in @("$env:LOCALAPPDATA\Programs\Python","$env:ProgramFiles","${env:ProgramFiles(x86)}","C:\")){
+        if($root -and (Test-Path -LiteralPath $root)){ foreach($d in @(Get-ChildItem -LiteralPath $root -Directory -Filter 'Python3*' -ErrorAction SilentlyContinue)){ $e=Join-Path $d.FullName 'python.exe'; if(Test-Path -LiteralPath $e){ $candidates.Add($e) } } }
+    }
+    $tried=@()
+    foreach($exe in ($candidates | Select-Object -Unique)){
+        $out=''
+        try { $out=(& $exe -c "import encodings, MetaTrader5; print('CALYX_PY_OK')" 2>&1 | ForEach-Object { [string]$_ }) -join ' ' } catch { $out=[string]$_ }
+        if($LASTEXITCODE -eq 0 -and $out -match 'CALYX_PY_OK'){ Write-Host "Python: $exe"; return $exe }
+        $short=($out -replace '\s+',' '); if($short.Length -gt 120){ $short=$short.Substring(0,120) }
+        $tried+=("{0} -> {1}" -f $exe, $short)
+    }
+    Write-Host 'No working Python with the MetaTrader5 package was found. Tried:' -ForegroundColor Red
+    $tried | ForEach-Object { Write-Host "  $_" }
+    throw 'Install Python 3.12 from python.org (tick "Add python.exe to PATH"), then run:  py -3 -m pip install MetaTrader5  and run this BAT again. Nothing installed.'
+}
+# <<< Calyx working-Python finder <<<
+$python=Find-CalyxPython
 $probeText=(& $python (Join-Path $PSScriptRoot 'probe_account.py') --terminal $terminalPath) -join "`n"
 if($LASTEXITCODE -ne 0){throw 'Account preflight failed; nothing installed.'}
 $probe=$probeText | ConvertFrom-Json
