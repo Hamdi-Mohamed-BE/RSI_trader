@@ -92,3 +92,6 @@ Challenge / Funded / -FundedRisk 0.6; risk question tested (Enter, 0.75, 0.3, re
 - 2026-11-25 later (owner: "apply 0.75% + minimum lot up to 3x"): default is now 3x (installer Enter = 3; Ready for FTMO passes `-MinLot 3`); challenge risk stays 0.75%.
   Sim ($10k FTMO 1-Step 0.75%, INPUTS_N75, no guard, `FTMO vs Exness 2026-11-24/minlot.py`): skip 93.2% first try / 61 d, 2x 93.5% / 61 d, 3x 93.4% / 60 d (4 gold
   trades skipped in 5 y), raising every trade to 1% 54.9%.
+
+## 2026-11-25 Fix Python for MT5.bat
+If an installer stops at "Account preflight failed" with "Failed to import encodings module": run `Fix Python for MT5.bat` (Fix-PythonForMT5.ps1). It removes a stale PYTHONHOME / PYTHONPATH, finds or installs Python 3.12 (winget, else the signed python.org installer), installs the MetaTrader5 package and checks `import encodings, MetaTrader5`. Asks before each change; `-CheckOnly` reports only. The guarded installer also skips broken Pythons by itself (Find-CalyxPython).
